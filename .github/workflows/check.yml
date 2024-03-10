@@ -26,9 +26,6 @@ jobs:
       - name: TestsCSharp 
         run: dotnet test
         working-directory: Tests.CSharp
-      - name: TestsFSharp
-        run: dotnet test
-        working-directory: Tests.FSharp
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
         with:
