@@ -32,3 +32,18 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: LitresNET/Literes
 
+  test:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - name: Build in Debug mode
+          run: dotnet build
+        - name: Tests
+          run: dotnet test --logger "trx;LogFileName=test-results.trx" --no-build
+          working-directory: Tests.CSharp
+        - uses: actions/upload-artifact@v4
+          if: success() || failure()
+          with:
+            name: test-results
+            path: 'Tests./TestResults/*.trx'
+
