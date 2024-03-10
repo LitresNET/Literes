@@ -40,7 +40,7 @@ jobs:
           run: dotnet build
         - name: Tests
           run: dotnet test --logger "trx;LogFileName=test-results.trx" --no-build
-          working-directory: Tests.CSharp
+          working-directory: Tests
         - uses: actions/upload-artifact@v4
           if: success() || failure()
           with:
