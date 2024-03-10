@@ -27,8 +27,11 @@ jobs:
         run: dotnet test
         working-directory: Tests
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.0.1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: LitresNET/Literes
+        env:
+          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
+        run: | 
+         curl -Os https://uploader.codecov.io/latest/linux/codecov
+         find . -iregex "codecov.*"
+         chmod +x codecov 
+         ./codecov -t ${CODECOV_TOKEN
 
