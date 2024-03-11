@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check GitHub token
-        run: echo $secrets.GITHUB
+        run: echo $GITHUB
       - uses: dorny/test-reporter@v1
         with:
           artifact: test-results            # artifact name
