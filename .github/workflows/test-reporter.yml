@@ -5,6 +5,11 @@ on:
     types:
       - completed
 jobs:
+  check:
+    runs-on: ubunty-latest
+    steps:
+    - name: Check GitHub token
+      run: echo $GITHUB
   report:
     runs-on: ubuntu-latest
     steps:
