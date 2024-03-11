@@ -47,5 +47,5 @@ jobs:
           if: success() || failure()
           with:
             name: test-results
-            path: 'Tests/TestResults/*.trx'
+            path: 'Tests.*Sharp/TestResults/*.trx'
 
