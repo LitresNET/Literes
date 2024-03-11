@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check GitHub token
-        run: echo $GITHUB
+        run: echo $GITHUB_TOKEN
       - uses: dorny/test-reporter@v1
         with:
           artifact: test-results            # artifact name
@@ -17,5 +17,5 @@ jobs:
           path: 'Tests/TestResults/*.trx'                     # Path to test results (inside artifact .zip)
           reporter: dotnet-trx   # Format of test results
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
     permissions: write-all
