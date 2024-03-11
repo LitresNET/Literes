@@ -17,5 +17,5 @@ jobs:
           path: 'Tests/TestResults/*.trx'                     # Path to test results (inside artifact .zip)
           reporter: dotnet-trx   # Format of test results
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions: write-all
