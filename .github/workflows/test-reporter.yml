@@ -1,0 +1,22 @@
+name: 'Test Report'
+on:
+  workflow_run:
+    workflows: ['check']                     # runs after CI workflow
+    types:
+      - completed
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check GitHub token
+        run: echo $GITHUB_TOKEN
+      - name: Test Reporter
+        uses: dorny/test-reporter@v1.8.0   
+        with:
+          artifact: test-results            # artifact name
+          name: report                  # Name of the check run which will be created
+          path: 'Tests/TestResults/*.trx'                     # Path to test results (inside artifact .zip)
+          reporter: dotnet-trx   # Format of test results
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions: write-all

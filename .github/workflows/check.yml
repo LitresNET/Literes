@@ -1,4 +1,4 @@
-name: check
+name: 'check'
 
 
 on:
@@ -27,8 +27,23 @@ jobs:
         run: dotnet test
         working-directory: Tests
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.0.1
-        with:
-          token: ${{ secrets.CODECOV }}
-          slug: LitresNET/Literes
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+
+  test:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - name: Build in Debug mode
+          run: dotnet build
+        - name: Tests
+          run: dotnet test --logger "trx;LogFileName=test-results.trx" --no-build
+          working-directory: Tests
+        - uses: actions/upload-artifact@v4
+          if: success() || failure()
+          with:
+            name: test-results
+            path: 'Tests/TestResults/*.trx'
 
