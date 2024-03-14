@@ -1,0 +1,22 @@
+﻿
+/* ----- COLORS AND FONTS ----- */
+
+*, *::after, *::before {
+    --blue-500: #3AB8EB;
+    --orange-500: #F9784B;
+    --yellow-500: #FDBF0F;
+    --gray-800: #3D3C3C;
+    --gray-600: #676767;
+    --gradient: linear-gradient(to bottom, #3AB8EB, #F9784B, #FDBF0F, whitesmoke);
+
+    font-family: "Syne", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Unica One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
