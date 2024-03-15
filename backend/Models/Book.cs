@@ -12,16 +12,21 @@ public class Book
     public long AuthorId { get; set; }
     [Required]
     public long SeriesId { get; set; }
+    [MaxLength(128)]
     public string Name { get; set; }
+    [MaxLength(4096)]
     public string Description { get; set; }
     public long PublisherId { get; set; }
     [Required]
     public DateTime ReleaseData { get; set; }
     [Required]
     public int Rating { get; set; }
+    [MaxLength(256)]
     public string CoverUrl { get; set; }
     [Required]
+    [MaxLength(256)]
     public string ContentUrl { get; set; }
+    [MaxLength(16)]
     public string Isbn { get; set; }
     [Required]
     public bool IsAvailable { get; set; }

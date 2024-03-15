@@ -12,11 +12,15 @@ public class User
     [Required]
     public long SubscriptionId { get; set; }
     [Required] 
+    [MaxLength(256)]
     public string Email { get; set; }
     [Required]
+    [MaxLength(128)]
     public string Password { get; set; }
     [Required]
+    [MaxLength(32)]
     public string Name { get; set; }
+    [MaxLength(256)]
     public string AvaterUrl { get; set; }
     public DateTime ActiveUntil { get; set; }
     [Required]

@@ -6,6 +6,7 @@ public class Order
 {
     [Key]
     public long Id { get; set; }
+    [MaxLength(256)]
     public string Description { get; set; }
     public long PickupPointId { get; set; }
     public long UserId { get; set; }

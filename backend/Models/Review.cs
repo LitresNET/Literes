@@ -12,6 +12,7 @@ public class Review
     public long userId { get; set; }
     [Required]
     public long bookId { get; set; }
+    [MaxLength(4096)]
     public string content { get; set; }
     [Required]
     public DateTime createdAt { get; set; }
