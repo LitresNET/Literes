@@ -12,7 +12,7 @@ using backend;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240315011210_InitialCreate")]
+    [Migration("20240315160933_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -27,60 +27,60 @@ namespace backend.Migrations
 
             modelBuilder.Entity("BookGenres", b =>
                 {
-                    b.Property<long>("BookGenresId")
+                    b.Property<long>("BookId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("BookGenresId1")
+                    b.Property<long>("GenreId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("BookGenresId", "BookGenresId1");
+                    b.HasKey("BookId", "GenreId");
 
-                    b.HasIndex("BookGenresId1");
+                    b.HasIndex("GenreId");
 
                     b.ToTable("BookGenres");
                 });
 
             modelBuilder.Entity("Favourites", b =>
                 {
-                    b.Property<long>("FavouritesId")
+                    b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("FavouritesId1")
+                    b.Property<long>("BookId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("FavouritesId", "FavouritesId1");
+                    b.HasKey("UserId", "BookId");
 
-                    b.HasIndex("FavouritesId1");
+                    b.HasIndex("BookId");
 
                     b.ToTable("Favourites");
                 });
 
             modelBuilder.Entity("Purchesed", b =>
                 {
-                    b.Property<long>("PurchasedId")
+                    b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("PurchesedId")
+                    b.Property<long>("BookId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("PurchasedId", "PurchesedId");
+                    b.HasKey("UserId", "BookId");
 
-                    b.HasIndex("PurchesedId");
+                    b.HasIndex("BookId");
 
                     b.ToTable("Purchesed");
                 });
 
             modelBuilder.Entity("UserExternalServices", b =>
                 {
-                    b.Property<long>("ExternalServicesId")
+                    b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("UsersId")
+                    b.Property<long>("ExternalServiceId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("ExternalServicesId", "UsersId");
+                    b.HasKey("UserId", "ExternalServiceId");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("ExternalServiceId");
 
                     b.ToTable("UserExternalServices");
                 });
@@ -384,11 +384,16 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<long>("AuthorId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("Series");
                 });
@@ -457,16 +462,16 @@ namespace backend.Migrations
 
             modelBuilder.Entity("BookGenres", b =>
                 {
-                    b.HasOne("backend.Models.Genre", null)
-                        .WithMany()
-                        .HasForeignKey("BookGenresId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("backend.Models.Book", null)
                         .WithMany()
-                        .HasForeignKey("BookGenresId1")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.Genre", null)
+                        .WithMany()
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -474,14 +479,14 @@ namespace backend.Migrations
                 {
                     b.HasOne("backend.Models.Book", null)
                         .WithMany()
-                        .HasForeignKey("FavouritesId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("backend.Models.User", null)
                         .WithMany()
-                        .HasForeignKey("FavouritesId1")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -489,14 +494,14 @@ namespace backend.Migrations
                 {
                     b.HasOne("backend.Models.Book", null)
                         .WithMany()
-                        .HasForeignKey("PurchasedId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("backend.Models.User", null)
                         .WithMany()
-                        .HasForeignKey("PurchesedId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -504,14 +509,14 @@ namespace backend.Migrations
                 {
                     b.HasOne("backend.Models.ExternalService", null)
                         .WithMany()
-                        .HasForeignKey("ExternalServicesId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("ExternalServiceId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("backend.Models.User", null)
                         .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -520,19 +525,19 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.Author", "Author")
                         .WithMany("Books")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("backend.Models.Publisher", "Publisher")
                         .WithMany("Books")
                         .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("backend.Models.Series", "Series")
                         .WithMany("Books")
                         .HasForeignKey("SeriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Author");
@@ -547,13 +552,13 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.Review", "Review")
                         .WithMany("Comments")
                         .HasForeignKey("ReviewId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("backend.Models.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Review");
@@ -566,13 +571,13 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.Comment", "Comment")
                         .WithMany("CommentLikes")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("backend.Models.User", "User")
                         .WithMany("CommentLikes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Comment");
@@ -585,13 +590,13 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.PickupPoint", "PickupPoint")
                         .WithMany("Orders")
                         .HasForeignKey("PickupPointId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("backend.Models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("PickupPoint");
@@ -604,13 +609,13 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.Contract", "Contract")
                         .WithOne("Publisher")
                         .HasForeignKey("backend.Models.Publisher", "ContractId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("backend.Models.User", "User")
                         .WithOne("Publisher")
                         .HasForeignKey("backend.Models.Publisher", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Contract");
@@ -623,14 +628,25 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.Book", null)
                         .WithMany("Reviews")
                         .HasForeignKey("bookId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("backend.Models.User", null)
                         .WithMany("Reviews")
                         .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("backend.Models.Series", b =>
+                {
+                    b.HasOne("backend.Models.Author", "Author")
+                        .WithMany("Series")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("backend.Models.User", b =>
@@ -638,7 +654,7 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.Subscription", "Subscription")
                         .WithMany("Users")
                         .HasForeignKey("SubscriptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Subscription");
@@ -647,6 +663,8 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.Author", b =>
                 {
                     b.Navigation("Books");
+
+                    b.Navigation("Series");
                 });
 
             modelBuilder.Entity("backend.Models.Book", b =>

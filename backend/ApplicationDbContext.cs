@@ -33,12 +33,19 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasMany(e => e.Purchased)
             .WithMany(e => e.Purchesed)
-            .UsingEntity("Purchesed");
-        
+            .UsingEntity("Purchesed",
+                l => l.HasOne(typeof(Book)).WithMany().HasForeignKey("BookId").HasPrincipalKey(nameof(Models.Book.Id)),
+                r => r.HasOne(typeof(User)).WithMany().HasForeignKey("UserId").HasPrincipalKey(nameof(Models.User.Id)),
+                j => j.HasKey("UserId", "BookId"));;
+
         modelBuilder.Entity<User>()
             .HasMany(e => e.Favourites)
             .WithMany(e => e.Favourites)
-            .UsingEntity("Favourites");
+            .UsingEntity("Favourites", 
+                l => l.HasOne(typeof(Book)).WithMany().HasForeignKey("BookId").HasPrincipalKey(nameof(Models.Book.Id)),
+                r => r.HasOne(typeof(User)).WithMany().HasForeignKey("UserId").HasPrincipalKey(nameof(Models.User.Id)),
+                j => j.HasKey("UserId", "BookId"));;
+            
 
         modelBuilder.Entity<Author>()
             .HasMany(e => e.Books)
@@ -53,8 +60,11 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Book>()
             .HasMany(e => e.BookGenres)
             .WithMany(e => e.BookGenres)
-            .UsingEntity("BookGenres");
-        
+            .UsingEntity("BookGenres", 
+                l => l.HasOne(typeof(Genre)).WithMany().HasForeignKey("GenreId").HasPrincipalKey(nameof(Models.Genre.Id)),
+                r => r.HasOne(typeof(Book)).WithMany().HasForeignKey("BookId").HasPrincipalKey(nameof(Models.Book.Id)),
+                j => j.HasKey("BookId", "GenreId"));;
+
         modelBuilder.Entity<Series>()
             .HasMany(e => e.Books)
             .WithOne(e => e.Series)
@@ -89,12 +99,10 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasMany(e => e.ExternalServices)
             .WithMany(e => e.Users)
-            .UsingEntity("UserExternalServices");
-        
-        modelBuilder.Entity<Book>()
-            .HasMany(e => e.BookGenres)
-            .WithMany(e => e.BookGenres)
-            .UsingEntity("BookGenres");
+            .UsingEntity("UserExternalServices", 
+                l => l.HasOne(typeof(ExternalService)).WithMany().HasForeignKey("ExternalServiceId").HasPrincipalKey(nameof(Models.ExternalService.Id)),
+                r => r.HasOne(typeof(User)).WithMany().HasForeignKey("UserId").HasPrincipalKey(nameof(Models.User.Id)),
+                j => j.HasKey("UserId", "ExternalServiceId"));;
         
         modelBuilder.Entity<User>()
             .HasMany(e => e.Orders)
@@ -121,5 +129,11 @@ public class ApplicationDbContext : DbContext
             .HasMany(e => e.Users)
             .WithOne(e => e.Subscription)
             .HasForeignKey(e => e.SubscriptionId);
+
+        foreach (var foreignKey in modelBuilder.Model.GetEntityTypes()
+                     .SelectMany(e => e.GetForeignKeys()))
+        {
+            foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+        }
     }
 }

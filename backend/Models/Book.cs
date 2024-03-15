@@ -33,7 +33,7 @@ public class Book
     public Author Author { get; set; }
     public Series Series { get; set; }
     public Publisher Publisher { get; set; }
-    public List<User> Favourites { get; set; }
+    public List<User> Favourites { get; set; } = null;
     public List<Review> Reviews { get; set; }
     public List<User> Purchesed { get; set; }
     public List<Genre> BookGenres { get; set; }

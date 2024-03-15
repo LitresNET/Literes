@@ -81,19 +81,6 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Series",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Series", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Subscription",
                 columns: table => new
                 {
@@ -105,6 +92,26 @@ namespace backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Subscription", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Series",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AuthorId = table.Column<long>(type: "bigint", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Series", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Series_Author_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "Author",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -130,7 +137,7 @@ namespace backend.Migrations
                         column: x => x.SubscriptionId,
                         principalTable: "Subscription",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -151,13 +158,13 @@ namespace backend.Migrations
                         column: x => x.PickupPointId,
                         principalTable: "PickupPoint",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Order_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -175,37 +182,37 @@ namespace backend.Migrations
                         column: x => x.ContractId,
                         principalTable: "Contract",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Publisher_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "UserExternalServices",
                 columns: table => new
                 {
-                    ExternalServicesId = table.Column<long>(type: "bigint", nullable: false),
-                    UsersId = table.Column<long>(type: "bigint", nullable: false)
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    ExternalServiceId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserExternalServices", x => new { x.ExternalServicesId, x.UsersId });
+                    table.PrimaryKey("PK_UserExternalServices", x => new { x.UserId, x.ExternalServiceId });
                     table.ForeignKey(
-                        name: "FK_UserExternalServices_ExternalService_ExternalServicesId",
-                        column: x => x.ExternalServicesId,
+                        name: "FK_UserExternalServices_ExternalService_ExternalServiceId",
+                        column: x => x.ExternalServiceId,
                         principalTable: "ExternalService",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_UserExternalServices_User_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_UserExternalServices_User_UserId",
+                        column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -237,91 +244,91 @@ namespace backend.Migrations
                         column: x => x.AuthorId,
                         principalTable: "Author",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Book_Publisher_PublisherId",
                         column: x => x.PublisherId,
                         principalTable: "Publisher",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Book_Series_SeriesId",
                         column: x => x.SeriesId,
                         principalTable: "Series",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "BookGenres",
                 columns: table => new
                 {
-                    BookGenresId = table.Column<long>(type: "bigint", nullable: false),
-                    BookGenresId1 = table.Column<long>(type: "bigint", nullable: false)
+                    BookId = table.Column<long>(type: "bigint", nullable: false),
+                    GenreId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookGenres", x => new { x.BookGenresId, x.BookGenresId1 });
+                    table.PrimaryKey("PK_BookGenres", x => new { x.BookId, x.GenreId });
                     table.ForeignKey(
-                        name: "FK_BookGenres_Book_BookGenresId1",
-                        column: x => x.BookGenresId1,
+                        name: "FK_BookGenres_Book_BookId",
+                        column: x => x.BookId,
                         principalTable: "Book",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_BookGenres_Genre_BookGenresId",
-                        column: x => x.BookGenresId,
+                        name: "FK_BookGenres_Genre_GenreId",
+                        column: x => x.GenreId,
                         principalTable: "Genre",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Favourites",
                 columns: table => new
                 {
-                    FavouritesId = table.Column<long>(type: "bigint", nullable: false),
-                    FavouritesId1 = table.Column<long>(type: "bigint", nullable: false)
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    BookId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Favourites", x => new { x.FavouritesId, x.FavouritesId1 });
+                    table.PrimaryKey("PK_Favourites", x => new { x.UserId, x.BookId });
                     table.ForeignKey(
-                        name: "FK_Favourites_Book_FavouritesId",
-                        column: x => x.FavouritesId,
+                        name: "FK_Favourites_Book_BookId",
+                        column: x => x.BookId,
                         principalTable: "Book",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Favourites_User_FavouritesId1",
-                        column: x => x.FavouritesId1,
+                        name: "FK_Favourites_User_UserId",
+                        column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Purchesed",
                 columns: table => new
                 {
-                    PurchasedId = table.Column<long>(type: "bigint", nullable: false),
-                    PurchesedId = table.Column<long>(type: "bigint", nullable: false)
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    BookId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Purchesed", x => new { x.PurchasedId, x.PurchesedId });
+                    table.PrimaryKey("PK_Purchesed", x => new { x.UserId, x.BookId });
                     table.ForeignKey(
-                        name: "FK_Purchesed_Book_PurchasedId",
-                        column: x => x.PurchasedId,
+                        name: "FK_Purchesed_Book_BookId",
+                        column: x => x.BookId,
                         principalTable: "Book",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Purchesed_User_PurchesedId",
-                        column: x => x.PurchesedId,
+                        name: "FK_Purchesed_User_UserId",
+                        column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -344,13 +351,13 @@ namespace backend.Migrations
                         column: x => x.bookId,
                         principalTable: "Book",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Review_User_userId",
                         column: x => x.userId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -372,13 +379,13 @@ namespace backend.Migrations
                         column: x => x.ReviewId,
                         principalTable: "Review",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Comment_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -397,13 +404,13 @@ namespace backend.Migrations
                         column: x => x.CommentId,
                         principalTable: "Comment",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_CommentLike_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -422,9 +429,9 @@ namespace backend.Migrations
                 column: "SeriesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookGenres_BookGenresId1",
+                name: "IX_BookGenres_GenreId",
                 table: "BookGenres",
-                column: "BookGenresId1");
+                column: "GenreId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comment_ReviewId",
@@ -442,9 +449,9 @@ namespace backend.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Favourites_FavouritesId1",
+                name: "IX_Favourites_BookId",
                 table: "Favourites",
-                column: "FavouritesId1");
+                column: "BookId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_PickupPointId",
@@ -463,9 +470,9 @@ namespace backend.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Purchesed_PurchesedId",
+                name: "IX_Purchesed_BookId",
                 table: "Purchesed",
-                column: "PurchesedId");
+                column: "BookId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Review_bookId",
@@ -478,14 +485,19 @@ namespace backend.Migrations
                 column: "userId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Series_AuthorId",
+                table: "Series",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_User_SubscriptionId",
                 table: "User",
                 column: "SubscriptionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserExternalServices_UsersId",
+                name: "IX_UserExternalServices_ExternalServiceId",
                 table: "UserExternalServices",
-                column: "UsersId");
+                column: "ExternalServiceId");
         }
 
         /// <inheritdoc />
@@ -528,9 +540,6 @@ namespace backend.Migrations
                 name: "Book");
 
             migrationBuilder.DropTable(
-                name: "Author");
-
-            migrationBuilder.DropTable(
                 name: "Publisher");
 
             migrationBuilder.DropTable(
@@ -541,6 +550,9 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "User");
+
+            migrationBuilder.DropTable(
+                name: "Author");
 
             migrationBuilder.DropTable(
                 name: "Subscription");
