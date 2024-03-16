@@ -32,8 +32,8 @@ public class ApplicationDbContext : DbContext
     {
         modelBuilder.Entity<User>()
             .HasMany(e => e.Purchased)
-            .WithMany(e => e.Purchesed)
-            .UsingEntity("Purchesed",
+            .WithMany(e => e.Purchased)
+            .UsingEntity("Purchased",
                 l => l.HasOne(typeof(Book)).WithMany().HasForeignKey("BookId").HasPrincipalKey(nameof(Models.Book.Id)),
                 r => r.HasOne(typeof(User)).WithMany().HasForeignKey("UserId").HasPrincipalKey(nameof(Models.User.Id)),
                 j => j.HasKey("UserId", "BookId"));;

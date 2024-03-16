@@ -40,6 +40,6 @@ public class Book
     public Publisher Publisher { get; set; }
     public List<User> Favourites { get; set; } = null;
     public List<Review> Reviews { get; set; }
-    public List<User> Purchesed { get; set; }
+    public List<User> Purchased { get; set; }
     public List<Genre> BookGenres { get; set; }
 }

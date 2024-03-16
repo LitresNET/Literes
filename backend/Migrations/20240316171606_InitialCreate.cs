@@ -17,8 +17,8 @@ namespace backend.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", maxLength: 4096, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,7 +31,7 @@ namespace backend.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SerialNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    SerialNumber = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,8 +44,8 @@ namespace backend.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ServiceToken = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
+                    ServiceToken = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -58,7 +58,7 @@ namespace backend.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -71,9 +71,9 @@ namespace backend.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Adress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FiasAdress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    WorkingHours = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Adress = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    FiasAdress = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    WorkingHours = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -101,7 +101,7 @@ namespace backend.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AuthorId = table.Column<long>(type: "bigint", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -121,10 +121,10 @@ namespace backend.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SubscriptionId = table.Column<long>(type: "bigint", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AvaterUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
+                    AvaterUrl = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     ActiveUntil = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsModerator = table.Column<bool>(type: "bit", nullable: false),
                     Wallet = table.Column<int>(type: "int", nullable: false)
@@ -146,7 +146,7 @@ namespace backend.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     PickupPointId = table.Column<long>(type: "bigint", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false)
                 },
@@ -223,14 +223,14 @@ namespace backend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AuthorId = table.Column<long>(type: "bigint", nullable: false),
                     SeriesId = table.Column<long>(type: "bigint", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", maxLength: 4096, nullable: false),
                     PublisherId = table.Column<long>(type: "bigint", nullable: false),
                     ReleaseData = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Rating = table.Column<int>(type: "int", nullable: false),
-                    CoverUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ContentUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Isbn = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CoverUrl = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    ContentUrl = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Isbn = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false),
                     IsReadable = table.Column<bool>(type: "bit", nullable: false),
                     Count = table.Column<int>(type: "int", nullable: false),
@@ -308,7 +308,7 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Purchesed",
+                name: "Purchased",
                 columns: table => new
                 {
                     UserId = table.Column<long>(type: "bigint", nullable: false),
@@ -316,15 +316,15 @@ namespace backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Purchesed", x => new { x.UserId, x.BookId });
+                    table.PrimaryKey("PK_Purchased", x => new { x.UserId, x.BookId });
                     table.ForeignKey(
-                        name: "FK_Purchesed_Book_BookId",
+                        name: "FK_Purchased_Book_BookId",
                         column: x => x.BookId,
                         principalTable: "Book",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Purchesed_User_UserId",
+                        name: "FK_Purchased_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
@@ -339,7 +339,7 @@ namespace backend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     userId = table.Column<long>(type: "bigint", nullable: false),
                     bookId = table.Column<long>(type: "bigint", nullable: false),
-                    content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    content = table.Column<string>(type: "nvarchar(max)", maxLength: 4096, nullable: false),
                     createdAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     rating = table.Column<int>(type: "int", nullable: false)
                 },
@@ -470,8 +470,8 @@ namespace backend.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Purchesed_BookId",
-                table: "Purchesed",
+                name: "IX_Purchased_BookId",
+                table: "Purchased",
                 column: "BookId");
 
             migrationBuilder.CreateIndex(
@@ -516,7 +516,7 @@ namespace backend.Migrations
                 name: "Order");
 
             migrationBuilder.DropTable(
-                name: "Purchesed");
+                name: "Purchased");
 
             migrationBuilder.DropTable(
                 name: "UserExternalServices");
