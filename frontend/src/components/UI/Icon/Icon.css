@@ -1,0 +1,13 @@
+/* стили IconButton */
+
+.icon {
+    align-items: center;
+    align-content: center;
+
+    color: black;
+}
+
+.icon img {
+    width: 100%;
+    height: 100%;
+}

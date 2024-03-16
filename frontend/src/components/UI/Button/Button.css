@@ -1,0 +1,71 @@
+/* стили Button */
+
+button {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: center;
+
+    width: fit-content;
+
+    border-color: var(--gray-800);
+    border-radius: 10px;
+    border-width: 2px;
+
+    padding: 16px 27px;
+    font-size: 24px;
+
+    background-color: white;
+    cursor: pointer;
+
+    transition: 0.2s linear;
+}
+
+button p {
+    color: inherit;
+}
+
+button:hover {
+    color: var(--gray-600);
+    background-color: var(--yellow-500);
+}
+
+.button-big {
+    width: 100%;
+    padding: 30px 0;
+}
+
+button .icon {
+    margin-left: 10px;
+}
+
+button .icon:first-child {
+    margin-left: 0;
+}
+
+.button-shadow {
+    box-shadow: var(--orange-500) 12px 14px 0;
+}
+
+.button-orange {
+    color: white;
+
+    background-color: var(--orange-500);
+}
+
+.button-yellow {
+    background-color: var(--yellow-500);
+
+    transition: 0.2s linear;
+}
+
+.button-yellow:hover {
+    color: white;
+    background-color: var(--orange-500);
+}
+
+.button-rounded {
+    border-radius: 20px;
+}
+

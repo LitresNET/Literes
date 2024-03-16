@@ -1,0 +1,22 @@
+/* стили Cover */
+
+.cover {
+    position: relative;
+    overflow: hidden;
+
+    pointer-events: none;
+}
+
+.cover img {
+    z-index: -1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    background-position: center center;
+    background-size: cover;
+    background-clip: border-box;
+
+    height: 100%;
+}
