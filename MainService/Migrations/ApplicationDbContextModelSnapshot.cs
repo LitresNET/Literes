@@ -82,7 +82,7 @@ namespace backend.Migrations
                     b.ToTable("UserExternalServices");
                 });
 
-            modelBuilder.Entity("backend.Models.Author", b =>
+            modelBuilder.Entity("MainService.Models.Author", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -105,7 +105,7 @@ namespace backend.Migrations
                     b.ToTable("Author");
                 });
 
-            modelBuilder.Entity("backend.Models.Book", b =>
+            modelBuilder.Entity("MainService.Models.Book", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -176,7 +176,7 @@ namespace backend.Migrations
                     b.ToTable("Book");
                 });
 
-            modelBuilder.Entity("backend.Models.Comment", b =>
+            modelBuilder.Entity("MainService.Models.Comment", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -206,7 +206,7 @@ namespace backend.Migrations
                     b.ToTable("Comment");
                 });
 
-            modelBuilder.Entity("backend.Models.Contract", b =>
+            modelBuilder.Entity("MainService.Models.Contract", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -224,7 +224,7 @@ namespace backend.Migrations
                     b.ToTable("Contract");
                 });
 
-            modelBuilder.Entity("backend.Models.ExternalService", b =>
+            modelBuilder.Entity("MainService.Models.ExternalService", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -247,7 +247,7 @@ namespace backend.Migrations
                     b.ToTable("ExternalService");
                 });
 
-            modelBuilder.Entity("backend.Models.Genre", b =>
+            modelBuilder.Entity("MainService.Models.Genre", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -265,7 +265,7 @@ namespace backend.Migrations
                     b.ToTable("Genre");
                 });
 
-            modelBuilder.Entity("backend.Models.Order", b =>
+            modelBuilder.Entity("MainService.Models.Order", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -293,7 +293,7 @@ namespace backend.Migrations
                     b.ToTable("Order");
                 });
 
-            modelBuilder.Entity("backend.Models.PickupPoint", b =>
+            modelBuilder.Entity("MainService.Models.PickupPoint", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -321,7 +321,7 @@ namespace backend.Migrations
                     b.ToTable("PickupPoint");
                 });
 
-            modelBuilder.Entity("backend.Models.Publisher", b =>
+            modelBuilder.Entity("MainService.Models.Publisher", b =>
                 {
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
@@ -337,7 +337,7 @@ namespace backend.Migrations
                     b.ToTable("Publisher");
                 });
 
-            modelBuilder.Entity("backend.Models.Request", b =>
+            modelBuilder.Entity("MainService.Models.Request", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -365,7 +365,7 @@ namespace backend.Migrations
                     b.ToTable("Request");
                 });
 
-            modelBuilder.Entity("backend.Models.RequestType", b =>
+            modelBuilder.Entity("MainService.Models.RequestType", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -382,7 +382,7 @@ namespace backend.Migrations
                     b.ToTable("RequestType");
                 });
 
-            modelBuilder.Entity("backend.Models.Review", b =>
+            modelBuilder.Entity("MainService.Models.Review", b =>
                 {
                     b.Property<long>("id")
                         .ValueGeneratedOnAdd()
@@ -416,7 +416,7 @@ namespace backend.Migrations
                     b.ToTable("Review");
                 });
 
-            modelBuilder.Entity("backend.Models.ReviewLike", b =>
+            modelBuilder.Entity("MainService.Models.ReviewLike", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -442,7 +442,7 @@ namespace backend.Migrations
                     b.ToTable("ReviewLike");
                 });
 
-            modelBuilder.Entity("backend.Models.Series", b =>
+            modelBuilder.Entity("MainService.Models.Series", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -465,7 +465,7 @@ namespace backend.Migrations
                     b.ToTable("Series");
                 });
 
-            modelBuilder.Entity("backend.Models.Subscription", b =>
+            modelBuilder.Entity("MainService.Models.Subscription", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -484,7 +484,7 @@ namespace backend.Migrations
                     b.ToTable("Subscription");
                 });
 
-            modelBuilder.Entity("backend.Models.User", b =>
+            modelBuilder.Entity("MainService.Models.User", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -533,13 +533,13 @@ namespace backend.Migrations
 
             modelBuilder.Entity("BookGenres", b =>
                 {
-                    b.HasOne("backend.Models.Book", null)
+                    b.HasOne("MainService.Models.Book", null)
                         .WithMany()
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.Genre", null)
+                    b.HasOne("MainService.Models.Genre", null)
                         .WithMany()
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -548,13 +548,13 @@ namespace backend.Migrations
 
             modelBuilder.Entity("Favourites", b =>
                 {
-                    b.HasOne("backend.Models.Book", null)
+                    b.HasOne("MainService.Models.Book", null)
                         .WithMany()
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.User", null)
+                    b.HasOne("MainService.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -563,13 +563,13 @@ namespace backend.Migrations
 
             modelBuilder.Entity("Purchased", b =>
                 {
-                    b.HasOne("backend.Models.Book", null)
+                    b.HasOne("MainService.Models.Book", null)
                         .WithMany()
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.User", null)
+                    b.HasOne("MainService.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -578,34 +578,34 @@ namespace backend.Migrations
 
             modelBuilder.Entity("UserExternalServices", b =>
                 {
-                    b.HasOne("backend.Models.ExternalService", null)
+                    b.HasOne("MainService.Models.ExternalService", null)
                         .WithMany()
                         .HasForeignKey("ExternalServiceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.User", null)
+                    b.HasOne("MainService.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("backend.Models.Book", b =>
+            modelBuilder.Entity("MainService.Models.Book", b =>
                 {
-                    b.HasOne("backend.Models.Author", "Author")
+                    b.HasOne("MainService.Models.Author", "Author")
                         .WithMany("Books")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.Publisher", "Publisher")
+                    b.HasOne("MainService.Models.Publisher", "Publisher")
                         .WithMany("Books")
                         .HasForeignKey("PublisherId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.Series", "Series")
+                    b.HasOne("MainService.Models.Series", "Series")
                         .WithMany("Books")
                         .HasForeignKey("SeriesId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -618,15 +618,15 @@ namespace backend.Migrations
                     b.Navigation("Series");
                 });
 
-            modelBuilder.Entity("backend.Models.Comment", b =>
+            modelBuilder.Entity("MainService.Models.Comment", b =>
                 {
-                    b.HasOne("backend.Models.Review", "Review")
+                    b.HasOne("MainService.Models.Review", "Review")
                         .WithMany("Comments")
                         .HasForeignKey("ReviewId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.User", "User")
+                    b.HasOne("MainService.Models.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -637,15 +637,15 @@ namespace backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("backend.Models.Order", b =>
+            modelBuilder.Entity("MainService.Models.Order", b =>
                 {
-                    b.HasOne("backend.Models.PickupPoint", "PickupPoint")
+                    b.HasOne("MainService.Models.PickupPoint", "PickupPoint")
                         .WithMany("Orders")
                         .HasForeignKey("PickupPointId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.User", "User")
+                    b.HasOne("MainService.Models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -656,17 +656,17 @@ namespace backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("backend.Models.Publisher", b =>
+            modelBuilder.Entity("MainService.Models.Publisher", b =>
                 {
-                    b.HasOne("backend.Models.Contract", "Contract")
+                    b.HasOne("MainService.Models.Contract", "Contract")
                         .WithOne("Publisher")
-                        .HasForeignKey("backend.Models.Publisher", "ContractId")
+                        .HasForeignKey("MainService.Models.Publisher", "ContractId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.User", "User")
+                    b.HasOne("MainService.Models.User", "User")
                         .WithOne("Publisher")
-                        .HasForeignKey("backend.Models.Publisher", "UserId")
+                        .HasForeignKey("MainService.Models.Publisher", "UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -675,21 +675,21 @@ namespace backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("backend.Models.Request", b =>
+            modelBuilder.Entity("MainService.Models.Request", b =>
                 {
-                    b.HasOne("backend.Models.Book", "Book")
+                    b.HasOne("MainService.Models.Book", "Book")
                         .WithMany("Requests")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.Publisher", "Publisher")
+                    b.HasOne("MainService.Models.Publisher", "Publisher")
                         .WithMany("Requests")
                         .HasForeignKey("PublisherId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.RequestType", "RequestType")
+                    b.HasOne("MainService.Models.RequestType", "RequestType")
                         .WithMany("Requests")
                         .HasForeignKey("RequestTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -702,30 +702,30 @@ namespace backend.Migrations
                     b.Navigation("RequestType");
                 });
 
-            modelBuilder.Entity("backend.Models.Review", b =>
+            modelBuilder.Entity("MainService.Models.Review", b =>
                 {
-                    b.HasOne("backend.Models.Book", null)
+                    b.HasOne("MainService.Models.Book", null)
                         .WithMany("Reviews")
                         .HasForeignKey("bookId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.User", null)
+                    b.HasOne("MainService.Models.User", null)
                         .WithMany("Reviews")
                         .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("backend.Models.ReviewLike", b =>
+            modelBuilder.Entity("MainService.Models.ReviewLike", b =>
                 {
-                    b.HasOne("backend.Models.Review", "Review")
+                    b.HasOne("MainService.Models.Review", "Review")
                         .WithMany("ReviewLikes")
                         .HasForeignKey("ReviewId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.User", "User")
+                    b.HasOne("MainService.Models.User", "User")
                         .WithMany("CommentLikes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -736,9 +736,9 @@ namespace backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("backend.Models.Series", b =>
+            modelBuilder.Entity("MainService.Models.Series", b =>
                 {
-                    b.HasOne("backend.Models.Author", "Author")
+                    b.HasOne("MainService.Models.Author", "Author")
                         .WithMany("Series")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -747,9 +747,9 @@ namespace backend.Migrations
                     b.Navigation("Author");
                 });
 
-            modelBuilder.Entity("backend.Models.User", b =>
+            modelBuilder.Entity("MainService.Models.User", b =>
                 {
-                    b.HasOne("backend.Models.Subscription", "Subscription")
+                    b.HasOne("MainService.Models.Subscription", "Subscription")
                         .WithMany("Users")
                         .HasForeignKey("SubscriptionId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -758,61 +758,61 @@ namespace backend.Migrations
                     b.Navigation("Subscription");
                 });
 
-            modelBuilder.Entity("backend.Models.Author", b =>
+            modelBuilder.Entity("MainService.Models.Author", b =>
                 {
                     b.Navigation("Books");
 
                     b.Navigation("Series");
                 });
 
-            modelBuilder.Entity("backend.Models.Book", b =>
+            modelBuilder.Entity("MainService.Models.Book", b =>
                 {
                     b.Navigation("Requests");
 
                     b.Navigation("Reviews");
                 });
 
-            modelBuilder.Entity("backend.Models.Contract", b =>
+            modelBuilder.Entity("MainService.Models.Contract", b =>
                 {
                     b.Navigation("Publisher")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("backend.Models.PickupPoint", b =>
+            modelBuilder.Entity("MainService.Models.PickupPoint", b =>
                 {
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("backend.Models.Publisher", b =>
+            modelBuilder.Entity("MainService.Models.Publisher", b =>
                 {
                     b.Navigation("Books");
 
                     b.Navigation("Requests");
                 });
 
-            modelBuilder.Entity("backend.Models.RequestType", b =>
+            modelBuilder.Entity("MainService.Models.RequestType", b =>
                 {
                     b.Navigation("Requests");
                 });
 
-            modelBuilder.Entity("backend.Models.Review", b =>
+            modelBuilder.Entity("MainService.Models.Review", b =>
                 {
                     b.Navigation("Comments");
 
                     b.Navigation("ReviewLikes");
                 });
 
-            modelBuilder.Entity("backend.Models.Series", b =>
+            modelBuilder.Entity("MainService.Models.Series", b =>
                 {
                     b.Navigation("Books");
                 });
 
-            modelBuilder.Entity("backend.Models.Subscription", b =>
+            modelBuilder.Entity("MainService.Models.Subscription", b =>
                 {
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("backend.Models.User", b =>
+            modelBuilder.Entity("MainService.Models.User", b =>
                 {
                     b.Navigation("CommentLikes");
 
