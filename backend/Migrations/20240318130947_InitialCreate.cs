@@ -81,6 +81,19 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RequestType",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RequestType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Subscription",
                 columns: table => new
                 {
@@ -332,6 +345,39 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Request",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BookId = table.Column<long>(type: "bigint", nullable: false),
+                    RequestTypeId = table.Column<long>(type: "bigint", nullable: false),
+                    PublisherId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Request", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Request_Book_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Book",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Request_Publisher_PublisherId",
+                        column: x => x.PublisherId,
+                        principalTable: "Publisher",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Request_RequestType_RequestTypeId",
+                        column: x => x.RequestTypeId,
+                        principalTable: "RequestType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Review",
                 columns: table => new
                 {
@@ -389,24 +435,26 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CommentLike",
+                name: "ReviewLike",
                 columns: table => new
                 {
-                    CommentId = table.Column<long>(type: "bigint", nullable: false),
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ReviewId = table.Column<long>(type: "bigint", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     IsLike = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CommentLike", x => x.CommentId);
+                    table.PrimaryKey("PK_ReviewLike", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CommentLike_Comment_CommentId",
-                        column: x => x.CommentId,
-                        principalTable: "Comment",
-                        principalColumn: "Id",
+                        name: "FK_ReviewLike_Review_ReviewId",
+                        column: x => x.ReviewId,
+                        principalTable: "Review",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CommentLike_User_UserId",
+                        name: "FK_ReviewLike_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
@@ -444,11 +492,6 @@ namespace backend.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CommentLike_UserId",
-                table: "CommentLike",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Favourites_BookId",
                 table: "Favourites",
                 column: "BookId");
@@ -475,6 +518,21 @@ namespace backend.Migrations
                 column: "BookId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Request_BookId",
+                table: "Request",
+                column: "BookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Request_PublisherId",
+                table: "Request",
+                column: "PublisherId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Request_RequestTypeId",
+                table: "Request",
+                column: "RequestTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Review_bookId",
                 table: "Review",
                 column: "bookId");
@@ -483,6 +541,16 @@ namespace backend.Migrations
                 name: "IX_Review_userId",
                 table: "Review",
                 column: "userId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReviewLike_ReviewId",
+                table: "ReviewLike",
+                column: "ReviewId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReviewLike_UserId",
+                table: "ReviewLike",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Series_AuthorId",
@@ -507,7 +575,7 @@ namespace backend.Migrations
                 name: "BookGenres");
 
             migrationBuilder.DropTable(
-                name: "CommentLike");
+                name: "Comment");
 
             migrationBuilder.DropTable(
                 name: "Favourites");
@@ -519,22 +587,28 @@ namespace backend.Migrations
                 name: "Purchased");
 
             migrationBuilder.DropTable(
+                name: "Request");
+
+            migrationBuilder.DropTable(
+                name: "ReviewLike");
+
+            migrationBuilder.DropTable(
                 name: "UserExternalServices");
 
             migrationBuilder.DropTable(
                 name: "Genre");
 
             migrationBuilder.DropTable(
-                name: "Comment");
-
-            migrationBuilder.DropTable(
                 name: "PickupPoint");
 
             migrationBuilder.DropTable(
-                name: "ExternalService");
+                name: "RequestType");
 
             migrationBuilder.DropTable(
                 name: "Review");
+
+            migrationBuilder.DropTable(
+                name: "ExternalService");
 
             migrationBuilder.DropTable(
                 name: "Book");

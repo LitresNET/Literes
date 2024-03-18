@@ -14,7 +14,6 @@ public class Comment
     [Required]
     public DateTime CreatedAt { get; set; }
     
-    public List<CommentLike> CommentLikes { get; set; }
     public Review Review { get; set; }
     public User User { get; set; }
 }

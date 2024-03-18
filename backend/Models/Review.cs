@@ -21,4 +21,5 @@ public class Review
     
     
     public List<Comment> Comments { get; set; }
+    public List<ReviewLike> ReviewLikes { get; set; }
 }
