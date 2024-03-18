@@ -8,6 +8,7 @@ public class Publisher
     [Required] public long ContractId { get; set; }
 
     public List<Book> Books { get; set; }
+    public List<Request> Requests { get; set; }
     public Contract Contract { get; set; }
     public User User { get; set; }
 

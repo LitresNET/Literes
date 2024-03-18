@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using backend;
+using backend.Configurations;
 
 #nullable disable
 
@@ -206,24 +206,6 @@ namespace backend.Migrations
                     b.ToTable("Comment");
                 });
 
-            modelBuilder.Entity("backend.Models.CommentLike", b =>
-                {
-                    b.Property<long>("CommentId")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("IsLike")
-                        .HasColumnType("bit");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("CommentId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("CommentLike");
-                });
-
             modelBuilder.Entity("backend.Models.Contract", b =>
                 {
                     b.Property<long>("Id")
@@ -355,6 +337,51 @@ namespace backend.Migrations
                     b.ToTable("Publisher");
                 });
 
+            modelBuilder.Entity("backend.Models.Request", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("BookId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PublisherId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("RequestTypeId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("PublisherId");
+
+                    b.HasIndex("RequestTypeId");
+
+                    b.ToTable("Request");
+                });
+
+            modelBuilder.Entity("backend.Models.RequestType", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RequestType");
+                });
+
             modelBuilder.Entity("backend.Models.Review", b =>
                 {
                     b.Property<long>("id")
@@ -387,6 +414,32 @@ namespace backend.Migrations
                     b.HasIndex("userId");
 
                     b.ToTable("Review");
+                });
+
+            modelBuilder.Entity("backend.Models.ReviewLike", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("IsLike")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("ReviewId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReviewId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ReviewLike");
                 });
 
             modelBuilder.Entity("backend.Models.Series", b =>
@@ -584,25 +637,6 @@ namespace backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("backend.Models.CommentLike", b =>
-                {
-                    b.HasOne("backend.Models.Comment", "Comment")
-                        .WithMany("CommentLikes")
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.User", "User")
-                        .WithMany("CommentLikes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Comment");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("backend.Models.Order", b =>
                 {
                     b.HasOne("backend.Models.PickupPoint", "PickupPoint")
@@ -641,6 +675,33 @@ namespace backend.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("backend.Models.Request", b =>
+                {
+                    b.HasOne("backend.Models.Book", "Book")
+                        .WithMany("Requests")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.Publisher", "Publisher")
+                        .WithMany("Requests")
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.RequestType", "RequestType")
+                        .WithMany("Requests")
+                        .HasForeignKey("RequestTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Publisher");
+
+                    b.Navigation("RequestType");
+                });
+
             modelBuilder.Entity("backend.Models.Review", b =>
                 {
                     b.HasOne("backend.Models.Book", null)
@@ -654,6 +715,25 @@ namespace backend.Migrations
                         .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("backend.Models.ReviewLike", b =>
+                {
+                    b.HasOne("backend.Models.Review", "Review")
+                        .WithMany("ReviewLikes")
+                        .HasForeignKey("ReviewId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.User", "User")
+                        .WithMany("CommentLikes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Review");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("backend.Models.Series", b =>
@@ -687,12 +767,9 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Book", b =>
                 {
-                    b.Navigation("Reviews");
-                });
+                    b.Navigation("Requests");
 
-            modelBuilder.Entity("backend.Models.Comment", b =>
-                {
-                    b.Navigation("CommentLikes");
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("backend.Models.Contract", b =>
@@ -709,11 +786,20 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.Publisher", b =>
                 {
                     b.Navigation("Books");
+
+                    b.Navigation("Requests");
+                });
+
+            modelBuilder.Entity("backend.Models.RequestType", b =>
+                {
+                    b.Navigation("Requests");
                 });
 
             modelBuilder.Entity("backend.Models.Review", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("ReviewLikes");
                 });
 
             modelBuilder.Entity("backend.Models.Series", b =>

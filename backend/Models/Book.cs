@@ -42,4 +42,5 @@ public class Book
     public List<Review> Reviews { get; set; }
     public List<User> Purchased { get; set; }
     public List<Genre> BookGenres { get; set; }
+    public List<Request> Requests { get; set; }
 }

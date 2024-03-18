@@ -32,7 +32,7 @@ public class User
     public List<Book> Favourites { get; set; }
     public List<Review> Reviews { get; set; }
     public List<Comment> Comments { get; set; }
-    public List<CommentLike> CommentLikes { get; set; }
+    public List<ReviewLike> CommentLikes { get; set; }
     public List<ExternalService> ExternalServices { get; set; }
     public List<Order> Orders { get; set; }
     public Publisher Publisher { get; set; }
