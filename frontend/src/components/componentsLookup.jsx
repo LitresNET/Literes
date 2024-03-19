@@ -4,12 +4,14 @@ import ICONS from "../assets/icons.jsx";
 import IMAGES from "../assets/images.jsx";
 
 import './component-assets.css'; // база - шрифты, цвета
-import './UI/Icon/Icon.css';
-import './Cover/Cover.css';
-import './UI/Button/Button.css';
+import './UI/Icon/icon.css';
+import './Cover/cover.css';
+import './UI/Button/button.css';
+import './UI/Banner/banner.css';
+import './UI/Description/Description.css';
 
-import { iconButton, customIconButton, miniIconButton } from "./UI/Icon/IconButton/IconButton.jsx";
-import { coverBig, coverMini, cover, coverCustom} from "./Cover/Cover.jsx";
+import { iconButton, customIconButton, miniIconButton } from "./UI/Icon/IconButton/iconButton.jsx";
+import { coverBig, coverMini, cover, coverCustom } from "./Cover/cover.jsx";
 import {
     button,
     orangeButton, roundedButton,
@@ -17,8 +19,10 @@ import {
     roundedYellowButton,
     bigShadowButton,
     yellowButton
-} from "./UI/Button/Button.jsx";
-import COLORS from "../assets/colors.jsx";
+} from "./UI/Button/button.jsx";
+import {banner, bannerShadow} from "./UI/Banner/banner.jsx";
+import {icon} from "./UI/Icon/icon.jsx";
+import {description, descriptionMini, descriptionShadow, descriptionMiniShadow} from "./UI/Description/Description.jsx";
 
 // Ссылка заглушка
 const googleLink = "https://google.com/"
@@ -60,7 +64,6 @@ function componentsLookup() {
                         {roundedButton("", () => alert("Я круглая кнопка!"), ICONS.binoculars)}
                         {roundedYellowButton("Adventure", () => alert("Я круглая жёлтая кнопка!"))}
                         {roundedOrangeButton("Adventure", () => alert("Я круглая оранжевая кнопка!"))}
-
                     </div>
                 </div>
                 <div className="separator-example"></div>
@@ -76,7 +79,35 @@ function componentsLookup() {
                 </div>
                 <div className="separator-example"></div>
                 <div className="container">
-                    <h3></h3>
+                    <h3>Banners</h3>
+                    <br/>
+                    {banner(
+                        <>
+                            <div style={{padding : "40px"}}>
+                                <div>Привет!</div>
+                                {bannerShadow(icon(ICONS.binoculars))}
+                            </div>
+                        </>
+                    )}
+                </div>
+                <div className="separator-example"></div>
+                <div className="container">
+                    <h3>Descriptions</h3>
+                    <br/>
+                    <div className="" style={{display: "flex", flexDirection: "column"}}>
+                        {description(
+                            <>
+                                <div>Привет!</div>
+                                {descriptionMini(<><div>Привет!</div></>)}
+                            </>
+                        )}
+                        {descriptionShadow(
+                            <>
+                                <div>Привет!</div>
+                                {descriptionMiniShadow(<><div>Привет!</div></>)}
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
         </>

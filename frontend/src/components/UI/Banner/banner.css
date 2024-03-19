@@ -1,0 +1,14 @@
+.banner {
+    display: inherit;
+    flex-direction: inherit;
+    padding: 0;
+
+    border-style: dashed;
+    border-radius: 20px;
+    border-color: var(--gray-800);
+    border-width: 2px;
+}
+
+.banner-shadow {
+    box-shadow: var(--gray-600) 12px 14px 0;
+}

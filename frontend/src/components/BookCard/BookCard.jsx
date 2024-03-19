@@ -1,3 +1,3 @@
 // TODO: реализовать компонент карточки книги (цена, кнопка добавить в избранные, кнопка добавить в корзину).
-import { cover } from "../Cover/Cover.jsx";
+import { cover } from "../Cover/cover.jsx";
 

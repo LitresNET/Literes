@@ -19,6 +19,7 @@ function createIcon(iconPath, width) {
     let w = width.toString() + 'px';
     let h = width * 1;
 
+    // TODO: сделать вывод в тег svg, а не img - нужно будет трогать icons.jsx
     return (
         <>
             <div className="icon" style={{width : w, height : h}}>
