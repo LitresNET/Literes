@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainService", "MainService\MainService.csproj", "{0CFAF745-DF8B-4967-86E1-5A9A1BFC81DA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0CFAF745-DF8B-4967-86E1-5A9A1BFC81DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CFAF745-DF8B-4967-86E1-5A9A1BFC81DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CFAF745-DF8B-4967-86E1-5A9A1BFC81DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CFAF745-DF8B-4967-86E1-5A9A1BFC81DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55DAB9E1-C543-41EA-99B9-54063DAAE5A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55DAB9E1-C543-41EA-99B9-54063DAAE5A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55DAB9E1-C543-41EA-99B9-54063DAAE5A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55DAB9E1-C543-41EA-99B9-54063DAAE5A3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+EndGlobal
