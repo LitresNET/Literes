@@ -16,7 +16,7 @@ public class Book
     public string Name { get; set; }
     [MaxLength(4096)]
     public string Description { get; set; }
-    public long PublisherId { get; set; }
+    public long? PublisherId { get; set; }
     [Required]
     public DateTime ReleaseData { get; set; }
     [Required]
@@ -36,12 +36,12 @@ public class Book
     public int Count { get; set; }
     public int Price { get; set; }
 
-    public Author Author { get; set; }
-    public Series Series { get; set; }
-    public Publisher Publisher { get; set; }
-    public List<User> Favourites { get; set; } = null;
-    public List<Review> Reviews { get; set; }
-    public List<User> Purchased { get; set; }
+    public Author? Author { get; set; }
+    public Series? Series { get; set; }
+    public Publisher? Publisher { get; set; }
+    public List<User>? Favourites { get; set; } = null;
+    public List<Review>? Reviews { get; set; }
+    public List<User>? Purchased { get; set; }
     public List<Genre> BookGenres { get; set; }
-    public List<Request> Requests { get; set; }
+    public List<Request>? Requests { get; set; }
 }

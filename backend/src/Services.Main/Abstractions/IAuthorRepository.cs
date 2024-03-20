@@ -1,6 +1,8 @@
-﻿namespace backend.Abstractions;
+﻿using backend.Models;
 
-public class IAuthorRepository
+namespace backend.Abstractions;
+
+public interface IAuthorRepository
 {
-    
+    public Task<Author?> GetAuthorByIdAsync(long authorId);
 }

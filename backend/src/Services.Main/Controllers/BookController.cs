@@ -1,5 +1,8 @@
 using System.Security.Claims;
+using AutoMapper;
 using backend.Abstractions;
+using backend.Dto.Requests;
+using backend.Exceptions;
 using backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,30 +10,44 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend.Controllers;
 
 [Route("api/[controller]")]
-public class BookController(IBookService bookService) : ControllerBase
+public class BookController(IBookService bookService, IMapper mapper) : ControllerBase
 {
     [HttpPost]
     [Route("/publish")]
-    public async Task<IActionResult> PublishBook([FromBody] Book book, ClaimsPrincipal publisher)
+    public async Task<ActionResult<Request>> PublishBook([FromBody] BookCreateRequestDto bookDto)
     {
-        var publisherIdClaim = publisher.Claims.Single(claim => claim.Type == CustomClaimTypes.UserId);
-        if (!long.TryParse(publisherIdClaim.Value, out var publisherId))
-            return BadRequest("Publisher ID is not an integer number");
-        
-        book.PublisherId = publisherId;
-        var result = await bookService.PublishNewBookAsync(book);
-        return Ok(result);
+        try
+        {
+            var book = mapper.Map<Book>(bookDto);
+            var result = await bookService.PublishNewBookAsync(book);
+            return Ok(result);
+        }
+        catch (BookValidationFailedException e)
+        {
+            return UnprocessableEntity(e);
+        }
+        catch (AuthorNotFoundException e)
+        {
+            return NotFound(e);
+        }
+        catch (SeriesNotFoundException e)
+        {
+            return NotFound(e);
+        }
     }
     
     [HttpDelete]
     [Route("{id}/delete")]
-    public async Task<IActionResult> DeleteBook([FromRoute] long id, ClaimsPrincipal publisher)
+    public async Task<IActionResult> DeleteBook([FromRoute] long id, [FromQuery] long publisherId)
     {
-        var publisherIdClaim = publisher.Claims.Single(claim => claim.Type == CustomClaimTypes.UserId);
-        if (!long.TryParse(publisherIdClaim.Value, out var publisherId))
-            return BadRequest("Publisher ID is not an integer number");
-        
-        var result = await bookService.DeleteBookAsync(id, publisherId);
-        return Ok(result);
+        try
+        {
+            var result = await bookService.DeleteBookAsync(id, publisherId);
+            return Ok(result);
+        }
+        catch (BookNotFoundException e)
+        {
+            return NotFound(e);
+        }
     }
 }

@@ -1,6 +1,3 @@
 ﻿namespace backend.Exceptions;
 
-public class StorageUnavailbaleException
-{
-    
-}
+public class StorageUnavailableException(string message) : Exception(message);

@@ -11,11 +11,10 @@ public class Request
     [Required]
     public long BookId { get; set; }
     [Required]
-    public long RequestTypeId { get; set; }
-    [Required]
-    public long PublisherId { get; set; }
+    public long? PublisherId { get; set; }
     
-    public Publisher Publisher { get; set; }
+    public Publisher? Publisher { get; set; }
+    [Required]
     public RequestType RequestType { get; set; }
-    public Book Book { get; set; }
+    public Book? Book { get; set; }
 }

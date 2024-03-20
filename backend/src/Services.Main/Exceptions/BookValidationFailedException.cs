@@ -1,3 +1,8 @@
-﻿namespace backend.Exceptions;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class BookValidationFailedException(string property) : Exception($"Book property {property} is required");
+namespace backend.Exceptions;
+
+public class BookValidationFailedException(List<ValidationResult> results)
+    : Exception(
+        $"Book is invalid. Info: {string.Join("; ", results.Select(result => result.ErrorMessage))}"
+    );

@@ -1,6 +1,8 @@
-﻿namespace backend.Abstractions;
+﻿using backend.Models;
 
-public class ISeriesRepository
+namespace backend.Abstractions;
+
+public interface ISeriesRepository
 {
-    
+    public Task<Series?> GetSeriesByIdAsync(long seriesId);
 }
