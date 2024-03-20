@@ -1,30 +1,45 @@
-/// Готовый контейнер с иконкой шириной 25px
-export function icon(iconPath) {
-    return createIcon(iconPath, 25)
+import React from "react";
+
+const Types = {
+    default : "default",
+    mini : "mini",
+    custom : "custom"
 }
 
+export class Icon extends React.Component {
+    constructor(props) {
+        super(props);
+        const {path, size = "default", width = null} = this.props
+        this.path = path
+        this.size = size
+        this.width = width
+    }
 
-/// Готовый контейнер с иконкой шириной 16px
-export function miniIcon(iconPath) {
-    return createIcon(iconPath, 16)
-}
+    render() {
+        const {width, path, size} = this.props;
+        let w;
+        switch(size) {
+            case Types.default || undefined || null:
+                w = "25px";
+                break;
+            case Types.mini:
+                w = "16px";
+                break;
+            case Types.custom:
+                w = width;
+                break;
+            default:
+                w = "25px";
+                break;
+        }
+        let h = w;
 
-
-/// Готовый контейнер с иконкой шириной width (в пикселях)
-export function customIcon(iconPath, width) {
-    return createIcon(iconPath, width)
-}
-
-function createIcon(iconPath, width) {
-    let w = width.toString() + 'px';
-    let h = width * 1;
-
-    // TODO: сделать вывод в тег svg, а не img - нужно будет трогать icons.jsx
-    return (
-        <>
-            <div className="icon" style={{width : w, height : h}}>
-                <img src={iconPath} alt=""/>
-            </div>
-        </>
-    )
+        return (
+            <>
+                <div className="icon" style={{width : w, height: h}}>
+                    <img src={path} alt=""/>
+                </div>
+            </>
+        )
+    }
 }

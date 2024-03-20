@@ -5,14 +5,11 @@ button {
     align-items: center;
     justify-content: center;
 
-    border-color: var(--gray-800);
-    border-radius: 10px;
-    border-width: 2px;
-
     padding: 16px 27px;
     font-size: 24px;
 
     background-color: white;
+
     cursor: pointer;
     fill: var(--gray-800);
 
@@ -24,7 +21,7 @@ button p {
 }
 
 button:hover {
-    fill: var(--gray-600);
+    color: var(--gray-600);
     background-color: var(--yellow-500);
 }
 
@@ -57,7 +54,7 @@ button .icon:first-child {
 }
 
 .button-yellow:hover {
-    fill: white;
+    color: white;
     background-color: var(--orange-500);
 }
 

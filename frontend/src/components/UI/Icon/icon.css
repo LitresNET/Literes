@@ -1,6 +1,7 @@
 .icon {
     align-items: center;
     align-content: center;
+    overflow: initial;
 
     color: black;
 }

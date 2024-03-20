@@ -9,20 +9,26 @@ import './Cover/cover.css';
 import './UI/Button/button.css';
 import './UI/Banner/banner.css';
 import './UI/Description/Description.css';
+import './UI/Quotation/Quotation.css';
+import './UI/Input/input.css';
+import './UI/Tag/Tag.css';
 
-import { iconButton, customIconButton, miniIconButton } from "./UI/Icon/IconButton/iconButton.jsx";
 import { coverBig, coverMini, cover, coverCustom } from "./Cover/cover.jsx";
 import {
     button,
-    orangeButton, roundedButton,
+    orangeButton,
+    roundedButton,
     roundedOrangeButton,
     roundedYellowButton,
     bigShadowButton,
     yellowButton
 } from "./UI/Button/button.jsx";
-import {banner, bannerShadow} from "./UI/Banner/banner.jsx";
-import {icon} from "./UI/Icon/icon.jsx";
+import {Banner} from "./UI/Banner/banner.jsx";
+import {IconButton} from "./UI/Icon/IconButton/iconButton.jsx";
 import {description, descriptionMini, descriptionShadow, descriptionMiniShadow} from "./UI/Description/Description.jsx";
+import {Input} from "./UI/Input/input.jsx";
+import {quotation} from "./UI/Quotation/Quotation.jsx";
+import {Tag} from "./UI/Tag/Tag";
 
 // Ссылка заглушка
 const googleLink = "https://google.com/"
@@ -44,9 +50,9 @@ function componentsLookup() {
                     <br/>
                     <div className="icons">
                         <div className="display-row">
-                            {miniIconButton(googleLink, ICONS.shopping_cart)}
-                            {iconButton(googleLink, ICONS.shopping_cart)}
-                            {customIconButton(googleLink, ICONS.shopping_cart, 50)}
+                            <IconButton href={googleLink} path={ICONS.shopping_cart} size="mini"/>
+                            <IconButton href={googleLink} path={ICONS.shopping_cart} size="default"/>
+                            <IconButton href={googleLink} path={ICONS.shopping_cart} size="custom" width="70px"/>
                         </div>
                     </div>
                 </div>
@@ -81,20 +87,20 @@ function componentsLookup() {
                 <div className="container">
                     <h3>Banners</h3>
                     <br/>
-                    {banner(
-                        <>
-                            <div style={{padding : "40px"}}>
-                                <div>Привет!</div>
-                                {bannerShadow(icon(ICONS.binoculars))}
-                            </div>
-                        </>
-                    )}
+                    <Banner>
+                        <div style={{padding : "40px"}}>
+                            <div>Привет!</div>
+                            <Banner withShadow='true'>
+                                <IconButton href={googleLink} path={ICONS.shopping_cart} size="default"/>
+                            </Banner>
+                        </div>
+                    </Banner>
                 </div>
                 <div className="separator-example"></div>
                 <div className="container">
                     <h3>Descriptions</h3>
                     <br/>
-                    <div className="" style={{display: "flex", flexDirection: "column"}}>
+                    <div className="" style={{display: "flex", flexDirection: "column", justifyContent : "space-around"}}>
                         {description(
                             <>
                                 <div>Привет!</div>
@@ -107,6 +113,34 @@ function componentsLookup() {
                                 {descriptionMiniShadow(<><div>Привет!</div></>)}
                             </>
                         )}
+                    </div>
+                </div>
+                <div className="separator-example"></div>
+                <div className="container">
+                    <h3>Inputs</h3>
+                    <br/>
+                    <div className="display-column">
+                        <Input placeholder="Some number here" type="number"/>
+                        <div>.</div>
+                        <Input defaultValue="Hello!" placeholder="Some text here" type="text"/>
+                    </div>
+                </div>
+                <div className="separator-example"></div>
+                <div className="container">
+                    <h3>Quotations</h3>
+                    <br/>
+                    <div className="display-row" style={{justifyContent : "space-evenly"}}>
+                        {quotation("Привет, мир!", "(c) Любое приложение", "любая программа")}
+                        {quotation("Привет, мир!", "(c) Любое приложение" , "любая программа")}
+                    </div>
+                </div>
+                <div className="separator-example"></div>
+                <div className="container">
+                    <h3>Tags</h3>
+                    <br/>
+                    <div className="display-row">
+                        <Tag status="success" actionDescription="create success tag!"/>
+                        <Tag status="failure" actionDescription="create success tag!"/>
                     </div>
                 </div>
             </div>

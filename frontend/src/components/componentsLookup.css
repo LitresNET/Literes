@@ -12,6 +12,9 @@
 .display-row {
     display: flex;
     flex-direction: row;
+    width: 100%;
+
+    justify-content: space-between;
 }
 
 .display-row a {
@@ -21,6 +24,8 @@
 .display-column {
     display: flex;
     flex-direction: column;
+
+    justify-content: space-between;
 }
 
 .display-column button {

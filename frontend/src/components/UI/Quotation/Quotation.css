@@ -1,1 +1,12 @@
 /* стили Quotation */
+
+.quotation {
+    max-width: 175px;
+}
+
+.quotation-author {
+    margin-top: 10px;
+    text-align: right;
+
+    max-width: 175px;
+}

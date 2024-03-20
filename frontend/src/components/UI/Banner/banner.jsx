@@ -1,24 +1,23 @@
+import React from "react";
 
+/// Получает:<br/>
+/// padding : string - строка с отступом в формате CSS-padding <br/>
+/// withShadow : bool - нужна ли тень
+export class Banner extends React.Component {
+    constructor(props) {
+        super(props);
+        this.withShadow = props.withShadow;
+        this.padding = props.padding;
+    }
 
-/// Баннер с нулевыми внутренними отступами (поддерживает все форматы CSS-padding)
-export function banner(content, padding = "0") {
-    return createBanner(content, padding, "")
-}
-
-/// Баннер с нулевыми внутренними отступами и тенью (поддерживает все форматы CSS-padding)
-export function bannerShadow(content, padding = "0") {
-    return createBanner(content, padding,"banner-shadow")
-}
-
-function createBanner(content, padding, classes) {
-    classes = "banner " + classes;
-    let p = padding;
-
-    return (
-        <>
-            <div className={classes} style={{padding: p}}>
-                {content}
-            </div>
-        </>
-    );
+    render() {
+        const {children, padding, withShadow} = this.props;
+        return (
+            <>
+                <div className={"banner " + withShadow ? "banner-shadow" : ""} style={{padding: padding}}>
+                    {children}
+                </div>
+            </>
+        )
+    }
 }
