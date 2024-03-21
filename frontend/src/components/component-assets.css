@@ -50,3 +50,7 @@ h1, h2, h3, h4, h5, h6 {
     border-width: 2px;
 }
 
+.price {
+    color: var(--orange-500);
+}
+

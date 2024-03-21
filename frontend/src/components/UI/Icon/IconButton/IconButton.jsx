@@ -1,5 +1,5 @@
 import React from 'react';
-import {Icon} from "../icon.jsx";
+import {Icon} from "../Icon.jsx";
 
 export class IconButton extends React.Component {
     constructor(href, path, size, width) {

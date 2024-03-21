@@ -1,7 +1,11 @@
 /* стили Quotation */
 
+.quotation-container {
+}
+
 .quotation {
     max-width: 175px;
+    height: fit-content;
 }
 
 .quotation-author {

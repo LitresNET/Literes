@@ -4,14 +4,16 @@ import ICONS from "../assets/icons.jsx";
 import IMAGES from "../assets/images.jsx";
 
 import './component-assets.css'; // база - шрифты, цвета
-import './UI/Icon/icon.css';
+import './UI/Icon/Icon.css';
 import './Cover/cover.css';
 import './UI/Button/button.css';
-import './UI/Banner/banner.css';
+import './UI/Banner/Banner.css';
 import './UI/Description/Description.css';
 import './UI/Quotation/Quotation.css';
-import './UI/Input/input.css';
+import './UI/Input/Input.css';
 import './UI/Tag/Tag.css';
+import './UI/Checkbox/Checkbox.css';
+import './UI/DropDownSelect/DropdownSelect.css';
 
 import { coverBig, coverMini, cover, coverCustom } from "./Cover/cover.jsx";
 import {
@@ -23,12 +25,14 @@ import {
     bigShadowButton,
     yellowButton
 } from "./UI/Button/button.jsx";
-import {Banner} from "./UI/Banner/banner.jsx";
-import {IconButton} from "./UI/Icon/IconButton/iconButton.jsx";
+import {Banner} from "./UI/Banner/Banner.jsx";
+import {IconButton} from "./UI/Icon/IconButton/IconButton.jsx";
 import {description, descriptionMini, descriptionShadow, descriptionMiniShadow} from "./UI/Description/Description.jsx";
-import {Input} from "./UI/Input/input.jsx";
+import {Input} from "./UI/Input/Input.jsx";
 import {quotation} from "./UI/Quotation/Quotation.jsx";
 import {Tag} from "./UI/Tag/Tag";
+import {Checkbox} from "./UI/Checkbox/Checkbox.jsx";
+import {DropdownSelect} from "./UI/DropDownSelect/DropdownSelect.jsx";
 
 // Ссылка заглушка
 const googleLink = "https://google.com/"
@@ -38,14 +42,13 @@ function componentsLookup() {
     return (
         <>
             <div>
-                <div className="container">
+                <div id="fonts" className="container">
                     <h3>Fonts family</h3>
                     <br/>
                     <h1>Unica one</h1>
                     <p>Syne</p>
                 </div>
-                <div className="separator-example"></div>
-                <div className="container">
+                <div id="icons" className="container">
                     <h3>Icons</h3>
                     <br/>
                     <div className="icons">
@@ -56,8 +59,7 @@ function componentsLookup() {
                         </div>
                     </div>
                 </div>
-                <div className="separator-example"></div>
-                <div className="container">
+                <div id="buttons" className="container">
                     <h3>Buttons</h3>
                     <br/>
                     <div className="display-column">
@@ -72,8 +74,7 @@ function componentsLookup() {
                         {roundedOrangeButton("Adventure", () => alert("Я круглая оранжевая кнопка!"))}
                     </div>
                 </div>
-                <div className="separator-example"></div>
-                <div className="container">
+                <div id="covers" className="container">
                     <h3>Covers</h3>
                     <br/>
                     <div className="display-row">
@@ -83,8 +84,7 @@ function componentsLookup() {
                         {coverCustom(IMAGES.avatar_none, 240, 0.4)}
                     </div>
                 </div>
-                <div className="separator-example"></div>
-                <div className="container">
+                <div id="banners" className="container">
                     <h3>Banners</h3>
                     <br/>
                     <Banner>
@@ -96,8 +96,7 @@ function componentsLookup() {
                         </div>
                     </Banner>
                 </div>
-                <div className="separator-example"></div>
-                <div className="container">
+                <div id="descriptions" className="container">
                     <h3>Descriptions</h3>
                     <br/>
                     <div className="" style={{display: "flex", flexDirection: "column", justifyContent : "space-around"}}>
@@ -115,8 +114,7 @@ function componentsLookup() {
                         )}
                     </div>
                 </div>
-                <div className="separator-example"></div>
-                <div className="container">
+                <div id="inputs" className="container">
                     <h3>Inputs</h3>
                     <br/>
                     <div className="display-column">
@@ -125,23 +123,50 @@ function componentsLookup() {
                         <Input defaultValue="Hello!" placeholder="Some text here" type="text"/>
                     </div>
                 </div>
-                <div className="separator-example"></div>
-                <div className="container">
+                <div id="quotations" className="container">
                     <h3>Quotations</h3>
                     <br/>
                     <div className="display-row" style={{justifyContent : "space-evenly"}}>
-                        {quotation("Привет, мир!", "(c) Любое приложение", "любая программа")}
+                        {quotation("Привет, мир!Привет, мир!Привет, мир!Привет, мир!Привет, мир!Привет, мир!", "(c) Любое приложение", "любая программа")}
                         {quotation("Привет, мир!", "(c) Любое приложение" , "любая программа")}
                     </div>
                 </div>
-                <div className="separator-example"></div>
-                <div className="container">
+                <div id="tags" className="container">
                     <h3>Tags</h3>
                     <br/>
                     <div className="display-row">
                         <Tag status="success" actionDescription="create success tag!"/>
                         <Tag status="failure" actionDescription="create success tag!"/>
                     </div>
+                </div>
+                <div id="checkboxes" className="container">
+                    <h3>Checkboxes</h3>
+                    <br/>
+                    <div className="display-row">
+                        <Checkbox id="creative">
+                            [Some content in text or html]
+                        </Checkbox>
+                        <Checkbox id="creative1">
+                            Key feature 1
+                            <p className="price">$30,00</p>
+                        </Checkbox>
+                        <Checkbox id="creative2">
+                            Key feature 2
+                            <p className="price">$30,00</p>
+                        </Checkbox>
+                        <Checkbox id="creative3">
+                            Key feature 3
+                            <p className="price">$30,00</p>
+                        </Checkbox>
+                    </div>
+                </div>
+                <div id="dropdown-select error" className="container">
+                    <h3>Drop down select</h3>
+                    <br/>
+                    <DropdownSelect selectgroupname="[selectgroupname]">
+                        <option value="hello">Hello</option>
+                        <option value="bye">Bye</option>
+                    </DropdownSelect>
                 </div>
             </div>
         </>

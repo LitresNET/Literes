@@ -14,7 +14,7 @@ export class Banner extends React.Component {
         const {children, padding, withShadow} = this.props;
         return (
             <>
-                <div className={"banner " + withShadow ? "banner-shadow" : ""} style={{padding: padding}}>
+                <div className={"banner " + (withShadow ? "banner-shadow" : "")} style={{padding: padding}}>
                     {children}
                 </div>
             </>

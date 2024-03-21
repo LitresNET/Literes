@@ -1,6 +1,6 @@
 //TODO: код говно, надо переделать на классы/пропсы/сделать возможность использовать их как теги
 
-import { Icon } from "../Icon/icon.jsx";
+import { Icon } from "../Icon/Icon.jsx";
 
 /// Жёлтая кнопка с круглыми краями. При наведении - оранжевая
 export function roundedYellowButton(text, onClick, iconPath = "", buttonType = "submit") {
