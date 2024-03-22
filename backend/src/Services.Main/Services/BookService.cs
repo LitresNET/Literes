@@ -7,14 +7,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services;
 
-public class BookService(IBookRepository bookRepository, IRequestRepository requestRepository, IUnitOfWork unitOfWork)
-    : IBookService
+public class BookService(
+    IBookRepository bookRepository,
+    IRequestRepository requestRepository,
+    IAuthorRepository authorRepository,
+    ISeriesRepository seriesRepository,
+    IUnitOfWork unitOfWork
+) : IBookService
 {
-    public async Task<Request> PublishNewBookAsync(
-        Book book,
-        IAuthorRepository authorRepository,
-        ISeriesRepository seriesRepository
-    )
+    public async Task<Request> PublishNewBookAsync(Book book)
     {
         var context = new ValidationContext(book);
         var results = new List<ValidationResult>();
@@ -31,7 +32,7 @@ public class BookService(IBookRepository bookRepository, IRequestRepository requ
                 throw new SeriesNotFoundException(book.SeriesId);
 
             book.IsApproved = false;
-            var bookResult = await bookRepository.AddNewBookAsync(book);
+            var bookResult = await bookRepository.AddAsync(book);
 
             var request = new Request
             {
@@ -40,7 +41,7 @@ public class BookService(IBookRepository bookRepository, IRequestRepository requ
                 PublisherId = book.PublisherId
             };
 
-            var requestResult = await requestRepository.AddNewRequestAsync(request);
+            var requestResult = await requestRepository.AddAsync(request);
             await unitOfWork.SaveChangesAsync();
 
             return requestResult;
@@ -55,7 +56,7 @@ public class BookService(IBookRepository bookRepository, IRequestRepository requ
     {
         try
         {
-            var book = await bookRepository.GetBookByIdAsync(bookId);
+            var book = await bookRepository.GetByIdAsync(bookId);
             if (book is null)
                 throw new BookNotFoundException(bookId);
             if (book.PublisherId != publisherId)
@@ -63,7 +64,7 @@ public class BookService(IBookRepository bookRepository, IRequestRepository requ
 
             book.IsApproved = false;
             book.IsAvailable = false;
-            bookRepository.UpdateBook(book);
+            bookRepository.Update(book);
 
             var request = new Request
             {
@@ -72,7 +73,7 @@ public class BookService(IBookRepository bookRepository, IRequestRepository requ
                 BookId = bookId
             };
 
-            var result = await requestRepository.AddNewRequestAsync(request);
+            var result = await requestRepository.AddAsync(request);
             await unitOfWork.SaveChangesAsync();
             return result;
         }

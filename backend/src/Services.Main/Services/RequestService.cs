@@ -23,8 +23,8 @@ public class RequestService(IRequestRepository requestRepository, IBookRepositor
                     ? requestAccepted
                     : request.RequestType == RequestType.Delete && !requestAccepted;
 
-            var bookResult = bookRepository.UpdateBook(request.Book);
-            var requestResult = requestRepository.DeleteRequest(request);
+            var bookResult = bookRepository.Update(request.Book);
+            var requestResult = requestRepository.Delete(request);
             
             await unitOfWork.SaveChangesAsync();
             return bookResult;

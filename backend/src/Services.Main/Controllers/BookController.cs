@@ -14,16 +14,12 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
 {
     [HttpPost]
     [Route("/publish")]
-    public async Task<ActionResult<Request>> PublishBook(
-        [FromBody] BookCreateRequestDto bookDto,
-        [FromServices] IAuthorRepository authorRepository,
-        [FromServices] ISeriesRepository seriesRepository
-    )
+    public async Task<ActionResult<Request>> PublishBook([FromBody] BookCreateRequestDto bookDto)
     {
         try
         {
             var book = mapper.Map<Book>(bookDto);
-            var result = await bookService.PublishNewBookAsync(book, authorRepository, seriesRepository);
+            var result = await bookService.PublishNewBookAsync(book);
             return Ok(result);
         }
         catch (BookValidationFailedException e)

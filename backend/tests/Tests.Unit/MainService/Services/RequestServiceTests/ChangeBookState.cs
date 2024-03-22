@@ -40,7 +40,7 @@ public class ChangeBookState
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedRequest);
         _bookRepositoryMock
-            .Setup(repository => repository.UpdateBook(It.IsAny<Book>()))
+            .Setup(repository => repository.Update(It.IsAny<Book>()))
             .Returns(expectedBook);
 
         var service = new RequestService(_requestRepositoryMock.Object, _bookRepositoryMock.Object, _unitOfWorkMock.Object);
@@ -92,7 +92,7 @@ public class ChangeBookState
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedRequest);
         _bookRepositoryMock
-            .Setup(repository => repository.UpdateBook(It.IsAny<Book>()))
+            .Setup(repository => repository.Update(It.IsAny<Book>()))
             .Returns(expectedBook);
         _unitOfWorkMock
             .Setup(repository => repository.SaveChangesAsync())
