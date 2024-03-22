@@ -19,20 +19,12 @@ import './CartItemCard/CartItemCard.css';
 import './ReviewCard/ReviewCard.css';
 import './SubscriptionCard/SubscriptionCard.css';
 
-import {
-    button,
-    orangeButton,
-    roundedButton,
-    roundedOrangeButton,
-    roundedYellowButton,
-    bigShadowButton,
-    yellowButton
-} from "./UI/Button/button.jsx";
+import {Button} from "./UI/Button/button.jsx";
 import {Banner} from "./UI/Banner/Banner.jsx";
 import {IconButton} from "./UI/Icon/IconButton/IconButton.jsx";
-import {description, descriptionMini, descriptionShadow, descriptionMiniShadow} from "./UI/Description/Description.jsx";
+import {Description} from "./UI/Description/Description.jsx";
 import {Input} from "./UI/Input/Input.jsx";
-import {quotation} from "./UI/Quotation/Quotation.jsx";
+import {Quotation} from "./UI/Quotation/Quotation.jsx";
 import {Tag} from "./UI/Tag/Tag";
 import {Checkbox} from "./UI/Checkbox/Checkbox.jsx";
 import {DropdownSelect} from "./UI/DropDownSelect/DropdownSelect.jsx";
@@ -72,15 +64,13 @@ function componentsLookup() {
                     <h3>Buttons</h3>
                     <br/>
                     <div className="display-column">
-                        {button("Adventure", () => alert("Я самая обычная кнопка)"), ICONS.binoculars)}
-                        {yellowButton("Adventure", () => alert("Я жёлтая кнопка!"))}
-                        {orangeButton("Adventure", () => alert("Я оранжевая кнопка!"))}
-
-                        {bigShadowButton("Adventure", () => alert("Я кнопка покруче, у меня уже есть тень!"))}
-
-                        {roundedButton("", () => alert("Я круглая кнопка!"), ICONS.binoculars)}
-                        {roundedYellowButton("Adventure", () => alert("Я круглая жёлтая кнопка!"))}
-                        {roundedOrangeButton("Adventure", () => alert("Я круглая оранжевая кнопка!"))}
+                        <Button text={"Adventure"} onClick={() => alert("Я самая обычная кнопка)")} iconPath={ICONS.binoculars} />
+                        <Button text={"Adventure"} onClick={() => alert("Я жёлтая кнопка!")} color={"yellow"}/>
+                        <Button text={"Adventure"} onClick={() => alert("Я оранжевая кнопка!")} color={"orange"}/>
+                        <Button text={"Adventure"} onClick={() => alert("Я кнопка покруче, у меня уже есть тень!")} shadow="true" big={"true"}/>
+                        <Button onClick={() => alert("Я круглая кнопка!")} iconPath={ICONS.binoculars} round={"true"}/>
+                        <Button text={"Adventure"} onClick={() => alert("Я круглая жёлтая кнопка!")} round={"true"} color={"yellow"}/>
+                        <Button text={"Adventure"} onClick={() => alert("Я круглая жёлтая кнопка!")} round={"true"} color={"orange"}/>
                     </div>
                 </div>
                 <div id="covers" className="container">
@@ -111,18 +101,18 @@ function componentsLookup() {
                     <h3>Descriptions</h3>
                     <br/>
                     <div className="" style={{display: "flex", flexDirection: "column", justifyContent : "space-around"}}>
-                        {description(
-                            <>
+                        <Description>
+                            <div>Привет!</div>
+                            <Description size={"mini"}>
                                 <div>Привет!</div>
-                                {descriptionMini(<><div>Привет!</div></>)}
-                            </>
-                        )}
-                        {descriptionShadow(
-                            <>
+                            </Description>
+                        </Description>
+                        <Description withshadow="true">
+                            <div>Привет!</div>
+                            <Description size={"mini"} withshadow={true}>
                                 <div>Привет!</div>
-                                {descriptionMiniShadow(<><div>Привет!</div></>)}
-                            </>
-                        )}
+                            </Description>
+                        </Description>
                     </div>
                 </div>
                 <div id="inputs" className="container">
@@ -138,8 +128,21 @@ function componentsLookup() {
                     <h3>Quotations</h3>
                     <br/>
                     <div className="display-row" style={{justifyContent : "space-evenly"}}>
-                        {quotation("Привет, мир!Привет, мир!Привет, мир!Привет, мир!Привет, мир!Привет, мир!", "(c) Любое приложение", "любая программа")}
-                        {quotation("Привет, мир!", "(c) Любое приложение" , "любая программа")}
+                        <Quotation>
+                            <p className="quotation">[quotation]</p>
+                            <p className="quotation-author">[author]<br/>[book]</p>
+                        </Quotation>
+                        <Quotation>
+                            <p className="quotation">
+                                "Привет, мир!Привет, мир!Привет, мир!Привет, мир!
+                                Привет, мир!Привет, мир!"
+                            </p>
+                            <p className="quotation-author">
+                                "(c) Любое приложение"
+                                <br/>
+                                "любая программа"
+                            </p>
+                        </Quotation>
                     </div>
                 </div>
                 <div id="tags" className="container">
