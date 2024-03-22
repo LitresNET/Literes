@@ -1,0 +1,72 @@
+body {
+    background-color: #f8f8f8;
+    color: #333;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 450px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input {
+    width: 95%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
+
+.flex-container div {
+    flex: 1;
+}
+
+.row-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.row-container input {
+    width: 35px;
+}
+
+span {
+    font-size: 30px;
+    margin-top: 5px;
+}
+
+#cvv {
+    width: 40px;
+}
+
+button.yellow-button {
+    background-color: #ffc107;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+button.yellow-button:hover {
+    background-color: #ffca28;
+}
