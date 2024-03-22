@@ -4,7 +4,11 @@
     position: relative;
     overflow: hidden;
 
+    border-radius: 10px;
+
     pointer-events: none;
+
+    box-shadow: #3D3C3C36 10px 10px 10px;
 }
 
 .cover img {

@@ -1,18 +1,15 @@
 .container {
     width: auto;
-    margin: 50px;
-}
-
-.separator-example {
-    width: 100%;
-    height: 3px;
-    background-color: var(--gray-600);
+    margin-top: 50px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .display-row {
     display: flex;
     flex-direction: row;
-    width: 100%;
+    overflow-x: scroll;
+    padding-bottom: 30px;
 
     justify-content: space-between;
 }
@@ -30,4 +27,14 @@
 
 .display-column button {
     margin: 10px;
+}
+
+#covers .display-row div {
+    border-style: solid;
+}
+
+.subscription-card {
+    width: 30%;
+
+    margin-right: 50px;
 }

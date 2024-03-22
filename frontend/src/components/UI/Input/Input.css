@@ -6,12 +6,33 @@ input {
     font-size: 14px;
 }
 
-.text-input {
+.input-wrapper {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: space-between;
+
+    max-width: 120px;
+}
+
+.input-wrapper input {
+    text-align: center;
+
+    max-width: 60px;
+    padding: 10px;
+    margin: 0 10px;
+
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+input[type="text"] {
     box-shadow: var(--yellow-500) 12px 14px 0;
     transition: 0.2s linear;
 }
 
-.text-input:focus {
+input[type="text"]:focus {
     box-shadow: var(--orange-500) 12px 14px 0;
 }
 

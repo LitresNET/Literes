@@ -1,7 +1,8 @@
 .banner {
     display: inherit;
     flex-direction: inherit;
-    padding: 0;
+    width: fit-content;
+    padding: 28px 24px;
 
     border-style: dashed;
     border-radius: 20px;

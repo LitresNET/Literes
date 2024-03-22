@@ -5,7 +5,6 @@ import IMAGES from "../assets/images.jsx";
 
 import './component-assets.css'; // база - шрифты, цвета
 import './UI/Icon/Icon.css';
-import './Cover/cover.css';
 import './UI/Button/button.css';
 import './UI/Banner/Banner.css';
 import './UI/Description/Description.css';
@@ -14,8 +13,12 @@ import './UI/Input/Input.css';
 import './UI/Tag/Tag.css';
 import './UI/Checkbox/Checkbox.css';
 import './UI/DropDownSelect/DropdownSelect.css';
+import './Cover/Cover.css';
+import './BookCard/BookCard.css';
+import './CartItemCard/CartItemCard.css';
+import './ReviewCard/ReviewCard.css';
+import './SubscriptionCard/SubscriptionCard.css';
 
-import { coverBig, coverMini, cover, coverCustom } from "./Cover/cover.jsx";
 import {
     button,
     orangeButton,
@@ -33,6 +36,12 @@ import {quotation} from "./UI/Quotation/Quotation.jsx";
 import {Tag} from "./UI/Tag/Tag";
 import {Checkbox} from "./UI/Checkbox/Checkbox.jsx";
 import {DropdownSelect} from "./UI/DropDownSelect/DropdownSelect.jsx";
+import {BookCard} from "./BookCard/BookCard";
+import {Cover} from "./Cover/Cover.jsx";
+import {CartItemCard} from "./CartItemCard/CartItemCard";
+import {ReviewCard} from "./ReviewCard/ReviewCard";
+import {SubscriptionCard} from "./SubscriptionCard/SubscriptionCard";
+import {DropDownInputSearch} from "./DropDownInputSearch/DropDownInputSearch";
 
 // Ссылка заглушка
 const googleLink = "https://google.com/"
@@ -78,19 +87,21 @@ function componentsLookup() {
                     <h3>Covers</h3>
                     <br/>
                     <div className="display-row">
-                        {coverMini(IMAGES.avatar_none)}
-                        {cover(IMAGES.avatar_none)}
-                        {coverBig(IMAGES.avatar_none)}
-                        {coverCustom(IMAGES.avatar_none, 240, 0.4)}
+                        <Cover imgPath={IMAGES.avatar_none}/>
+                        <Cover imgPath={IMAGES.avatar_none} size={"default"}/>
+                        <Cover imgPath={IMAGES.avatar_none} size={"mini"}/>
+                        <Cover imgPath={IMAGES.avatar_none} size={"big"}/>
+                        <Cover imgPath={IMAGES.avatar_none} size={"custom"} width={150}/>
+                        <Cover imgPath={IMAGES.avatar_none} size={"custom"} width={100} multiplier={3}/>
                     </div>
                 </div>
                 <div id="banners" className="container">
                     <h3>Banners</h3>
                     <br/>
                     <Banner>
-                        <div style={{padding : "40px"}}>
+                        <div>
                             <div>Привет!</div>
-                            <Banner withShadow='true'>
+                            <Banner withshadow='true'>
                                 <IconButton href={googleLink} path={ICONS.shopping_cart} size="default"/>
                             </Banner>
                         </div>
@@ -118,7 +129,7 @@ function componentsLookup() {
                     <h3>Inputs</h3>
                     <br/>
                     <div className="display-column">
-                        <Input placeholder="Some number here" type="number"/>
+                        <Input placeholder="0" type="number"/>
                         <div>.</div>
                         <Input defaultValue="Hello!" placeholder="Some text here" type="text"/>
                     </div>
@@ -160,13 +171,60 @@ function componentsLookup() {
                         </Checkbox>
                     </div>
                 </div>
-                <div id="dropdown-select error" className="container">
+                <div id="to-refactor dropdown-select" className="container">
                     <h3>Drop down select</h3>
                     <br/>
                     <DropdownSelect selectgroupname="[selectgroupname]">
                         <option value="hello">Hello</option>
                         <option value="bye">Bye</option>
                     </DropdownSelect>
+                </div>
+                <div id="logic-based book-cards" className="container">
+                    <h3>Book card</h3>
+                    <br/>
+                    <div className="display-row">
+                        <BookCard bookId={20}/>
+                        <BookCard />
+                        <BookCard />
+                        <BookCard />
+                    </div>
+                </div>
+                <div id="logic-based cart-item-cards" className="container">
+                    <h3>Card item cards</h3>
+                    <br/>
+                    <div className="display-column" style={{maxHeight : "300px", overflowX : "scroll"}}>
+                        <CartItemCard />
+                        <CartItemCard />
+                        <CartItemCard />
+                        <CartItemCard />
+                    </div>
+                </div>
+                <div id="logic-based dropdown-input-search" className="container">
+                    <h3>Dropdown input search</h3>
+                    <br/>
+                    <div className="display-column">
+                        <DropDownInputSearch />
+                    </div>
+                </div>
+                <div id="logic-based review-cards" className="container">
+                    <h3>Review cards</h3>
+                    <br/>
+                    <div className="display-column">
+                        <ReviewCard />
+                        <ReviewCard />
+                        <ReviewCard />
+                    </div>
+                </div>
+                <div id="logic-based subscription-cards" className="container">
+                    <h3>subscription cards</h3>
+                    <br/>
+                    <div className="display-row">
+                        <SubscriptionCard />
+                        <SubscriptionCard />
+                        <SubscriptionCard />
+                        <SubscriptionCard />
+                        <SubscriptionCard />
+                    </div>
                 </div>
             </div>
         </>
