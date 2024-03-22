@@ -9,33 +9,47 @@ using Tests.Config;
 
 namespace Tests.MainService.Services.RequestServiceTests;
 
-public class AcceptPublishRequest
+public class ChangeBookState
 {
+    private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
     private readonly Mock<IBookRepository> _bookRepositoryMock = new();
     private readonly Mock<IRequestRepository> _requestRepositoryMock = new();
-    
-    [Fact]
-    public async Task DefaultRequest_ReturnsPublishedBook()
+
+    [Theory]
+    [InlineData(RequestType.Create, true, true, true)]
+    [InlineData(RequestType.Create, false, false, false)]
+    [InlineData(RequestType.Delete, true, true, false)]
+    [InlineData(RequestType.Delete, false, false, true)]
+    public async Task DefaultRequest_ReturnsPublishedBook(RequestType requestType, bool requestAccepted, bool bookApproved, bool bookAvailable)
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
-        var book = fixture.Create<Book>();
-        var expectedRequest = fixture.Build<Request>().With(request => request.Book, book).Create();
+        
+        var expectedBook = fixture
+            .Build<Book>()
+            .With(b => b.IsApproved, bookApproved)
+            .With(b => b.IsAvailable, bookAvailable)
+            .Create();
+        var expectedRequest = fixture
+            .Build<Request>()
+            .With(request => request.Book, expectedBook)
+            .With(request => request.RequestType, requestType)
+            .Create();
 
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedRequest);
         _bookRepositoryMock
             .Setup(repository => repository.UpdateBook(It.IsAny<Book>()))
-            .Returns(book);
+            .Returns(expectedBook);
 
-        var service = new RequestService(_requestRepositoryMock.Object, _bookRepositoryMock.Object);
+        var service = new RequestService(_requestRepositoryMock.Object, _bookRepositoryMock.Object, _unitOfWorkMock.Object);
 
         // Act
-        var result = await service.AcceptPublishRequestAsync(expectedRequest.Id);
+        var result = await service.ChangeBookStateAsync(expectedRequest.Id, requestAccepted);
 
         // Assert
-        Assert.Equal(book, result);
+        Assert.Equal(expectedBook, result);
     }
 
     [Fact]
@@ -43,20 +57,25 @@ public class AcceptPublishRequest
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
-        var book = fixture.Create<Book>();
-        var expectedRequest = fixture.Build<Request>().With(request => request.Book, book).Create();
+        
+        var expectedBook = fixture
+            .Create<Book>();
+        var expectedRequest = fixture
+            .Build<Request>()
+            .With(request => request.Book, expectedBook)
+            .Create();
 
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
             .ReturnsAsync((Request)null);
 
-        var service = new RequestService(_requestRepositoryMock.Object, _bookRepositoryMock.Object);
+        var service = new RequestService(_requestRepositoryMock.Object, _bookRepositoryMock.Object, _unitOfWorkMock.Object);
 
         // Act
 
         // Assert
         await Assert.ThrowsAsync<RequestNotFoundException>(
-            async () => await service.AcceptDeleteRequestAsync(expectedRequest.Id)
+            async () => await service.ChangeBookStateAsync(expectedRequest.Id)
         );
     }
 
@@ -65,24 +84,27 @@ public class AcceptPublishRequest
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
-        var book = fixture.Create<Book>();
+        
+        var expectedBook = fixture.Create<Book>();
         var expectedRequest = fixture.Create<Request>();
+        
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedRequest);
         _bookRepositoryMock
             .Setup(repository => repository.UpdateBook(It.IsAny<Book>()))
-            .Returns(book);
-        _bookRepositoryMock
+            .Returns(expectedBook);
+        _unitOfWorkMock
             .Setup(repository => repository.SaveChangesAsync())
             .ThrowsAsync(new DbUpdateException());
-        var service = new RequestService(_requestRepositoryMock.Object, _bookRepositoryMock.Object);
+        
+        var service = new RequestService(_requestRepositoryMock.Object, _bookRepositoryMock.Object, _unitOfWorkMock.Object);
 
         // Act
 
         // Assert
         await Assert.ThrowsAsync<StorageUnavailableException>(
-            async () => await service.AcceptDeleteRequestAsync(expectedRequest.Id)
+            async () => await service.ChangeBookStateAsync(expectedRequest.Id)
         );
     }
 }

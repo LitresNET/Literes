@@ -18,6 +18,12 @@ public class RequestRepository(ApplicationDbContext appDbContext) : IRequestRepo
         return await appDbContext.Request.FirstOrDefaultAsync(request => request.Id == requestId);
     }
 
+    public Request DeleteRequest(Request request)
+    {
+        var result = appDbContext.Request.Remove(request);
+        return result.Entity;
+    }
+
     public async Task SaveChangesAsync()
     {
         await appDbContext.SaveChangesAsync();

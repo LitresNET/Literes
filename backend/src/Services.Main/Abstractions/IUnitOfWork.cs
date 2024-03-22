@@ -8,7 +8,7 @@
 /// Тем самым сохранение изменений в бд делегируется не репозиторию, а сервису
 /// </summary>
 
-public interface IRepository
+public interface IUnitOfWork
 {
     public Task SaveChangesAsync();
 }

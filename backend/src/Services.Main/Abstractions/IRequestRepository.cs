@@ -2,8 +2,9 @@
 
 namespace backend.Abstractions;
 
-public interface IRequestRepository : IRepository
+public interface IRequestRepository : IUnitOfWork
 {
     public Task<Request> AddNewRequestAsync(Request request);
     public Task<Request?> GetRequestWithBookByIdAsync(long requestId);
+    public Request DeleteRequest(Request request);
 }
