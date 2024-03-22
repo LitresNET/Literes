@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services;
 
-public class BookService(IBookRepository bookRepository, IRequestRepository requestRepository)
+public class BookService(IBookRepository bookRepository, IRequestRepository requestRepository, IUnitOfWork unitOfWork)
     : IBookService
 {
     public async Task<Request> PublishNewBookAsync(
@@ -41,7 +41,7 @@ public class BookService(IBookRepository bookRepository, IRequestRepository requ
             };
 
             var requestResult = await requestRepository.AddNewRequestAsync(request);
-            await requestRepository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
 
             return requestResult;
         }
@@ -73,7 +73,7 @@ public class BookService(IBookRepository bookRepository, IRequestRepository requ
             };
 
             var result = await requestRepository.AddNewRequestAsync(request);
-            await requestRepository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             return result;
         }
         catch (DbUpdateException e)

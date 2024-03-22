@@ -16,22 +16,7 @@ public class RequestController(IRequestService requestService) : ControllerBase
     {
         try
         {
-            var result = await requestService.AcceptPublishRequestAsync(id);
-            return Ok(result);
-        }
-        catch (RequestNotFoundException e)
-        {
-            return NotFound(e);
-        }
-    }
-
-    [HttpDelete]
-    [Route("{id}/accept")]
-    public async Task<IActionResult> AcceptDeleteRequest([FromRoute] long id)
-    {
-        try
-        {
-            var result = await requestService.AcceptDeleteRequestAsync(id);
+            var result = await requestService.ChangeBookStateAsync(id, requestAccepted:true);
             return Ok(result);
         }
         catch (RequestNotFoundException e)
@@ -46,22 +31,7 @@ public class RequestController(IRequestService requestService) : ControllerBase
     {
         try
         {
-            var result = await requestService.DeclinePublishRequestAsync(id);
-            return Ok(result);
-        }
-        catch (RequestNotFoundException e)
-        {
-            return NotFound(e);
-        }
-    }
-
-    [HttpDelete]
-    [Route("{id}/decline")]
-    public async Task<IActionResult> DeclineDeleteRequest([FromRoute] long id)
-    {
-        try
-        {
-            var result = await requestService.DeclineDeleteRequestAsync(id);
+            var result = await requestService.ChangeBookStateAsync(id, requestAccepted:false);
             return Ok(result);
         }
         catch (RequestNotFoundException e)

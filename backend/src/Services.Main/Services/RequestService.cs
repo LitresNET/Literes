@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services;
 
-public class RequestService(IRequestRepository requestRepository, IBookRepository bookRepository)
+public class RequestService(IRequestRepository requestRepository, IBookRepository bookRepository, IUnitOfWork unitOfWork)
     : IRequestService
 {
-    public async Task<Book> AcceptPublishRequestAsync(long requestId)
+    public async Task<Book> ChangeBookStateAsync(long requestId, bool requestAccepted = true)
     {
         try
         {
@@ -17,75 +17,17 @@ public class RequestService(IRequestRepository requestRepository, IBookRepositor
             if (request is null)
                 throw new RequestNotFoundException(requestId);
 
-            request.Book!.IsApproved = true;
-            request.Book!.IsAvailable = true;
+            request.Book!.IsApproved = requestAccepted;
+            request.Book!.IsAvailable =
+                request.RequestType == RequestType.Create
+                    ? requestAccepted
+                    : request.RequestType == RequestType.Delete && !requestAccepted;
 
-            var result = bookRepository.UpdateBook(request.Book);
-            await bookRepository.SaveChangesAsync();
-            return result;
-        }
-        catch (DbUpdateException e)
-        {
-            throw new StorageUnavailableException(e.Message);
-        }
-    }
-
-    public async Task<Book> AcceptDeleteRequestAsync(long requestId)
-    {
-        try
-        {
-            var request = await requestRepository.GetRequestWithBookByIdAsync(requestId);
-            if (request is null)
-                throw new RequestNotFoundException(requestId);
-
-            request.Book!.IsApproved = true;
-            request.Book!.IsAvailable = false;
-
-            var result = bookRepository.UpdateBook(request.Book);
-            await bookRepository.SaveChangesAsync();
-            return result;
-        }
-        catch (DbUpdateException e)
-        {
-            throw new StorageUnavailableException(e.Message);
-        }
-    }
-
-    public async Task<Book> DeclinePublishRequestAsync(long requestId)
-    {
-        try
-        {
-            var request = await requestRepository.GetRequestWithBookByIdAsync(requestId);
-            if (request is null)
-                throw new RequestNotFoundException(requestId);
-
-            request.Book!.IsApproved = false;
-            request.Book!.IsAvailable = false;
-
-            var result = bookRepository.UpdateBook(request.Book);
-            await bookRepository.SaveChangesAsync();
-            return result;
-        }
-        catch (DbUpdateException e)
-        {
-            throw new StorageUnavailableException(e.Message);
-        }
-    }
-
-    public async Task<Book> DeclineDeleteRequestAsync(long requestId)
-    {
-        try
-        {
-            var request = await requestRepository.GetRequestWithBookByIdAsync(requestId);
-            if (request is null)
-                throw new RequestNotFoundException(requestId);
-
-            request.Book!.IsApproved = false;
-            request.Book!.IsAvailable = true;
-
-            var result = bookRepository.UpdateBook(request.Book);
-            await bookRepository.SaveChangesAsync();
-            return result;
+            var bookResult = bookRepository.UpdateBook(request.Book);
+            var requestResult = requestRepository.DeleteRequest(request);
+            
+            await unitOfWork.SaveChangesAsync();
+            return bookResult;
         }
         catch (DbUpdateException e)
         {

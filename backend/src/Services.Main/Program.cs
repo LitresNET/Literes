@@ -3,6 +3,7 @@ using backend.Configurations;
 using backend.Configurations.Mapping;
 using backend.Middlewares;
 using backend.Repositories;
+using backend.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,8 +19,17 @@ builder.Services.AddAutoMapper(
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddSingleton<IMiddleware, ExceptionMiddleware>();
+
+builder.Services.AddScoped<IRequestService, RequestService>();
+builder.Services.AddScoped<IBookService, BookService>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IRequestRepository, RequestRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+builder.Services.AddScoped<ISeriesRepository, SeriesRepository>();
 
 var app = builder.Build();
 

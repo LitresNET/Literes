@@ -1,6 +1,12 @@
-﻿namespace backend.Repositories;
+﻿using backend.Abstractions;
+using backend.Configurations;
 
-public class UnitOfWork
+namespace backend.Repositories;
+
+public class UnitOfWork(ApplicationDbContext appDbContext) : IUnitOfWork
 {
-    
+    public async Task SaveChangesAsync()
+    {
+        await appDbContext.SaveChangesAsync();
+    }
 }
