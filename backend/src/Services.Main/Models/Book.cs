@@ -16,7 +16,7 @@ public class Book
     public string Name { get; set; }
     [MaxLength(4096)]
     public string Description { get; set; }
-    public long? PublisherId { get; set; }
+    public long PublisherId { get; set; }
     [Required]
     public DateTime ReleaseData { get; set; }
     [Required]

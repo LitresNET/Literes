@@ -11,7 +11,7 @@ public class Request
     [Required]
     public long BookId { get; set; }
     [Required]
-    public long? PublisherId { get; set; }
+    public long PublisherId { get; set; }
     
     public Publisher? Publisher { get; set; }
     [Required]

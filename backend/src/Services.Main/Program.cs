@@ -1,6 +1,8 @@
+using backend.Abstractions;
 using backend.Configurations;
 using backend.Configurations.Mapping;
 using backend.Middlewares;
+using backend.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +18,8 @@ builder.Services.AddAutoMapper(
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IMiddleware, ExceptionMiddleware>();
+builder.Services.AddSingleton<IMiddleware, ExceptionMiddleware>();
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 
 var app = builder.Build();
 

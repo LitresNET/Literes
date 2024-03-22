@@ -2,10 +2,12 @@
 using backend.Exceptions;
 using backend.Models;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services;
 
-public class RequestService(IRequestRepository requestRepository, IBookRepository bookRepository) : IRequestService
+public class RequestService(IRequestRepository requestRepository, IBookRepository bookRepository)
+    : IRequestService
 {
     public async Task<Book> AcceptPublishRequestAsync(long requestId)
     {
@@ -15,14 +17,14 @@ public class RequestService(IRequestRepository requestRepository, IBookRepositor
             if (request is null)
                 throw new RequestNotFoundException(requestId);
 
-            request.Book.IsApproved = true;
-            request.Book.IsAvailable = true;
+            request.Book!.IsApproved = true;
+            request.Book!.IsAvailable = true;
 
             var result = bookRepository.UpdateBook(request.Book);
             await bookRepository.SaveChangesAsync();
             return result;
         }
-        catch (SqlException e)
+        catch (DbUpdateException e)
         {
             throw new StorageUnavailableException(e.Message);
         }
@@ -36,14 +38,14 @@ public class RequestService(IRequestRepository requestRepository, IBookRepositor
             if (request is null)
                 throw new RequestNotFoundException(requestId);
 
-            request.Book.IsApproved = true;
-            request.Book.IsAvailable = false;
+            request.Book!.IsApproved = true;
+            request.Book!.IsAvailable = false;
 
             var result = bookRepository.UpdateBook(request.Book);
             await bookRepository.SaveChangesAsync();
             return result;
         }
-        catch (SqlException e)
+        catch (DbUpdateException e)
         {
             throw new StorageUnavailableException(e.Message);
         }
@@ -57,14 +59,14 @@ public class RequestService(IRequestRepository requestRepository, IBookRepositor
             if (request is null)
                 throw new RequestNotFoundException(requestId);
 
-            request.Book.IsApproved = false;
-            request.Book.IsAvailable = false;
+            request.Book!.IsApproved = false;
+            request.Book!.IsAvailable = false;
 
             var result = bookRepository.UpdateBook(request.Book);
             await bookRepository.SaveChangesAsync();
             return result;
         }
-        catch (SqlException e)
+        catch (DbUpdateException e)
         {
             throw new StorageUnavailableException(e.Message);
         }
@@ -78,14 +80,14 @@ public class RequestService(IRequestRepository requestRepository, IBookRepositor
             if (request is null)
                 throw new RequestNotFoundException(requestId);
 
-            request.Book.IsApproved = false;
-            request.Book.IsAvailable = true;
+            request.Book!.IsApproved = false;
+            request.Book!.IsAvailable = true;
 
             var result = bookRepository.UpdateBook(request.Book);
             await bookRepository.SaveChangesAsync();
             return result;
         }
-        catch (SqlException e)
+        catch (DbUpdateException e)
         {
             throw new StorageUnavailableException(e.Message);
         }

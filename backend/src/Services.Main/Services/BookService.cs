@@ -3,17 +3,18 @@ using backend.Abstractions;
 using backend.Exceptions;
 using backend.Models;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services;
 
-public class BookService(
-    IBookRepository bookRepository, 
-    IRequestRepository requestRepository,
-    IAuthorRepository authorRepository,
-    ISeriesRepository seriesRepository)
+public class BookService(IBookRepository bookRepository, IRequestRepository requestRepository)
     : IBookService
 {
-    public async Task<Request> PublishNewBookAsync(Book book)
+    public async Task<Request> PublishNewBookAsync(
+        Book book,
+        IAuthorRepository authorRepository,
+        ISeriesRepository seriesRepository
+    )
     {
         var context = new ValidationContext(book);
         var results = new List<ValidationResult>();
@@ -40,12 +41,11 @@ public class BookService(
             };
 
             var requestResult = await requestRepository.AddNewRequestAsync(request);
-            await bookRepository.SaveChangesAsync();
+            await requestRepository.SaveChangesAsync();
 
             return requestResult;
         }
-        // TODO: поменять тип ошибки так, чтобы отлавливались только ошибки бд
-        catch (SqlException e)
+        catch (DbUpdateException e)
         {
             throw new StorageUnavailableException(e.Message);
         }
@@ -58,6 +58,8 @@ public class BookService(
             var book = await bookRepository.GetBookByIdAsync(bookId);
             if (book is null)
                 throw new BookNotFoundException(bookId);
+            if (book.PublisherId != publisherId)
+                throw new UserPermissionDeniedException($"Delete book {book.Id}");
 
             book.IsApproved = false;
             book.IsAvailable = false;
@@ -74,8 +76,7 @@ public class BookService(
             await requestRepository.SaveChangesAsync();
             return result;
         }
-        // TODO: поменять тип ошибки так, чтобы отлавливались только ошибки бд
-        catch (SqlException e)
+        catch (DbUpdateException e)
         {
             throw new StorageUnavailableException(e.Message);
         }

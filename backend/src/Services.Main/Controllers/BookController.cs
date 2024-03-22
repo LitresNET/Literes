@@ -14,12 +14,16 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
 {
     [HttpPost]
     [Route("/publish")]
-    public async Task<ActionResult<Request>> PublishBook([FromBody] BookCreateRequestDto bookDto)
+    public async Task<ActionResult<Request>> PublishBook(
+        [FromBody] BookCreateRequestDto bookDto,
+        [FromServices] IAuthorRepository authorRepository,
+        [FromServices] ISeriesRepository seriesRepository
+    )
     {
         try
         {
             var book = mapper.Map<Book>(bookDto);
-            var result = await bookService.PublishNewBookAsync(book);
+            var result = await bookService.PublishNewBookAsync(book, authorRepository, seriesRepository);
             return Ok(result);
         }
         catch (BookValidationFailedException e)
@@ -35,7 +39,7 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
             return NotFound(e);
         }
     }
-    
+
     [HttpDelete]
     [Route("{id}/delete")]
     public async Task<IActionResult> DeleteBook([FromRoute] long id, [FromQuery] long publisherId)
@@ -48,6 +52,10 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
         catch (BookNotFoundException e)
         {
             return NotFound(e);
+        }
+        catch (UserPermissionDeniedException e)
+        {
+            return Forbid(e.Message);
         }
     }
 }
