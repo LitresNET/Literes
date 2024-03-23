@@ -66,13 +66,16 @@ export function ReviewCard(props) {
                         </div>
                     </div>
                 </Banner>
-                <div className="review-open-comments" onClick={() => setOpen(!isOpen)}>
-                    <div className="review-comments-button">
-                        <p>view comments</p>
-                        <Icon path={ICONS.caret_down} size="mini"/>
+                <div className="review-open-comments">
+                    <div className="review-comments-button" onClick={() => setOpen(!isOpen)}>
+                        <p>{(isOpen ? "hide" : "view") + " comments"}</p>
+                        <Icon path={ICONS.caret_down} size="mini" style={{transform: isOpen ? "rotateZ(-180deg)" : "rotateZ(0)"}}/>
                     </div>
                     <div className={"comments " + (isOpen ? "active" : "")}>
                         {comments}
+                        <div className={"comments-add-button"}>
+                            <p onClick={() => alert("Заглушка!")}>+ add comment</p>
+                        </div>
                     </div>
                 </div>
 

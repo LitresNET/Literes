@@ -7,7 +7,7 @@ function App() {
         <>
             <div>
                 <Routes>
-                    <Route path='/components' element={componentsLookup()}></Route>
+                    <Route path={ROUTES.components} element={componentsLookup()}></Route>
                 </Routes>
             </div>
         </>

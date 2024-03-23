@@ -1,20 +1,16 @@
-import React from 'react';
 import {Icon} from "../Icon.jsx";
 
-export class IconButton extends React.Component {
-    constructor(href, path, size, width) {
-        super(href, width);
-    }
+/// Получает: <br/>
+/// href : string - ссылка на страницу <br/>
+/// остальные свойства передаются в тег Icon
+export function IconButton (props) {
+    const { href } = props;
 
-    render() {
-        const path = this.props.path;
-
-        return (
-            <>
-                <a href={path}>
-                    <Icon {...this.props}/>
-                </a>
-            </>
-        )
-    }
+    return (
+        <>
+            <a href={href}>
+                <Icon {...props}/>
+            </a>
+        </>
+    );
 }

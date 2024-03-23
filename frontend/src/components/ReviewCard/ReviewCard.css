@@ -68,6 +68,10 @@
     cursor: pointer;
 }
 
+.review-comments-button div {
+    transition: 0.2s linear;
+}
+
 .comments {
     display: none;
     flex-direction: column;
@@ -92,3 +96,16 @@
     margin-top: 20px;
 }
 
+.comments-add-button {
+    display: flex;
+    flex-direction: row;
+
+    justify-content: right;
+
+    margin-top: 20px;
+    margin-right: 20px;
+}
+
+.comments-add-button p {
+    cursor: pointer;
+}

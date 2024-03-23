@@ -1,4 +1,3 @@
-// TODO: сверстать компонент тега
 import React from 'react';
 import {Icon} from "../Icon/Icon.jsx";
 import ICONS from "../../../assets/icons.jsx";

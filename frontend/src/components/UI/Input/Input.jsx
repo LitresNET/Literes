@@ -1,4 +1,3 @@
-// TODO: сверстать компонент текстового инпута
 import React, {useState} from "react";
 import {Icon} from "../Icon/Icon";
 import ICONS from "../../../assets/icons.jsx";

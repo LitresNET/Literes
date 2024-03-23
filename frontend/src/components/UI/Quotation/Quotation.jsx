@@ -1,5 +1,3 @@
-// TODO: сверстать компонент карточки с цитатой
-
 import {Description} from "../Description/Description.jsx";
 
 

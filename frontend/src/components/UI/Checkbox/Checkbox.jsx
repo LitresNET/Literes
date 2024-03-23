@@ -1,22 +1,16 @@
-import React from "react";
+/// Принимает: <br/>
+/// id : string - id элемента (html-свойство id)
+export function Checkbox(props) {
+    const { children, id } = props;
 
-export class Checkbox extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    
-    render() {
-        const { children, id } = this.props;
-
-        return (
-            <>
-                <input type="checkbox" className="custom-checkbox" id={id}/>
-                <label htmlFor={id}>
-                    <div className="custom-checkbox-label">
-                        {children}
-                    </div>
-                </label>
-            </>
-        )
-    }
+    return (
+        <>
+            <input type="checkbox" className="custom-checkbox" id={id}/>
+            <label htmlFor={id}>
+                <div className="custom-checkbox-label">
+                    {children}
+                </div>
+            </label>
+        </>
+    );
 }
