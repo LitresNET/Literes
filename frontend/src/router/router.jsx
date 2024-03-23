@@ -1,5 +1,5 @@
 // TODO: реализовать постраничную навигацию
 
-const ROUTES = {
+export const ROUTES = {
     components : "/components"
 }
