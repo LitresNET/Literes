@@ -46,7 +46,7 @@ public class ChangeBookState
         var service = new RequestService(_requestRepositoryMock.Object, _bookRepositoryMock.Object, _unitOfWorkMock.Object);
 
         // Act
-        var result = await service.ChangeBookStateAsync(expectedRequest.Id, requestAccepted);
+        var result = await service.AcceptPublishDeleteRequestAsync(expectedRequest.Id, requestAccepted);
 
         // Assert
         Assert.Equal(expectedBook, result);
@@ -75,7 +75,7 @@ public class ChangeBookState
 
         // Assert
         await Assert.ThrowsAsync<RequestNotFoundException>(
-            async () => await service.ChangeBookStateAsync(expectedRequest.Id)
+            async () => await service.AcceptPublishDeleteRequestAsync(expectedRequest.Id)
         );
     }
 
@@ -104,7 +104,7 @@ public class ChangeBookState
 
         // Assert
         await Assert.ThrowsAsync<StorageUnavailableException>(
-            async () => await service.ChangeBookStateAsync(expectedRequest.Id)
+            async () => await service.AcceptPublishDeleteRequestAsync(expectedRequest.Id)
         );
     }
 }

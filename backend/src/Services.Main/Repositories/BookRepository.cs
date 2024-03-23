@@ -24,6 +24,13 @@ public class BookRepository(ApplicationDbContext appDbContext) : IBookRepository
         return await appDbContext.Book.FirstOrDefaultAsync(b => b.Id == bookId);
     }
 
+    public async Task<Book> DeleteByIdAsync(long bookId)
+    {
+        var book = await appDbContext.Book.SingleAsync(b => b.Id == bookId);
+        var result = appDbContext.Book.Remove(book);
+        return result.Entity;
+    }
+
     public Book Update(Book book)
     {
         var result = appDbContext.Book.Update(book);

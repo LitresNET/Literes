@@ -82,4 +82,39 @@ public class BookService(
             throw new StorageUnavailableException(e.Message);
         }
     }
+
+    public async Task<Request> UpdateBookAsync(Book updatedBook, long publisherId)
+    {
+        try
+        {
+            var book = await bookRepository.GetByIdAsync(updatedBook.Id);
+            if (book is null)
+                throw new BookNotFoundException(updatedBook.Id);
+            if (book.PublisherId != publisherId)
+                throw new UserPermissionDeniedException($"Update book {book.Id}");
+
+            updatedBook.IsApproved = false;
+            updatedBook.IsAvailable = false;
+            var bookResult = await bookRepository.AddAsync(updatedBook);
+
+            // при создании запроса на изменение книги, мы хотим, чтобы до одобрения заявки пользователям
+            // была доступна старая версия книги. При потдверждении запроса на изменение, старая версия
+            // книги удаляется, становится доступна новая
+            var request = new Request
+            {
+                RequestType = RequestType.Update,
+                PublisherId = updatedBook.PublisherId,
+                BookId = book.Id,
+                UpdatedBookId = updatedBook.Id
+            };
+
+            var result = await requestRepository.AddAsync(request);
+            await unitOfWork.SaveChangesAsync();
+            return result;
+        }
+        catch (DbUpdateException e)
+        {
+            throw new StorageUnavailableException(e.Message);
+        }
+    }
 }

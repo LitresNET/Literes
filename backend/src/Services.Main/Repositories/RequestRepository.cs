@@ -20,6 +20,14 @@ public class RequestRepository(ApplicationDbContext appDbContext) : IRequestRepo
             .FirstOrDefaultAsync(request => request.Id == requestId);
     }
 
+    public async Task<Request?> GetRequestWithOldAndUpdatedBooksByIdAsync(long requestId)
+    {
+        return await appDbContext.Request
+            .Include(request => request.Book)
+            .Include(request => request.UpdatedBook)
+            .FirstOrDefaultAsync(request => request.Id == requestId);
+    }
+
     public async Task<Request?> GetByIdAsync(long requestId)
     {
         return await appDbContext.Request.FirstOrDefaultAsync(request => request.Id == requestId);
