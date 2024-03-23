@@ -2,12 +2,11 @@ import {
   Body,
   Controller,
   Get,
-  HttpStatus,
   Post,
+  Redirect,
   Render,
-  Res,
+  Req,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { PaymentService } from '../Services/PaymentService';
 
 @Controller('pay')
@@ -16,19 +15,23 @@ export class PaymentController {
 
   @Get()
   @Render('paymentPage')
-  getPaymentPage() {
-    return;
+  getPaymentPage(@Body() goodsList: ProductDto[]) {
+    let totalPrice: number = 0;
+
+    goodsList.forEach(function (good) {
+      totalPrice += good.price * good.amount;
+    });
+
+    return { totalPrice };
   }
 
   @Post()
-  pay(@Res() response: Response): Response {
-    if (this.paymentService.tryPay()) {
-      return response.status(HttpStatus.OK).send({
-        status: 'paid',
-      });
+  @Redirect()
+  async pay(@Req() req: Request) {
+    if (await this.paymentService.tryPay()) {
+      return { url: req.referrer };
+    } else {
+      return;
     }
-    return response.status(HttpStatus.BAD_REQUEST).send({
-      status: 'not paid',
-    });
   }
 }

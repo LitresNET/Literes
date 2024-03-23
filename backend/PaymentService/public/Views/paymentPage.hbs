@@ -8,7 +8,7 @@
 </head>
 <body>
 <div class="container">
-    <form>
+    <form method="post" action="/pay">
         <label for="cardholder-name">Имя держателя:</label>
         <input type="text" id="cardholder-name" name="cardholder-name" minlength="1" maxlength="20" required>
         <label for="card-number">Номер карты:</label>
@@ -30,6 +30,7 @@
                 <input type="tel" id="cvv" name="cvv" pattern="[0-9]+" minlength="3" maxlength="3" required>
             </div>
         </div>
+        <p id="total-price">{{totalPrice}} рублей</p>
         <button type="submit" class="yellow-button">Оплатить</button>
     </form>
 </div>

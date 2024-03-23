@@ -56,6 +56,10 @@ span {
     width: 40px;
 }
 
+#total-price {
+    font-weight: bold;
+}
+
 button.yellow-button {
     background-color: #ffc107;
     color: #333;
