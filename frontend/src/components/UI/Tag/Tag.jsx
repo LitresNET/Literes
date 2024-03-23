@@ -20,28 +20,28 @@ export class Tag extends React.Component {
             case "success":
                 se = {
                     className : "tag-success",
-                    iconPath : ICONS.check_circle,
+                    iconpath : ICONS.check_circle,
                     messagePrefix : "Success to: "
                 };
                 break;
             case "failure":
                 se = {
                     className : "tag-failure",
-                    iconPath : ICONS.circle_wavy_warning,
+                    iconpath : ICONS.circle_wavy_warning,
                     messagePrefix : "Failed to: "
                 };
                 break;
             default:
                 se = {
                     className : "<empty>",
-                    iconPath : "<empty>",
+                    iconpath : "<empty>",
                     messagePrefix : "<empty>"
                 }
         }
         return (
             <>
                 <div className={"border-solid tag " + se.className}>
-                    <Icon path={se.iconPath}/>
+                    <Icon path={se.iconpath}/>
                     <p style={{marginLeft : "10px"}}>{se.messagePrefix + actionDescription}</p>
                 </div>
             </>

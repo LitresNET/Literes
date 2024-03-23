@@ -15,11 +15,9 @@ export function ReviewCard(props) {
     const [likes, setLike] = useState(89);
     const [isOpen, setOpen] = useState(false);
 
-    const comments = [1, 2, 3, 4].map(() =>
-        <>
-            <CommentCard />
-        </>
-    )
+    const comments = [1, 2, 3, 4].map((e) =>
+        <CommentCard key={e} />
+    );
 
 
     // логика доставания обзора и комментов с сервера
@@ -27,7 +25,7 @@ export function ReviewCard(props) {
     return (
         <>
             <div className="review-card-wrapper">
-                <Banner withshadow={true}>
+                <Banner withshadow={"true"}>
                     <div className="review-card">
                         <Cover imgPath={IMAGES.avatar_none} size="mini"/>
                         <div className="review-card-info">

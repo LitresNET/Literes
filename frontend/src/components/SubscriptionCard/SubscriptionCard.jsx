@@ -1,7 +1,7 @@
 // TODO: реализовать компонент карточки тарифного плана.
 // При клике, выбранный тариф должен сохраняться в локальном хранилище или кеше
 
-import {roundedButton, roundedOrangeButton} from "../UI/Button/button.jsx";
+import {Button} from "../UI/Button/Button.jsx";
 
 export function SubscriptionCard(props) {
     const { subscriptionId } = props;
@@ -22,8 +22,8 @@ export function SubscriptionCard(props) {
                         <li>Key feature 4</li>
                         <li>Key feature 5</li>
                     </ul>
-                    {roundedButton("$0.00/month", () => alert("Заглушка!"))}
-                    {roundedOrangeButton("Choose", () => alert("Заглушка!"))}
+                    <Button text={"$0.00/month"} onClick={() => alert("Заглушка!")} round={"true"}/>
+                    <Button text={"Choose"} onClick={() => alert("Заглушка!")} round={"true"} color={"orange"}/>
                 </div>
             </div>
         </>

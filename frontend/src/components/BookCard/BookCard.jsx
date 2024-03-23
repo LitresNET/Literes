@@ -1,7 +1,7 @@
 // TODO: Заменить заглушки
 import {Cover} from "../Cover/Cover.jsx";
 import IMAGES from "../../assets/images.jsx";
-import {roundedButton, roundedYellowButton} from "../UI/Button/button.jsx";
+import {Button} from "../UI/Button/Button.jsx";
 import ICONS from "../../assets/icons.jsx";
 
 /// Принимает: <br/>
@@ -17,11 +17,11 @@ export function BookCard(props) {
                 <Cover imgPath={IMAGES.avatar_none}/>
                 <div className="bookcard-buttons">
                     <div className="bookcard-button-row">
-                        {roundedButton("$30.00", () => "")}
-                        {roundedButton("", () => (alert("Заглушка!")), ICONS.bookmark_simple)}
+                        <Button text={"$30.00"} onClick={() => (alert("Заглушка!"))} round={"true"}/>
+                        <Button iconpath={ICONS.bookmark_simple} onClick={() => (alert("Заглушка!"))} round={"true"}/>
                     </div>
                     <div className="bookcard-button-row">
-                        {roundedYellowButton("", () => (alert("Заглушка!")), ICONS.shopping_cart)}
+                        <Button onClick={() => (alert("Заглушка!"))} iconpath={ICONS.shopping_cart}/>
                     </div>
                 </div>
             </div>

@@ -10,7 +10,7 @@ export function Description(props) {
 
     return (
         <>
-            <div className={classes}{...props}>
+            <div className={classes} {...props}>
                 {children}
             </div>
         </>

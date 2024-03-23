@@ -4,7 +4,7 @@ import {useClickOutside} from "../../../hooks/useClickOutside.js";
 import {Icon} from "../Icon/Icon";
 import ICONS from "../../../assets/icons.jsx";
 
-/// Внутри используется НЕ select и работает вообще не очень (TODO)
+/// Внутри используется НЕ select и работает вообще не очень
 export function DropdownSelect(props) {
     const { children, selectgroupname } = props;
 
@@ -18,12 +18,11 @@ export function DropdownSelect(props) {
             setTimeout(() => setOpen(false), 100);
     });
 
+    let counter = 0;
     const updatedChildren = children.map((c) =>
-        <>
-            <p className={"dropdown-item"} onClick={(c) => selectValue(c)}>
-                {c}
-            </p>
-        </>
+        <p key={counter++} className={"dropdown-item"} onClick={(c) => selectValue(c)}>
+            {c}
+        </p>
     )
 
     function openDropDown() {

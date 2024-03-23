@@ -9,8 +9,8 @@ export function CommentCard(props) {
 
     return (
         <>
-            <div className="comment-wrapper">
-                <Banner withshadow={true}>
+            <div className="comment-wrapper" {...props}>
+                <Banner withshadow={"true"}>
                     <div className="comment">
                         <h3>Petrov Petya</h3>
                         <h4>24 Mar, 2024</h4>

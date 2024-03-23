@@ -5,7 +5,7 @@ import IMAGES from "../assets/images.jsx";
 
 import './component-assets.css'; // база - шрифты, цвета
 import './UI/Icon/Icon.css';
-import './UI/Button/button.css';
+import './UI/Button/Button.css';
 import './UI/Banner/Banner.css';
 import './UI/Description/Description.css';
 import './UI/Quotation/Quotation.css';
@@ -19,7 +19,7 @@ import './CartItemCard/CartItemCard.css';
 import './ReviewCard/ReviewCard.css';
 import './SubscriptionCard/SubscriptionCard.css';
 
-import {Button} from "./UI/Button/button.jsx";
+import {Button} from "./UI/Button/Button.jsx";
 import {Banner} from "./UI/Banner/Banner.jsx";
 import {IconButton} from "./UI/Icon/IconButton/IconButton.jsx";
 import {Description} from "./UI/Description/Description.jsx";
@@ -64,11 +64,11 @@ function componentsLookup() {
                     <h3>Buttons</h3>
                     <br/>
                     <div className="display-column">
-                        <Button text={"Adventure"} onClick={() => alert("Я самая обычная кнопка)")} iconPath={ICONS.binoculars} />
+                        <Button text={"Adventure"} onClick={() => alert("Я самая обычная кнопка)")} iconpath={ICONS.binoculars} />
                         <Button text={"Adventure"} onClick={() => alert("Я жёлтая кнопка!")} color={"yellow"}/>
                         <Button text={"Adventure"} onClick={() => alert("Я оранжевая кнопка!")} color={"orange"}/>
                         <Button text={"Adventure"} onClick={() => alert("Я кнопка покруче, у меня уже есть тень!")} shadow="true" big={"true"}/>
-                        <Button onClick={() => alert("Я круглая кнопка!")} iconPath={ICONS.binoculars} round={"true"}/>
+                        <Button onClick={() => alert("Я круглая кнопка!")} iconpath={ICONS.binoculars} round={"true"}/>
                         <Button text={"Adventure"} onClick={() => alert("Я круглая жёлтая кнопка!")} round={"true"} color={"yellow"}/>
                         <Button text={"Adventure"} onClick={() => alert("Я круглая жёлтая кнопка!")} round={"true"} color={"orange"}/>
                     </div>
@@ -109,7 +109,7 @@ function componentsLookup() {
                         </Description>
                         <Description withshadow="true">
                             <div>Привет!</div>
-                            <Description size={"mini"} withshadow={true}>
+                            <Description size={"mini"} withshadow={"true"}>
                                 <div>Привет!</div>
                             </Description>
                         </Description>
