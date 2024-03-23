@@ -1,0 +1,56 @@
+﻿/* ----- COLORS AND FONTS ----- */
+
+*, *::after, *::before {
+    --blue-500: #3AB8EB;
+    --orange-500: #F9784B;
+    --yellow-500: #FDBF0F;
+    --gray-800: #3D3C3C;
+    --gray-600: #676767;
+    --gradient: linear-gradient(to bottom, #3AB8EB, #F9784B, #FDBF0F, whitesmoke);
+
+    font-family: "Syne", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    color: var(--gray-600);
+
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+input[type='number'],
+input[type="number"]:hover,
+input[type="number"]:focus {
+    appearance: none;
+    -moz-appearance: textfield;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Unica One", sans-serif;
+}
+
+.font-unica-one {
+    font-family: "Unica One", sans-serif;
+}
+
+.font-syne {
+    font-family: "Syne", sans-serif;
+}
+
+.border-solid {
+    border-style: solid;
+    border-color: var(--gray-600);
+    border-radius: 10px;
+    border-width: 2px;
+}
+
+.price {
+    color: var(--orange-500);
+}
+
