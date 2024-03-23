@@ -85,6 +85,12 @@ public class BookService(
 
     public async Task<Request> UpdateBookAsync(Book updatedBook, long publisherId)
     {
+        var context = new ValidationContext(updatedBook);
+        var results = new List<ValidationResult>();
+
+        if (!Validator.TryValidateObject(updatedBook, context, results))
+            throw new BookValidationFailedException(results);
+        
         try
         {
             var book = await bookRepository.GetByIdAsync(updatedBook.Id);
@@ -95,6 +101,7 @@ public class BookService(
 
             updatedBook.IsApproved = false;
             updatedBook.IsAvailable = false;
+            updatedBook.Id = 0;
             var bookResult = await bookRepository.AddAsync(updatedBook);
 
             // при создании запроса на изменение книги, мы хотим, чтобы до одобрения заявки пользователям

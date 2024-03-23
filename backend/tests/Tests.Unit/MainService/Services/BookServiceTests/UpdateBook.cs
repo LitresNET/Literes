@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using AutoFixture.DataAnnotations;
 using backend.Abstractions;
 using backend.Exceptions;
 using backend.Models;
@@ -9,7 +10,7 @@ using Tests.Config;
 
 namespace Tests.MainService.Services.BookServiceTests;
 
-public class DeleteBook
+public class UpdateBook
 {
     private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
     private readonly Mock<IBookRepository> _bookRepositoryMock = new();
@@ -17,22 +18,45 @@ public class DeleteBook
     private readonly Mock<IAuthorRepository> _authorRepositoryMock = new();
     private readonly Mock<ISeriesRepository> _seriesRepositoryMock = new();
 
+    public UpdateBook()
+    {
+        _authorRepositoryMock
+            .Setup(repository => repository.GetAuthorByIdAsync(It.IsAny<long>()))
+            .ReturnsAsync(new Author());
+        _seriesRepositoryMock
+            .Setup(repository => repository.GetSeriesByIdAsync(It.IsAny<long>()))
+            .ReturnsAsync(new Series());
+    }
+
     [Fact]
-    public async Task DefaultBook_ReturnsRequestDelete()
+    public async Task DefaultBook_ReturnsRequestUpdate()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
 
-        var expectedBook = fixture.Create<Book>();
+        var book = fixture
+            .Build<Book>()
+            .With(b => b.Id, 1)
+            .With(b => b.PublisherId, 1)
+            .Create();
+        var expectedBook = fixture
+            .Build<Book>()
+            .With(b => b.Id, 2)
+            .With(b => b.PublisherId, 1)
+            .Create();
         var expectedRequest = fixture
             .Build<Request>()
-            .With(r => r.RequestType, RequestType.Delete)
+            .With(r => r.RequestType, RequestType.Update)
             .With(r => r.PublisherId, expectedBook.PublisherId)
-            .With(r => r.BookId, expectedBook.Id)
+            .With(r => r.BookId, book.Id)
+            .With(r => r.UpdatedBookId, expectedBook.Id)
             .Create();
 
         _bookRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
+            .ReturnsAsync(book);
+        _bookRepositoryMock
+            .Setup(repository => repository.AddAsync(It.IsAny<Book>()))
             .ReturnsAsync(expectedBook);
         _requestRepositoryMock
             .Setup(repository => repository.AddAsync(It.IsAny<Request>()))
@@ -47,12 +71,68 @@ public class DeleteBook
         );
 
         // Act
-        var result = await service.DeleteBookAsync(expectedBook.Id, expectedBook.PublisherId);
+        var result = await service.UpdateBookAsync(expectedBook, expectedBook.PublisherId);
 
         // Assert
         Assert.Equal(expectedRequest, result);
     }
 
+    [Fact]
+    public async Task EmptyBook_ThrowsBookValidationFailedException()
+    {
+        // Arrange
+        var fixture = new Fixture()
+            .Customize(new AutoFixtureCustomization())
+            .Customize(new NoDataAnnotationsCustomization());
+
+        var book = fixture
+            .Build<Book>()
+            .Without(b => b.ContentUrl)
+            .Create();
+        var service = new BookService(
+            _bookRepositoryMock.Object,
+            _requestRepositoryMock.Object,
+            _authorRepositoryMock.Object,
+            _seriesRepositoryMock.Object,
+            _unitOfWorkMock.Object
+        );
+
+        // Act
+
+        // Assert
+        await Assert.ThrowsAsync<BookValidationFailedException>(
+            async () => await service.UpdateBookAsync(book, book.PublisherId)
+        );
+    }
+    
+    [Fact]
+    public async Task NotExistingBook_ThrowsBookNotFoundException()
+    {
+        // Arrange
+        var fixture = new Fixture().Customize(new AutoFixtureCustomization());
+
+        var book = fixture.Create<Book>();
+
+        _bookRepositoryMock
+            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
+            .ReturnsAsync((Book)null);
+
+        var service = new BookService(
+            _bookRepositoryMock.Object,
+            _requestRepositoryMock.Object,
+            _authorRepositoryMock.Object,
+            _seriesRepositoryMock.Object,
+            _unitOfWorkMock.Object
+        );
+
+        // Act
+
+        // Assert
+        await Assert.ThrowsAsync<BookNotFoundException>(
+            async () => await service.UpdateBookAsync(book, book.PublisherId)
+        );
+    }
+    
     [Fact]
     public async Task NotMatchingPublishers_ThrowsUserPermissionDeniedException()
     {
@@ -84,35 +164,7 @@ public class DeleteBook
 
         // Assert
         await Assert.ThrowsAsync<UserPermissionDeniedException>(
-            async () => await service.DeleteBookAsync(book.Id, book.PublisherId)
-        );
-    }
-
-    [Fact]
-    public async Task NotExistingBook_ThrowsBookNotFoundException()
-    {
-        // Arrange
-        var fixture = new Fixture().Customize(new AutoFixtureCustomization());
-
-        var book = fixture.Create<Book>();
-
-        _bookRepositoryMock
-            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync((Book)null);
-
-        var service = new BookService(
-            _bookRepositoryMock.Object,
-            _requestRepositoryMock.Object,
-            _authorRepositoryMock.Object,
-            _seriesRepositoryMock.Object,
-            _unitOfWorkMock.Object
-        );
-
-        // Act
-
-        // Assert
-        await Assert.ThrowsAsync<BookNotFoundException>(
-            async () => await service.DeleteBookAsync(book.Id, book.PublisherId)
+            async () => await service.UpdateBookAsync(book, book.PublisherId)
         );
     }
 
@@ -126,12 +178,6 @@ public class DeleteBook
 
         _bookRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync(book);
-        _bookRepositoryMock
-            .Setup(repository => repository.AddAsync(It.IsAny<Book>()))
-            .ReturnsAsync(book);
-        _unitOfWorkMock
-            .Setup(repository => repository.SaveChangesAsync())
             .ThrowsAsync(new DbUpdateException());
 
         var service = new BookService(
@@ -146,7 +192,7 @@ public class DeleteBook
 
         // Assert
         await Assert.ThrowsAsync<StorageUnavailableException>(
-            async () => await service.DeleteBookAsync(book.Id, book.PublisherId)
+            async () => await service.UpdateBookAsync(book, book.PublisherId)
         );
     }
 }

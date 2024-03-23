@@ -34,7 +34,10 @@ public class PublishBook
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
 
-        var expectedBook = fixture.Build<Book>().With(b => b.Id, 1).Create();
+        var expectedBook = fixture
+            .Build<Book>()
+            .With(b => b.Id, 1)
+            .Create();
         var expectedRequest = fixture
             .Build<Request>()
             .With(r => r.RequestType, RequestType.Create)
@@ -72,7 +75,10 @@ public class PublishBook
             .Customize(new AutoFixtureCustomization())
             .Customize(new NoDataAnnotationsCustomization());
 
-        var book = fixture.Build<Book>().Without(b => b.ContentUrl).Create();
+        var book = fixture
+            .Build<Book>()
+            .Without(b => b.ContentUrl)
+            .Create();
         var service = new BookService(
             _bookRepositoryMock.Object,
             _requestRepositoryMock.Object,
@@ -122,6 +128,7 @@ public class PublishBook
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
+        
         var book = fixture.Build<Book>().With(b => b.SeriesId, 1).Create();
 
         _seriesRepositoryMock

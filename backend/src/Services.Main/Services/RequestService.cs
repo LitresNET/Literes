@@ -41,7 +41,7 @@ public class RequestService(
         }
     }
 
-    public async Task<Book> AcceptUpdateRequestAsync(long requestId, bool requestAccepted)
+    public async Task<Book> AcceptUpdateRequestAsync(long requestId, bool requestAccepted = true)
     {
         try
         {

@@ -9,7 +9,7 @@ using Tests.Config;
 
 namespace Tests.MainService.Services.RequestServiceTests;
 
-public class ChangeBookState
+public class AcceptPublishDeleteRequest
 {
     private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
     private readonly Mock<IBookRepository> _bookRepositoryMock = new();
