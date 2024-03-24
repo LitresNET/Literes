@@ -1,3 +1,4 @@
+import './CartItemCard.css';
 import {Banner} from "../UI/Banner/Banner";
 import {Cover} from "../Cover/Cover";
 import {Input} from "../UI/Input/Input.jsx";

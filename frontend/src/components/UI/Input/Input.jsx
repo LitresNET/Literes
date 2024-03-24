@@ -1,3 +1,4 @@
+import './Input.css';
 import React, {useState} from "react";
 import {Icon} from "../Icon/Icon";
 import ICONS from "../../../assets/icons.jsx";
@@ -20,13 +21,11 @@ export function Input(props) {
         }
     }
 
-    let classes = ""
-
     switch (type) {
         case 'text':
             return (
                 <>
-                    <input {...props} className={classes}/>
+                    <input {...props}/>
                 </>
             )
         case 'number':
@@ -34,7 +33,7 @@ export function Input(props) {
                 <>
                     <div className="input-wrapper">
                         <Icon path={ICONS.minus_circle} onClick={() => trySetAmount(amount - 1)}/>
-                        <input type="number" value={amount} onChange={(e) => trySetAmount(e.target.value)}/>
+                        <input type="number" value={amount} onChange={(e) => trySetAmount(e.target.value)} {...props}/>
                         <Icon path={ICONS.plus_circle} onClick={() => trySetAmount(amount + 1)}/>
                     </div>
                 </>

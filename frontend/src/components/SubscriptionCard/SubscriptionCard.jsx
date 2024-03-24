@@ -1,4 +1,4 @@
-
+import './SubscriptionCard.css';
 import {Button} from "../UI/Button/Button.jsx";
 
 /// Принимает: <br/>
@@ -11,7 +11,7 @@ export function SubscriptionCard(props) {
 
     return(
         <>
-            <div className="subscription-card">
+            <div className="subscription-card" {...props}>
                 <div className="subscription-card-header">
                     <h1>Free</h1>
                 </div>

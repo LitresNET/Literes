@@ -4,20 +4,6 @@ import ICONS from "../assets/icons.jsx";
 import IMAGES from "../assets/images.jsx";
 
 import './component-assets.css'; // база - шрифты, цвета
-import './UI/Icon/Icon.css';
-import './UI/Button/Button.css';
-import './UI/Banner/Banner.css';
-import './UI/Description/Description.css';
-import './UI/Quotation/Quotation.css';
-import './UI/Input/Input.css';
-import './UI/Tag/Tag.css';
-import './UI/Checkbox/Checkbox.css';
-import './UI/DropDownSelect/DropdownSelect.css';
-import './Cover/Cover.css';
-import './BookCard/BookCard.css';
-import './CartItemCard/CartItemCard.css';
-import './ReviewCard/ReviewCard.css';
-import './SubscriptionCard/SubscriptionCard.css';
 
 import {Button} from "./UI/Button/Button.jsx";
 import {Banner} from "./UI/Banner/Banner.jsx";
@@ -149,8 +135,8 @@ function componentsLookup() {
                     <h3>Tags</h3>
                     <br/>
                     <div className="display-row">
-                        <Tag status="success" actionDescription="create success tag!"/>
-                        <Tag status="failure" actionDescription="create success tag!"/>
+                        <Tag status="success" actiondescription="create success tag!"/>
+                        <Tag status="failure" actiondescription="create success tag!"/>
                     </div>
                 </div>
                 <div id="checkboxes" className="container">
