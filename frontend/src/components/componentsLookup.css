@@ -12,6 +12,8 @@
     padding-bottom: 30px;
 
     justify-content: space-between;
+
+    gap: 20px;
 }
 
 .display-row a {
@@ -23,6 +25,8 @@
     flex-direction: column;
 
     justify-content: space-between;
+
+    gap: 20px;
 }
 
 .display-column button {
@@ -31,10 +35,4 @@
 
 #covers .display-row div {
     border-style: solid;
-}
-
-.subscription-card {
-    width: 30%;
-
-    margin-right: 50px;
 }
