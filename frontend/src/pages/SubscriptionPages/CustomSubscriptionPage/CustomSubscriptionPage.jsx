@@ -1,1 +1,5 @@
-// TODO: сверстать страницу создания кастомного плана подписки
+import './CustomSubscriptionPage.css'
+
+export default function CustomSubscriptionPage() {
+
+}

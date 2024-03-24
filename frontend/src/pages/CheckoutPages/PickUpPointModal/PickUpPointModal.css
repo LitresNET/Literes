@@ -1,0 +1,57 @@
+.modal-shadow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+}
+
+.modal-window {
+    background: white;
+    padding: 2%;
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) 3fr;
+    gap: 40px;
+
+    border-style: dashed;
+    border-radius: 20px;
+    border-color: var(--gray-800);
+    border-width: 2px;
+}
+
+.modal-pick-up-points-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.modal-pick-up-points {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    max-height: 450px;
+    width: 100%;
+    overflow-y: auto;
+    scrollbar-width: 2px;
+    scrollbar-color: var(--gray-800);
+}
+
+.modal-pick-up-points::-webkit-scrollbar {
+    width: 4px;
+}
+.modal-pick-up-points::-webkit-scrollbar-track {
+    background: #eeeeee;
+}
+.modal-pick-up-points::-webkit-scrollbar-thumb {
+    background-color: #999999;
+}
+
+.modal-map {
+    width: 100%;
+    height: 100%;
+}
