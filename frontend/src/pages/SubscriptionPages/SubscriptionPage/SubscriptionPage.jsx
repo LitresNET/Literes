@@ -1,5 +1,5 @@
 import {SubscriptionCard} from "../../../components/SubscriptionCard/SubscriptionCard";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import {Icon} from "../../../components/UI/Icon/Icon";
 import ICONS from "../../../assets/icons.jsx";
 
@@ -12,6 +12,7 @@ function subscriptionPage() {
         <SubscriptionCard key={4} style={{backgroundColor: "blue"}}/>
     ];
 
+    const carousel = useRef(null);
     const [currentBlock, setCurrentBlock] = useState([0, 0, 0]);
 
     const tripleSubscriptionBlocks = divideArray(subscriptionCards, 3);
@@ -44,13 +45,15 @@ function subscriptionPage() {
                 return 0;
             n2 += n;
         }
-        setCurrentBlock([n0, n1, n2]);
+        carousel.current.style.opacity = "0";
+        setTimeout(() => setCurrentBlock([n0, n1, n2]), 200)
+        setTimeout(() => carousel.current.style.opacity = "1", 500)
     }
 
     return (
         <div className={"adaptive"}>
             <h1 className="title">Create A Subscription Plan</h1>
-            <div className="subscriptions-carousel">
+            <div ref={carousel} className="subscriptions-carousel">
                 <div className="small-subscriptions-block">
                     {singleSubscriptionBlocks[currentBlock[0]]}
                 </div>
@@ -60,9 +63,7 @@ function subscriptionPage() {
                 <div className="big-subscriptions-block">
                     {tripleSubscriptionBlocks[currentBlock[2]]}
                 </div>
-                
             </div>
-
             <div className="subscription-navigation">
                 <Icon onClick={()=> setOtherBlock(-1)} path={ICONS.caret_left} size={"custom"} width={120} />
                 <Icon onClick={()=> setOtherBlock(1)} path={ICONS.caret_right} size={"custom"} width={120}/>

@@ -28,6 +28,8 @@
     overflow-y: hidden;
 
     padding-bottom: 20px;
+
+    transition: 0.2s linear;
 }
 
 .subscriptions-carousel > * {
