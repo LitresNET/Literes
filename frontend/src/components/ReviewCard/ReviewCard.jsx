@@ -1,3 +1,5 @@
+import './ReviewCard.css';
+
 import {Cover} from "../Cover/Cover.jsx";
 import {Banner} from "../UI/Banner/Banner";
 import IMAGES from "../../assets/images.jsx";
