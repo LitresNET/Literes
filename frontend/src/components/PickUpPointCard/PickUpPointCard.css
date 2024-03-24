@@ -1,0 +1,17 @@
+.point-stars {
+    display: flex;
+    flex-direction: row;
+}
+
+.point-address {
+    text-decoration: solid;
+    text-wrap: wrap;
+}
+
+.point-container {
+    width: 20vh;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+}

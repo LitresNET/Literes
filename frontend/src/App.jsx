@@ -1,19 +1,11 @@
-import {Route, Routes} from "react-router-dom";
-import componentsLookup from "./components/componentsLookup.jsx";
-import {ROUTES} from './router/router.jsx';
-
+import { RouterProvider } from "react-router-dom";
+import router from './router/router';
 
 function App() {
-
     return (
         <>
-            <div>
-                <Routes>
-                    <Route path={ROUTES.components} element={componentsLookup()}></Route>
-                </Routes>
-            </div>
+            <RouterProvider router={router}></RouterProvider>
         </>
-    )
-}
-
-export default App
+    );
+  }
+  export default App;

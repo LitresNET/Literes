@@ -38,7 +38,7 @@ import {DropDownInputSearch} from "./DropDownInputSearch/DropDownInputSearch";
 // Ссылка заглушка
 const googleLink = "https://google.com/"
 
-function componentsLookup() {
+function ComponentsLookup() {
 
     return (
         <>
@@ -234,4 +234,4 @@ function componentsLookup() {
     );
 }
 
-export default componentsLookup;
+export default ComponentsLookup;
