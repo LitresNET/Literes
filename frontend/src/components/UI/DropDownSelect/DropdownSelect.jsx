@@ -1,4 +1,5 @@
 // TODO: надо исправить
+import './DropdownSelect.css';
 import React, {useRef, useState} from "react";
 import {useClickOutside} from "../../../hooks/useClickOutside.js";
 import {Icon} from "../Icon/Icon";

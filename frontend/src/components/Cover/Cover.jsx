@@ -1,3 +1,5 @@
+import './Cover.css';
+
 /// Принимает: <br/>
 /// imgPath : string - путь к обложке книги
 /// size : string - размер : ["default", "mini", "big", "custom", "[any other]" = "default"]

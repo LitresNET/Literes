@@ -1,4 +1,4 @@
-
+import './SubscriptionCard.css';
 import {Button} from "../UI/Button/Button.jsx";
 
 /// Принимает: <br/>

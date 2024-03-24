@@ -1,11 +1,11 @@
-import React from "react";
+import './Icon.css';
 
 /// Принимает: <br/>
 /// path : string - путь к иконке <br/>
 /// size : string - размер ["default", "mini", "custom", "[any]" = "default"]<br/>
 /// width : number - ширина (= высота, учитывается только при size = "custom")<br/>
 export function Icon(props) {
-    const {width, path, size} = props;
+    const {width, path, size, className} = props;
 
     let w;
     switch(size) {
@@ -26,7 +26,7 @@ export function Icon(props) {
 
     return (
         <>
-            <div className="icon" style={{maxWidth : w, maxHeight: h}} {...props}>
+            <div className={"icon " + className} style={{maxWidth : w, maxHeight: h}} {...props}>
                 <img src={path} alt=""/>
             </div>
         </>

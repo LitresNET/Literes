@@ -1,3 +1,5 @@
+import './Checkbox.css';
+
 /// Принимает: <br/>
 /// id : string - id элемента (html-свойство id)
 export function Checkbox(props) {

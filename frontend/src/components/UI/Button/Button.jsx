@@ -1,3 +1,4 @@
+import './Button.css';
 import { Icon } from "../Icon/Icon.jsx";
 
 /// Принимает: <br/>
@@ -10,12 +11,13 @@ import { Icon } from "../Icon/Icon.jsx";
 /// также передаёт все параметры тега в тег button, поэтому возможна личная настройка
 /// (при передаче своих классов - перезапишет все наложенные)
 export function Button(props) {
-    const {text, iconpath, color, round, shadow, big} = props
+    const {text, className, iconpath, color, round, shadow, big} = props
     let classes = "border-solid " +
         `button-${color} ` +
         (shadow ? "button-shadow " : " ") +
         (round ? "button-rounded " : " ") +
-        (big ? "button-big " : " ");
+        (big ? "button-big " : " ") + " " +
+        className;
 
     return (
         <>
