@@ -23,7 +23,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Dto\Responses\" />
       <Folder Include="Migrations\" />
     </ItemGroup>
 

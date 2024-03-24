@@ -1,9 +1,10 @@
 using backend.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Configurations;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext
 {
     public DbSet<Author> Author { get; set; }
     public DbSet<Book> Book { get; set; }
