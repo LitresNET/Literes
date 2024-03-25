@@ -1,13 +1,16 @@
+using System.Text.Json;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace backend.Configurations;
 
 public class ApplicationDbContext : DbContext
 {
+    private IConfiguration _configuration;
     public DbSet<Author> Author { get; set; }
     public DbSet<Book> Book { get; set; }
-    public DbSet<Comment> Comment { get; set; }
     public DbSet<ReviewLike> ReviewLike { get; set; }
     public DbSet<Contract> Contract { get; set; }
     public DbSet<ExternalService> ExternalService { get; set; }
@@ -23,6 +26,11 @@ public class ApplicationDbContext : DbContext
     public ApplicationDbContext(){}
     
     public ApplicationDbContext(DbContextOptions options) : base(options) { }
+
+    public ApplicationDbContext(DbContextOptions options, IConfiguration configuration) : base(options)
+    {
+        _configuration = configuration;
+    }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -30,6 +38,13 @@ public class ApplicationDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Publisher>().ToTable("Publisher");
+
+        modelBuilder.Entity<Book>()
+            .HasOne(b => b.Publisher)
+            .WithMany(p => p.Books)
+            .HasForeignKey(b => b.PublisherId);
+        
         modelBuilder.Entity<User>()
             .HasMany(e => e.Purchased)
             .WithMany(e => e.Purchased)
@@ -58,6 +73,32 @@ public class ApplicationDbContext : DbContext
                      .SelectMany(e => e.GetForeignKeys()))
         {
             foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+        }
+        
+        SeedData(modelBuilder);
+    }
+
+    private void SeedData(ModelBuilder modelBuilder)
+    {
+        var rootPath = _configuration.GetValue<string>(WebHostDefaults.ContentRootKey) ?? "";
+        var path = Path.Combine(rootPath, "Configurations", "seedConfig.json");
+        var jsonString = File.ReadAllText(path);
+        
+        var classes = JsonSerializer.Deserialize<Dictionary<string, JsonElement[]>>(jsonString)!;
+        
+        foreach (var c in classes)
+        {
+            var type = Type.GetType($"backend.Models.{c.Key}");
+            Console.WriteLine($"element num: {c.Value.Length}");
+            var objects = c.Value.Select(element =>
+            {
+                Console.WriteLine($"Before: {type}");
+                var t = element.Deserialize(type);
+                Console.WriteLine($"After: {t}");
+                return t;
+            }).ToList();
+            
+            modelBuilder.Entity(type).HasData(objects);
         }
     }
 }

@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Configurations\DataSeeding\" />
       <Folder Include="Dto\Responses\" />
       <Folder Include="Migrations\" />
     </ItemGroup>

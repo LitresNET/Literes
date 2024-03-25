@@ -3,9 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend.Models;
 
+/// <summary>
+/// Тип запроса - создание, удаление или изменение книги
+/// </summary>
 public enum RequestType
 {
-    Create,
-    Update, 
-    Delete,
+    Create = 1,
+    Update = 2, 
+    Delete = 3,
 }
