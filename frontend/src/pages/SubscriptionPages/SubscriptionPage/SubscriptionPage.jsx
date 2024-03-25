@@ -65,8 +65,8 @@ function subscriptionPage() {
                 </div>
             </div>
             <div className="subscription-navigation">
-                <Icon onClick={()=> setOtherBlock(-1)} path={ICONS.caret_left} size={"custom"} width={120} />
-                <Icon onClick={()=> setOtherBlock(1)} path={ICONS.caret_right} size={"custom"} width={120}/>
+                <Icon onClick={()=> setOtherBlock(-1)} path={ICONS.caret_left} size={"custom"} width={50} />
+                <Icon onClick={()=> setOtherBlock(1)} path={ICONS.caret_right} size={"custom"} width={50}/>
             </div>
         </div>
     );
