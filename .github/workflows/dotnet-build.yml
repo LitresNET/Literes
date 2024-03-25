@@ -25,7 +25,7 @@ jobs:
         run: dotnet build --no-restore
       - name: Unit tests
         run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --settings ../.github/coverlet.runsettings
-        working-directory: Tests.Unit
+        working-directory: backend/tests/Tests.Unit
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         env:
@@ -39,9 +39,9 @@ jobs:
         run: dotnet build
       - name: Unit tests
         run: dotnet test --logger "trx;LogFileName=test-results.trx" --no-build
-        working-directory: Tests.Unit
+        working-directory: backend/tests/Tests.Unit
       - uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: test-results
-          path: "Tests.Unit/TestResults/*.trx"
+          path: "backend/tests/Tests.Unit/TestResults/*.trx"

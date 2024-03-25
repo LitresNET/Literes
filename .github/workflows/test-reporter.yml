@@ -13,6 +13,6 @@ jobs:
         with:
           artifact: test-results
           name: report
-          path: "Tests.Unit/TestResults/*.trx"
+          path: "backend/tests/Tests.Unit/TestResults/*.trx"
           reporter: dotnet-trx
     permissions: write-all
