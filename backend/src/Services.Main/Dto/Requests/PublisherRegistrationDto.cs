@@ -1,7 +1,6 @@
 ﻿namespace backend.Dto.Requests;
 
-public class PublisherRegistrationDto(string name, string email, string password, string contractNumber)
-    : UserRegistrationDto(name, email, password)
+public class PublisherRegistrationDto : UserRegistrationDto
 {
-    public required string ContractNumber { get; set; } = contractNumber;
+    public required string ContractNumber { get; set; }
 }

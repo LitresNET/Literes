@@ -14,17 +14,20 @@ builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlServer(builder.Configuration["Database:ConnectionString"])
 );
 builder.Services.AddDefaultIdentity<User>(options =>
-    options.User.RequireUniqueEmail = true).AddEntityFrameworkStores<ApplicationDbContext>();
+    options.User.RequireUniqueEmail = true).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
-builder.Services.AddAutoMapper(
-    cfg => cfg.AddProfile<BookMapperProfile>()
-);
+builder.Services.AddAutoMapper(cfg => 
+    cfg.AddProfile<BookMapperProfile>());
+builder.Services.AddAutoMapper(cfg =>
+    cfg.AddProfile<UserMapperProfile>());
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IMiddleware, ExceptionMiddleware>();
+//builder.Services.AddSingleton<IWebHostEnvironment, WebHostEnvironment>();
+//builder.Services.AddSingleton<IMiddleware, ExceptionMiddleware>();
 
 builder.Services.AddScoped<IRequestService, RequestService>();
 builder.Services.AddScoped<IBookService, BookService>();
@@ -38,6 +41,7 @@ builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
 
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -49,6 +53,9 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
-app.UseMiddleware<ExceptionMiddleware>();
-
+//app.UseMiddleware<ExceptionMiddleware>();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
 app.Run();

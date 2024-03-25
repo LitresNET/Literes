@@ -1,8 +1,18 @@
-﻿namespace backend.Dto.Requests;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class UserRegistrationDto(string Name, string Email, string Password)
+namespace backend.Dto.Requests;
+
+public class UserRegistrationDto
 {
-    public required string Name { get; set; }
-    public required string Email { get; set; }
-    public required string Password { get; set; }
+    [Required]
+    [Length(3, 32)]
+    public string Name { get; set; }
+    [Required]
+    [EmailAddress]
+    [Length(5, 256)]
+    public string Email { get; set; }
+    [Required]
+    [Length(8,128)]
+    [RegularExpression("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")]
+    public string Password { get; set; }
 }

@@ -14,10 +14,10 @@ public class User : IdentityUser<long>
     public long SubscriptionId { get; set; }
     [Required] 
     [MaxLength(256)]
+    [EmailAddress(ErrorMessage = "Incorrect email")] //Если захотите поменять отправку ошибок в ответе
     public override string Email { get; set; }
     [Required]
-    [MaxLength(128)]
-    public string Password { get; set; }
+    public override string PasswordHash { get; set; }
     [Required]
     [MaxLength(32)]
     public string Name { get; set; }

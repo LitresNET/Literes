@@ -1,20 +1,24 @@
-﻿using AutoMapper;
+﻿using System.ComponentModel.DataAnnotations;
+using AutoMapper;
 using backend.Abstractions;
 using backend.Dto.Requests;
 using backend.Dto.Responses;
 using backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace backend.Controllers;
 
-[Route("api/[controller]")]
+[ApiController]
 public class RegistrationController(IRegistrationService registrationService, IMapper mapper) : ControllerBase
 {
-    [HttpPost]
-    [Route("/signup")]
-    public async Task<RegisterUserResponseDto> RegisterUserAsync([FromBody] UserRegistrationDto registrationDto)
+    [HttpPost("api/[controller]/signup")]
+    public async Task<IActionResult> RegisterUserAsync([FromBody] UserRegistrationDto registrationDto)
     {
-        throw new NotImplementedException();
+        var user = mapper.Map<User>(registrationDto);
+        var result = await registrationService.RegisterUserAsync(user);
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
     
 }

@@ -7,8 +7,7 @@ namespace backend.Abstractions;
 
 public interface IRegistrationService
 {
-    public Task<RegisterUserResponseDto> RegisterUserAsync(User user, IUserRepository userRepository);
+    public Task<RegisterUserResponseDto> RegisterUserAsync(User user);
 
-    public Task<RegisterUserResponseDto> RegisterPublisherAsync(Publisher publisher,
-        IPublisherRepository publisherRepository);
+    public Task<RegisterUserResponseDto> RegisterPublisherAsync(Publisher publisher);
 }
