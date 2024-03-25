@@ -4,18 +4,33 @@ using Microsoft.AspNetCore.Identity;
 
 namespace backend.Services;
 
-public class RegistrationService(IUserRepository userRepository, IPublisherRepository publisherRepository, 
-    IUnitOfWork unitOfWork, UserManager<User> userManager) : IRegistrationService
+public class RegistrationService(IContractRepository contractRepository, IPublisherRepository publisherRepository,
+   IUnitOfWork unitOfWork, UserManager<User> userManager) : IRegistrationService
 {
 
     public async Task<IdentityResult> RegisterUserAsync(User user)
     { 
-        var result = await userManager.CreateAsync(user);
-        return result;
+        return await userManager.CreateAsync(user);
     }
 
-    public async Task<IdentityResult> RegisterPublisherAsync(Publisher publisher)
+    public async Task<IdentityResult> RegisterPublisherAsync(User user, string contractNumber)
     {
-        throw new NotImplementedException();
+        var contract = await contractRepository.GetBySerialNumberAsync(contractNumber);
+        if (contract is null)
+            return IdentityResult.Failed(new IdentityError()
+            {
+                Code = "SerialNumberNotFound",
+                Description = "Contract serial number not found"
+            });
+        var result = await userManager.CreateAsync(user);
+        if (!result.Succeeded) return result;
+        
+        await publisherRepository.AddAsync(new Publisher
+        {
+            UserId = user.Id,
+            ContractId = contract.Id
+        });
+        await unitOfWork.SaveChangesAsync();
+        return result;
     }
 }

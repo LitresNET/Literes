@@ -8,5 +8,5 @@ public interface IRegistrationService
 {
     public Task<IdentityResult> RegisterUserAsync(User user);
 
-    public Task<IdentityResult> RegisterPublisherAsync(Publisher publisher);
+    public Task<IdentityResult> RegisterPublisherAsync(User user, string contractNumber);
 }

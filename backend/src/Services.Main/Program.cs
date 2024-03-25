@@ -31,15 +31,16 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IRequestService, RequestService>();
 builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IRequestRepository, RequestRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<ISeriesRepository, SeriesRepository>();
-builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
+builder.Services.AddScoped<IContractRepository, ContractRepository>();
 
 
 var app = builder.Build();

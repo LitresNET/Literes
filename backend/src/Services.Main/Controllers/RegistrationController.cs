@@ -17,4 +17,11 @@ public class RegistrationController(IRegistrationService registrationService, IM
         return result.Succeeded ? Ok(result) : BadRequest(result);
     }
     
+    [HttpPost("api/[controller]/signup/publisher")]
+    public async Task<IActionResult> RegisterPublisherAsync([FromBody] PublisherRegistrationDto registrationDto)
+    {
+        var user = mapper.Map<User>(registrationDto);
+        var result = await registrationService.RegisterPublisherAsync(user, registrationDto.ContractNumber);
+        return result.Succeeded ? Ok(result) : BadRequest(result);
+    }
 }

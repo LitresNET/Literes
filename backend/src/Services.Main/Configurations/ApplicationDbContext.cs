@@ -32,7 +32,8 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        #region Связи
+        #region Relationships
+        
         modelBuilder.Entity<User>()
             .HasMany(e => e.Purchased)
             .WithMany(e => e.Purchased)
@@ -76,24 +77,36 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
         modelBuilder.Entity<IdentityUserToken<long>>()
             .HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
         //Исправить исправить исправить
+        
         #endregion
 
         #region DefaulValue
+        
         modelBuilder.Entity<User>()
             .Property(u => u.AvaterUrl)
             .HasDefaultValue("/"); //TODO: ссылка на дефолтную аватарку
         modelBuilder.Entity<User>()
             .Property(u => u.SubscriptionId)
             .HasDefaultValue("1");
+        
         #endregion
         
         #region HasData
+        
+        //For tests
+        modelBuilder.Entity<Contract>().HasData(new Contract
+        {
+            Id = 1,
+            SerialNumber = "worldhater1337"
+        });
+        
         modelBuilder.Entity<Subscription>().HasData(new Subscription
         {
             Id = 1,
             Type = SubscriptionType.Free,
             Price = 0,
-        }); //TODO: добавить ещё HasData на subscription и на другие типы
+        }); //TODO: добавить ещё HasData на другие обязательные типы
+        
         #endregion
         
     }

@@ -331,6 +331,13 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Contract");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            SerialNumber = "worldhater1337"
+                        });
                 });
 
             modelBuilder.Entity("backend.Models.ExternalService", b =>
