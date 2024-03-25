@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace backend.Services;
 
-public class RegistrationService(IUserRepository userRepository, IPublisherRepository publisherRepository, IUnitOfWork unitOfWork, UserManager<User> userManager) : IRegistrationService
+public class RegistrationService(IUserRepository userRepository, IPublisherRepository publisherRepository, 
+    IUnitOfWork unitOfWork, UserManager<User> userManager) : IRegistrationService
 {
 
     public async Task<IdentityResult> RegisterUserAsync(User user)

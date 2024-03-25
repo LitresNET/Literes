@@ -8,6 +8,6 @@ public class BookMapperProfile : Profile
 {
     public BookMapperProfile()
     {
-        CreateMap<BookCreateRequestDto, Book>(); //That's correct
+        CreateMap<BookCreateRequestDto, Book>();
     }
 }

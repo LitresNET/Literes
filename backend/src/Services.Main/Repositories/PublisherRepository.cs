@@ -7,28 +7,27 @@ namespace backend.Repositories;
 
 public class PublisherRepository(ApplicationDbContext appDbContext) : IPublisherRepository
 {
-    public async Task<Publisher> AddNewPublisherAsync(Publisher publisher)
+    public async Task<Publisher> AddAsync(Publisher publisher)
     {
         var result = await appDbContext.Publisher.AddAsync(publisher);
         return result.Entity;
     }
 
-    public async Task<Publisher> DeletePublisherByIdAsync(long publisherId)
-    {
-        var publisher = await appDbContext.Publisher.SingleAsync(p => p.UserId == publisherId);
+    public Publisher Delete(Publisher publisher)
+    { 
         var result = appDbContext.Publisher.Remove(publisher);
 
-        return result.Entity;;
+        return result.Entity;
     }
 
-    public async Task<Publisher?> GetPublisherByIdAsync(long publisherId)
+    public async Task<Publisher?> GetByIdAsync(long publisherId)
     {
         return await appDbContext.Publisher.FirstOrDefaultAsync(p => p.UserId == publisherId);
     }
 
-    public Publisher UpdatePublisher(Publisher publisher)
+    public Publisher Update(Publisher publisher)
     { 
         var result = appDbContext.Publisher.Update(publisher);
-        return result.Entity;;
+        return result.Entity;
     }
 }
