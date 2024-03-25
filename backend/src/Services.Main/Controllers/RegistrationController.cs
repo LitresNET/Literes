@@ -1,12 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using AutoMapper;
+﻿using AutoMapper;
 using backend.Abstractions;
 using backend.Dto.Requests;
-using backend.Dto.Responses;
 using backend.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace backend.Controllers;
 
@@ -18,7 +14,7 @@ public class RegistrationController(IRegistrationService registrationService, IM
     {
         var user = mapper.Map<User>(registrationDto);
         var result = await registrationService.RegisterUserAsync(user);
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
+        return result.Succeeded ? Ok(result) : BadRequest(result);
     }
     
 }

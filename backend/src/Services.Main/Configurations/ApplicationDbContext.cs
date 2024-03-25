@@ -96,12 +96,5 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
         }); //TODO: добавить ещё HasData на subscription и на другие типы
         #endregion
         
-        
-        #region Idnexes
-        //Для ограничений уникальности и чего-нибудь ещё
-         modelBuilder.Entity<User>()
-        .HasIndex(u => u.Email)
-        .IsUnique();
-        #endregion
     }
 }

@@ -1,13 +1,12 @@
-﻿using backend.Dto.Responses;
-using backend.Models;
-using Microsoft.Identity.Client;
+﻿using backend.Models;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace backend.Abstractions;
 
 public interface IRegistrationService
 {
-    public Task<RegisterUserResponseDto> RegisterUserAsync(User user);
+    public Task<IdentityResult> RegisterUserAsync(User user);
 
-    public Task<RegisterUserResponseDto> RegisterPublisherAsync(Publisher publisher);
+    public Task<IdentityResult> RegisterPublisherAsync(Publisher publisher);
 }
