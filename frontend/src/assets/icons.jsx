@@ -36,6 +36,7 @@ const ICONS = {
     shopping_cart: new URL('./icons/shopping_cart.svg', basePath).href,
     sign_in: new URL('./icons/sign_in.svg', basePath).href,
     sign_out: new URL('./icons/sign_out.svg', basePath).href,
+    sparkle: new URL('./icons/sparkle.svg', basePath).href,
     trash: new URL('./icons/trash.svg', basePath).href
 };
 
