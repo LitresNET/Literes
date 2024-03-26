@@ -19,11 +19,15 @@ const routes = [
           element: <CheckoutPage />,
         },
         {
+          path: 'subscription',
+          element: <CustomSubscriptionPage/>
+        },
+        {
           path: 'subscription/custom',
           element: <CustomSubscriptionPage/>
         },
           {
-            path:'home',
+            path:'',
               element: <WelcomePage />
           }
       ]
