@@ -7,14 +7,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services;
 
-public class BookService(IBookRepository bookRepository, IRequestRepository requestRepository, IUnitOfWork unitOfWork)
-    : IBookService
+public class BookService(
+    IBookRepository bookRepository,
+    IRequestRepository requestRepository,
+    IAuthorRepository authorRepository,
+    ISeriesRepository seriesRepository,
+    IUnitOfWork unitOfWork
+) : IBookService
 {
-    public async Task<Request> PublishNewBookAsync(
-        Book book,
-        IAuthorRepository authorRepository,
-        ISeriesRepository seriesRepository
-    )
+    public async Task<Request> PublishNewBookAsync(Book book)
     {
         var context = new ValidationContext(book);
         var results = new List<ValidationResult>();
@@ -31,7 +32,7 @@ public class BookService(IBookRepository bookRepository, IRequestRepository requ
                 throw new SeriesNotFoundException(book.SeriesId);
 
             book.IsApproved = false;
-            var bookResult = await bookRepository.AddNewBookAsync(book);
+            var bookResult = await bookRepository.AddAsync(book);
 
             var request = new Request
             {
@@ -40,7 +41,7 @@ public class BookService(IBookRepository bookRepository, IRequestRepository requ
                 PublisherId = book.PublisherId
             };
 
-            var requestResult = await requestRepository.AddNewRequestAsync(request);
+            var requestResult = await requestRepository.AddAsync(request);
             await unitOfWork.SaveChangesAsync();
 
             return requestResult;
@@ -55,7 +56,7 @@ public class BookService(IBookRepository bookRepository, IRequestRepository requ
     {
         try
         {
-            var book = await bookRepository.GetBookByIdAsync(bookId);
+            var book = await bookRepository.GetByIdAsync(bookId);
             if (book is null)
                 throw new BookNotFoundException(bookId);
             if (book.PublisherId != publisherId)
@@ -63,7 +64,7 @@ public class BookService(IBookRepository bookRepository, IRequestRepository requ
 
             book.IsApproved = false;
             book.IsAvailable = false;
-            bookRepository.UpdateBook(book);
+            bookRepository.Update(book);
 
             var request = new Request
             {
@@ -72,7 +73,49 @@ public class BookService(IBookRepository bookRepository, IRequestRepository requ
                 BookId = bookId
             };
 
-            var result = await requestRepository.AddNewRequestAsync(request);
+            var result = await requestRepository.AddAsync(request);
+            await unitOfWork.SaveChangesAsync();
+            return result;
+        }
+        catch (DbUpdateException e)
+        {
+            throw new StorageUnavailableException(e.Message);
+        }
+    }
+
+    public async Task<Request> UpdateBookAsync(Book updatedBook, long publisherId)
+    {
+        var context = new ValidationContext(updatedBook);
+        var results = new List<ValidationResult>();
+
+        if (!Validator.TryValidateObject(updatedBook, context, results))
+            throw new BookValidationFailedException(results);
+        
+        try
+        {
+            var book = await bookRepository.GetByIdAsync(updatedBook.Id);
+            if (book is null)
+                throw new BookNotFoundException(updatedBook.Id);
+            if (book.PublisherId != publisherId)
+                throw new UserPermissionDeniedException($"Update book {book.Id}");
+
+            updatedBook.IsApproved = false;
+            updatedBook.IsAvailable = false;
+            updatedBook.Id = 0;
+            var bookResult = await bookRepository.AddAsync(updatedBook);
+
+            // при создании запроса на изменение книги, мы хотим, чтобы до одобрения заявки пользователям
+            // была доступна старая версия книги. При потдверждении запроса на изменение, старая версия
+            // книги удаляется, становится доступна новая
+            var request = new Request
+            {
+                RequestType = RequestType.Update,
+                PublisherId = updatedBook.PublisherId,
+                BookId = book.Id,
+                UpdatedBookId = updatedBook.Id
+            };
+
+            var result = await requestRepository.AddAsync(request);
             await unitOfWork.SaveChangesAsync();
             return result;
         }

@@ -26,8 +26,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//builder.Services.AddSingleton<IWebHostEnvironment, WebHostEnvironment>();
-//builder.Services.AddSingleton<IMiddleware, ExceptionMiddleware>();
+// TODO: Исправить
+// builder.Services.AddSingleton<IWebHostEnvironment, WebHostEnvironment>();
+// builder.Services.AddSingleton<IMiddleware, ExceptionMiddleware>();
+
+builder.Services.AddScoped<ExceptionMiddleware>();
+
 
 builder.Services.AddScoped<IRequestService, RequestService>();
 builder.Services.AddScoped<IBookService, BookService>();

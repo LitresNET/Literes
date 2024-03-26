@@ -10,6 +10,7 @@ public class Request
     public long Id { get; set; }
     [Required]
     public long BookId { get; set; }
+    public long UpdatedBookId { get; set; }
     [Required]
     public long PublisherId { get; set; }
     
@@ -17,4 +18,5 @@ public class Request
     [Required]
     public RequestType RequestType { get; set; }
     public Book? Book { get; set; }
+    public Book? UpdatedBook { get; set; }
 }

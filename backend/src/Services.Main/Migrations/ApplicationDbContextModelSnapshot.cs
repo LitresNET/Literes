@@ -451,12 +451,17 @@ namespace backend.Migrations
 
                     b.Property<int>("RequestType")
                         .HasColumnType("int");
+                        
+                    b.Property<long>("UpdatedBookId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
 
                     b.HasIndex("PublisherId");
+
+                    b.HasIndex("UpdatedBookId");
 
                     b.ToTable("Request");
                 });
@@ -789,7 +794,7 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.Request", b =>
                 {
                     b.HasOne("backend.Models.Book", "Book")
-                        .WithMany("Requests")
+                        .WithMany()
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -800,9 +805,17 @@ namespace backend.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("backend.Models.Book", "UpdatedBook")
+                        .WithMany()
+                        .HasForeignKey("UpdatedBookId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Book");
 
                     b.Navigation("Publisher");
+
+                    b.Navigation("UpdatedBook");
                 });
 
             modelBuilder.Entity("backend.Models.Review", b =>
@@ -870,8 +883,6 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Book", b =>
                 {
-                    b.Navigation("Requests");
-
                     b.Navigation("Reviews");
                 });
 

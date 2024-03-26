@@ -1,10 +1,8 @@
-using System.Security.Claims;
 using AutoMapper;
 using backend.Abstractions;
 using backend.Dto.Requests;
 using backend.Exceptions;
 using backend.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
@@ -13,16 +11,12 @@ namespace backend.Controllers;
 public class BookController(IBookService bookService, IMapper mapper) : ControllerBase
 {
     [HttpPost("api/[controller]/publish")]
-    public async Task<ActionResult<Request>> PublishBook(
-        [FromBody] BookCreateRequestDto bookDto,
-        [FromServices] IAuthorRepository authorRepository,
-        [FromServices] ISeriesRepository seriesRepository
-    )
+    public async Task<ActionResult<Request>> PublishBook([FromBody] BookCreateRequestDto bookDto)
     {
         try
         {
             var book = mapper.Map<Book>(bookDto);
-            var result = await bookService.PublishNewBookAsync(book, authorRepository, seriesRepository);
+            var result = await bookService.PublishNewBookAsync(book);
             return Ok(result);
         }
         catch (BookValidationFailedException e)
@@ -46,6 +40,26 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
         try
         {
             var result = await bookService.DeleteBookAsync(id, publisherId);
+            return Ok(result);
+        }
+        catch (BookNotFoundException e)
+        {
+            return NotFound(e);
+        }
+        catch (UserPermissionDeniedException e)
+        {
+            return Forbid(e.Message);
+        }
+    }
+    
+    [HttpPatch]
+    [Route("{id}/update")]
+    public async Task<IActionResult> UpdateBook([FromBody] BookUpdateRequestDto bookDto, [FromQuery] long publisherId)
+    {
+        try
+        {
+            var book = mapper.Map<Book>(bookDto);
+            var result = await bookService.UpdateBookAsync(book, publisherId);
             return Ok(result);
         }
         catch (BookNotFoundException e)
