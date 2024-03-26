@@ -2,14 +2,22 @@ using System.ComponentModel.DataAnnotations;
 
 namespace backend.Models;
 
-public class Publisher
+public class Publisher : User
 {
-    [Key] public long UserId { get; set; }
-    [Required] public long ContractId { get; set; }
-
-    public List<Book> Books { get; set; }
-    public List<Request> Requests { get; set; }
+    /// <summary>
+    /// Ссылка на договор, заключенный Литрес с издателем
+    /// </summary>
+    [Required] 
+    public long ContractId { get; set; }
     public Contract Contract { get; set; }
-    public User User { get; set; }
-
+    
+    /// <summary>
+    /// Список выпущенных книг
+    /// </summary>
+    public List<Book> Books { get; set; }
+    
+    /// <summary>
+    /// Список созданных запросов на изменение состояния книг 
+    /// </summary>
+    public List<Request> Requests { get; set; }
 }
