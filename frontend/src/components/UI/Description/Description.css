@@ -1,0 +1,13 @@
+.description {
+    display: flex;
+    flex-direction: column;
+    padding: 26px;
+    height: fit-content;
+
+    justify-content: center;
+    text-align: left;
+}
+
+.description-mini {
+    padding: 15px 10px;
+}

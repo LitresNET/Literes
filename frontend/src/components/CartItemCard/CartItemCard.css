@@ -1,0 +1,42 @@
+.cart-item-card {
+    display: flex;
+    flex-direction: row;
+    min-width: 420px;
+}
+
+.cart-item-card-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    justify-content: space-between;
+
+    margin-left: 30px;
+}
+
+.cart-item-card-group:first-child {
+    font-size: 16px;
+}
+
+.cart-item-card-group > :last-child {
+    margin-top: 12px;
+}
+
+.cart-item-card-group .price {
+    font-size: 24px;
+}
+
+.cart-item-card-info-author {
+    color: #3D3C3C80;
+}
+
+.cart-item-card-row {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cart-item-card-row > {
+}

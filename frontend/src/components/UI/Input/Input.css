@@ -1,0 +1,40 @@
+input {
+    border-radius: 20px;
+    border-color: var(--gray-800);
+
+    padding: 12px 20px;
+    font-size: 14px;
+}
+
+.input-wrapper {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: space-between;
+
+    max-width: 120px;
+}
+
+.input-wrapper input {
+    text-align: center;
+
+    max-width: 60px;
+    padding: 10px;
+    margin: 0 10px;
+
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+input[type="text"] {
+    box-shadow: var(--yellow-500) 12px 14px 0;
+    transition: 0.2s linear;
+}
+
+input[type="text"]:focus {
+    box-shadow: var(--orange-500) 12px 14px 0;
+}
+
+
+
