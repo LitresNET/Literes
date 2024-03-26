@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Configurations;
 
@@ -11,9 +12,11 @@ using backend.Configurations;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240325062714_Identity")]
+    partial class Identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -331,13 +334,6 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Contract");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            SerialNumber = "worldhater1337"
-                        });
                 });
 
             modelBuilder.Entity("backend.Models.ExternalService", b =>
@@ -561,14 +557,6 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Subscription");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            Price = 0,
-                            Type = 0
-                        });
                 });
 
             modelBuilder.Entity("backend.Models.User", b =>
@@ -623,8 +611,12 @@ namespace backend.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("Password")
                         .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -637,9 +629,7 @@ namespace backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("SubscriptionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasDefaultValue(1L);
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");

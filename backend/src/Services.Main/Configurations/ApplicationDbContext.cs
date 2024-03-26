@@ -1,9 +1,11 @@
 using backend.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Configurations;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, long>
 {
     public DbSet<Author> Author { get; set; }
     public DbSet<Book> Book { get; set; }
@@ -30,6 +32,8 @@ public class ApplicationDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        #region Relationships
+        
         modelBuilder.Entity<User>()
             .HasMany(e => e.Purchased)
             .WithMany(e => e.Purchased)
@@ -53,11 +57,57 @@ public class ApplicationDbContext : DbContext
                 l => l.HasOne(typeof(ExternalService)).WithMany().HasForeignKey("ExternalServiceId").HasPrincipalKey(nameof(Models.ExternalService.Id)),
                 r => r.HasOne(typeof(User)).WithMany().HasForeignKey("UserId").HasPrincipalKey(nameof(Models.User.Id)),
                 j => j.HasKey("UserId", "ExternalServiceId"));;
-
+        
         foreach (var foreignKey in modelBuilder.Model.GetEntityTypes()
                      .SelectMany(e => e.GetForeignKeys()))
         {
             foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
         }
+        
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Subscription)
+            .WithMany(s => s.Users);
+        
+        
+        //Связи, которые сгенерировал chatgpt. Вставил на пох, просто чтобы работало TODO: исправить (для аутентификации и авторизации)
+        modelBuilder.Entity<IdentityUserLogin<long>>()
+            .HasKey(l => new { l.LoginProvider, l.ProviderKey }); 
+        modelBuilder.Entity<IdentityUserRole<long>>()
+            .HasKey(r => new { r.UserId, r.RoleId });
+        modelBuilder.Entity<IdentityUserToken<long>>()
+            .HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
+        //Исправить исправить исправить
+        
+        #endregion
+
+        #region DefaulValue
+        
+        modelBuilder.Entity<User>()
+            .Property(u => u.AvaterUrl)
+            .HasDefaultValue("/"); //TODO: ссылка на дефолтную аватарку
+        modelBuilder.Entity<User>()
+            .Property(u => u.SubscriptionId)
+            .HasDefaultValue("1");
+        
+        #endregion
+        
+        #region HasData
+        
+        //For tests
+        modelBuilder.Entity<Contract>().HasData(new Contract
+        {
+            Id = 1,
+            SerialNumber = "worldhater1337"
+        });
+        
+        modelBuilder.Entity<Subscription>().HasData(new Subscription
+        {
+            Id = 1,
+            Type = SubscriptionType.Free,
+            Price = 0,
+        }); //TODO: добавить ещё HasData на другие обязательные типы
+        
+        #endregion
+        
     }
 }
