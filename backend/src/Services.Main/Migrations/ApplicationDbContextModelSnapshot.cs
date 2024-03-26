@@ -34,7 +34,7 @@ namespace backend.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("Favourites");
+                    b.ToTable("Favourites", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<long>", b =>
@@ -56,7 +56,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
@@ -78,7 +78,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RoleClaims");
+                    b.ToTable("RoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
@@ -100,7 +100,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserClaims");
+                    b.ToTable("UserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
@@ -119,7 +119,7 @@ namespace backend.Migrations
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
-                    b.ToTable("UserLogins");
+                    b.ToTable("UserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
@@ -132,7 +132,7 @@ namespace backend.Migrations
 
                     b.HasKey("UserId", "RoleId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
@@ -151,7 +151,7 @@ namespace backend.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("UserTokens");
+                    b.ToTable("UserTokens", (string)null);
                 });
 
             modelBuilder.Entity("Purchased", b =>
@@ -166,7 +166,7 @@ namespace backend.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("Purchased");
+                    b.ToTable("Purchased", (string)null);
                 });
 
             modelBuilder.Entity("UserExternalServices", b =>
@@ -181,7 +181,7 @@ namespace backend.Migrations
 
                     b.HasIndex("ExternalServiceId");
 
-                    b.ToTable("UserExternalServices");
+                    b.ToTable("UserExternalServices", (string)null);
                 });
 
             modelBuilder.Entity("backend.Models.Author", b =>
@@ -204,7 +204,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Author");
+                    b.ToTable("Author", (string)null);
 
                     b.HasData(
                         new
@@ -308,7 +308,7 @@ namespace backend.Migrations
 
                     b.HasIndex("SeriesId");
 
-                    b.ToTable("Book");
+                    b.ToTable("Book", (string)null);
 
                     b.HasData(
                         new
@@ -523,7 +523,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Contract");
+                    b.ToTable("Contract", (string)null);
 
                     b.HasData(
                         new
@@ -558,7 +558,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ExternalService");
+                    b.ToTable("ExternalService", (string)null);
 
                     b.HasData(
                         new
@@ -593,7 +593,7 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Order", (string)null);
 
                     b.HasData(
                         new
@@ -693,7 +693,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PickupPoint");
+                    b.ToTable("PickupPoint", (string)null);
 
                     b.HasData(
                         new
@@ -796,7 +796,7 @@ namespace backend.Migrations
 
                     b.HasIndex("UpdatedBookId");
 
-                    b.ToTable("Request");
+                    b.ToTable("Request", (string)null);
 
                     b.HasData(
                         new
@@ -901,7 +901,7 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Review");
+                    b.ToTable("Review", (string)null);
 
                     b.HasData(
                         new
@@ -1118,7 +1118,7 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ReviewLike");
+                    b.ToTable("ReviewLike", (string)null);
 
                     b.HasData(
                         new
@@ -1360,7 +1360,7 @@ namespace backend.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Series");
+                    b.ToTable("Series", (string)null);
 
                     b.HasData(
                         new
@@ -1392,7 +1392,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Subscription");
+                    b.ToTable("Subscription", (string)null);
 
                     b.HasData(
                         new
@@ -1522,7 +1522,7 @@ namespace backend.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("User");
+                    b.ToTable("User", (string)null);
 
                     b.UseTptMappingStrategy();
 

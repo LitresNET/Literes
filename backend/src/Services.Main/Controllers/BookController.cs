@@ -3,6 +3,7 @@ using backend.Abstractions;
 using backend.Dto.Requests;
 using backend.Exceptions;
 using backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
@@ -33,6 +34,7 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
         }
     }
 
+    [Authorize]
     [HttpDelete]
     [Route("{id}/delete")]
     public async Task<IActionResult> DeleteBook([FromRoute] long id, [FromQuery] long publisherId)
@@ -48,7 +50,7 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
         }
         catch (UserPermissionDeniedException e)
         {
-            return Forbid(e.Message);
+            return Forbid();
         }
     }
     

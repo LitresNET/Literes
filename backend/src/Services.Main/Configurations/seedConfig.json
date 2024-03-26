@@ -360,57 +360,6 @@
       "Wallet": 4.50
     }
   ],
-  "Request": 
-  [
-    {
-      "Id": 1,
-      "RequestType": 1,
-      "BookId": 1,
-      "PublisherId": 9
-    },
-    {
-      "Id": 2,
-      "RequestType": 1,
-      "BookId": 2,
-      "PublisherId": 9
-    },
-    {
-      "Id": 3,
-      "RequestType": 1,
-      "BookId": 3,
-      "PublisherId": 9
-    },
-    {
-      "Id": 4,
-      "RequestType": 2,
-      "BookId": 4,
-      "PublisherId": 9
-    },
-    {
-      "Id": 5,
-      "RequestType": 1,
-      "BookId": 5,
-      "PublisherId": 9
-    },
-    {
-      "Id": 6,
-      "RequestType": 2,
-      "BookId": 6,
-      "PublisherId": 9
-    },
-    {
-      "Id": 7,
-      "RequestType": 1,
-      "BookId": 7,
-      "PublisherId": 9
-    },
-    {
-      "Id": 8,
-      "RequestType": 3,
-      "BookId": 8,
-      "PublisherId": 10
-    }
-  ],
   "Review": 
   [
     {

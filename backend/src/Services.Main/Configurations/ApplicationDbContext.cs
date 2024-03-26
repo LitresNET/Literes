@@ -123,14 +123,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
         foreach (var c in classes)
         {
             var type = Type.GetType($"backend.Models.{c.Key}");
-            Console.WriteLine($"element num: {c.Value.Length}");
-            var objects = c.Value.Select(element =>
-            {
-                Console.WriteLine($"Before: {type}");
-                var t = element.Deserialize(type);
-                Console.WriteLine($"After: {t}");
-                return t;
-            }).ToList();
+            var objects = c.Value.Select(element => element.Deserialize(type)).ToList();
             
             modelBuilder.Entity(type).HasData(objects);
         }

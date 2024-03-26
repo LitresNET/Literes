@@ -10,7 +10,7 @@ public class UserMapperProfile : Profile
     public UserMapperProfile()
     {
         CreateMap<UserRegistrationDto, User>()
-            .AfterMap((dto, user) => user.PasswordHash = new PasswordHasher<User>()
-                .HashPassword(user, dto.Password)).ForMember("UserName", opt => opt.MapFrom(dto => dto.Email));
+            .ForMember("UserName", opt => opt.MapFrom(dto => dto.Email))
+            .ForMember("PasswordHash", opt => opt.MapFrom(dto => dto.Password));
     }
 }

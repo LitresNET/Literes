@@ -646,21 +646,6 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Request",
-                columns: new[] { "Id", "BookId", "PublisherId", "RequestType", "UpdatedBookId" },
-                values: new object[,]
-                {
-                    { 1L, 1L, 9L, 1, 0L },
-                    { 2L, 2L, 9L, 1, 0L },
-                    { 3L, 3L, 9L, 1, 0L },
-                    { 4L, 4L, 9L, 2, 0L },
-                    { 5L, 5L, 9L, 1, 0L },
-                    { 6L, 6L, 9L, 2, 0L },
-                    { 7L, 7L, 9L, 1, 0L },
-                    { 8L, 8L, 10L, 3, 0L }
-                });
-
-            migrationBuilder.InsertData(
                 table: "Review",
                 columns: new[] { "Id", "BookId", "Content", "CreatedAt", "ParentReviewId", "Rating", "UserId" },
                 values: new object[,]

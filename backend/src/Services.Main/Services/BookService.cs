@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using backend.Abstractions;
 using backend.Exceptions;
 using backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
@@ -51,7 +52,7 @@ public class BookService(
             throw new StorageUnavailableException(e.Message);
         }
     }
-
+    
     public async Task<Request> DeleteBookAsync(long bookId, long publisherId)
     {
         try

@@ -1,3 +1,4 @@
+using System.Text;
 using backend.Abstractions;
 using backend.Configurations;
 using backend.Configurations.Mapping;
@@ -5,8 +6,10 @@ using backend.Middlewares;
 using backend.Models;
 using backend.Repositories;
 using backend.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,23 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 );
 builder.Services.AddDefaultIdentity<User>(options =>
     options.User.RequireUniqueEmail = true).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
+builder.Services.AddAuthorization();
+builder
+    .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["JwtSecurityKey"])
+            ),
+            ValidateIssuerSigningKey = true,
+        };
+    });
 
 builder.Services.AddAutoMapper(cfg => 
     cfg.AddProfile<BookMapperProfile>());
@@ -55,12 +75,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
-//app.UseMiddleware<ExceptionMiddleware>();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
+
 app.Run();
