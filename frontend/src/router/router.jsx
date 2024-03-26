@@ -35,9 +35,6 @@ const routes = [
           element: <SearchPage />
         },
         {
-          path: ''
-        },
-        {
           path: 'subscription',
           element: <SubscriptionPage />
         },
