@@ -14,6 +14,12 @@ public class AcceptPublishDeleteRequest
     private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
     private readonly Mock<IBookRepository> _bookRepositoryMock = new();
     private readonly Mock<IRequestRepository> _requestRepositoryMock = new();
+    
+    private RequestService RequestService => new RequestService(
+        _requestRepositoryMock.Object,
+        _bookRepositoryMock.Object,
+        _unitOfWorkMock.Object
+    );
 
     [Theory]
     [InlineData(RequestType.Create, true, true, true)]
@@ -43,7 +49,7 @@ public class AcceptPublishDeleteRequest
             .Setup(repository => repository.Update(It.IsAny<Book>()))
             .Returns(expectedBook);
 
-        var service = new RequestService(_requestRepositoryMock.Object, _bookRepositoryMock.Object, _unitOfWorkMock.Object);
+        var service = RequestService;
 
         // Act
         var result = await service.AcceptPublishDeleteRequestAsync(expectedRequest.Id, requestAccepted);
@@ -69,7 +75,7 @@ public class AcceptPublishDeleteRequest
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
             .ReturnsAsync((Request)null);
 
-        var service = new RequestService(_requestRepositoryMock.Object, _bookRepositoryMock.Object, _unitOfWorkMock.Object);
+        var service = RequestService;
 
         // Act
 
@@ -97,8 +103,8 @@ public class AcceptPublishDeleteRequest
         _unitOfWorkMock
             .Setup(repository => repository.SaveChangesAsync())
             .ThrowsAsync(new DbUpdateException());
-        
-        var service = new RequestService(_requestRepositoryMock.Object, _bookRepositoryMock.Object, _unitOfWorkMock.Object);
+
+        var service = RequestService;
 
         // Act
 

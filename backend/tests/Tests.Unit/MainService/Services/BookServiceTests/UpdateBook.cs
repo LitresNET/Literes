@@ -18,6 +18,14 @@ public class UpdateBook
     private readonly Mock<IAuthorRepository> _authorRepositoryMock = new();
     private readonly Mock<ISeriesRepository> _seriesRepositoryMock = new();
 
+    private BookService BookService => new BookService(
+        _bookRepositoryMock.Object,
+        _requestRepositoryMock.Object,
+        _authorRepositoryMock.Object,
+        _seriesRepositoryMock.Object,
+        _unitOfWorkMock.Object
+    );
+
     public UpdateBook()
     {
         _authorRepositoryMock
@@ -62,13 +70,7 @@ public class UpdateBook
             .Setup(repository => repository.AddAsync(It.IsAny<Request>()))
             .ReturnsAsync(expectedRequest);
 
-        var service = new BookService(
-            _bookRepositoryMock.Object,
-            _requestRepositoryMock.Object,
-            _authorRepositoryMock.Object,
-            _seriesRepositoryMock.Object,
-            _unitOfWorkMock.Object
-        );
+        var service = BookService;
 
         // Act
         var result = await service.UpdateBookAsync(expectedBook, expectedBook.PublisherId);
@@ -89,13 +91,7 @@ public class UpdateBook
             .Build<Book>()
             .Without(b => b.ContentUrl)
             .Create();
-        var service = new BookService(
-            _bookRepositoryMock.Object,
-            _requestRepositoryMock.Object,
-            _authorRepositoryMock.Object,
-            _seriesRepositoryMock.Object,
-            _unitOfWorkMock.Object
-        );
+        var service = BookService;
 
         // Act
 
@@ -117,13 +113,7 @@ public class UpdateBook
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync((Book)null);
 
-        var service = new BookService(
-            _bookRepositoryMock.Object,
-            _requestRepositoryMock.Object,
-            _authorRepositoryMock.Object,
-            _seriesRepositoryMock.Object,
-            _unitOfWorkMock.Object
-        );
+        var service = BookService;
 
         // Act
 
@@ -152,13 +142,7 @@ public class UpdateBook
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedBook);
 
-        var service = new BookService(
-            _bookRepositoryMock.Object,
-            _requestRepositoryMock.Object,
-            _authorRepositoryMock.Object,
-            _seriesRepositoryMock.Object,
-            _unitOfWorkMock.Object
-        );
+        var service = BookService;
 
         // Act
 
@@ -180,13 +164,7 @@ public class UpdateBook
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ThrowsAsync(new DbUpdateException());
 
-        var service = new BookService(
-            _bookRepositoryMock.Object,
-            _requestRepositoryMock.Object,
-            _authorRepositoryMock.Object,
-            _seriesRepositoryMock.Object,
-            _unitOfWorkMock.Object
-        );
+        var service = BookService;
 
         // Act
 

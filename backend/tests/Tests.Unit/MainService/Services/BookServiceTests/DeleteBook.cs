@@ -16,6 +16,14 @@ public class DeleteBook
     private readonly Mock<IRequestRepository> _requestRepositoryMock = new();
     private readonly Mock<IAuthorRepository> _authorRepositoryMock = new();
     private readonly Mock<ISeriesRepository> _seriesRepositoryMock = new();
+    
+    private BookService BookService => new BookService(
+        _bookRepositoryMock.Object,
+        _requestRepositoryMock.Object,
+        _authorRepositoryMock.Object,
+        _seriesRepositoryMock.Object,
+        _unitOfWorkMock.Object
+    );
 
     [Fact]
     public async Task DefaultBook_ReturnsRequestDelete()
@@ -38,13 +46,7 @@ public class DeleteBook
             .Setup(repository => repository.AddAsync(It.IsAny<Request>()))
             .ReturnsAsync(expectedRequest);
 
-        var service = new BookService(
-            _bookRepositoryMock.Object,
-            _requestRepositoryMock.Object,
-            _authorRepositoryMock.Object,
-            _seriesRepositoryMock.Object,
-            _unitOfWorkMock.Object
-        );
+        var service = BookService;
 
         // Act
         var result = await service.DeleteBookAsync(expectedBook.Id, expectedBook.PublisherId);
@@ -72,13 +74,7 @@ public class DeleteBook
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedBook);
 
-        var service = new BookService(
-            _bookRepositoryMock.Object,
-            _requestRepositoryMock.Object,
-            _authorRepositoryMock.Object,
-            _seriesRepositoryMock.Object,
-            _unitOfWorkMock.Object
-        );
+        var service = BookService;
 
         // Act
 
@@ -100,13 +96,7 @@ public class DeleteBook
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync((Book)null);
 
-        var service = new BookService(
-            _bookRepositoryMock.Object,
-            _requestRepositoryMock.Object,
-            _authorRepositoryMock.Object,
-            _seriesRepositoryMock.Object,
-            _unitOfWorkMock.Object
-        );
+        var service = BookService;
 
         // Act
 
@@ -134,14 +124,8 @@ public class DeleteBook
             .Setup(repository => repository.SaveChangesAsync())
             .ThrowsAsync(new DbUpdateException());
 
-        var service = new BookService(
-            _bookRepositoryMock.Object,
-            _requestRepositoryMock.Object,
-            _authorRepositoryMock.Object,
-            _seriesRepositoryMock.Object,
-            _unitOfWorkMock.Object
-        );
-
+        var service = BookService;
+        
         // Act
 
         // Assert
