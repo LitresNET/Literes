@@ -1,4 +1,3 @@
-
 import "./SearchPage.css";
 import {DropDownInputSearch} from "../../../components/DropDownInputSearch/DropDownInputSearch";
 import {useRef, useState} from "react";
