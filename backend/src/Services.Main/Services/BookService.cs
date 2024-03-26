@@ -28,8 +28,8 @@ public class BookService(
             if (await authorRepository.GetAuthorByIdAsync(book.AuthorId) is null)
                 throw new AuthorNotFoundException(book.AuthorId);
 
-            if (await seriesRepository.GetSeriesByIdAsync(book.SeriesId) is null)
-                throw new SeriesNotFoundException(book.SeriesId);
+            if (book.SeriesId is not null && await seriesRepository.GetSeriesByIdAsync((long)book.SeriesId) is null)
+                throw new SeriesNotFoundException((long)book.SeriesId);
 
             book.IsApproved = false;
             var bookResult = await bookRepository.AddAsync(book);

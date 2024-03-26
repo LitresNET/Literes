@@ -1,12 +1,17 @@
+using System.Text.Json;
 using backend.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace backend.Configurations;
 
 public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, long>
 {
+    private IConfiguration _configuration;
+    
     public DbSet<Author> Author { get; set; }
     public DbSet<Book> Book { get; set; }
     public DbSet<Comment> Comment { get; set; }
@@ -26,6 +31,12 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
     
     public ApplicationDbContext(DbContextOptions options) : base(options) { }
     
+    public ApplicationDbContext(DbContextOptions options, IConfiguration configuration) : base(options)
+    {
+        _configuration = configuration;
+    }
+
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
     }
@@ -33,6 +44,13 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         #region Relationships
+        
+        modelBuilder.Entity<Publisher>().ToTable("Publisher");
+
+        modelBuilder.Entity<Book>()
+            .HasOne(b => b.Publisher)
+            .WithMany(p => p.Books)
+            .HasForeignKey(b => b.PublisherId);
         
         modelBuilder.Entity<User>()
             .HasMany(e => e.Purchased)
@@ -109,5 +127,30 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
         
         #endregion
         
+        SeedData(modelBuilder);
+    }
+
+    private void SeedData(ModelBuilder modelBuilder)
+    {
+        var rootPath = _configuration.GetValue<string>(WebHostDefaults.ContentRootKey) ?? "";
+        var path = Path.Combine(rootPath, "Configurations", "seedConfig.json");
+        var jsonString = File.ReadAllText(path);
+        
+        var classes = JsonSerializer.Deserialize<Dictionary<string, JsonElement[]>>(jsonString)!;
+        
+        foreach (var c in classes)
+        {
+            var type = Type.GetType($"backend.Models.{c.Key}");
+            Console.WriteLine($"element num: {c.Value.Length}");
+            var objects = c.Value.Select(element =>
+            {
+                Console.WriteLine($"Before: {type}");
+                var t = element.Deserialize(type);
+                Console.WriteLine($"After: {t}");
+                return t;
+            }).ToList();
+            
+            modelBuilder.Entity(type).HasData(objects);
+        }
     }
 }
