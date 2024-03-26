@@ -26,9 +26,6 @@ public class RequestService(
             request.Book!.IsAvailable =
                 request.RequestType == RequestType.Create ? requestAccepted : !requestAccepted;
 
-            if (request.RequestType == RequestType.Update)
-                await bookRepository.DeleteByIdAsync(request.BookId);
-
             var bookResult = bookRepository.Update(request.Book);
             var requestResult = requestRepository.Delete(request);
 
