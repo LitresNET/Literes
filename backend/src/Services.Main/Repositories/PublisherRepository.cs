@@ -22,7 +22,7 @@ public class PublisherRepository(ApplicationDbContext appDbContext) : IPublisher
 
     public async Task<Publisher?> GetByIdAsync(long publisherId)
     {
-        return await appDbContext.Publisher.FirstOrDefaultAsync(p => p.UserId == publisherId);
+        return await appDbContext.Publisher.FirstOrDefaultAsync(p => p.Id == publisherId);
     }
 
     public Publisher Update(Publisher publisher)

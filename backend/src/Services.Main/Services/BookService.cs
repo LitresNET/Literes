@@ -38,7 +38,7 @@ public class BookService(
             {
                 RequestType = RequestType.Create,
                 BookId = bookResult.Id,
-                PublisherId = book.PublisherId
+                PublisherId = (long) book.PublisherId!
             };
 
             var requestResult = await requestRepository.AddAsync(request);
@@ -110,7 +110,7 @@ public class BookService(
             var request = new Request
             {
                 RequestType = RequestType.Update,
-                PublisherId = updatedBook.PublisherId,
+                PublisherId = (long) updatedBook.PublisherId!,
                 BookId = book.Id,
                 UpdatedBookId = updatedBook.Id
             };

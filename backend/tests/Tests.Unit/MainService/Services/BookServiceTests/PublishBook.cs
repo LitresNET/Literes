@@ -122,8 +122,8 @@ public class PublishBook
         var book = fixture.Build<Book>().With(b => b.SeriesId, 1).Create();
 
         _seriesRepositoryMock
-            .Setup(repository => repository.GetSeriesByIdAsync(book.SeriesId))
-            .ReturnsAsync((Series)null);
+            .Setup(repository => repository.GetSeriesByIdAsync((long) book.SeriesId!))
+            .ReturnsAsync((Series) null);
 
         var service = BookService;
 

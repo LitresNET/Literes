@@ -49,7 +49,7 @@ public class DeleteBook
         var service = BookService;
 
         // Act
-        var result = await service.DeleteBookAsync(expectedBook.Id, expectedBook.PublisherId);
+        var result = await service.DeleteBookAsync(expectedBook.Id, (long) expectedBook.PublisherId!);
 
         // Assert
         Assert.Equal(expectedRequest, result);
@@ -80,7 +80,7 @@ public class DeleteBook
 
         // Assert
         await Assert.ThrowsAsync<UserPermissionDeniedException>(
-            async () => await service.DeleteBookAsync(book.Id, book.PublisherId)
+            async () => await service.DeleteBookAsync(book.Id, (long) book.PublisherId!)
         );
     }
 
@@ -102,7 +102,7 @@ public class DeleteBook
 
         // Assert
         await Assert.ThrowsAsync<BookNotFoundException>(
-            async () => await service.DeleteBookAsync(book.Id, book.PublisherId)
+            async () => await service.DeleteBookAsync(book.Id, (long) book.PublisherId!)
         );
     }
 
@@ -130,7 +130,7 @@ public class DeleteBook
 
         // Assert
         await Assert.ThrowsAsync<StorageUnavailableException>(
-            async () => await service.DeleteBookAsync(book.Id, book.PublisherId)
+            async () => await service.DeleteBookAsync(book.Id, (long) book.PublisherId!)
         );
     }
 }

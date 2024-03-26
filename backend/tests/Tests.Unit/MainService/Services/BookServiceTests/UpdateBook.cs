@@ -73,7 +73,7 @@ public class UpdateBook
         var service = BookService;
 
         // Act
-        var result = await service.UpdateBookAsync(expectedBook, expectedBook.PublisherId);
+        var result = await service.UpdateBookAsync(expectedBook, (long) expectedBook.PublisherId!);
 
         // Assert
         Assert.Equal(expectedRequest, result);
@@ -97,7 +97,7 @@ public class UpdateBook
 
         // Assert
         await Assert.ThrowsAsync<BookValidationFailedException>(
-            async () => await service.UpdateBookAsync(book, book.PublisherId)
+            async () => await service.UpdateBookAsync(book, (long) book.PublisherId!)
         );
     }
     
@@ -119,7 +119,7 @@ public class UpdateBook
 
         // Assert
         await Assert.ThrowsAsync<BookNotFoundException>(
-            async () => await service.UpdateBookAsync(book, book.PublisherId)
+            async () => await service.UpdateBookAsync(book, (long) book.PublisherId!)
         );
     }
     
@@ -148,7 +148,7 @@ public class UpdateBook
 
         // Assert
         await Assert.ThrowsAsync<UserPermissionDeniedException>(
-            async () => await service.UpdateBookAsync(book, book.PublisherId)
+            async () => await service.UpdateBookAsync(book, (long) book.PublisherId!)
         );
     }
 
@@ -170,7 +170,7 @@ public class UpdateBook
 
         // Assert
         await Assert.ThrowsAsync<StorageUnavailableException>(
-            async () => await service.UpdateBookAsync(book, book.PublisherId)
+            async () => await service.UpdateBookAsync(book, (long) book.PublisherId!)
         );
     }
 }

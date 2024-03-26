@@ -27,7 +27,7 @@ public class RegistrationService(IContractRepository contractRepository, IPublis
         
         await publisherRepository.AddAsync(new Publisher
         {
-            UserId = user.Id,
+            Id = user.Id,
             ContractId = contract.Id
         });
         await unitOfWork.SaveChangesAsync();

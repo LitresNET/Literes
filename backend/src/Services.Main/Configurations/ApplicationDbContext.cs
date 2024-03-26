@@ -14,7 +14,6 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
     
     public DbSet<Author> Author { get; set; }
     public DbSet<Book> Book { get; set; }
-    public DbSet<Comment> Comment { get; set; }
     public DbSet<ReviewLike> ReviewLike { get; set; }
     public DbSet<Contract> Contract { get; set; }
     public DbSet<ExternalService> ExternalService { get; set; }
@@ -43,6 +42,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // TODO: в конфиг
         #region Relationships
         
         modelBuilder.Entity<Publisher>().ToTable("Publisher");
@@ -101,29 +101,11 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
         #region DefaulValue
         
         modelBuilder.Entity<User>()
-            .Property(u => u.AvaterUrl)
+            .Property(u => u.AvatarUrl)
             .HasDefaultValue("/"); //TODO: ссылка на дефолтную аватарку
         modelBuilder.Entity<User>()
             .Property(u => u.SubscriptionId)
-            .HasDefaultValue("1");
-        
-        #endregion
-        
-        #region HasData
-        
-        //For tests
-        modelBuilder.Entity<Contract>().HasData(new Contract
-        {
-            Id = 1,
-            SerialNumber = "worldhater1337"
-        });
-        
-        modelBuilder.Entity<Subscription>().HasData(new Subscription
-        {
-            Id = 1,
-            Type = SubscriptionType.Free,
-            Price = 0,
-        }); //TODO: добавить ещё HasData на другие обязательные типы
+            .HasDefaultValue((long?) 1);
         
         #endregion
         
