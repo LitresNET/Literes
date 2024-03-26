@@ -1,22 +1,23 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace backend.Models;
 
 using System.ComponentModel.DataAnnotations;
 
 [Table("User")]
-public class User
+public class User : IdentityUser<long>
 {
     [Key] 
-    public long Id { get; set; }
+    public override long Id { get; set; }
     [Required]
     public long SubscriptionId { get; set; }
     [Required] 
     [MaxLength(256)]
-    public string Email { get; set; }
+    [EmailAddress(ErrorMessage = "Incorrect email")] //Если захотите поменять отправку ошибок в ответе
+    public override string Email { get; set; }
     [Required]
-    [MaxLength(128)]
-    public string Password { get; set; }
+    public override string PasswordHash { get; set; }
     [Required]
     [MaxLength(32)]
     public string Name { get; set; }

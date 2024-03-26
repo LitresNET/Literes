@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
 
-[Route("api/[controller]")]
+[ApiController]
 public class RequestController(IRequestService requestService) : ControllerBase
 {
     [HttpPost]
-    [Route("{id}/accept")]
+    [Route("api/[controller]/accept/{id}")]
     public async Task<IActionResult> AcceptPublishRequest([FromRoute] long id)
     {
         try

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Configurations;
 
@@ -11,9 +12,11 @@ using backend.Configurations;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240325100515_AddHasDataForUsers")]
+    partial class AddHasDataForUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -331,13 +334,6 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Contract");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            SerialNumber = "worldhater1337"
-                        });
                 });
 
             modelBuilder.Entity("backend.Models.ExternalService", b =>
@@ -451,17 +447,12 @@ namespace backend.Migrations
 
                     b.Property<int>("RequestType")
                         .HasColumnType("int");
-                        
-                    b.Property<long>("UpdatedBookId")
-                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
 
                     b.HasIndex("PublisherId");
-
-                    b.HasIndex("UpdatedBookId");
 
                     b.ToTable("Request");
                 });
@@ -628,8 +619,12 @@ namespace backend.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("Password")
                         .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -794,7 +789,7 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.Request", b =>
                 {
                     b.HasOne("backend.Models.Book", "Book")
-                        .WithMany()
+                        .WithMany("Requests")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -805,17 +800,9 @@ namespace backend.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.Book", "UpdatedBook")
-                        .WithMany()
-                        .HasForeignKey("UpdatedBookId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Book");
 
                     b.Navigation("Publisher");
-
-                    b.Navigation("UpdatedBook");
                 });
 
             modelBuilder.Entity("backend.Models.Review", b =>
@@ -883,6 +870,8 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Book", b =>
                 {
+                    b.Navigation("Requests");
+
                     b.Navigation("Reviews");
                 });
 

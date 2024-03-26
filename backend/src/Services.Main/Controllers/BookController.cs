@@ -7,11 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
 
-[Route("api/[controller]")]
+[ApiController]
 public class BookController(IBookService bookService, IMapper mapper) : ControllerBase
 {
-    [HttpPost]
-    [Route("/publish")]
+    [HttpPost("api/[controller]/publish")]
     public async Task<ActionResult<Request>> PublishBook([FromBody] BookCreateRequestDto bookDto)
     {
         try
