@@ -4,6 +4,10 @@ import CheckoutPage from "../pages/CheckoutPages/CheckoutPage/CheckoutPage";
 import CustomSubscriptionPage from "../pages/SubscriptionPages/CustomSubscriptionPage/CustomSubscriptionPage";
 import MainLayout from "../layouts/MainLayout/MainLayout";
 import WelcomePage from "../pages/MainPages/WelcomePage/WelcomePage";
+import SignInPage from "../pages/AuthPages/SignInPage/SignInPage.jsx";
+import SignUpPage from "../pages/AuthPages/SignUpPage/SignUpPage.jsx";
+import SearchPage from "../pages/MainPages/SearchPage/SearchPage";
+import SubscriptionPage from "../pages/SubscriptionPages/SubscriptionPage/SubscriptionPage";
 
 const routes = [
     {
@@ -12,19 +16,31 @@ const routes = [
     },
     {
       path: '/',
-      element: <MainLayout/>,
+      element: <MainLayout />,
       children: [
         {
           path: 'checkout',
           element: <CheckoutPage />,
         },
         {
+          path: 'signin',
+          element: <SignInPage />
+        },
+        {
+          path: 'signup',
+          element: <SignUpPage />
+        },
+        {
+          path: 'search',
+          element: <SearchPage />
+        },
+        {
           path: 'subscription',
-          element: <CustomSubscriptionPage/>
+          element: <SubscriptionPage />
         },
         {
           path: 'subscription/custom',
-          element: <CustomSubscriptionPage/>
+          element: <CustomSubscriptionPage />
         },
           {
             path:'',
