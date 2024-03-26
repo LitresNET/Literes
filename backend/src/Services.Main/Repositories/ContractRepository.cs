@@ -15,7 +15,7 @@ public class ContractRepository(ApplicationDbContext appDbContext)  : IContractR
 
     public Contract Update(Contract contract)
     {
-        var result = appDbContext.Contract.Remove(contract);
+        var result = appDbContext.Contract.Update(contract);
         return result.Entity;
     }
 
