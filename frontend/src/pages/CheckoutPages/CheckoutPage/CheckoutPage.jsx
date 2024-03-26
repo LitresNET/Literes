@@ -1,8 +1,8 @@
 import "./CheckoutPage.css";
 import {useState} from "react";
-import {Button} from "../../components/UI/Button/Button.jsx";
-import {Banner} from "../../components/UI/Banner/Banner.jsx";
-import {Input} from "../../components/UI/Input/Input.jsx";
+import {Button} from "../../../components/UI/Button/Button.jsx";
+import {Banner} from "../../../components/UI/Banner/Banner.jsx";
+import {Input} from "../../../components/UI/Input/Input.jsx";
 
 
 const CheckoutPage = () => {
