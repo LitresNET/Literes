@@ -1,1 +1,39 @@
-/* стили CustomSubscriptionPage */
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.page-features-wrapper {
+    display: flex;
+}
+
+.page-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 50%;
+}
+
+.page-description {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    gap: 30px;
+}
+
+.cheque-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 40vw;
+}
+
+.cheque-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
