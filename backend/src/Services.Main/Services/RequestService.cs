@@ -49,9 +49,12 @@ public class RequestService(
             request.UpdatedBook!.IsApproved = requestAccepted;
             request.UpdatedBook!.IsAvailable = requestAccepted;
 
-            await bookRepository.DeleteByIdAsync(request.BookId);
+            request.Book = request.UpdatedBook;
+            request.Book.Id = request.BookId;
 
-            var bookResult = bookRepository.Update(request.UpdatedBook);
+            await bookRepository.DeleteByIdAsync(request.UpdatedBookId);
+
+            var bookResult = bookRepository.Update(request.Book);
             var requestResult = requestRepository.Delete(request);
 
             await unitOfWork.SaveChangesAsync();
