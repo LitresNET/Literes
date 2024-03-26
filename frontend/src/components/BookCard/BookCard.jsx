@@ -1,4 +1,5 @@
 // TODO: Заменить заглушки
+import './BookCard.css';
 import {Cover} from "../Cover/Cover.jsx";
 import IMAGES from "../../assets/images.jsx";
 import {Button} from "../UI/Button/Button.jsx";
