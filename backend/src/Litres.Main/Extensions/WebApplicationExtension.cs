@@ -1,10 +1,10 @@
-﻿using backend.Middlewares;
-using backend.Services;
-using Litres.Data.Abstractions.Repositories;
+﻿using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Repositories;
+using Litres.Main.Middlewares;
+using Litres.Main.Services;
 
-namespace backend.Extensions;
+namespace Litres.Main.Extensions;
 
 public static class WebApplicationExtension
 {

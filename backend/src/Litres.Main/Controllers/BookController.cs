@@ -1,12 +1,12 @@
 using AutoMapper;
 using Litres.Data.Abstractions.Services;
-using backend.Exceptions;
 using Litres.Data.Dto.Requests;
 using Litres.Data.Models;
+using Litres.Main.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace backend.Controllers;
+namespace Litres.Main.Controllers;
 
 [ApiController]
 public class BookController(IBookService bookService, IMapper mapper) : ControllerBase

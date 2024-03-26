@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
-using backend.Exceptions;
+using Litres.Main.Exceptions;
 
-namespace backend.Middlewares;
+namespace Litres.Main.Middlewares;
 
 public class ExceptionMiddleware(IWebHostEnvironment webHostEnvironment) : IMiddleware
 {

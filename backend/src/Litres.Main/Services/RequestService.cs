@@ -1,10 +1,10 @@
-﻿using backend.Exceptions;
-using Litres.Data.Abstractions.Repositories;
+﻿using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Models;
+using Litres.Main.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.Services;
+namespace Litres.Main.Services;
 
 public class RequestService(
     IRequestRepository requestRepository,

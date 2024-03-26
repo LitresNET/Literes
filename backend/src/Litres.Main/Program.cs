@@ -1,25 +1,27 @@
+using System.Globalization;
 using System.Text;
-using backend.Extensions;
-using backend.Middlewares;
 using Litres.Data.Models;
 using Litres.Data.Configurations;
 using Litres.Data.Configurations.Mapping;
+using Litres.Main.Extensions;
+using Litres.Main.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(
-    options => options.UseSqlServer(builder.Configuration["Database:ConnectionString"])
-);
+    options => options.UseSqlServer(builder.Configuration["Database:ConnectionString"]));
 builder.Services.AddDefaultIdentity<User>(options =>
-    options.User.RequireUniqueEmail = true).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+    options.User.RequireUniqueEmail = true)
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthorization();
-builder
-    .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -34,11 +36,8 @@ builder
         };
     });
 
-builder.Services.AddAutoMapper(cfg => 
-    cfg.AddProfile<BookMapperProfile>());
-builder.Services.AddAutoMapper(cfg =>
-    cfg.AddProfile<UserMapperProfile>());
-
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<BookMapperProfile>());
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<UserMapperProfile>());
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

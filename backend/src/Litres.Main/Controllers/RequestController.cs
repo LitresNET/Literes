@@ -1,16 +1,15 @@
-using System.Security.Claims;
-using backend.Exceptions;
 using Litres.Data.Abstractions.Services;
-using Microsoft.AspNetCore.Authorization;
+using Litres.Main.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace backend.Controllers;
+namespace Litres.Main.Controllers;
 
 [ApiController]
+[Route("api/[controller]")]
 public class RequestController(IRequestService requestService) : ControllerBase
 {
     [HttpPost]
-    [Route("api/[controller]/accept/{id}")]
+    [Route("accept/{id}")]
     public async Task<IActionResult> AcceptPublishRequest([FromRoute] long id)
     {
         try
@@ -25,7 +24,7 @@ public class RequestController(IRequestService requestService) : ControllerBase
     }
 
     [HttpPost]
-    [Route("{id}/decline")]
+    [Route("decline/{id}")]
     public async Task<IActionResult> DeclinePublishRequest([FromRoute] long id)
     {
         try

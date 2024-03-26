@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace backend.Exceptions;
+namespace Litres.Main.Exceptions;
 
 public class BookValidationFailedException(List<ValidationResult> results)
     : Exception(

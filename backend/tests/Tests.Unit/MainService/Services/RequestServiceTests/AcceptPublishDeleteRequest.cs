@@ -1,9 +1,8 @@
 ﻿using AutoFixture;
-using backend.Exceptions;
-using backend.Services;
 using Litres.Data.Abstractions.Repositories;
-using Litres.Data.Abstractions.Services;
 using Litres.Data.Models;
+using Litres.Main.Exceptions;
+using Litres.Main.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Tests.Config;
@@ -16,7 +15,7 @@ public class AcceptPublishDeleteRequest
     private readonly Mock<IBookRepository> _bookRepositoryMock = new();
     private readonly Mock<IRequestRepository> _requestRepositoryMock = new();
     
-    private RequestService RequestService => new RequestService(
+    private RequestService RequestService => new(
         _requestRepositoryMock.Object,
         _bookRepositoryMock.Object,
         _unitOfWorkMock.Object

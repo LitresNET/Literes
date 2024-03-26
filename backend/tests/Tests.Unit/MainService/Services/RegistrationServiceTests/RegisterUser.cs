@@ -1,5 +1,4 @@
 ﻿using Litres.Data.Abstractions.Repositories;
-using Litres.Data.Abstractions.Services;
 using Moq;
 
 namespace Tests.MainService.Services.RegistrationServiceTests;

@@ -38,10 +38,15 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        base.OnConfiguring(optionsBuilder);
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<User>()
+            .Property(u => u.Wallet)
+            .HasPrecision(18, 4);
+        
         // TODO: в конфиг
         #region Relationships
         

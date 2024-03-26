@@ -1,16 +1,17 @@
 ﻿using AutoMapper;
-using backend.Exceptions;
-using Litres.Data.Dto.Requests;
 using Litres.Data.Abstractions.Services;
+using Litres.Data.Dto.Requests;
 using Litres.Data.Models;
+using Litres.Main.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace backend.Controllers;
+namespace Litres.Main.Controllers;
 
 [ApiController]
+[Route("api/[controller]")]
 public class UserController(IRegistrationService registrationService, IMapper mapper) : ControllerBase
 {
-    [HttpPost("api/[controller]/signup")]
+    [HttpPost("signup")]
     public async Task<IActionResult> RegisterUserAsync([FromBody] UserRegistrationDto registrationDto)
     {
         var user = mapper.Map<User>(registrationDto);
@@ -18,7 +19,7 @@ public class UserController(IRegistrationService registrationService, IMapper ma
         return result.Succeeded ? Ok(result) : BadRequest(result);
     }
     
-    [HttpPost("api/[controller]/signup/publisher")]
+    [HttpPost("signup/publisher")]
     public async Task<IActionResult> RegisterPublisherAsync([FromBody] PublisherRegistrationDto registrationDto)
     {
         var user = mapper.Map<User>(registrationDto);
@@ -26,7 +27,7 @@ public class UserController(IRegistrationService registrationService, IMapper ma
         return result.Succeeded ? Ok(result) : BadRequest(result);
     }
 
-    [HttpPost("api/[controller]/signin")]
+    [HttpPost("signin")]
     public async Task<IActionResult> LoginUserAsync([FromBody] UserLoginDto loginDto)
     {
         try
