@@ -9,5 +9,6 @@ public class BookMapperProfile : Profile
     public BookMapperProfile()
     {
         CreateMap<Book, BookCreateRequestDto>();
+        CreateMap<Book, BookUpdateRequestDto>();
     }
 }

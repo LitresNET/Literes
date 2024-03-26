@@ -1,8 +1,8 @@
-﻿namespace Tests.MainService.Controllers.RequestControllerTests;
+﻿namespace IntegrationTests.MainService.Controllers.RequestControllerTests;
 
-public class DeclinePublishRequest
+public class ChangeBookState
 {
-    public async Task DefaultRequest_ReturnsNotPublishedBook_200()
+    public async Task DefaultRequest_ReturnsNotDeletedBook_200()
     {
         throw new NotImplementedException();
     }
