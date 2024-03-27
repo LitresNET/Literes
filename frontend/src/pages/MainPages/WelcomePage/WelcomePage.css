@@ -1,1 +1,124 @@
-/* стили WelcomePage */
+.main-page {
+    display: flex;
+    flex-direction: column;
+    margin: 0 5vw;
+    gap: 200px;
+}
+
+.head {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    gap: 15vw;
+}
+
+.head-content {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.head-content h1 {
+    font-size: 64px;
+    color: var(--gray-800);
+}
+
+.head-button {
+    display: flex;
+    width: 200px;
+}
+
+.head-button > * {
+    color: var(--gray-800);
+}
+
+.head-image {
+    box-shadow: var(--blue-500) -25px -25px 0;
+    border-top-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+}
+
+.fraction-trending-books {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+}
+
+.fraction-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.fraction-subtitle {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.trending-books {
+    display: flex;
+    flex-direction: row;
+    margin-top: 30px;
+    max-width: 90vw;
+}
+.trending-books > :first-child {
+    display: flex;
+    flex-direction: row;
+    padding: 60px;
+    overflow-y: scroll;
+    gap: 40px;
+}
+
+.fraction-categories {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 75px;
+}
+
+.category-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px
+}
+
+.categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
+    justify-items: center;
+    align-items: center;
+    justify-content: start;
+    align-content: center;
+    grid-gap: 62px;
+}
+
+.fraction-concrete-category {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+
+    gap: 50px;
+}
+
+.category-content {
+    display: flex;
+    flex-direction: row;
+    overflow-y: scroll;
+
+    max-width: 100%;
+
+    gap: 75px;
+}
+
+
+
