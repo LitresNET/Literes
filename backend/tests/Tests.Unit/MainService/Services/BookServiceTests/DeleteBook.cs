@@ -1,8 +1,9 @@
 ﻿using AutoFixture;
-using backend.Abstractions;
+using Litres.Data.Abstractions.Repositories;
 using backend.Exceptions;
-using backend.Models;
 using backend.Services;
+using Litres.Data.Abstractions.Services;
+using Litres.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Tests.Config;
