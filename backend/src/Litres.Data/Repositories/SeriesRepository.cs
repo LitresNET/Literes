@@ -1,4 +1,4 @@
-﻿using Litres.Data.Abstractions.Services;
+﻿using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Configurations;
 using Litres.Data.Models;
 using Microsoft.EntityFrameworkCore;

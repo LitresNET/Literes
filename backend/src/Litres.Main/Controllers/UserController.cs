@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend.Controllers;
 
 [ApiController]
-public class RegistrationController(IRegistrationService registrationService, IMapper mapper) : ControllerBase
+public class UserController(IRegistrationService registrationService, IMapper mapper) : ControllerBase
 {
     [HttpPost("api/[controller]/signup")]
     public async Task<IActionResult> RegisterUserAsync([FromBody] UserRegistrationDto registrationDto)

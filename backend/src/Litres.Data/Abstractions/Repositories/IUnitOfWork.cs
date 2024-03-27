@@ -1,4 +1,4 @@
-﻿namespace Litres.Data.Abstractions.Services;
+﻿namespace Litres.Data.Abstractions.Repositories;
 
 /// <summary>
 /// В EntityFramework есть особенность - метод SaveChanges можно вызвать только 1 раз в рамках
@@ -8,7 +8,8 @@
 /// Тем самым сохранение изменений в бд делегируется не репозиторию, а сервису
 /// </summary>
 
-public interface IUnitOfWork
+//TODO: Добавить IAsyncDisposable
+public interface IUnitOfWork : IDisposable
 {
     public Task SaveChangesAsync();
 }

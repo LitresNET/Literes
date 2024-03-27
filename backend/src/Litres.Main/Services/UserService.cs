@@ -10,7 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Services;
 
-public class RegistrationService(
+public class UserService(
     IContractRepository contractRepository, 
     IPublisherRepository publisherRepository, 
     IUnitOfWork unitOfWork, 
@@ -63,8 +63,8 @@ public class RegistrationService(
 
         if (user.SubscriptionId is not null)
         {
-            claims.Add(new(CustomClaimTypes.SubscriptionTypeId, user.SubscriptionId.ToString()!));
-            claims.Add(new(CustomClaimTypes.SubscriptionActiveUntil, user.SubscriptionActiveUntil.ToShortDateString()));
+            claims.Add(new Claim(CustomClaimTypes.SubscriptionTypeId, user.SubscriptionId.ToString()!));
+            claims.Add(new Claim(CustomClaimTypes.SubscriptionActiveUntil, user.SubscriptionActiveUntil.ToShortDateString()));
         }
         
         var jwt = new JwtSecurityToken(

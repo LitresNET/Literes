@@ -22,7 +22,7 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
         }
         catch (BookValidationFailedException e)
         {
-            return UnprocessableEntity(e);
+            return UnprocessableEntity(e.Message);
         }
         catch (AuthorNotFoundException e)
         {
