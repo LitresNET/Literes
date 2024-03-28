@@ -4,6 +4,7 @@ import CheckoutPage from "../pages/CheckoutPages/CheckoutPage/CheckoutPage";
 import CustomSubscriptionPage from "../pages/SubscriptionPages/CustomSubscriptionPage/CustomSubscriptionPage";
 import MainLayout from "../layouts/MainLayout/MainLayout";
 import WelcomePage from "../pages/MainPages/WelcomePage/WelcomePage";
+import SubscriptionPage from "../pages/SubscriptionPages/SubscriptionPage/SubscriptionPage";
 
 const routes = [
     {
@@ -22,10 +23,14 @@ const routes = [
           path: 'subscription/custom',
           element: <CustomSubscriptionPage/>
         },
-          {
-            path:'home',
-              element: <WelcomePage />
-          }
+        {
+          path:'home',
+            element: <WelcomePage />
+        },
+        {
+          path: 'subscription',
+          element: <SubscriptionPage />
+        }
       ]
     },
   ];
