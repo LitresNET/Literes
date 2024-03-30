@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace Litres.Main.Migrations
+namespace Litres.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial_Create : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -201,7 +201,7 @@ namespace Litres.Main.Migrations
                     AvatarUrl = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false, defaultValue: "/"),
                     SubscriptionActiveUntil = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsModerator = table.Column<bool>(type: "bit", nullable: false),
-                    Wallet = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Wallet = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
                     SubscriptionId = table.Column<long>(type: "bigint", nullable: true, defaultValue: 1L),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -567,13 +567,13 @@ namespace Litres.Main.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "AvatarUrl", "ConcurrencyStamp", "Email", "EmailConfirmed", "IsModerator", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "SubscriptionActiveUntil", "SubscriptionId", "TwoFactorEnabled", "UserName", "Wallet" },
                 values: new object[,]
                 {
-                    { 1L, 0, "", "c2eb1e57-f4e5-4eb0-8bd9-b8e6568728c5", "a@mail.com", false, false, false, null, "User A", null, null, "aaa", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, false, null, 0.00m },
-                    { 2L, 0, "", "43ebf569-010b-40a7-89be-f80b64d4e189", "b@mail.com", false, false, false, null, "User B", null, null, "bbb", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, false, null, 3.59m },
-                    { 3L, 0, "", "30a40fa2-a6d4-4d85-ac9e-2a3d830128e0", "c@mail.com", false, false, false, null, "User C", null, null, "ccc", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3L, false, null, 10.00m },
-                    { 4L, 0, "", "4ec97b3b-5b11-4e8f-b35b-14e95b085d56", "d@mail.com", false, false, false, null, "User D", null, null, "ddd", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4L, false, null, 5.32m },
-                    { 5L, 0, "", "0f97be1e-4c74-4c4d-a395-7420a907fe91", "e@mail.com", false, false, false, null, "User E", null, null, "eee", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 5L, false, null, 1.99m },
-                    { 6L, 0, "", "d1090d20-710b-40ab-91ce-831c1a4e2cc7", "f@mail.com", false, false, false, null, "User F", null, null, "fff", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 6L, false, null, 7.25m },
-                    { 7L, 0, "", "8ed2d651-fe28-45ad-a933-47d5a6cd9246", "g@mail.com", false, false, false, null, "User G", null, null, "ggg", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, false, null, 0.50m }
+                    { 1L, 0, "", "40cec47f-57a4-462a-893b-d1a63f6fcd6d", "a@mail.com", false, false, false, null, "User A", null, null, "aaa", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, false, null, 0.00m },
+                    { 2L, 0, "", "6f4e7aea-53c7-4641-ba5f-8c8f19722066", "b@mail.com", false, false, false, null, "User B", null, null, "bbb", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, false, null, 3.59m },
+                    { 3L, 0, "", "995f15d6-6156-44f3-b3a1-fb3c8d3d570b", "c@mail.com", false, false, false, null, "User C", null, null, "ccc", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3L, false, null, 10.00m },
+                    { 4L, 0, "", "9885f582-8c0e-4076-9581-d64502420e73", "d@mail.com", false, false, false, null, "User D", null, null, "ddd", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4L, false, null, 5.32m },
+                    { 5L, 0, "", "50564fd9-8933-4757-881f-839d41db2efd", "e@mail.com", false, false, false, null, "User E", null, null, "eee", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 5L, false, null, 1.99m },
+                    { 6L, 0, "", "35eddc2e-c9ca-4640-ad1f-9175a2cb93d9", "f@mail.com", false, false, false, null, "User F", null, null, "fff", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 6L, false, null, 7.25m },
+                    { 7L, 0, "", "f47e3699-9c6f-463e-b8b2-c3cecbbc69ea", "g@mail.com", false, false, false, null, "User G", null, null, "ggg", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, false, null, 0.50m }
                 });
 
             migrationBuilder.InsertData(
@@ -581,9 +581,9 @@ namespace Litres.Main.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "AvatarUrl", "ConcurrencyStamp", "Email", "EmailConfirmed", "IsModerator", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "SubscriptionActiveUntil", "TwoFactorEnabled", "UserName", "Wallet" },
                 values: new object[,]
                 {
-                    { 8L, 0, "", "fe2c0033-9960-4a20-b16d-7dc68584387e", "h@mail.com", false, true, false, null, "User H", null, null, "hhh", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 0m },
-                    { 9L, 0, "aa", "f165ed6b-6d61-40d5-9a63-813dc1edda01", "pA@mail.com", false, false, false, null, "Publisher A", null, null, "aaa", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 6.78m },
-                    { 10L, 0, "bb", "405af72b-763f-4b91-8dd1-6e34d498e118", "pB@mail.com", false, false, false, null, "Publisher B", null, null, "bbb", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 4.50m }
+                    { 8L, 0, "", "79302e5d-c9b0-4dee-9b7a-5e486f638a23", "h@mail.com", false, true, false, null, "User H", null, null, "hhh", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 0m },
+                    { 9L, 0, "aa", "1ca0e690-1fd2-42bb-bfa6-a3d86807ff18", "pA@mail.com", false, false, false, null, "Publisher A", null, null, "aaa", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 6.78m },
+                    { 10L, 0, "bb", "ea884586-2655-495b-9d04-48d0744e52c4", "pB@mail.com", false, false, false, null, "Publisher B", null, null, "bbb", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 4.50m }
                 });
 
             migrationBuilder.InsertData(
