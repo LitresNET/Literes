@@ -27,10 +27,10 @@ public class Subscription
     /// Если список пустой, то предоставляется полноправный доступ (доступ ко всем книгам)
     /// </summary>
     [Required]
-    public List<Genre> BooksAllowed { get; set; }
+    public virtual List<Genre> BooksAllowed { get; set; }
 
     /// <summary>
     /// Пользователи, приобретшие подписку
     /// </summary>
-    public List<User> Users { get; set; }
+    public virtual List<User> Users { get; set; }
 }

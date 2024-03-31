@@ -22,10 +22,10 @@ public class Series
     /// </summary>
     [Required]
     public long AuthorId { get; set; }
-    public Author Author { get; set; }
+    public virtual Author Author { get; set; }
     
     /// <summary>
     /// Список книг, входящих в серию
     /// </summary>
-    public List<Book> Books { get; set; }
+    public virtual List<Book> Books { get; set; }
 }

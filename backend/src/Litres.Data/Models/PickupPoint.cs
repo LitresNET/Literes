@@ -33,5 +33,5 @@ public class PickupPoint
     /// <summary>
     /// Заказы, прибывающие на данный пункт выдачи
     /// </summary>
-    public List<Order> Orders { get; set; }
+    public virtual List<Order> Orders { get; set; }
 }

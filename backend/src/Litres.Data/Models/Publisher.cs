@@ -9,15 +9,15 @@ public class Publisher : User
     /// </summary>
     [Required] 
     public long ContractId { get; set; }
-    public Contract Contract { get; set; }
+    public virtual Contract Contract { get; set; }
     
     /// <summary>
     /// Список выпущенных книг
     /// </summary>
-    public List<Book> Books { get; set; }
+    public virtual List<Book> Books { get; set; }
     
     /// <summary>
     /// Список созданных запросов на изменение состояния книг 
     /// </summary>
-    public List<Request> Requests { get; set; }
+    public virtual List<Request> Requests { get; set; }
 }

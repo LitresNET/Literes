@@ -84,39 +84,39 @@ public class Book
     /// <summary>
     /// Список жанров книги
     /// </summary>
-    public List<Genre> BookGenres { get; set; }
+    public virtual List<Genre> BookGenres { get; set; }
     
     /// <summary>
     /// Ссылка на автора книги
     /// </summary>
     [Required]
     public long AuthorId { get; set; }
-    public Author? Author { get; set; }
+    public virtual Author? Author { get; set; }
     
     /// <summary>
     /// Ссылка на серию книг, если книга относится к таковой
     /// </summary>
     public long? SeriesId { get; set; }
-    public Series? Series { get; set; }
+    public virtual Series? Series { get; set; }
     
     /// <summary>
     /// Ссылка на издателя
     /// </summary>
     public long? PublisherId { get; set; }
-    public Publisher? Publisher { get; set; }
+    public virtual Publisher? Publisher { get; set; }
     
     /// <summary>
     /// Пользователи, добавившие книгу в избранное
     /// </summary>
-    public List<User>? Favourites { get; set; } = null;
+    public virtual List<User>? Favourites { get; set; } = null;
     
     /// <summary>
     /// Отзывы пользователей на книгу
     /// </summary>
-    public List<Review>? Reviews { get; set; }
+    public virtual List<Review>? Reviews { get; set; }
     
     /// <summary>
     /// Пользователи, приобретшие бумажный экземпляр книги
     /// </summary>
-    public List<User>? Purchased { get; set; }
+    public virtual List<User>? Purchased { get; set; }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Litres.Main.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Litres.Main.Middlewares;
 
@@ -21,7 +22,7 @@ public class ExceptionMiddleware(IWebHostEnvironment webHostEnvironment) : IMidd
                 EntityNotFoundException => 404,
                 EntityValidationFailedException => 422,
                 PasswordNotMatchException => 400,
-                StorageUnavailableException => 503,
+                DbUpdateException => 503,
                 PermissionDeniedException => 403,
                 _ => 500
             };

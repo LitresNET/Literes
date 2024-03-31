@@ -1,6 +1,7 @@
 using AutoMapper;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Dto.Requests;
+using Litres.Data.Dto.Responses;
 using Litres.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,8 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
     {
         var book = mapper.Map<Book>(bookDto);
         var result = await bookService.PublishNewBookAsync(book);
-        return Ok(result);
+        var answer = mapper.Map<BookCreateResponseDto>(result);
+        return Ok(answer);
     }
 
     [Authorize]
