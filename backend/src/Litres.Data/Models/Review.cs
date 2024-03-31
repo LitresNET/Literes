@@ -34,22 +34,22 @@ public class Review
     /// </summary>
     [Required]
     public long UserId { get; set; }
-    public User User { get; set; }
+    public virtual User User { get; set; }
     
     /// <summary>
     /// Ссылка на книгу, на которую оставлен данный отзыв
     /// </summary>
     public long? BookId { get; set; }
-    public Book? Book { get; set; }
+    public virtual Book? Book { get; set; }
     
     /// <summary>
     /// Ссылка на родительский отзыв, 0 если у отзыва нет "родителя" 
     /// </summary>
     public long? ParentReviewId { get; set; }
-    public Review? ParentReview { get; set; }
+    public virtual Review? ParentReview { get; set; }
     
     /// <summary>
     /// Список всех лайков и дизлайков пользователей
     /// </summary>
-    public List<ReviewLike> ReviewLikes { get; set; }
+    public virtual List<ReviewLike> ReviewLikes { get; set; }
 }

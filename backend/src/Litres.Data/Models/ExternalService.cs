@@ -26,5 +26,5 @@ public class ExternalService
     /// <summary>
     /// Пользователи, авторизованные через данный сторонний сервис
     /// </summary>
-    public List<User> Users { get; set; }
+    public virtual List<User> Users { get; set; }
 }

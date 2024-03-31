@@ -34,7 +34,6 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
     {
         _configuration = configuration;
     }
-
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -46,6 +45,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
         modelBuilder.Entity<User>()
             .Property(u => u.Wallet)
             .HasPrecision(18, 4);
+        
         
         // TODO: в конфиг
         #region Relationships
@@ -92,7 +92,8 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
             .WithMany(s => s.Users);
         
         
-        //Связи, которые сгенерировал chatgpt. Вставил на пох, просто чтобы работало TODO: исправить (для аутентификации и авторизации)
+        //Связи, которые сгенерировал chatgpt. Вставил на пох, просто чтобы работало
+        //TODO: исправить (для аутентификации и авторизации)
         modelBuilder.Entity<IdentityUserLogin<long>>()
             .HasKey(l => new { l.LoginProvider, l.ProviderKey }); 
         modelBuilder.Entity<IdentityUserRole<long>>()

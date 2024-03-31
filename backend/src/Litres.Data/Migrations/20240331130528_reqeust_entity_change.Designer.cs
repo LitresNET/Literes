@@ -4,6 +4,7 @@ using Litres.Data.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Litres.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240331130528_reqeust_entity_change")]
+    partial class reqeust_entity_change
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace Litres.Data.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("Favourites", (string)null);
+                    b.ToTable("Favourites");
                 });
 
             modelBuilder.Entity("Litres.Data.Models.Author", b =>
@@ -57,7 +60,7 @@ namespace Litres.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Author", (string)null);
+                    b.ToTable("Author");
 
                     b.HasData(
                         new
@@ -161,7 +164,7 @@ namespace Litres.Data.Migrations
 
                     b.HasIndex("SeriesId");
 
-                    b.ToTable("Book", (string)null);
+                    b.ToTable("Book");
 
                     b.HasData(
                         new
@@ -376,7 +379,7 @@ namespace Litres.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Contract", (string)null);
+                    b.ToTable("Contract");
 
                     b.HasData(
                         new
@@ -411,7 +414,7 @@ namespace Litres.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ExternalService", (string)null);
+                    b.ToTable("ExternalService");
 
                     b.HasData(
                         new
@@ -446,7 +449,7 @@ namespace Litres.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Order", (string)null);
+                    b.ToTable("Order");
 
                     b.HasData(
                         new
@@ -546,7 +549,7 @@ namespace Litres.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PickupPoint", (string)null);
+                    b.ToTable("PickupPoint");
 
                     b.HasData(
                         new
@@ -649,7 +652,7 @@ namespace Litres.Data.Migrations
 
                     b.HasIndex("UpdatedBookId");
 
-                    b.ToTable("Request", (string)null);
+                    b.ToTable("Request");
                 });
 
             modelBuilder.Entity("Litres.Data.Models.Review", b =>
@@ -688,7 +691,7 @@ namespace Litres.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Review", (string)null);
+                    b.ToTable("Review");
 
                     b.HasData(
                         new
@@ -905,7 +908,7 @@ namespace Litres.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ReviewLike", (string)null);
+                    b.ToTable("ReviewLike");
 
                     b.HasData(
                         new
@@ -1147,7 +1150,7 @@ namespace Litres.Data.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Series", (string)null);
+                    b.ToTable("Series");
 
                     b.HasData(
                         new
@@ -1179,7 +1182,7 @@ namespace Litres.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Subscription", (string)null);
+                    b.ToTable("Subscription");
 
                     b.HasData(
                         new
@@ -1310,7 +1313,7 @@ namespace Litres.Data.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("User", (string)null);
+                    b.ToTable("User");
 
                     b.UseTptMappingStrategy();
 
@@ -1479,7 +1482,7 @@ namespace Litres.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
@@ -1501,7 +1504,7 @@ namespace Litres.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RoleClaims", (string)null);
+                    b.ToTable("RoleClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
@@ -1523,7 +1526,7 @@ namespace Litres.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserClaims", (string)null);
+                    b.ToTable("UserClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
@@ -1542,7 +1545,7 @@ namespace Litres.Data.Migrations
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
-                    b.ToTable("UserLogins", (string)null);
+                    b.ToTable("UserLogins");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
@@ -1555,7 +1558,7 @@ namespace Litres.Data.Migrations
 
                     b.HasKey("UserId", "RoleId");
 
-                    b.ToTable("UserRoles", (string)null);
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
@@ -1574,7 +1577,7 @@ namespace Litres.Data.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("UserTokens", (string)null);
+                    b.ToTable("UserTokens");
                 });
 
             modelBuilder.Entity("Purchased", b =>
@@ -1589,7 +1592,7 @@ namespace Litres.Data.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("Purchased", (string)null);
+                    b.ToTable("Purchased");
                 });
 
             modelBuilder.Entity("UserExternalServices", b =>
@@ -1604,7 +1607,7 @@ namespace Litres.Data.Migrations
 
                     b.HasIndex("ExternalServiceId");
 
-                    b.ToTable("UserExternalServices", (string)null);
+                    b.ToTable("UserExternalServices");
                 });
 
             modelBuilder.Entity("Litres.Data.Models.Publisher", b =>

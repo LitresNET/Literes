@@ -17,6 +17,7 @@ public class RequestRepository(ApplicationDbContext appDbContext) : IRequestRepo
     {
         return await appDbContext.Request
             .Include(request => request.Book)
+                .ThenInclude(b => b!.Id)
             .FirstOrDefaultAsync(request => request.Id == requestId);
     }
 

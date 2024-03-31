@@ -20,12 +20,12 @@ public class Order
     /// Ссылка на пункт выдачи для получения заказа
     /// </summary>
     public long PickupPointId { get; set; }
-    public PickupPoint PickupPoint { get; set; }
+    public virtual PickupPoint PickupPoint { get; set; }
     
     /// <summary>
     /// Ссылка на пользователя, оформившего заказ
     /// </summary>
     public long UserId { get; set; }
-    public User User { get; set; }
+    public virtual User User { get; set; }
     
 }

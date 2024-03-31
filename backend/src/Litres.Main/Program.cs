@@ -11,8 +11,9 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<ApplicationDbContext>(
-    options => options.UseSqlServer(builder.Configuration["Database:ConnectionString"]));
+builder.Services.AddDbContext<ApplicationDbContext>(options => 
+    options.UseLazyLoadingProxies()
+        .UseSqlServer(builder.Configuration["Database:ConnectionString"]));
 builder.Services.AddDefaultIdentity<User>(options =>
     options.User.RequireUniqueEmail = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -34,8 +35,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAutoMapper(cfg => cfg.AddProfile<BookMapperProfile>());
-builder.Services.AddAutoMapper(cfg => cfg.AddProfile<UserMapperProfile>());
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<RequestMapperProfile>();
+    cfg.AddProfile<UserMapperProfile>();
+    cfg.AddProfile<BookMapperProfile>();
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

@@ -23,15 +23,15 @@ public class Request
     /// </summary>
     [Required]
     public long BookId { get; set; }
-    public Book? Book { get; set; } 
+    public virtual Book? Book { get; set; } 
     
     /// <summary>
     /// Ссылка на издателя, инициировавшего изменение состояние книги
     /// </summary>
     [Required]
     public long PublisherId { get; set; }
-    public Publisher? Publisher { get; set; }
+    public virtual Publisher? Publisher { get; set; }
     
-    public long UpdatedBookId { get; set; }
-    public Book? UpdatedBook { get; set; }
+    public long? UpdatedBookId { get; set; }
+    public virtual Book? UpdatedBook { get; set; }
 }

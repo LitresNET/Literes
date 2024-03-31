@@ -30,18 +30,7 @@ public class UserController(IRegistrationService registrationService, IMapper ma
     [HttpPost("signin")]
     public async Task<IActionResult> LoginUserAsync([FromBody] UserLoginDto loginDto)
     {
-        try
-        {
-            var token = await registrationService.LoginUserAsync(loginDto.Email, loginDto.Password);
-            return Ok(token);
-        }
-        catch (EntityNotFoundException<User> e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (PasswordNotMatchException e)
-        {
-            return BadRequest(e.Message);
-        }
+        var token = await registrationService.LoginUserAsync(loginDto.Email, loginDto.Password);
+        return Ok(token);
     }
 }

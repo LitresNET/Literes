@@ -61,35 +61,35 @@ public class User : IdentityUser<long>
     /// Текущий тип подписки
     /// </summary>
     public long? SubscriptionId { get; set; }
-    public Subscription? Subscription { get; set; }
+    public virtual Subscription? Subscription { get; set; }
     
     /// <summary>
     /// Список всех сторонних сервисов, через которые авторизовался пользователь
     /// </summary>
-    public List<ExternalService> ExternalServices { get; set; }
+    public virtual List<ExternalService> ExternalServices { get; set; }
 
     /// <summary>
     /// Список приобретенных книг
     /// </summary>
-    public List<Book> Purchased { get; set; }
+    public virtual List<Book> Purchased { get; set; }
     
     /// <summary>
     /// Список книг, добавленных в избранное
     /// </summary>
-    public List<Book> Favourites { get; set; }
+    public virtual List<Book> Favourites { get; set; }
     
     /// <summary>
     /// Отзывы, оставленные пользователем
     /// </summary>
-    public List<Review> Reviews { get; set; }
+    public virtual List<Review> Reviews { get; set; }
     
     /// <summary>
     /// Лайки, оставленные пользователем
     /// </summary>
-    public List<ReviewLike> ReviewLikes { get; set; }
+    public virtual List<ReviewLike> ReviewLikes { get; set; }
     
     /// <summary>
     /// Все заказы, оформленные пользователем
     /// </summary>
-    public List<Order> Orders { get; set; }
+    public virtual List<Order> Orders { get; set; }
 }

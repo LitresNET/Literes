@@ -93,13 +93,15 @@ public class DeleteBook
             .ReturnsAsync((Book)null);
 
         var service = BookService;
-
+        var expected = new EntityNotFoundException(typeof(Book), book.Id.ToString());
+        
         // Act
-
-        // Assert
-        await Assert.ThrowsAsync<EntityNotFoundException<Book>>(
+        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
             async () => await service.DeleteBookAsync(book.Id, (long) book.PublisherId!)
         );
+        
+        // Assert
+        Assert.Equal(expected.Message, exception.Message);
     }
 
     [Fact]

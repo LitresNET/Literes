@@ -74,13 +74,15 @@ public class AcceptPublishDeleteRequest
             .ReturnsAsync((Request)null);
 
         var service = RequestService;
-
+        var expected = new EntityNotFoundException(typeof(Request), expectedRequest.Id.ToString());
+        
         // Act
-
-        // Assert
-        await Assert.ThrowsAsync<EntityNotFoundException<Request>>(
+        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
             async () => await service.AcceptPublishDeleteRequestAsync(expectedRequest.Id)
         );
+        
+        // Assert
+        Assert.Equal(expected.Message, exception.Message);
     }
 
     [Fact]

@@ -1,4 +1,5 @@
-﻿using AutoFixture;
+﻿using System.ComponentModel.DataAnnotations;
+using AutoFixture;
 using AutoFixture.DataAnnotations;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Models;
@@ -89,12 +90,18 @@ public class UpdateBook
             .Create();
         var service = BookService;
 
-        // Act
+        // TODO: I guess that's not quite right, because test seems to know internals
+        var expectedValidationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(book, new ValidationContext(book), expectedValidationResults);
+        var expected = new EntityValidationFailedException(typeof(Book), expectedValidationResults);
 
-        // Assert
-        await Assert.ThrowsAsync<EntityValidationFailedException<Book>>(
+        // Act
+        var exception = await Assert.ThrowsAsync<EntityValidationFailedException>(
             async () => await service.UpdateBookAsync(book, (long) book.PublisherId!)
         );
+        
+        // Assert
+        Assert.Equal(expected.Message, exception.Message);
     }
     
     [Fact]
@@ -110,13 +117,15 @@ public class UpdateBook
             .ReturnsAsync((Book)null);
 
         var service = BookService;
-
+        var expected = new EntityNotFoundException(typeof(Book), book.Id.ToString());
+            
         // Act
-
-        // Assert
-        await Assert.ThrowsAsync<EntityNotFoundException<Book>>(
+        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
             async () => await service.UpdateBookAsync(book, (long) book.PublisherId!)
         );
+        
+        // Assert
+        Assert.Equal(expected.Message, exception.Message);
     }
     
     [Fact]

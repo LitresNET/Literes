@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Litres.Main.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Litres.Main.Middlewares;
 
@@ -16,9 +17,15 @@ public class ExceptionMiddleware(IWebHostEnvironment webHostEnvironment) : IMidd
             if (context.Response.HasStarted)
                 throw;
 
-            var statusCode = 500;
-            if (e is StorageUnavailableException)
-                statusCode = 503;
+            var statusCode = e switch
+            {
+                EntityNotFoundException => 404,
+                EntityValidationFailedException => 422,
+                PasswordNotMatchException => 400,
+                DbUpdateException => 503,
+                PermissionDeniedException => 403,
+                _ => 500
+            };
 
             context.Response.Clear();
             context.Response.StatusCode = statusCode;
@@ -29,7 +36,7 @@ public class ExceptionMiddleware(IWebHostEnvironment webHostEnvironment) : IMidd
                 Message = e.Message,
                 Exception = SerializeException(e)
             };
-                
+
             var body = JsonSerializer.Serialize(response);
             await context.Response.WriteAsync(body);
         }

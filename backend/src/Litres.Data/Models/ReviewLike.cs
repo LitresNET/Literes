@@ -25,12 +25,12 @@ public class ReviewLike
     /// </summary>
     [Required]
     public long ReviewId { get; set; }
-    public Review Review { get; set; }
+    public virtual Review Review { get; set; }
     
     /// <summary>
     /// Ссылка на пользователя, оставившего лайк
     /// </summary>
     [Required]
     public long UserId { get; set; }
-    public User User { get; set; }
+    public virtual User User { get; set; }
 }

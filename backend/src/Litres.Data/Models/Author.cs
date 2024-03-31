@@ -28,10 +28,10 @@ public class Author
     /// <summary>
     /// Список выпущенных книг
     /// </summary>
-    public List<Book> Books { get; set; }
+    public virtual List<Book> Books { get; set; }
     
     /// <summary>
     /// Список выпущенных серий книг
     /// </summary>
-    public List<Series> Series { get; set; }
+    public virtual List<Series> Series { get; set; }
 }

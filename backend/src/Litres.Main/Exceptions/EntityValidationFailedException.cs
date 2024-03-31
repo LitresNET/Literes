@@ -3,6 +3,6 @@ using System.Reflection;
 
 namespace Litres.Main.Exceptions;
 
-public class EntityValidationFailedException<TEntity>(IEnumerable<ValidationResult> results) : Exception(
-    $"{typeof(TEntity)} is invalid. Info: {string.Join("; ", results.Select(result => result.ErrorMessage))}"
+public class EntityValidationFailedException(MemberInfo entity, IEnumerable<ValidationResult> results) : Exception(
+    $"{entity.Name} is invalid. Info: {string.Join("; ", results.Select(result => result.ErrorMessage))}"
 );
