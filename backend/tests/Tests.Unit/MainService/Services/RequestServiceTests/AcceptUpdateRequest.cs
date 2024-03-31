@@ -110,7 +110,7 @@ public class AcceptUpdateRequest
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<StorageUnavailableException>(
+        await Assert.ThrowsAsync<DbUpdateException>(
             async () => await service.AcceptUpdateRequestAsync(expectedRequest.Id)
         );
     }

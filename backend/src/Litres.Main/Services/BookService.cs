@@ -57,11 +57,12 @@ public class BookService(IUnitOfWork unitOfWork) : IBookService
         {
             RequestType = RequestType.Delete,
             PublisherId = publisherId,
-            BookId = bookId
+            Book = book
         };
 
         var result = await unitOfWork.GetRepository<Request>().AddAsync(request);
         await unitOfWork.SaveChangesAsync();
+        
         return result;
     }
 
@@ -92,12 +93,13 @@ public class BookService(IUnitOfWork unitOfWork) : IBookService
         {
             RequestType = RequestType.Update,
             PublisherId = (long) updatedBook.PublisherId!,
-            BookId = book.Id,
-            UpdatedBookId = updatedBook.Id
+            Book = book,
+            UpdatedBook = updatedBook
         };
 
         var result = await unitOfWork.GetRepository<Request>().AddAsync(request);
         await unitOfWork.SaveChangesAsync();
+        
         return result;
     }
 }

@@ -102,14 +102,14 @@ public class AcceptPublishDeleteRequest
             .Returns(expectedBook);
         _unitOfWorkMock
             .Setup(repository => repository.SaveChangesAsync())
-            .ThrowsAsync(new DbUpdateException());
+            .ThrowsAsync(new Microsoft.EntityFrameworkCore.DbUpdateException());
 
         var service = RequestService;
 
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<StorageUnavailableException>(
+        await Assert.ThrowsAsync<DbUpdateException>(
             async () => await service.AcceptPublishDeleteRequestAsync(expectedRequest.Id)
         );
     }
