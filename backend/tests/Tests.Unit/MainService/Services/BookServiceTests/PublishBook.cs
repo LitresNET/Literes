@@ -19,20 +19,16 @@ public class PublishBook
     private readonly Mock<ISeriesRepository> _seriesRepositoryMock = new();
     
     private BookService BookService => new BookService(
-        _bookRepositoryMock.Object,
-        _requestRepositoryMock.Object,
-        _authorRepositoryMock.Object,
-        _seriesRepositoryMock.Object,
         _unitOfWorkMock.Object
     );
 
     public PublishBook()
     {
         _authorRepositoryMock
-            .Setup(repository => repository.GetAuthorByIdAsync(It.IsAny<long>()))
+            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(new Author());
         _seriesRepositoryMock
-            .Setup(repository => repository.GetSeriesByIdAsync(It.IsAny<long>()))
+            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(new Series());
     }
 
@@ -100,7 +96,7 @@ public class PublishBook
         var book = fixture.Build<Book>().With(b => b.AuthorId, 1).Create();
 
         _authorRepositoryMock
-            .Setup(repository => repository.GetAuthorByIdAsync(book.AuthorId))
+            .Setup(repository => repository.GetByIdAsync(book.AuthorId))
             .ReturnsAsync((Author)null);
 
         var service = BookService;
@@ -122,7 +118,7 @@ public class PublishBook
         var book = fixture.Build<Book>().With(b => b.SeriesId, 1).Create();
 
         _seriesRepositoryMock
-            .Setup(repository => repository.GetSeriesByIdAsync((long) book.SeriesId!))
+            .Setup(repository => repository.GetByIdAsync((long) book.SeriesId!))
             .ReturnsAsync((Series) null);
 
         var service = BookService;

@@ -8,8 +8,8 @@
 /// Тем самым сохранение изменений в бд делегируется не репозиторию, а сервису
 /// </summary>
 
-//TODO: Добавить IAsyncDisposable
 public interface IUnitOfWork : IDisposable
 {
+    public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class;
     public Task SaveChangesAsync();
 }

@@ -16,8 +16,6 @@ public class AcceptUpdateRequest
     private readonly Mock<IRequestRepository> _requestRepositoryMock = new();
     
     private RequestService RequestService => new RequestService(
-        _requestRepositoryMock.Object,
-        _bookRepositoryMock.Object,
         _unitOfWorkMock.Object
     );
 

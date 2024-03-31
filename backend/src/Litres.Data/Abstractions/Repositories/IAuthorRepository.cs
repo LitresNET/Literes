@@ -2,7 +2,6 @@
 
 namespace Litres.Data.Abstractions.Repositories;
 
-public interface IAuthorRepository
+public interface IAuthorRepository : IRepository<Author>
 {
-    public Task<Author?> GetAuthorByIdAsync(long authorId);
 }

@@ -9,9 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Litres.Main.Controllers;
 
 [ApiController]
+[Route("api/[controller]")]
 public class BookController(IBookService bookService, IMapper mapper) : ControllerBase
 {
-    [HttpPost("api/[controller]/publish")]
+    [HttpPost("publish")]
     public async Task<ActionResult<Request>> PublishBook([FromBody] BookCreateRequestDto bookDto)
     {
         try

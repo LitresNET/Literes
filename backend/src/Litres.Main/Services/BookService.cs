@@ -2,18 +2,13 @@ using System.ComponentModel.DataAnnotations;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Models;
+using Litres.Data.Repositories;
 using Litres.Main.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Litres.Main.Services;
 
-public class BookService(
-    IBookRepository bookRepository,
-    IRequestRepository requestRepository,
-    IAuthorRepository authorRepository,
-    ISeriesRepository seriesRepository,
-    IUnitOfWork unitOfWork
-) : IBookService
+public class BookService(IUnitOfWork unitOfWork) : IBookService
 {
     public async Task<Request> PublishNewBookAsync(Book book)
     {
@@ -25,14 +20,14 @@ public class BookService(
 
         try
         {
-            if (await authorRepository.GetAuthorByIdAsync(book.AuthorId) is null)
+            if (await unitOfWork.GetRepository<Author>().GetByIdAsync(book.AuthorId) is null)
                 throw new EntityNotFoundException<Author>(book.AuthorId.ToString());
 
-            if (book.SeriesId is not null && await seriesRepository.GetSeriesByIdAsync((long)book.SeriesId) is null)
+            if (book.SeriesId is not null && await unitOfWork.GetRepository<Series>().GetByIdAsync((long)book.SeriesId) is null)
                 throw new EntityNotFoundException<Series>(book.SeriesId.ToString());
 
             book.IsApproved = false;
-            var bookResult = await bookRepository.AddAsync(book);
+            var bookResult = await unitOfWork.GetRepository<Book>().AddAsync(book);
 
             var request = new Request
             {
@@ -41,7 +36,7 @@ public class BookService(
                 PublisherId = (long) book.PublisherId!
             };
 
-            var requestResult = await requestRepository.AddAsync(request);
+            var requestResult = await unitOfWork.GetRepository<Request>().AddAsync(request);
             await unitOfWork.SaveChangesAsync();
 
             return requestResult;
@@ -56,6 +51,7 @@ public class BookService(
     {
         try
         {
+            var bookRepository = (BookRepository)unitOfWork.GetRepository<Book>();
             var book = await bookRepository.GetByIdAsync(bookId);
             if (book is null)
                 throw new EntityNotFoundException<Book>(bookId.ToString());
@@ -73,7 +69,7 @@ public class BookService(
                 BookId = bookId
             };
 
-            var result = await requestRepository.AddAsync(request);
+            var result = await unitOfWork.GetRepository<Request>().AddAsync(request);
             await unitOfWork.SaveChangesAsync();
             return result;
         }
@@ -93,6 +89,7 @@ public class BookService(
         
         try
         {
+            var bookRepository = (BookRepository)unitOfWork.GetRepository<Book>();
             var book = await bookRepository.GetByIdAsync(updatedBook.Id);
             if (book is null)
                 throw new EntityNotFoundException<Book>(updatedBook.Id.ToString());
@@ -115,7 +112,7 @@ public class BookService(
                 UpdatedBookId = updatedBook.Id
             };
 
-            var result = await requestRepository.AddAsync(request);
+            var result = await unitOfWork.GetRepository<Request>().AddAsync(request);
             await unitOfWork.SaveChangesAsync();
             return result;
         }

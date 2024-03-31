@@ -19,20 +19,16 @@ public class UpdateBook
     private readonly Mock<ISeriesRepository> _seriesRepositoryMock = new();
 
     private BookService BookService => new BookService(
-        _bookRepositoryMock.Object,
-        _requestRepositoryMock.Object,
-        _authorRepositoryMock.Object,
-        _seriesRepositoryMock.Object,
         _unitOfWorkMock.Object
     );
 
     public UpdateBook()
     {
         _authorRepositoryMock
-            .Setup(repository => repository.GetAuthorByIdAsync(It.IsAny<long>()))
+            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(new Author());
         _seriesRepositoryMock
-            .Setup(repository => repository.GetSeriesByIdAsync(It.IsAny<long>()))
+            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(new Series());
     }
 

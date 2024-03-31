@@ -16,8 +16,6 @@ public class AcceptPublishDeleteRequest
     private readonly Mock<IRequestRepository> _requestRepositoryMock = new();
     
     private RequestService RequestService => new(
-        _requestRepositoryMock.Object,
-        _bookRepositoryMock.Object,
         _unitOfWorkMock.Object
     );
 

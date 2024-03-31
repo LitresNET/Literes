@@ -18,10 +18,6 @@ public class DeleteBook
     private readonly Mock<ISeriesRepository> _seriesRepositoryMock = new();
     
     private BookService BookService => new BookService(
-        _bookRepositoryMock.Object,
-        _requestRepositoryMock.Object,
-        _authorRepositoryMock.Object,
-        _seriesRepositoryMock.Object,
         _unitOfWorkMock.Object
     );
 

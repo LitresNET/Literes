@@ -2,7 +2,6 @@
 
 namespace Litres.Data.Abstractions.Repositories;
 
-public interface ISeriesRepository
+public interface ISeriesRepository : IRepository<Series>
 {
-    public Task<Series?> GetSeriesByIdAsync(long seriesId);
 }

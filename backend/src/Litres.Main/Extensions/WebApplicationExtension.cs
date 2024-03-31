@@ -22,13 +22,6 @@ public static class WebApplicationExtension
         
         #region Repositories
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-        builder.Services.AddScoped<IBookRepository, BookRepository>();
-        builder.Services.AddScoped<IRequestRepository, RequestRepository>();
-        builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-        builder.Services.AddScoped<ISeriesRepository, SeriesRepository>();
-        builder.Services.AddScoped<IUserRepository, UserRepository>();
-        builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
-        builder.Services.AddScoped<IContractRepository, ContractRepository>();
         #endregion
     }
 }

@@ -1,16 +1,13 @@
 ﻿using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Models;
+using Litres.Data.Repositories;
 using Litres.Main.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Litres.Main.Services;
 
-public class RequestService(
-    IRequestRepository requestRepository,
-    IBookRepository bookRepository,
-    IUnitOfWork unitOfWork
-) : IRequestService
+public class RequestService(IUnitOfWork unitOfWork) : IRequestService
 {
     public async Task<Book> AcceptPublishDeleteRequestAsync(
         long requestId,
@@ -19,6 +16,7 @@ public class RequestService(
     {
         try
         {
+            var requestRepository = (RequestRepository)unitOfWork.GetRepository<Request>();
             var request = await requestRepository.GetRequestWithBookByIdAsync(requestId);
             if (request is null || request.RequestType == RequestType.Update)
                 throw new EntityNotFoundException<Request>(requestId.ToString());
@@ -27,7 +25,7 @@ public class RequestService(
             request.Book!.IsAvailable =
                 request.RequestType == RequestType.Create ? requestAccepted : !requestAccepted;
 
-            var bookResult = bookRepository.Update(request.Book);
+            var bookResult = unitOfWork.GetRepository<Book>().Update(request.Book);
             requestRepository.Delete(request);
 
             await unitOfWork.SaveChangesAsync();
@@ -43,6 +41,8 @@ public class RequestService(
     {
         try
         {
+            var bookRepository = (BookRepository)unitOfWork.GetRepository<Book>();
+            var requestRepository = (RequestRepository)unitOfWork.GetRepository<Request>();
             var request = await requestRepository.GetRequestWithOldAndUpdatedBooksByIdAsync(requestId);
             if (request is null || request.RequestType != RequestType.Update)
                 throw new EntityNotFoundException<Request>(requestId.ToString());
