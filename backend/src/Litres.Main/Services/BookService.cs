@@ -21,15 +21,15 @@ public class BookService(
         var results = new List<ValidationResult>();
 
         if (!Validator.TryValidateObject(book, context, results))
-            throw new BookValidationFailedException(results);
+            throw new EntityValidationFailedException<Book>(results);
 
         try
         {
             if (await authorRepository.GetAuthorByIdAsync(book.AuthorId) is null)
-                throw new AuthorNotFoundException(book.AuthorId);
+                throw new EntityNotFoundException<Author>(book.AuthorId.ToString());
 
             if (book.SeriesId is not null && await seriesRepository.GetSeriesByIdAsync((long)book.SeriesId) is null)
-                throw new SeriesNotFoundException((long)book.SeriesId);
+                throw new EntityNotFoundException<Series>(book.SeriesId.ToString());
 
             book.IsApproved = false;
             var bookResult = await bookRepository.AddAsync(book);
@@ -58,9 +58,9 @@ public class BookService(
         {
             var book = await bookRepository.GetByIdAsync(bookId);
             if (book is null)
-                throw new BookNotFoundException(bookId);
+                throw new EntityNotFoundException<Book>(bookId.ToString());
             if (book.PublisherId != publisherId)
-                throw new UserPermissionDeniedException($"Delete book {book.Id}");
+                throw new PermissionDeniedException($"Delete book {book.Id}");
 
             book.IsApproved = false;
             book.IsAvailable = false;
@@ -89,20 +89,20 @@ public class BookService(
         var results = new List<ValidationResult>();
 
         if (!Validator.TryValidateObject(updatedBook, context, results))
-            throw new BookValidationFailedException(results);
+            throw new EntityValidationFailedException<Book>( results);
         
         try
         {
             var book = await bookRepository.GetByIdAsync(updatedBook.Id);
             if (book is null)
-                throw new BookNotFoundException(updatedBook.Id);
+                throw new EntityNotFoundException<Book>(updatedBook.Id.ToString());
             if (book.PublisherId != publisherId)
-                throw new UserPermissionDeniedException($"Update book {book.Id}");
+                throw new PermissionDeniedException($"Update book {book.Id}");
 
             updatedBook.IsApproved = false;
             updatedBook.IsAvailable = false;
             updatedBook.Id = 0;
-            var bookResult = await bookRepository.AddAsync(updatedBook);
+            await bookRepository.AddAsync(updatedBook);
 
             // при создании запроса на изменение книги, мы хотим, чтобы до одобрения заявки пользователям
             // была доступна старая версия книги. При потдверждении запроса на изменение, старая версия

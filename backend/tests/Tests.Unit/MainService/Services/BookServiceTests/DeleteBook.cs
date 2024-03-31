@@ -79,7 +79,7 @@ public class DeleteBook
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<UserPermissionDeniedException>(
+        await Assert.ThrowsAsync<PermissionDeniedException>(
             async () => await service.DeleteBookAsync(book.Id, (long) book.PublisherId!)
         );
     }
@@ -101,7 +101,7 @@ public class DeleteBook
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<BookNotFoundException>(
+        await Assert.ThrowsAsync<EntityNotFoundException<Book>>(
             async () => await service.DeleteBookAsync(book.Id, (long) book.PublisherId!)
         );
     }

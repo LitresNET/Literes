@@ -86,7 +86,7 @@ public class PublishBook
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<BookValidationFailedException>(
+        await Assert.ThrowsAsync<EntityValidationFailedException<Book>>(
             async () => await service.PublishNewBookAsync(book)
         );
     }
@@ -108,7 +108,7 @@ public class PublishBook
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<AuthorNotFoundException>(
+        await Assert.ThrowsAsync<EntityNotFoundException<Author>>(
             async () => await service.PublishNewBookAsync(book)
         );
     }
@@ -130,7 +130,7 @@ public class PublishBook
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<SeriesNotFoundException>(
+        await Assert.ThrowsAsync<EntityNotFoundException<Series>>(
             async () => await service.PublishNewBookAsync(book)
         );
     }

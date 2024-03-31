@@ -80,7 +80,7 @@ public class AcceptPublishDeleteRequest
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<RequestNotFoundException>(
+        await Assert.ThrowsAsync<EntityNotFoundException<Request>>(
             async () => await service.AcceptPublishDeleteRequestAsync(expectedRequest.Id)
         );
     }

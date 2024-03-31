@@ -21,14 +21,14 @@ public class RequestService(
         {
             var request = await requestRepository.GetRequestWithBookByIdAsync(requestId);
             if (request is null || request.RequestType == RequestType.Update)
-                throw new RequestNotFoundException(requestId);
+                throw new EntityNotFoundException<Request>(requestId.ToString());
 
             request.Book!.IsApproved = requestAccepted;
             request.Book!.IsAvailable =
                 request.RequestType == RequestType.Create ? requestAccepted : !requestAccepted;
 
             var bookResult = bookRepository.Update(request.Book);
-            var requestResult = requestRepository.Delete(request);
+            requestRepository.Delete(request);
 
             await unitOfWork.SaveChangesAsync();
             return bookResult;
@@ -45,7 +45,7 @@ public class RequestService(
         {
             var request = await requestRepository.GetRequestWithOldAndUpdatedBooksByIdAsync(requestId);
             if (request is null || request.RequestType != RequestType.Update)
-                throw new RequestNotFoundException(requestId);
+                throw new EntityNotFoundException<Request>(requestId.ToString());
 
             request.UpdatedBook!.IsApproved = requestAccepted;
             request.UpdatedBook!.IsAvailable = requestAccepted;
@@ -56,7 +56,7 @@ public class RequestService(
             await bookRepository.DeleteByIdAsync(request.UpdatedBookId);
 
             var bookResult = bookRepository.Update(request.Book);
-            var requestResult = requestRepository.Delete(request);
+            requestRepository.Delete(request);
 
             await unitOfWork.SaveChangesAsync();
             return bookResult;

@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Text;
 using Litres.Data.Models;
 using Litres.Data.Configurations;
@@ -7,7 +6,6 @@ using Litres.Main.Extensions;
 using Litres.Main.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 

@@ -49,7 +49,7 @@ public class UserService(
         var user = await userManager.FindByEmailAsync(email);
 
         if (user is null)
-            throw new UserNotFoundException(email);
+            throw new EntityNotFoundException<User>(email);
 
         var result = new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, password);
         

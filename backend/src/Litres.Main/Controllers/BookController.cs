@@ -20,15 +20,11 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
             var result = await bookService.PublishNewBookAsync(book);
             return Ok(result);
         }
-        catch (BookValidationFailedException e)
+        catch (EntityValidationFailedException<Book> e)
         {
             return UnprocessableEntity(e.Message);
         }
-        catch (AuthorNotFoundException e)
-        {
-            return NotFound(e);
-        }
-        catch (SeriesNotFoundException e)
+        catch (EntityNotFoundException<Book> e)
         {
             return NotFound(e);
         }
@@ -44,11 +40,11 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
             var result = await bookService.DeleteBookAsync(id, publisherId);
             return Ok(result);
         }
-        catch (BookNotFoundException e)
+        catch (EntityNotFoundException<Book> e)
         {
             return NotFound(e);
         }
-        catch (UserPermissionDeniedException e)
+        catch (PermissionDeniedException e)
         {
             return Forbid();
         }
@@ -56,7 +52,7 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
     
     [HttpPatch]
     [Route("{id}/update")]
-    public async Task<IActionResult> UpdateBook([FromBody] BookUpdateRequestDto bookDto, [FromQuery] long publisherId)
+    public async Task<IActionResult> UpdateBook(long id, [FromBody] BookUpdateRequestDto bookDto, [FromQuery] long publisherId)
     {
         try
         {
@@ -64,11 +60,11 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
             var result = await bookService.UpdateBookAsync(book, publisherId);
             return Ok(result);
         }
-        catch (BookNotFoundException e)
+        catch (EntityNotFoundException<Book> e)
         {
             return NotFound(e);
         }
-        catch (UserPermissionDeniedException e)
+        catch (PermissionDeniedException e)
         {
             return Forbid(e.Message);
         }

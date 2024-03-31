@@ -35,7 +35,7 @@ public class UserController(IRegistrationService registrationService, IMapper ma
             var token = await registrationService.LoginUserAsync(loginDto.Email, loginDto.Password);
             return Ok(token);
         }
-        catch (UserNotFoundException e)
+        catch (EntityNotFoundException<User> e)
         {
             return NotFound(e.Message);
         }

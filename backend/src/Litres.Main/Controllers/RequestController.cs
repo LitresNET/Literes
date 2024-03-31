@@ -1,3 +1,4 @@
+using Azure.Core;
 using Litres.Data.Abstractions.Services;
 using Litres.Main.Exceptions;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ public class RequestController(IRequestService requestService) : ControllerBase
             var result = await requestService.AcceptPublishDeleteRequestAsync(id, requestAccepted:true);
             return Ok(result);
         }
-        catch (RequestNotFoundException e)
+        catch (EntityNotFoundException<Request> e)
         {
             return NotFound(e);
         }
@@ -32,7 +33,7 @@ public class RequestController(IRequestService requestService) : ControllerBase
             var result = await requestService.AcceptPublishDeleteRequestAsync(id, requestAccepted:false);
             return Ok(result);
         }
-        catch (RequestNotFoundException e)
+        catch (EntityNotFoundException<Request> e)
         {
             return NotFound(e);
         }

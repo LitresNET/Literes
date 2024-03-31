@@ -96,7 +96,7 @@ public class UpdateBook
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<BookValidationFailedException>(
+        await Assert.ThrowsAsync<EntityValidationFailedException<Book>>(
             async () => await service.UpdateBookAsync(book, (long) book.PublisherId!)
         );
     }
@@ -118,7 +118,7 @@ public class UpdateBook
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<BookNotFoundException>(
+        await Assert.ThrowsAsync<EntityNotFoundException<Book>>(
             async () => await service.UpdateBookAsync(book, (long) book.PublisherId!)
         );
     }
@@ -147,7 +147,7 @@ public class UpdateBook
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<UserPermissionDeniedException>(
+        await Assert.ThrowsAsync<PermissionDeniedException>(
             async () => await service.UpdateBookAsync(book, (long) book.PublisherId!)
         );
     }

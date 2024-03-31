@@ -78,7 +78,7 @@ public class AcceptUpdateRequest
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<RequestNotFoundException>(
+        await Assert.ThrowsAsync<EntityNotFoundException<Request>>(
             async () => await service.AcceptUpdateRequestAsync(expectedRequest.Id)
         );
     }
