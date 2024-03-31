@@ -1,4 +1,5 @@
-﻿using AutoFixture;
+﻿using System.ComponentModel.DataAnnotations;
+using AutoFixture;
 using AutoFixture.DataAnnotations;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Models;
@@ -81,14 +82,21 @@ public class PublishBook
             .Build<Book>()
             .Without(b => b.ContentUrl)
             .Create();
+        
         var service = BookService;
+        
+        // TODO: I guess that's not quite right, because test seems to know internals
+        var expectedValidationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(book, new ValidationContext(book), expectedValidationResults);
+        var expected = new EntityValidationFailedException(typeof(Book), expectedValidationResults);
 
         // Act
-
-        // Assert
-        await Assert.ThrowsAsync<EntityValidationFailedException<Book>>(
+        var exception = await Assert.ThrowsAsync<EntityValidationFailedException>(
             async () => await service.PublishNewBookAsync(book)
         );
+        
+        // Assert
+        Assert.Equal(expected.Message, exception.Message);
     }
 
     [Fact]
@@ -101,16 +109,18 @@ public class PublishBook
 
         _authorRepositoryMock
             .Setup(repository => repository.GetAuthorByIdAsync(book.AuthorId))
-            .ReturnsAsync((Author)null);
+            .ReturnsAsync((Author) null);
 
         var service = BookService;
+        var expected = new EntityNotFoundException(typeof(Author), book.AuthorId.ToString());
 
         // Act
-
-        // Assert
-        await Assert.ThrowsAsync<EntityNotFoundException<Author>>(
+        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
             async () => await service.PublishNewBookAsync(book)
         );
+        
+        // Assert
+        Assert.Equal(expected.Message, exception.Message);
     }
 
     [Fact]
@@ -126,13 +136,15 @@ public class PublishBook
             .ReturnsAsync((Series) null);
 
         var service = BookService;
-
+        var expected = new EntityNotFoundException(typeof(Series), book.SeriesId.ToString());
+        
         // Act
-
-        // Assert
-        await Assert.ThrowsAsync<EntityNotFoundException<Series>>(
+        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
             async () => await service.PublishNewBookAsync(book)
         );
+        
+        // Assert
+        Assert.Equal(expected.Message, exception.Message);
     }
 
     [Fact]

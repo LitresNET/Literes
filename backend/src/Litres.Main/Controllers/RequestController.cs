@@ -13,29 +13,15 @@ public class RequestController(IRequestService requestService) : ControllerBase
     [Route("accept/{id}")]
     public async Task<IActionResult> AcceptPublishRequest([FromRoute] long id)
     {
-        try
-        {
-            var result = await requestService.AcceptPublishDeleteRequestAsync(id, requestAccepted:true);
-            return Ok(result);
-        }
-        catch (EntityNotFoundException<Request> e)
-        {
-            return NotFound(e);
-        }
+        var result = await requestService.AcceptPublishDeleteRequestAsync(id, requestAccepted:true);
+        return Ok(result);
     }
 
     [HttpPost]
     [Route("decline/{id}")]
     public async Task<IActionResult> DeclinePublishRequest([FromRoute] long id)
     {
-        try
-        {
-            var result = await requestService.AcceptPublishDeleteRequestAsync(id, requestAccepted:false);
-            return Ok(result);
-        }
-        catch (EntityNotFoundException<Request> e)
-        {
-            return NotFound(e);
-        }
+        var result = await requestService.AcceptPublishDeleteRequestAsync(id, requestAccepted:false);
+        return Ok(result);
     }
 }

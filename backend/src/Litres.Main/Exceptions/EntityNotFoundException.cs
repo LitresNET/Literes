@@ -1,4 +1,6 @@
-﻿namespace Litres.Main.Exceptions;
+﻿using System.Reflection;
 
-public class EntityNotFoundException<TEntity>(string? key) 
-    : Exception($"{typeof(TEntity)} {key} was not found");
+namespace Litres.Main.Exceptions;
+
+public class EntityNotFoundException(MemberInfo entity, string? key) 
+    : Exception($"{entity.Name} {key} was not found");

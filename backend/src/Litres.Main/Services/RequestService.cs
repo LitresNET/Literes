@@ -21,7 +21,7 @@ public class RequestService(
         {
             var request = await requestRepository.GetRequestWithBookByIdAsync(requestId);
             if (request is null || request.RequestType == RequestType.Update)
-                throw new EntityNotFoundException<Request>(requestId.ToString());
+                throw new EntityNotFoundException(typeof(Request), requestId.ToString());
 
             request.Book!.IsApproved = requestAccepted;
             request.Book!.IsAvailable =
@@ -45,7 +45,7 @@ public class RequestService(
         {
             var request = await requestRepository.GetRequestWithOldAndUpdatedBooksByIdAsync(requestId);
             if (request is null || request.RequestType != RequestType.Update)
-                throw new EntityNotFoundException<Request>(requestId.ToString());
+                throw new EntityNotFoundException(typeof(Request), requestId.ToString());
 
             request.UpdatedBook!.IsApproved = requestAccepted;
             request.UpdatedBook!.IsAvailable = requestAccepted;

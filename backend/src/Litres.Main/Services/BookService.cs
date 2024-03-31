@@ -21,15 +21,15 @@ public class BookService(
         var results = new List<ValidationResult>();
 
         if (!Validator.TryValidateObject(book, context, results))
-            throw new EntityValidationFailedException<Book>(results);
+            throw new EntityValidationFailedException(typeof(Book), results);
 
         try
         {
             if (await authorRepository.GetAuthorByIdAsync(book.AuthorId) is null)
-                throw new EntityNotFoundException<Author>(book.AuthorId.ToString());
+                throw new EntityNotFoundException(typeof(Author),book.AuthorId.ToString());
 
             if (book.SeriesId is not null && await seriesRepository.GetSeriesByIdAsync((long)book.SeriesId) is null)
-                throw new EntityNotFoundException<Series>(book.SeriesId.ToString());
+                throw new EntityNotFoundException(typeof(Series), book.SeriesId.ToString());
 
             book.IsApproved = false;
             var bookResult = await bookRepository.AddAsync(book);
@@ -58,7 +58,7 @@ public class BookService(
         {
             var book = await bookRepository.GetByIdAsync(bookId);
             if (book is null)
-                throw new EntityNotFoundException<Book>(bookId.ToString());
+                throw new EntityNotFoundException(typeof(Book), bookId.ToString());
             if (book.PublisherId != publisherId)
                 throw new PermissionDeniedException($"Delete book {book.Id}");
 
@@ -89,13 +89,13 @@ public class BookService(
         var results = new List<ValidationResult>();
 
         if (!Validator.TryValidateObject(updatedBook, context, results))
-            throw new EntityValidationFailedException<Book>( results);
+            throw new EntityValidationFailedException(typeof(Book), results);
         
         try
         {
             var book = await bookRepository.GetByIdAsync(updatedBook.Id);
             if (book is null)
-                throw new EntityNotFoundException<Book>(updatedBook.Id.ToString());
+                throw new EntityNotFoundException(typeof(Book), updatedBook.Id.ToString());
             if (book.PublisherId != publisherId)
                 throw new PermissionDeniedException($"Update book {book.Id}");
 
