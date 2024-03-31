@@ -32,6 +32,6 @@ public class Request
     public long PublisherId { get; set; }
     public Publisher? Publisher { get; set; }
     
-    public long UpdatedBookId { get; set; }
+    public long? UpdatedBookId { get; set; }
     public Book? UpdatedBook { get; set; }
 }

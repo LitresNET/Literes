@@ -53,7 +53,7 @@ public class RequestService(
             request.Book = request.UpdatedBook;
             request.Book.Id = request.BookId;
 
-            await bookRepository.DeleteByIdAsync(request.UpdatedBookId);
+            await bookRepository.DeleteByIdAsync((long) request.UpdatedBookId);
 
             var bookResult = bookRepository.Update(request.Book);
             requestRepository.Delete(request);

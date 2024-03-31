@@ -32,18 +32,17 @@ public class BookService(
                 throw new EntityNotFoundException(typeof(Series), book.SeriesId.ToString());
 
             book.IsApproved = false;
-            var bookResult = await bookRepository.AddAsync(book);
-
+            
             var request = new Request
             {
                 RequestType = RequestType.Create,
-                BookId = bookResult.Id,
-                PublisherId = (long) book.PublisherId!
+                PublisherId = (long) book.PublisherId!,
+                Book = book
             };
 
             var requestResult = await requestRepository.AddAsync(request);
             await unitOfWork.SaveChangesAsync();
-
+            
             return requestResult;
         }
         catch (DbUpdateException e)
