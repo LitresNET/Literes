@@ -16,24 +16,26 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
     public async Task<ActionResult<Request>> PublishBook([FromBody] BookCreateRequestDto bookDto)
     {
         var book = mapper.Map<Book>(bookDto);
-        var result = await bookService.PublishNewBookAsync(book);
-        var answer = mapper.Map<BookCreateResponseDto>(result);
-        return Ok(answer);
+        var request = await bookService.PublishNewBookAsync(book);
+        var result = mapper.Map<RequestResponseDto>(request);
+        return Ok(result);
     }
 
     [Authorize]
-    [HttpDelete("delete/{id}")]
-    public async Task<IActionResult> DeleteBook([FromRoute] long id, [FromQuery] long publisherId)
+    [HttpDelete("delete/{bookId:long}")]
+    public async Task<IActionResult> DeleteBook([FromRoute] long bookId, [FromQuery] long publisherId)
     {
-        var result = await bookService.DeleteBookAsync(id, publisherId);
-        return Ok(result);
+        await bookService.DeleteBookAsync(bookId, publisherId);
+        return Ok();
     }
     
-    [HttpPatch("update/{id}")]
-    public async Task<IActionResult> UpdateBook([FromRoute] long id, [FromBody] BookUpdateRequestDto bookDto, [FromQuery] long publisherId)
+    [HttpPatch("update/{bookId:long}")]
+    public async Task<IActionResult> UpdateBook([FromRoute] long bookId, [FromBody] BookUpdateRequestDto bookDto, [FromQuery] long publisherId)
     {
         var book = mapper.Map<Book>(bookDto);
-        var result = await bookService.UpdateBookAsync(book, publisherId);
+        book.Id = bookId;
+        var request = await bookService.UpdateBookAsync(book, publisherId);
+        var result = mapper.Map<RequestResponseDto>(request);
         return Ok(result);
     }
 }

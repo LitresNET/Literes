@@ -8,7 +8,7 @@ public class RequestMapperProfile : Profile
 {
     public RequestMapperProfile()
     {
-        CreateMap<Request, BookCreateResponseDto>()
+        CreateMap<Request, RequestResponseDto>()
             .ForMember(dto => dto.RequestId, opt => opt.MapFrom(r => r.Id));
     }
 }

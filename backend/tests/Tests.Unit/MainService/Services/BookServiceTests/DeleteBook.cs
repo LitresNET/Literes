@@ -131,7 +131,7 @@ public class DeleteBook
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<StorageUnavailableException>(
+        await Assert.ThrowsAsync<DbUpdateException>(
             async () => await service.DeleteBookAsync(book.Id, (long) book.PublisherId!)
         );
     }

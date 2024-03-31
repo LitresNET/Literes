@@ -167,7 +167,7 @@ public class PublishBook
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<StorageUnavailableException>(
+        await Assert.ThrowsAsync<DbUpdateException>(
             async () => await service.PublishNewBookAsync(book)
         );
     }
