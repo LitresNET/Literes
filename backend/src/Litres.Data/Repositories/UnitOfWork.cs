@@ -14,14 +14,7 @@ public class UnitOfWork(ApplicationDbContext appDbContext) : IUnitOfWork
     {
         var type = typeof(TEntity);
         if (_repositories.TryGetValue(type, out var repository)) return (IRepository<TEntity>)repository;
-        //Есть вариант реализовать это через рефлексию, чтобы не приходилось при добавлении нового репозитория
-        //менять и класс UnitOfWork, но это слишком дорого, т.к. придётся перебирать все классы в приложении.
-        //Есть вариант заменить все интерфейсы (они больше не нужны, ведь больше нет нужды добавлять репозитории в DI
-        //контейнер) на один класс Repository<TEntity> с virtual методами, тогда можно будет всегда 
-        //создавать new Repository<TEntity>(appDbContext) и уже в сервисах кастить к нужному репозиторию
-        //для нужных методов (которые вне Repository<TEntity>), но такие касты вроде означают сильно связный код и
-        //нарушение инкапсуляции
-        //Пока только такой вариант кажется оптимальным
+
         switch(type)
         {
             case not null when type == typeof(Author):

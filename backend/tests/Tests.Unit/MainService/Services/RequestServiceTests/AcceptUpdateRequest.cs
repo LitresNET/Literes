@@ -38,6 +38,12 @@ public class AcceptUpdateRequest
             .With(request => request.RequestType, RequestType.Update)
             .Create();
 
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
+            .Returns(_bookRepositoryMock.Object);
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
+            .Returns(_requestRepositoryMock.Object);
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithOldAndUpdatedBooksByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedRequest);
@@ -55,7 +61,7 @@ public class AcceptUpdateRequest
     }
 
     [Fact]
-    public async Task NotExistingRequest_ThrowsRequestNotFoundException()
+    public async Task NotExistingRequest_ThrowsEntityNotFoundException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
@@ -66,7 +72,10 @@ public class AcceptUpdateRequest
             .Build<Request>()
             .With(request => request.Book, expectedBook)
             .Create();
-
+        
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
+            .Returns(_requestRepositoryMock.Object);
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
             .ReturnsAsync((Request)null);
@@ -84,7 +93,7 @@ public class AcceptUpdateRequest
     }
 
     [Fact]
-    public async Task DatabaseShut_ThrowsStorageUnavailableException()
+    public async Task DatabaseShut_ThrowsDbUpdateException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
@@ -95,6 +104,12 @@ public class AcceptUpdateRequest
             .With(r => r.RequestType, RequestType.Update)
             .Create();
         
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
+            .Returns(_bookRepositoryMock.Object);
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
+            .Returns(_requestRepositoryMock.Object);
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithOldAndUpdatedBooksByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedRequest);

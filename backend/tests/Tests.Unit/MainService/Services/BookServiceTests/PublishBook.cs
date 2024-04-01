@@ -19,12 +19,18 @@ public class PublishBook
     private readonly Mock<IAuthorRepository> _authorRepositoryMock = new();
     private readonly Mock<ISeriesRepository> _seriesRepositoryMock = new();
     
-    private BookService BookService => new BookService(
+    private BookService BookService => new(
         _unitOfWorkMock.Object
     );
 
     public PublishBook()
     {
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Author>())
+            .Returns(_authorRepositoryMock.Object);
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Series>())
+            .Returns(_seriesRepositoryMock.Object);
         _authorRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(new Author());
@@ -50,6 +56,12 @@ public class PublishBook
             .With(r => r.BookId, expectedBook.Id)
             .Create();
 
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
+            .Returns(_bookRepositoryMock.Object);
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
+            .Returns(_requestRepositoryMock.Object);
         _bookRepositoryMock
             .Setup(repository => repository.AddAsync(expectedBook))
             .ReturnsAsync(expectedBook);
@@ -67,7 +79,7 @@ public class PublishBook
     }
 
     [Fact]
-    public async Task EmptyBook_ThrowsBookValidationFailedException()
+    public async Task EmptyBook_ThrowsEntityValidationFailedException()
     {
         // Arrange
         var fixture = new Fixture()
@@ -96,13 +108,16 @@ public class PublishBook
     }
 
     [Fact]
-    public async Task BookWithNotExistingAuthor_ThrowsAuthorNotFoundException()
+    public async Task BookWithNotExistingAuthor_ThrowsEntityNotFoundException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
 
         var book = fixture.Build<Book>().With(b => b.AuthorId, 1).Create();
 
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Author>())
+            .Returns(_authorRepositoryMock.Object);
         _authorRepositoryMock
             .Setup(repository => repository.GetByIdAsync(book.AuthorId))
             .ReturnsAsync((Author) null);
@@ -120,13 +135,16 @@ public class PublishBook
     }
 
     [Fact]
-    public async Task BookWithNotExistingSeries_ThrowsSeriesNotFoundException()
+    public async Task BookWithNotExistingSeries_ThrowsEntityNotFoundException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
         
         var book = fixture.Build<Book>().With(b => b.SeriesId, 1).Create();
-
+        
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Series>())
+            .Returns(_seriesRepositoryMock.Object);
         _seriesRepositoryMock
             .Setup(repository => repository.GetByIdAsync((long) book.SeriesId!))
             .ReturnsAsync((Series) null);
@@ -144,13 +162,19 @@ public class PublishBook
     }
 
     [Fact]
-    public async Task DatabaseShut_ThrowsStorageUnavailableException()
+    public async Task DatabaseShut_ThrowsDbUpdateException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
 
         var book = fixture.Create<Book>();
-
+        
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
+            .Returns(_bookRepositoryMock.Object);
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
+            .Returns(_requestRepositoryMock.Object);
         _bookRepositoryMock
             .Setup(repository => repository.AddAsync(It.IsAny<Book>()))
             .ReturnsAsync(book);

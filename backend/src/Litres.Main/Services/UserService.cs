@@ -4,7 +4,6 @@ using System.Text;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Models;
-using Litres.Data.Repositories;
 using Litres.Main.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -24,8 +23,8 @@ public class UserService(
 
     public async Task<IdentityResult> RegisterPublisherAsync(User user, string contractNumber)
     {
-        var contractRepository = (ContractRepository)unitOfWork.GetRepository<Contract>();
-        var publisherRepository = (PublisherRepository)unitOfWork.GetRepository<Publisher>();
+        var contractRepository = (IContractRepository)unitOfWork.GetRepository<Contract>();
+        var publisherRepository = (IPublisherRepository)unitOfWork.GetRepository<Publisher>();
         var contract = await contractRepository.GetBySerialNumberAsync(contractNumber);
         if (contract is null)
             return IdentityResult.Failed(new IdentityError()

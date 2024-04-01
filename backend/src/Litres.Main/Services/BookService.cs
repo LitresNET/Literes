@@ -1,11 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using AutoMapper;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Models;
-using Litres.Data.Repositories;
 using Litres.Main.Exceptions;
-using Microsoft.EntityFrameworkCore;
 
 namespace Litres.Main.Services;
 
@@ -20,10 +17,10 @@ public class BookService(IUnitOfWork unitOfWork) : IBookService
             throw new EntityValidationFailedException(typeof(Book), results);
         
         if (await unitOfWork.GetRepository<Author>().GetByIdAsync(book.AuthorId) is null)
-            throw new EntityNotFoundException<Author>(book.AuthorId.ToString());
+            throw new EntityNotFoundException(typeof(Author), book.AuthorId.ToString());
 
         if (book.SeriesId is not null && await unitOfWork.GetRepository<Series>().GetByIdAsync((long)book.SeriesId) is null)
-            throw new EntityNotFoundException<Series>(typeof(Series), book.SeriesId.ToString());
+            throw new EntityNotFoundException(typeof(Series), book.SeriesId.ToString());
 
         book.IsApproved = false;
         
@@ -42,7 +39,7 @@ public class BookService(IUnitOfWork unitOfWork) : IBookService
     
     public async Task<Request> DeleteBookAsync(long bookId, long publisherId)
     {
-        var bookRepository = (BookRepository)unitOfWork.GetRepository<Book>();
+        var bookRepository = (IBookRepository)unitOfWork.GetRepository<Book>();
         var book = await bookRepository.GetByIdAsync(bookId);
         if (book is null)
             throw new EntityNotFoundException(typeof(Book), bookId.ToString());
@@ -74,7 +71,7 @@ public class BookService(IUnitOfWork unitOfWork) : IBookService
         if (!Validator.TryValidateObject(updatedBook, context, results))
             throw new EntityValidationFailedException(typeof(Book), results);
         
-        var bookRepository = (BookRepository)unitOfWork.GetRepository<Book>();
+        var bookRepository = (IBookRepository)unitOfWork.GetRepository<Book>();
         var book = await bookRepository.GetByIdAsync(updatedBook.Id);
         if (book is null)
             throw new EntityNotFoundException(typeof(Book), updatedBook.Id.ToString());

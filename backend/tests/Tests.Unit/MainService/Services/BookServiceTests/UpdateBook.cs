@@ -77,7 +77,7 @@ public class UpdateBook
     }
 
     [Fact]
-    public async Task EmptyBook_ThrowsBookValidationFailedException()
+    public async Task EmptyBook_ThrowsEntityValidationFailedException()
     {
         // Arrange
         var fixture = new Fixture()
@@ -105,7 +105,7 @@ public class UpdateBook
     }
     
     [Fact]
-    public async Task NotExistingBook_ThrowsBookNotFoundException()
+    public async Task NotExistingBook_ThrowsEntityNotFoundException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
@@ -129,7 +129,7 @@ public class UpdateBook
     }
     
     [Fact]
-    public async Task NotMatchingPublishers_ThrowsUserPermissionDeniedException()
+    public async Task NotMatchingPublishers_ThrowsPermissionDeniedException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
@@ -158,7 +158,7 @@ public class UpdateBook
     }
 
     [Fact]
-    public async Task DatabaseShut_ThrowsStorageUnavailableException()
+    public async Task DatabaseShut_ThrowsDbUpdateException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());

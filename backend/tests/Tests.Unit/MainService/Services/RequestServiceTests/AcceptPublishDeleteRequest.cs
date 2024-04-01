@@ -57,7 +57,7 @@ public class AcceptPublishDeleteRequest
     }
 
     [Fact]
-    public async Task NotExistingRequest_ThrowsRequestNotFoundException()
+    public async Task NotExistingRequest_ThrowsEntityNotFoundException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
@@ -86,7 +86,7 @@ public class AcceptPublishDeleteRequest
     }
 
     [Fact]
-    public async Task DatabaseShut_ThrowsStorageUnavailableException()
+    public async Task DatabaseShut_ThrowsDbUpdateException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
@@ -94,6 +94,12 @@ public class AcceptPublishDeleteRequest
         var expectedBook = fixture.Create<Book>();
         var expectedRequest = fixture.Create<Request>();
         
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
+            .Returns(_bookRepositoryMock.Object);
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
+            .Returns(_requestRepositoryMock.Object);
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedRequest);
@@ -102,7 +108,7 @@ public class AcceptPublishDeleteRequest
             .Returns(expectedBook);
         _unitOfWorkMock
             .Setup(repository => repository.SaveChangesAsync())
-            .ThrowsAsync(new Microsoft.EntityFrameworkCore.DbUpdateException());
+            .ThrowsAsync(new DbUpdateException());
 
         var service = RequestService;
 
