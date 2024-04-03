@@ -1,4 +1,4 @@
-﻿using backend.Abstractions;
+﻿using Litres.Data.Abstractions.Repositories;
 using Moq;
 
 namespace Tests.MainService.Services.RegistrationServiceTests;
