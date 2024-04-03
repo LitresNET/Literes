@@ -3,16 +3,16 @@ import IMAGES from "../../../assets/images.jsx";
 import ICONS from "../../../assets/icons.jsx";
 import "../RedirectPageStyles.css";
 
-function OrderSuccessPage() {
+function UnauthorizedPage() {
     return(
         <>
             <div className="adaptive">
                 <div className="redirect-page">
                     <div className="redirect-info">
-                        <img src={IMAGES.success_redirect} alt="ok"/>
-                        <h1>Thank you for your order!</h1>
-                        <p>Check your e-mail inbox for the receipt</p>
-                        <Button round={"true"} color={"yellow"} text={"Continue shopping"} iconpath={ICONS.shopping_cart}/>
+                        <img src={IMAGES.cart_redirect} alt="ok"/>
+                        <h1>We don't know you...</h1>
+                        <p>In order to continue, please sign in</p>
+                        <Button round={"true"} color={"yellow"} text={"Sign in"} iconpath={ICONS.sign_in}/>
                     </div>
                 </div>
             </div>
@@ -20,4 +20,4 @@ function OrderSuccessPage() {
     );
 }
 
-export default OrderSuccessPage;
+export default UnauthorizedPage;

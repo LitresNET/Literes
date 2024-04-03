@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Checkbox } from '../../../components/UI/Checkbox/Checkbox';
 import './CustomSubscriptionPage.css'
 import { Banner } from '../../../components/UI/Banner/Banner';
 import { Button } from '../../../components/UI/Button/Button';
@@ -41,7 +40,7 @@ export default function CustomSubscriptionPage() {
                         {features.map((item) => (
                             <div key={item.id} onClick={() => handleFeatureChoose(item)}>
                                 {/* TODO: чекбокс никак не помечается, когда он выбран */}
-                                <Checkbox>{item.name}</Checkbox>
+                                <Input type={"checkbox"}>{item.name}</Input>
                             </div>
                         ))}
                     </div>
