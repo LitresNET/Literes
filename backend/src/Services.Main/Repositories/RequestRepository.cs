@@ -7,7 +7,7 @@ namespace backend.Repositories;
 
 public class RequestRepository(ApplicationDbContext appDbContext) : IRequestRepository
 {
-    public async Task<Request> AddNewRequestAsync(Request request)
+    public async Task<Request> AddAsync(Request request)
     {
         var result = await appDbContext.Request.AddAsync(request);
         return result.Entity;
@@ -15,17 +15,31 @@ public class RequestRepository(ApplicationDbContext appDbContext) : IRequestRepo
 
     public async Task<Request?> GetRequestWithBookByIdAsync(long requestId)
     {
+        return await appDbContext.Request
+            .Include(request => request.Book)
+            .FirstOrDefaultAsync(request => request.Id == requestId);
+    }
+
+    public async Task<Request?> GetRequestWithOldAndUpdatedBooksByIdAsync(long requestId)
+    {
+        return await appDbContext.Request
+            .Include(request => request.Book)
+            .Include(request => request.UpdatedBook)
+            .FirstOrDefaultAsync(request => request.Id == requestId);
+    }
+
+    public async Task<Request?> GetByIdAsync(long requestId)
+    {
         return await appDbContext.Request.FirstOrDefaultAsync(request => request.Id == requestId);
     }
 
-    public Request DeleteRequest(Request request)
+    public Request Delete(Request request)
     {
-        var result = appDbContext.Request.Remove(request);
-        return result.Entity;
+        return appDbContext.Request.Remove(request).Entity;
     }
 
-    public async Task SaveChangesAsync()
+    public Request Update(Request request)
     {
-        await appDbContext.SaveChangesAsync();
+        return appDbContext.Request.Remove(request).Entity;
     }
 }

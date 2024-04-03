@@ -7,33 +7,33 @@ namespace backend.Repositories;
 
 public class BookRepository(ApplicationDbContext appDbContext) : IBookRepository
 {
-    public async Task<Book> AddNewBookAsync(Book book)
+    public async Task<Book> AddAsync(Book book)
     {
         var result = await appDbContext.Book.AddAsync(book);
         return result.Entity;
     }
 
-    public async Task<Book> DeleteBookByIdAsync(long bookId)
+    public Book Delete(Book book)
     {
-        var book = await appDbContext.Book.SingleAsync(b => b.Id == bookId);
         var result = appDbContext.Book.Remove(book);
-
         return result.Entity;
     }
 
-    public async Task<Book?> GetBookByIdAsync(long bookId)
+    public async Task<Book?> GetByIdAsync(long bookId)
     {
         return await appDbContext.Book.FirstOrDefaultAsync(b => b.Id == bookId);
     }
 
-    public Book UpdateBook(Book book)
+    public async Task<Book> DeleteByIdAsync(long bookId)
     {
-        var result = appDbContext.Book.Update(book);
+        var book = await appDbContext.Book.SingleAsync(b => b.Id == bookId);
+        var result = appDbContext.Book.Remove(book);
         return result.Entity;
     }
 
-    public async Task SaveChangesAsync()
+    public Book Update(Book book)
     {
-        await appDbContext.SaveChangesAsync();
+        var result = appDbContext.Book.Update(book);
+        return result.Entity;
     }
 }

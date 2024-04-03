@@ -14,9 +14,7 @@ public class BookCreateRequestDto
     public string CoverUrl { get; set; }
     public string ContentUrl { get; set; }
     public string Isbn { get; set; }
-    public bool IsAvailable { get; set; }
     public bool IsReadable { get; set; }
-    public bool IsApproved { get; set; }
     public int Count { get; set; }
     public int Price { get; set; }
     public List<Genre> BookGenres { get; set; }

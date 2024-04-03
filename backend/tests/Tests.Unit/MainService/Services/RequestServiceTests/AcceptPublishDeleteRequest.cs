@@ -9,11 +9,17 @@ using Tests.Config;
 
 namespace Tests.MainService.Services.RequestServiceTests;
 
-public class ChangeBookState
+public class AcceptPublishDeleteRequest
 {
     private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
     private readonly Mock<IBookRepository> _bookRepositoryMock = new();
     private readonly Mock<IRequestRepository> _requestRepositoryMock = new();
+    
+    private RequestService RequestService => new RequestService(
+        _requestRepositoryMock.Object,
+        _bookRepositoryMock.Object,
+        _unitOfWorkMock.Object
+    );
 
     [Theory]
     [InlineData(RequestType.Create, true, true, true)]
@@ -40,13 +46,13 @@ public class ChangeBookState
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedRequest);
         _bookRepositoryMock
-            .Setup(repository => repository.UpdateBook(It.IsAny<Book>()))
+            .Setup(repository => repository.Update(It.IsAny<Book>()))
             .Returns(expectedBook);
 
-        var service = new RequestService(_requestRepositoryMock.Object, _bookRepositoryMock.Object, _unitOfWorkMock.Object);
+        var service = RequestService;
 
         // Act
-        var result = await service.ChangeBookStateAsync(expectedRequest.Id, requestAccepted);
+        var result = await service.AcceptPublishDeleteRequestAsync(expectedRequest.Id, requestAccepted);
 
         // Assert
         Assert.Equal(expectedBook, result);
@@ -69,13 +75,13 @@ public class ChangeBookState
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
             .ReturnsAsync((Request)null);
 
-        var service = new RequestService(_requestRepositoryMock.Object, _bookRepositoryMock.Object, _unitOfWorkMock.Object);
+        var service = RequestService;
 
         // Act
 
         // Assert
         await Assert.ThrowsAsync<RequestNotFoundException>(
-            async () => await service.ChangeBookStateAsync(expectedRequest.Id)
+            async () => await service.AcceptPublishDeleteRequestAsync(expectedRequest.Id)
         );
     }
 
@@ -92,19 +98,19 @@ public class ChangeBookState
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedRequest);
         _bookRepositoryMock
-            .Setup(repository => repository.UpdateBook(It.IsAny<Book>()))
+            .Setup(repository => repository.Update(It.IsAny<Book>()))
             .Returns(expectedBook);
         _unitOfWorkMock
             .Setup(repository => repository.SaveChangesAsync())
             .ThrowsAsync(new DbUpdateException());
-        
-        var service = new RequestService(_requestRepositoryMock.Object, _bookRepositoryMock.Object, _unitOfWorkMock.Object);
+
+        var service = RequestService;
 
         // Act
 
         // Assert
         await Assert.ThrowsAsync<StorageUnavailableException>(
-            async () => await service.ChangeBookStateAsync(expectedRequest.Id)
+            async () => await service.AcceptPublishDeleteRequestAsync(expectedRequest.Id)
         );
     }
 }

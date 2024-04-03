@@ -7,16 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
 
-[Route("api/[controller]")]
+[ApiController]
 public class RequestController(IRequestService requestService) : ControllerBase
 {
     [HttpPost]
-    [Route("{id}/accept")]
+    [Route("api/[controller]/accept/{id}")]
     public async Task<IActionResult> AcceptPublishRequest([FromRoute] long id)
     {
         try
         {
-            var result = await requestService.ChangeBookStateAsync(id, requestAccepted:true);
+            var result = await requestService.AcceptPublishDeleteRequestAsync(id, requestAccepted:true);
             return Ok(result);
         }
         catch (RequestNotFoundException e)
@@ -31,7 +31,7 @@ public class RequestController(IRequestService requestService) : ControllerBase
     {
         try
         {
-            var result = await requestService.ChangeBookStateAsync(id, requestAccepted:false);
+            var result = await requestService.AcceptPublishDeleteRequestAsync(id, requestAccepted:false);
             return Ok(result);
         }
         catch (RequestNotFoundException e)
