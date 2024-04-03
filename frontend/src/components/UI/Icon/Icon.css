@@ -1,7 +1,7 @@
 .icon {
+    display: flex;
     align-items: center;
     align-content: center;
-    overflow: initial;
 
     color: black;
 }

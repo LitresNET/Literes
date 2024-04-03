@@ -22,8 +22,8 @@ export function Button(props) {
     return (
         <>
             <button className={classes} {...props}>
-                {text === "" ? null : <p>{text}</p>}
-                {iconpath === "" ? null : <Icon path={iconpath}/>}
+                {text === "" || text == null ? null : <p>{text}</p>}
+                {iconpath === "" || iconpath == null ? null : <Icon path={iconpath} size={"default"}/>}
             </button>
         </>
     )
