@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+<div class="container">
+    <form method="post" action="/pay">
+        <label for="cardholder-name">Имя держателя:</label>
+        <input type="text" id="cardholder-name" name="cardholder-name" minlength="1" maxlength="20" required>
+        <label for="card-number">Номер карты:</label>
+        <input type="tel" id="card-number" name="card-number" pattern="[0-9]+" minlength="16" maxlength="16"
+               required>
+        <div class="flex-container">
+            <div>
+                <label for="expiry-date">Дата:</label>
+                <div class="row-container" id="expiry-date">
+                    <input type="tel" id="expiry-month" name="expiry-month" placeholder="MM" pattern="[0-9]+"
+                           minlength="2" maxlength="2" required>
+                    <span>/</span>
+                    <input type="tel" id="expiry-year" name="expiry-year" placeholder="YY" pattern="[0-9]+"
+                           minlength="2" maxlength="2" required>
+                </div>
+            </div>
+            <div>
+                <label for="cvv">CVV:</label>
+                <input type="tel" id="cvv" name="cvv" pattern="[0-9]+" minlength="3" maxlength="3" required>
+            </div>
+        </div>
+        <p id="total-price">{{totalPrice}} рублей</p>
+        <button type="submit" class="yellow-button">Оплатить</button>
+    </form>
+</div>
+</body>
+</html>

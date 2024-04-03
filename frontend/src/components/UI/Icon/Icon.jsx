@@ -4,9 +4,7 @@ import './Icon.css';
 /// path : string - путь к иконке <br/>
 /// size : string - размер ["default", "mini", "custom", "[any]" = "default"]<br/>
 /// width : number - ширина (= высота, учитывается только при size = "custom")<br/>
-export function Icon(props) {
-    const {width, path, size, className} = props;
-
+export function Icon({width, path, size, className, ...rest}) {
     let w;
     switch(size) {
         case "default":
@@ -26,8 +24,8 @@ export function Icon(props) {
 
     return (
         <>
-            <div className={"icon " + className} style={{maxWidth : w, maxHeight: h}} {...props}>
-                <img src={path} alt=""/>
+            <div className={"icon " + className}  {...rest}>
+                <img src={path} style={{width : w, height : h}} alt=""/>
             </div>
         </>
     )
