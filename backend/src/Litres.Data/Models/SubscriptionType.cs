@@ -6,5 +6,5 @@ public enum SubscriptionType
     Student,
     Scientific,
     Premium,
-    Personal
+    Custom
 }

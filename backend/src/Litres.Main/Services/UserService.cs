@@ -59,14 +59,10 @@ public class UserService(
         var claims = new List<Claim>
         {
             new(CustomClaimTypes.UserId, user.Id.ToString()),
+            new(CustomClaimTypes.SubscriptionTypeId, user.SubscriptionId.ToString()),
+            new(CustomClaimTypes.SubscriptionActiveUntil, user.SubscriptionActiveUntil.ToShortDateString())
         };
 
-        if (user.SubscriptionId is not null)
-        {
-            claims.Add(new Claim(CustomClaimTypes.SubscriptionTypeId, user.SubscriptionId.ToString()!));
-            claims.Add(new Claim(CustomClaimTypes.SubscriptionActiveUntil, user.SubscriptionActiveUntil.ToShortDateString()));
-        }
-        
         var jwt = new JwtSecurityToken(
             claims: claims,
             expires: DateTime.UtcNow.Add(TimeSpan.FromDays(1)),
