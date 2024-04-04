@@ -1,5 +1,10 @@
+using System.Globalization;
 using AutoMapper;
 using Litres.Data.Abstractions.Services;
+using Litres.Data.Dto.Requests;
+using Litres.Data.Dto.Responses;
+using Litres.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Litres.Main.Controllers;
@@ -11,16 +16,41 @@ public class SubscriptionController(
     IMapper mapper
     ) : ControllerBase
 {
-    [HttpGet("{name}")]
-    [HttpGet("{name}/{customId:long}")]
-    public async Task<IActionResult> GetSubscription(string name, long? customId)
+    [HttpGet("{subscriptionId:long}")]
+    public async Task<IActionResult> GetSubscription(long subscriptionId)
     {
-        throw new NotImplementedException();
+        var subscription = await subscriptionService.GetAsync(subscriptionId);
+        var dto = mapper.Map<SubscriptionResponseDto>(subscription);
+        return Ok(dto);
     }
 
-    [HttpPatch("custom/{customId:long}")]
-    public async Task<IActionResult> UpdateSubscription(long customId)
+    [Authorize]
+    [HttpPatch("update/{name}")]
+    public IActionResult UpdateSubscription(
+        [FromQuery] string name,
+        [FromBody] SubscriptionRequestDto customSubscription)
     {
-        throw new NotImplementedException();
+        customSubscription.Name = name;
+        var subscription = mapper.Map<Subscription>(customSubscription);
+        long.TryParse(
+            User.FindFirst(CustomClaimTypes.UserId)?.Value, 
+            NumberStyles.Any, 
+            CultureInfo.InvariantCulture, out var userId
+        );
+        var result = subscriptionService.Update(userId, subscription);
+        return result.Id == subscription.Id ? Ok() : BadRequest("The account lacks the necessary funds");
+    }
+
+    [Authorize]
+    [HttpPatch("reset")]
+    public IActionResult ResetSubscription()
+    {
+        long.TryParse(
+            User.FindFirst(CustomClaimTypes.UserId)?.Value, 
+            NumberStyles.Any, 
+            CultureInfo.InvariantCulture, out var userId
+        );
+        subscriptionService.Reset(userId);
+        return Ok();
     }
 }

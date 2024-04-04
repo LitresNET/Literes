@@ -1,4 +1,5 @@
 using System.Text;
+using AutoMapper;
 using Litres.Data.Models;
 using Litres.Data.Configurations;
 using Litres.Data.Configurations.Mapping;
@@ -37,6 +38,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAutoMapper(cfg =>
 {
+    cfg.AddProfile<SubscriptionMapperProfile>();
     cfg.AddProfile<RequestMapperProfile>();
     cfg.AddProfile<UserMapperProfile>();
     cfg.AddProfile<BookMapperProfile>();
