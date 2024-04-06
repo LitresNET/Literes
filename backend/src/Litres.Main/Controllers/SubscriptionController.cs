@@ -30,13 +30,16 @@ public class SubscriptionController(
         [FromQuery] string name,
         [FromBody] SubscriptionRequestDto customSubscription)
     {
+        if (!long.TryParse(
+                User.FindFirst(CustomClaimTypes.UserId)?.Value,
+                NumberStyles.Any,
+                CultureInfo.InvariantCulture, out var userId
+            ))
+            return BadRequest();
+        
         customSubscription.Name = name;
         var subscription = mapper.Map<Subscription>(customSubscription);
-        long.TryParse(
-            User.FindFirst(CustomClaimTypes.UserId)?.Value, 
-            NumberStyles.Any, 
-            CultureInfo.InvariantCulture, out var userId
-        );
+            
         var result = subscriptionService.Update(userId, subscription);
         return result.Id == subscription.Id ? Ok() : BadRequest("The account lacks the necessary funds");
     }
@@ -45,11 +48,13 @@ public class SubscriptionController(
     [HttpPatch("reset")]
     public IActionResult ResetSubscription()
     {
-        long.TryParse(
-            User.FindFirst(CustomClaimTypes.UserId)?.Value, 
-            NumberStyles.Any, 
-            CultureInfo.InvariantCulture, out var userId
-        );
+        if (!long.TryParse(
+                User.FindFirst(CustomClaimTypes.UserId)?.Value,
+                NumberStyles.Any,
+                CultureInfo.InvariantCulture, out var userId
+            ))
+            return BadRequest();
+        
         subscriptionService.Reset(userId);
         return Ok();
     }
