@@ -1,0 +1,43 @@
+const basePath = import.meta.url;
+
+const ICONS = {
+    account: new URL('./icons/account.svg', basePath).href,
+    binoculars: new URL('./icons/binoculars.svg', basePath).href,
+    book_open: new URL('./icons/book_open.svg', basePath).href,
+    bookmark_simple: new URL('./icons/bookmark_simple.svg', basePath).href,
+    caret_down: new URL('./icons/caret_down.svg', basePath).href,
+    caret_left: new URL('./icons/caret_left.svg', basePath).href,
+    caret_right: new URL('./icons/caret_right.svg', basePath).href,
+    check_circle: new URL('./icons/check_circle.svg', basePath).href,
+    circle_wavy_warning: new URL('./icons/circle_wavy_warning.svg', basePath).href,
+    dislike: new URL('./icons/dislike.svg', basePath).href,
+    download: new URL('./icons/download.svg', basePath).href,
+    empty_star: new URL('./icons/empty_star.svg', basePath).href,
+    eye: new URL('./icons/eye.svg', basePath).href,
+    figma_logo: new URL('./icons/figma_logo.svg', basePath).href,
+    filled_star: new URL('./icons/filled_star.svg', basePath).href,
+    folder_notch_open: new URL('./icons/folder_notch_open.svg', basePath).href,
+    github_logo: new URL('./icons/github_logo.svg', basePath).href,
+    gradient_loader: new URL('./icons/gradient_loader.svg', basePath).href,
+    heart: new URL('./icons/heart.svg', basePath).href,
+    like: new URL('./icons/like.svg', basePath).href,
+    linked_in_logo: new URL('./icons/linked_in_logo.svg', basePath).href,
+    loader_button: new URL('./icons/loader_button.svg', basePath).href,
+    location: new URL('./icons/location.svg', basePath).href,
+    magnifying_glass: new URL('./icons/magnifying_glass.svg', basePath).href,
+    minus_circle: new URL('./icons/minus_circle.svg', basePath).href,
+    money: new URL('./icons/money.svg', basePath).href,
+    next: new URL('./icons/next.svg', basePath).href,
+    path: new URL('./icons/path.svg', basePath).href,
+    pencil: new URL('./icons/pencil.svg', basePath).href,
+    plus_circle: new URL('./icons/plus_circle.svg', basePath).href,
+    publish: new URL('./icons/publish.svg', basePath).href,
+    settings: new URL('./icons/settings.svg', basePath).href,
+    shopping_cart: new URL('./icons/shopping_cart.svg', basePath).href,
+    sign_in: new URL('./icons/sign_in.svg', basePath).href,
+    sign_out: new URL('./icons/sign_out.svg', basePath).href,
+    sparkle: new URL('./icons/sparkle.svg', basePath).href,
+    trash: new URL('./icons/trash.svg', basePath).href
+};
+
+export default ICONS;

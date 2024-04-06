@@ -1,0 +1,65 @@
+button {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    padding: 10px 21px;
+    font-size: 24px;
+
+    background-color: white;
+
+    cursor: pointer;
+    fill: var(--gray-800);
+
+    transition: 0.2s linear;
+}
+
+button p {
+    color: inherit;
+}
+
+button:hover {
+    color: var(--gray-600);
+    background-color: var(--yellow-500);
+}
+
+.button-big {
+    padding: 30px 0;
+}
+
+button .icon {
+    margin-left: 10px;
+}
+
+button .icon:first-child {
+    margin-left: 0;
+}
+
+.button-shadow {
+    box-shadow: var(--orange-500) 12px 14px 0;
+}
+
+.button-orange {
+    color: white;
+
+    background-color: var(--orange-500);
+}
+
+.button-yellow {
+    background-color: var(--yellow-500);
+
+    transition: 0.2s linear;
+}
+
+.button-yellow:hover {
+    color: white;
+    background-color: var(--orange-500);
+}
+
+.button-rounded {
+    border-radius: 20px;
+}
+

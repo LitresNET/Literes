@@ -1,8 +1,8 @@
 ﻿using AutoFixture;
-using backend.Abstractions;
-using backend.Exceptions;
-using backend.Models;
-using backend.Services;
+using Litres.Data.Abstractions.Repositories;
+using Litres.Data.Models;
+using Litres.Main.Exceptions;
+using Litres.Main.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Tests.Config;
@@ -15,9 +15,7 @@ public class AcceptPublishDeleteRequest
     private readonly Mock<IBookRepository> _bookRepositoryMock = new();
     private readonly Mock<IRequestRepository> _requestRepositoryMock = new();
     
-    private RequestService RequestService => new RequestService(
-        _requestRepositoryMock.Object,
-        _bookRepositoryMock.Object,
+    private RequestService RequestService => new(
         _unitOfWorkMock.Object
     );
 
@@ -59,7 +57,7 @@ public class AcceptPublishDeleteRequest
     }
 
     [Fact]
-    public async Task NotExistingRequest_ThrowsRequestNotFoundException()
+    public async Task NotExistingRequest_ThrowsEntityNotFoundException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
@@ -76,17 +74,19 @@ public class AcceptPublishDeleteRequest
             .ReturnsAsync((Request)null);
 
         var service = RequestService;
-
+        var expected = new EntityNotFoundException(typeof(Request), expectedRequest.Id.ToString());
+        
         // Act
-
-        // Assert
-        await Assert.ThrowsAsync<RequestNotFoundException>(
+        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
             async () => await service.AcceptPublishDeleteRequestAsync(expectedRequest.Id)
         );
+        
+        // Assert
+        Assert.Equal(expected.Message, exception.Message);
     }
 
     [Fact]
-    public async Task DatabaseShut_ThrowsStorageUnavailableException()
+    public async Task DatabaseShut_ThrowsDbUpdateException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
@@ -94,6 +94,12 @@ public class AcceptPublishDeleteRequest
         var expectedBook = fixture.Create<Book>();
         var expectedRequest = fixture.Create<Request>();
         
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
+            .Returns(_bookRepositoryMock.Object);
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
+            .Returns(_requestRepositoryMock.Object);
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedRequest);
@@ -109,7 +115,7 @@ public class AcceptPublishDeleteRequest
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<StorageUnavailableException>(
+        await Assert.ThrowsAsync<DbUpdateException>(
             async () => await service.AcceptPublishDeleteRequestAsync(expectedRequest.Id)
         );
     }

@@ -1,1 +1,19 @@
-/* стили BookCard */
+.bookcard {
+    max-width: 230px;
+    min-width: 230px;
+}
+
+.bookcard-button-row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+}
+
+.bookcard-button-row:first-child > :last-child {
+    width: 70px;
+    margin-left: 7px;
+}
+
+.bookcard-button-row:last-child {
+    width: 100%;
+}

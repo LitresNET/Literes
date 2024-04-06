@@ -1,1 +1,24 @@
 /* стили Tag */
+
+.tag {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: space-evenly;
+
+    padding: 18px 32px;
+    font-size: 24px;
+
+    background-color: white;
+
+    border-radius: 20px;
+}
+
+.tag-success {
+    box-shadow: var(--blue-500) 12px 14px 0;
+}
+
+.tag-failure {
+    box-shadow: var(--orange-500) 12px 14px 0;
+}

@@ -1,0 +1,38 @@
+.container {
+    width: 90vw;
+    margin-top: 50px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.display-row {
+    display: flex;
+    flex-direction: row;
+    overflow-x: scroll;
+    padding-bottom: 30px;
+
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.display-row a {
+    margin: 10px;
+}
+
+.display-column {
+    display: flex;
+    flex-direction: column;
+
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.display-column button {
+    margin: 10px;
+}
+
+#covers .display-row div {
+    border-style: solid;
+}
