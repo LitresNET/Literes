@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using LinqKit;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Models;
+using Litres.Data.Repositories;
 using Litres.Main.Exceptions;
 
 namespace Litres.Main.Services;
@@ -98,5 +100,62 @@ public class BookService(IUnitOfWork unitOfWork) : IBookService
         await unitOfWork.SaveChangesAsync();
         
         return result;
+    }
+
+    public async Task<Book> GetBookWithAccessCheckAsync(long userId, long bookId)
+    {
+        var bookRepository = unitOfWork.GetRepository<Book>();
+        var userRepository = unitOfWork.GetRepository<User>();
+        
+        var user = await userRepository.GetByIdAsync(userId);
+        var book = await bookRepository.GetByIdAsync(bookId);
+        
+        if (user == null)
+            throw new EntityNotFoundException(typeof(User), userId.ToString());
+        if (book == null)
+            throw new EntityNotFoundException(typeof(Book), userId.ToString());
+
+        if (!user.Subscription.BooksAllowed.Any(genre => book.BookGenres.Contains(genre)))
+            book.ContentUrl = "";
+
+        return book;
+    }
+    
+    public async Task<List<Book>> GetBookCatalogAsync(
+        Dictionary<SearchParameter, string>? searchParameters = null, 
+        int extraLoadNumber = 0, 
+        int booksAmount = 30)
+    {
+        // Сборка предиката
+        var builder = PredicateBuilder.New<Book>();
+
+        if (searchParameters?.TryGetValue(SearchParameter.Category, out var value) == true
+            && Enum.TryParse<Genre>(value, out var genre))
+            builder = builder.And(b => b.BookGenres.Contains(genre));
+
+        var predicate = builder.Compile();
+        
+        // Получение данных
+        var bookRepository = (IBookRepository) unitOfWork.GetRepository<Book>();
+        var books = await bookRepository.GetBooksByFilterAsync(predicate);
+
+        // Сортировка
+        var ordered = (IOrderedQueryable<Book>) books;
+        if (searchParameters?.TryGetValue(SearchParameter.New, out value) == true
+            && bool.TryParse(value, out var isNew))
+            ordered = isNew
+                ? books.OrderByDescending(b => b.PublicationDate)
+                : books.OrderBy(b => b.PublicationDate);
+
+        if (searchParameters?.TryGetValue(SearchParameter.HighRated, out value) == true
+            && bool.TryParse(value, out var isHighRated))
+            ordered = isHighRated
+                ? ordered.ThenByDescending(b => b.Rating)
+                : ordered.ThenBy(b => b.Rating);
+        
+        // Пагинация
+        var paginated = ordered.Skip((extraLoadNumber - 1) * booksAmount).Take(booksAmount);
+        
+        return paginated.ToList();
     }
 }
