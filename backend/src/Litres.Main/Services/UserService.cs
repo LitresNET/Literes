@@ -13,7 +13,7 @@ namespace Litres.Main.Services;
 public class UserService(
     IUnitOfWork unitOfWork, 
     UserManager<User> userManager,
-    IConfiguration configuration) : IRegistrationService
+    IConfiguration configuration) : IUserService
 {
 
     public async Task<IdentityResult> RegisterUserAsync(User user)

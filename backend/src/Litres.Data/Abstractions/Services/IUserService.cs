@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Litres.Data.Abstractions.Services;
 
-public interface IRegistrationService
+public interface IUserService
 {
     public Task<IdentityResult> RegisterUserAsync(User user);
 
