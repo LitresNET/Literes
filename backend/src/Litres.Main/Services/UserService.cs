@@ -37,7 +37,7 @@ public class UserService(
         
         await publisherRepository.AddAsync(new Publisher
         {
-            Id = user.Id,
+            UserId = user.Id,
             ContractId = contract.Id
         });
         await unitOfWork.SaveChangesAsync();

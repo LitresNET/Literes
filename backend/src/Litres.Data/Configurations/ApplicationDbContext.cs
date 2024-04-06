@@ -90,7 +90,11 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
         modelBuilder.Entity<User>()
             .HasOne(u => u.Subscription)
             .WithMany(s => s.Users);
-        
+
+        modelBuilder.Entity<Publisher>()
+            .HasOne(p => p.User)
+            .WithOne()
+            .HasForeignKey<Publisher>(p => p.UserId);
         
         //Связи, которые сгенерировал chatgpt. Вставил на пох, просто чтобы работало
         //TODO: исправить (для аутентификации и авторизации)
