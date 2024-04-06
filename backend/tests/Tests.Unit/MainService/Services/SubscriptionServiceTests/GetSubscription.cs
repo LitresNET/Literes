@@ -3,6 +3,7 @@ using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Models;
 using Litres.Main.Exceptions;
 using Litres.Main.Services;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Tests.Config;
 
@@ -11,12 +12,9 @@ namespace Tests.MainService.Services.SubscriptionServiceTests;
 public class GetSubscription
 {
     private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
-    private readonly Mock<IUserRepository> _userRepositoryMock = new();
     private readonly Mock<ISubscriptionRepository> _subscriptionRepositoryMock = new();
     
-    private SubscriptionService SubscriptionService => new(
-        _unitOfWorkMock.Object
-    );
+    private SubscriptionService SubscriptionService => new(_unitOfWorkMock.Object);
 
     [Theory]
     [InlineData(1)]
@@ -64,5 +62,25 @@ public class GetSubscription
 
         // Assert
         Assert.Equal(expected.Message, actual.Message);
+    }
+
+    [Fact]
+    public async Task DatabaseShut_ThrowsDbUpdateException()
+    {
+        // Arrange
+        var expected = new DbUpdateException();
+
+        _unitOfWorkMock
+            .Setup(unitOfWork => unitOfWork.GetRepository<Subscription>())
+            .Returns(_subscriptionRepositoryMock.Object);
+        _subscriptionRepositoryMock
+            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
+            .Throws(new DbUpdateException());
+        
+        // Act
+        var actual = await Assert.ThrowsAsync<DbUpdateException>(() => SubscriptionService.GetAsync(100));
+
+        // Assert
+        Assert.Equal(expected.GetType(), actual.GetType());
     }
 }

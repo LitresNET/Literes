@@ -23,10 +23,10 @@ public class SubscriptionService(IUnitOfWork unitOfWork) : ISubscriptionService
     /// Обновляет подписку пользователю
     /// </summary>
     /// <param name="userId">Идентификатор пользователя</param>
-    /// <param name="subscription">Новая подписка</param>
+    /// <param name="newSubscription">Новая подписка</param>
     /// <returns>Подписка, которая была установлена</returns>
     /// <exception cref="EntityNotFoundException">Если пользователь не был найден</exception>
-    public Subscription Update(long userId, Subscription subscription)
+    public Subscription Update(long userId, Subscription newSubscription)
     {
         var userRepository = unitOfWork.GetRepository<User>();
         var subscriptionRepository = (ISubscriptionRepository) unitOfWork.GetRepository<Subscription>();
@@ -38,39 +38,40 @@ public class SubscriptionService(IUnitOfWork unitOfWork) : ISubscriptionService
         var currentSubscription = dbUser.Subscription;
         
         // если подписка не кастомная, то надо достать её из бд (чтобы не было ошибок в доступе к книгам)
-        if (subscription.Name != SubscriptionType.Custom.ToString() 
-            && Enum.TryParse(typeof(SubscriptionType), subscription.Name, out var subscriptionType))
+        if (newSubscription.Name != SubscriptionType.Custom.ToString() 
+            && Enum.TryParse(typeof(SubscriptionType), newSubscription.Name, out var subscriptionType))
         {
             var dbSubscription = subscriptionRepository.GetByTypeAsync((SubscriptionType)subscriptionType!).Result;
-            subscription = dbSubscription ?? throw new EntityNotFoundException(typeof(Subscription), subscription.Name);
+            newSubscription = dbSubscription ?? throw new EntityNotFoundException(typeof(Subscription), newSubscription.Name);
         }
         
         // Бесплатный ли у нас переход на подписку с меньшей стоимостью?
         // Сделано так, что да
-        if (currentSubscription.Price > subscription.Price)
+        if (currentSubscription.Price > newSubscription.Price)
         {
-            if (subscription.Name == SubscriptionType.Custom.ToString())
-                subscriptionRepository.AddAsync(subscription);
-            dbUser.Subscription = subscription;
+            if (newSubscription.Name == SubscriptionType.Custom.ToString())
+                subscriptionRepository.AddAsync(newSubscription);
+            dbUser.Subscription = newSubscription;
         }
         else
         {
             // Нужно доплатить или заплатить полностью при переходе на подписку дороже?
             // Сделано так, что оплата полная
-            if (dbUser.Wallet < subscription.Price)
+            if (dbUser.Wallet < newSubscription.Price)
                 return dbUser.Subscription;
             
-            dbUser.Wallet -= subscription.Price;
-            dbUser.Subscription = subscription;
+            dbUser.Wallet -= newSubscription.Price;
+            dbUser.Subscription = newSubscription;
             dbUser.SubscriptionActiveUntil = DateTime.Now.Add(TimeSpan.FromDays(30));
         }
 
         // если пользователь перестал пользоваться кастомной подпиской удаляем её
         if (currentSubscription.Name == SubscriptionType.Custom.ToString()
-            && subscription.Name != SubscriptionType.Custom.ToString())
-            subscriptionRepository.Delete(subscription);
+            && newSubscription.Name != SubscriptionType.Custom.ToString())
+            subscriptionRepository.Delete(newSubscription);
 
-        return subscription;
+        unitOfWork.SaveChangesAsync().Wait();
+        return newSubscription;
     }
 
     /// <summary>
@@ -92,6 +93,6 @@ public class SubscriptionService(IUnitOfWork unitOfWork) : ISubscriptionService
         dbUser.SubscriptionId = 1L;
         userRepository.Update(dbUser);
         
-        unitOfWork.SaveChangesAsync();
+        unitOfWork.SaveChangesAsync().Wait();
     }
 }
