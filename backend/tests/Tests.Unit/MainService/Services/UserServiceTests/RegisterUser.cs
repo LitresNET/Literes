@@ -19,4 +19,6 @@ public class RegisterUser
         _userManagerMock.Object,
         _configurationMock.Object
     );
+    
+    
 }
