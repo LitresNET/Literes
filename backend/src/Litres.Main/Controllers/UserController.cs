@@ -2,14 +2,16 @@
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Dto.Requests;
 using Litres.Data.Models;
-using Litres.Main.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Litres.Main.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(IRegistrationService registrationService, IMapper mapper) : ControllerBase
+public class UserController(
+    IRegistrationService registrationService, 
+    IUserService userService,
+    IMapper mapper) : ControllerBase
 {
     [HttpPost("signup")]
     public async Task<IActionResult> RegisterUserAsync([FromBody] UserRegistrationDto registrationDto)
@@ -32,5 +34,14 @@ public class UserController(IRegistrationService registrationService, IMapper ma
     {
         var token = await registrationService.LoginUserAsync(loginDto.Email, loginDto.Password);
         return Ok(token);
+    }
+
+    [HttpPatch("settings")]
+    public async Task<IActionResult> ChangeUserSettings([FromBody] UserSettingsDto dto)
+    {
+        var user = mapper.Map<User>(dto);
+        var resultUser = await userService.ChangeUserSettingsAsync(user);
+        var response = mapper.Map<UserSettingsDto>(resultUser);
+        return Ok(response);
     }
 }
