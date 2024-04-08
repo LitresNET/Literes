@@ -3,7 +3,6 @@ using LinqKit;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Models;
-using Litres.Data.Repositories;
 using Litres.Main.Exceptions;
 
 namespace Litres.Main.Services;
@@ -115,7 +114,9 @@ public class BookService(IUnitOfWork unitOfWork) : IBookService
         if (book == null)
             throw new EntityNotFoundException(typeof(Book), userId.ToString());
 
-        if (!user.Subscription.BooksAllowed.Any(genre => book.BookGenres.Contains(genre)))
+        var allowedGenres = user.Subscription!.BooksAllowed;
+        if (allowedGenres.Count != 0 
+            && !allowedGenres.Any(genre => book.BookGenres.Contains(genre)))
             book.ContentUrl = "";
 
         return book;
