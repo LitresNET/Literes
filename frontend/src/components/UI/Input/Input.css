@@ -1,9 +1,15 @@
-input {
+input,
+textarea {
     border-radius: 20px;
     border-color: var(--gray-800);
 
     padding: 12px 20px;
     font-size: 14px;
+    /* resize: none; */
+}
+
+textarea {
+    height: 150px;
 }
 
 .input-wrapper {
@@ -27,14 +33,15 @@ input {
     font-size: 18px;
 }
 
-input[type="text"] {
+input[type='text'],
+textarea {
     box-shadow: var(--yellow-500) 12px 14px 0;
     transition: 0.2s linear;
 }
 
-input[type="text"]:focus {
+input[type='text']:focus,
+textarea:focus {
     box-shadow: var(--orange-500) 12px 14px 0;
 }
-
 
 

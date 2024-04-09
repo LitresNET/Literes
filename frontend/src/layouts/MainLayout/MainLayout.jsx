@@ -1,4 +1,3 @@
-// TODO: сверстать layout, включающий в себя header, footer и sidebar (выезжающую панель с корзиной)
 import ICONS from '../../assets/icons';
 import { Icon } from '../../components/UI/Icon/Icon';
 import { IconButton } from '../../components/UI/Icon/IconButton/IconButton';
