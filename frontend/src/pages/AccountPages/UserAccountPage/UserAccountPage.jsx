@@ -10,6 +10,7 @@ import { AccountBookCard } from '../../../components/AccountBookCard/AccountBook
 
 import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/react'
+import { Link } from 'react-router-dom'
 
 export default function UserAccountPage() {
     return (
@@ -20,9 +21,11 @@ export default function UserAccountPage() {
                     <div className="accaunt-info">
                         <div className="accaunt-info-title">
                             <h1>Selected subscription</h1>
-                            <div className="accaunt-setting-button">
-                                <Icon path={ICONS.settings} />
-                            </div>
+                            <Link to="/account/settings" style={{textDecoration: 'none'}}>
+                                <div className="accaunt-setting-button">
+                                    <Icon path={ICONS.settings} />
+                                </div>
+                            </Link>
                         </div>
                         <Banner>
                             <span className="accaunt-banner-text">Premium</span>

@@ -61,7 +61,7 @@ const routes = [
           element: <UserSettingsPage/>
         },
         {
-          path: 'book/settings',
+          path: 'account/publisher/book/:id/settings',
           element: <BookSettingsPage/>
         },
       ]

@@ -4,6 +4,7 @@ import IMAGES from '../../../assets/images'
 import { Cover } from '../../../components/Cover/Cover'
 import { Input } from '../../../components/UI/Input/Input'
 import { Button } from '../../../components/UI/Button/Button'
+import { Link } from 'react-router-dom'
 
 export default function UserSettingsPage() {
     return (
@@ -27,9 +28,11 @@ export default function UserSettingsPage() {
                                     <label htmlFor="new-password">New Password</label>
                                     <Input type="text" id="new-password" required />
                                 </div>
-                                <div>
-                                    <Button text={'save'} round={'true'} color={'orange'} />
-                                </div>
+                                <Link to="/account" style={{textDecoration: 'none'}}>
+                                    <div>
+                                        <Button text={'save'} round={'true'} color={'orange'} />
+                                    </div>
+                                </Link>
                                 <span className='user-settings-form-delete-button'>Delete account</span>
                             </form>
                             <div className='user-settings-info-button'>

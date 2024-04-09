@@ -71,9 +71,11 @@ export default function PublisherPage() {
                         {Array.from({ length: 10 }).map((_, index) => (
                             <SwiperSlide key={index} style={{ width: 'auto', minWidth: '100px' }}>
                                 <AccountBookCard
+                                    id={index}
                                     role={'publisher'}
                                     imgPath={IMAGES.default_cover}
-                                    description={'maecenas nulla nibh amet non fringilla'}
+                                    author={'Author'}
+                                    title={'Lorem Ipsum'}
                                 />
                             </SwiperSlide>
                         ))}
