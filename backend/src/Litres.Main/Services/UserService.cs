@@ -7,16 +7,16 @@ namespace Litres.Main.Services;
 
 public class UserService(IUnitOfWork unitOfWork) : IUserService
 {
-    public async Task<User> ChangeUserSettingsAsync(User user)
+    public async Task<User> ChangeUserSettingsAsync(User patchedUser)
     {
         var userRepository = unitOfWork.GetRepository<User>();
 
-        var dbUser = await userRepository.GetByIdAsync(user.Id);
+        var dbUser = await userRepository.GetByIdAsync(patchedUser.Id);
         if (dbUser == null)
-            throw new EntityNotFoundException(typeof(User), user.Id.ToString());
+            throw new EntityNotFoundException(typeof(User), patchedUser.Id.ToString());
 
-        dbUser.Name = user.Name;
-        dbUser.AvatarUrl = user.AvatarUrl;
+        dbUser.Name = patchedUser.Name;
+        dbUser.AvatarUrl = patchedUser.AvatarUrl;
 
         await unitOfWork.SaveChangesAsync();
         return dbUser;
@@ -34,7 +34,7 @@ public class UserService(IUnitOfWork unitOfWork) : IUserService
         if (book is null)
             throw new EntityNotFoundException(typeof(Book), bookIdToDelete.ToString());
         
-        dbUser.Favourites.Remove(book);
+        dbUser.Favourites.RemoveAll(b => b.Id == book.Id);
         
         await unitOfWork.SaveChangesAsync();
         return book;
