@@ -15,7 +15,7 @@ public class OrderController(
 {
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> Create(OrderCreateRequestDto dto)
+    public async Task<IActionResult> Create([FromBody] OrderCreateRequestDto dto)
     {
         if (!long.TryParse(User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.UserId)?.Value, out var userId))
             return Unauthorized();
