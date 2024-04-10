@@ -8,6 +8,11 @@ namespace Litres.Main.Services;
 
 public class OrderService(IUnitOfWork unitOfWork) : IOrderService
 {
+    public Task<Order> GetById(long orderId)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<Order> CreateAsync(Order order)
     {
         var context = new ValidationContext(order);
