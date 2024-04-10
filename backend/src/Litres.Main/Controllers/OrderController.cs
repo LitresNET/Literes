@@ -17,7 +17,7 @@ public class OrderController(
     [HttpPost]
     public async Task<IActionResult> Create(OrderCreateRequestDto dto)
     {
-        if (long.TryParse(User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.UserId)?.Value, out var userId))
+        if (!long.TryParse(User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.UserId)?.Value, out var userId))
             return Unauthorized();
         if (userId != dto.UserId)
             return Forbid();
@@ -32,7 +32,7 @@ public class OrderController(
     [HttpDelete("{orderId}")]
     public async Task<IActionResult> Delete(long orderId)
     {
-        if (long.TryParse(User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.UserId)?.Value, out var userId))
+        if (!long.TryParse(User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.UserId)?.Value, out var userId))
             return Unauthorized();
         
         var order = await orderService.GetById(orderId);
