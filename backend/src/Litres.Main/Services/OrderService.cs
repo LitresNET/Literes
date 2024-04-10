@@ -17,10 +17,10 @@ public class OrderService(IUnitOfWork unitOfWork) : IOrderService
             throw new EntityValidationFailedException(typeof(Order), results);
         
         if (await unitOfWork.GetRepository<PickupPoint>().GetByIdAsync(order.PickupPointId) is null)
-            throw new EntityNotFoundException(typeof(Author), order.PickupPointId.ToString());
+            throw new EntityNotFoundException(typeof(PickupPoint), order.PickupPointId.ToString());
 
-        if (await unitOfWork.GetRepository<Series>().GetByIdAsync(order.UserId) is null)
-            throw new EntityNotFoundException(typeof(Series), order.UserId.ToString());
+        if (await unitOfWork.GetRepository<User>().GetByIdAsync(order.UserId) is null)
+            throw new EntityNotFoundException(typeof(User), order.UserId.ToString());
         
         return await unitOfWork.GetRepository<Order>().AddAsync(order);
     }
