@@ -6,5 +6,5 @@ public interface IUserService
 {
     public Task<User> ChangeUserSettingsAsync(User user);
 
-    public Task<Book> UnreadBook(long userId, long bookIdToDelete);
+    public Task<Book> UnFavouriteBookAsync(long userId, long bookIdToDelete);
 }

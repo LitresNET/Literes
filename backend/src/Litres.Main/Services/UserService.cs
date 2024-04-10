@@ -21,16 +21,22 @@ public class UserService(IUnitOfWork unitOfWork) : IUserService
         await unitOfWork.SaveChangesAsync();
         return dbUser;
     }
-    
-    public async Task<Book> UnreadBook(long userId, long bookIdToDelete)
+
+    public async Task<Book> UnFavouriteBookAsync(long userId, long bookIdToDelete)
     {
         var userRepository = unitOfWork.GetRepository<User>();
-        var bookRepository = unitOfWork.GetRepository<Book>();
 
-        var user = await userRepository.GetByIdAsync(userId);
-        if (user == null)
+        var dbUser = await userRepository.GetByIdAsync(userId);
+        if (dbUser == null) 
             throw new EntityNotFoundException(typeof(User), userId.ToString());
 
-        return new Book();
-    } 
+        var book = dbUser.Favourites.FirstOrDefault(b => b.Id == bookIdToDelete);
+        if (book is null)
+            throw new EntityNotFoundException(typeof(Book), bookIdToDelete.ToString());
+        
+        dbUser.Favourites.Remove(book);
+        
+        await unitOfWork.SaveChangesAsync();
+        return book;
+    }
 }
