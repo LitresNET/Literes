@@ -63,6 +63,7 @@ public class UserService(
 
         if (user.SubscriptionId is not null)
         {
+            claims.Add(new Claim(ClaimTypes.Role, user.UserRole.ToString()));
             claims.Add(new Claim(CustomClaimTypes.SubscriptionTypeId, user.SubscriptionId.ToString()!));
             claims.Add(new Claim(CustomClaimTypes.SubscriptionActiveUntil, user.SubscriptionActiveUntil.ToShortDateString()));
         }

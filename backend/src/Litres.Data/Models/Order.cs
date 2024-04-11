@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Litres.Data.Models;
@@ -15,6 +16,17 @@ public class Order
     /// </summary>
     [Required]
     public string Description { get; set; }
+
+    /// <summary>
+    /// Статус заказа
+    /// </summary>
+    [DefaultValue(OrderStatus.Created)]
+    public OrderStatus Status { get; set; }
+
+    /// <summary>
+    /// Ожидаемое время доставки
+    /// </summary>
+    public DateTime ExpectedDeliveryTime { get; set; }
     
     /// <summary>
     /// Ссылка на пункт выдачи для получения заказа

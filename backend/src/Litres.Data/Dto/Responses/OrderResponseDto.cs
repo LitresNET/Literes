@@ -1,6 +1,6 @@
 namespace Litres.Data.Dto.Responses;
 
-public class OrderCreateResponseDto
+public class OrderResponseDto
 {
     public long Id { get; set; }
     public string Description { get; set; }

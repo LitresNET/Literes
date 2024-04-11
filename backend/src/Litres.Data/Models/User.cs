@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
@@ -13,6 +14,12 @@ public class User : IdentityUser<long>
     /// </summary>
     [Key] 
     public override long Id { get; set; }
+    
+    /// <summary>
+    /// Роль пользователя в системе
+    /// </summary>
+    [DefaultValue(UserRole.Guest)]
+    public UserRole UserRole { get; set; }
     
     /// <summary>
     /// Имя пользователя
@@ -61,6 +68,8 @@ public class User : IdentityUser<long>
     /// Текущий тип подписки
     /// </summary>
     public long? SubscriptionId { get; set; }
+
+    /// <inheritdoc cref="SubscriptionId" />
     public virtual Subscription? Subscription { get; set; }
     
     /// <summary>

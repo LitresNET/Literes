@@ -8,7 +8,7 @@ namespace Litres.Main.Services;
 
 public class OrderService(IUnitOfWork unitOfWork) : IOrderService
 {
-    public Task<Order> GetById(long orderId)
+    public Task<Order> GetByIdAsync(long orderId)
     {
         throw new NotImplementedException();
     }
@@ -27,7 +27,9 @@ public class OrderService(IUnitOfWork unitOfWork) : IOrderService
         if (await unitOfWork.GetRepository<User>().GetByIdAsync(order.UserId) is null)
             throw new EntityNotFoundException(typeof(User), order.UserId.ToString());
         
-        return await unitOfWork.GetRepository<Order>().AddAsync(order);
+        await unitOfWork.GetRepository<Order>().AddAsync(order);
+        await unitOfWork.SaveChangesAsync();
+        return order;
     }
 
     public async Task<Order> DeleteAsync(long orderId)
@@ -37,7 +39,25 @@ public class OrderService(IUnitOfWork unitOfWork) : IOrderService
         var dbOrder = await orderRepository.GetByIdAsync(orderId);
         if (dbOrder is null)
             throw new EntityNotFoundException(typeof(Order), orderId.ToString());
+        
+        orderRepository.Delete(dbOrder);
+        await unitOfWork.SaveChangesAsync();
+        return dbOrder;
+    }
 
-        return orderRepository.Delete(dbOrder);
+    public async Task<Order> ChangeStatusAsync(long orderId, OrderStatus status)
+    {
+        var orderRepository = unitOfWork.GetRepository<Order>();
+
+        var dbOrder = await orderRepository.GetByIdAsync(orderId);
+        if (dbOrder is null)
+            throw new EntityNotFoundException(typeof(Order), orderId.ToString());
+
+        if (dbOrder.Status > status)
+            throw new InvalidOperationException("Can't change status of order to lower one.");
+        
+        dbOrder.Status = status;
+        await unitOfWork.SaveChangesAsync();
+        return dbOrder;
     }
 }

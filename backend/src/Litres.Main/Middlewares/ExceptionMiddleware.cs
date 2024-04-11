@@ -21,7 +21,7 @@ public class ExceptionMiddleware(IWebHostEnvironment webHostEnvironment) : IMidd
             {
                 EntityNotFoundException => 404,
                 EntityValidationFailedException => 422,
-                PasswordNotMatchException => 400,
+                PasswordNotMatchException or InvalidOperationException => 400,
                 DbUpdateException => 503,
                 PermissionDeniedException => 403,
                 _ => 500
