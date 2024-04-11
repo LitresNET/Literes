@@ -1,4 +1,5 @@
-﻿using System.Net.Mime;
+﻿using System.Globalization;
+using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
 using System.Web;
@@ -17,19 +18,19 @@ namespace Litres.Main.Controllers;
 [Route("api/[controller]")]
 public class OrderController(IOrderService orderService, IMapper mapper, IHttpClientFactory factory) : ControllerBase
 {
-    // [Authorize]
+    [Authorize]
     [HttpPost("process")]
     public async Task<IActionResult> ProcessOrder([FromBody] OrderProcessDto dto)
     {
-        // if (!long.TryParse(
-        //         User.FindFirst(CustomClaimTypes.UserId)?.Value,
-        //         NumberStyles.Any,
-        //         CultureInfo.InvariantCulture, out var userId
-        //     ))
-        //     return BadRequest();
+        if (!long.TryParse(
+                User.FindFirst(CustomClaimTypes.UserId)?.Value,
+                NumberStyles.Any,
+                CultureInfo.InvariantCulture, out var userId
+            ))
+            return BadRequest();
 
         var order = mapper.Map<Order>(dto);
-        order.UserId = 1;
+        order.UserId = userId;
         var createdOrder = await orderService.CreateOrderAsync(order);
         
         // TODO: в конфиг
