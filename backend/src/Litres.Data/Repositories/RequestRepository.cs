@@ -41,6 +41,6 @@ public class RequestRepository(ApplicationDbContext appDbContext) : IRequestRepo
 
     public Request Update(Request request)
     {
-        return appDbContext.Request.Remove(request).Entity;
+        return appDbContext.Update(request).Entity;
     }
 }
