@@ -4,6 +4,7 @@ using Litres.Data.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Litres.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240411062947_AddOrderBookRelation")]
+    partial class AddOrderBookRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -463,9 +466,6 @@ namespace Litres.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsPaid")
-                        .HasColumnType("bit");
-
                     b.Property<long>("PickupPointId")
                         .HasColumnType("bigint");
 
@@ -485,7 +485,6 @@ namespace Litres.Data.Migrations
                         {
                             Id = 1L,
                             Description = "Harry Potter and the Philosopher's Stone * 1; Harry Potter and the Chamber of SecretsЫ * 1;",
-                            IsPaid = false,
                             PickupPointId = 1L,
                             UserId = 1L
                         },
@@ -493,7 +492,6 @@ namespace Litres.Data.Migrations
                         {
                             Id = 2L,
                             Description = "The Lord of the Rings: The Fellowship of the Ring * 1; The Lord of the Rings: The Two Towers * 1;",
-                            IsPaid = false,
                             PickupPointId = 2L,
                             UserId = 2L
                         },
@@ -501,7 +499,6 @@ namespace Litres.Data.Migrations
                         {
                             Id = 3L,
                             Description = "Pride and Prejudice by Jane Austen * 1; Sense and Sensibility by Jane Austen * 1;",
-                            IsPaid = false,
                             PickupPointId = 3L,
                             UserId = 3L
                         },
@@ -509,7 +506,6 @@ namespace Litres.Data.Migrations
                         {
                             Id = 4L,
                             Description = "To Kill a Mockingbird by Harper Lee * 1; The Great Gatsby by F. Scott Fitzgerald * 1;",
-                            IsPaid = false,
                             PickupPointId = 4L,
                             UserId = 4L
                         },
@@ -517,7 +513,6 @@ namespace Litres.Data.Migrations
                         {
                             Id = 5L,
                             Description = "1984 by George Orwell * 1; Animal Farm by George Orwell * 1;",
-                            IsPaid = false,
                             PickupPointId = 5L,
                             UserId = 5L
                         },
@@ -525,7 +520,6 @@ namespace Litres.Data.Migrations
                         {
                             Id = 6L,
                             Description = "The Catcher in the Rye by J.D. Salinger * 1; Catch-22 by Joseph Heller * 1;",
-                            IsPaid = false,
                             PickupPointId = 6L,
                             UserId = 6L
                         },
@@ -533,7 +527,6 @@ namespace Litres.Data.Migrations
                         {
                             Id = 7L,
                             Description = "The Chronicles of Narnia by C.S. Lewis * 1; The Hobbit by J.R.R. Tolkien * 1;",
-                            IsPaid = false,
                             PickupPointId = 7L,
                             UserId = 7L
                         },
@@ -541,7 +534,6 @@ namespace Litres.Data.Migrations
                         {
                             Id = 8L,
                             Description = "The Da Vinci Code by Dan Brown * 1; Angels & Demons by Dan Brown * 1;",
-                            IsPaid = false,
                             PickupPointId = 8L,
                             UserId = 8L
                         },
@@ -549,7 +541,6 @@ namespace Litres.Data.Migrations
                         {
                             Id = 9L,
                             Description = "The Catcher in the Rye by J.D. Salinger * 1; Catch-22 by Joseph Heller * 1;",
-                            IsPaid = false,
                             PickupPointId = 9L,
                             UserId = 1L
                         },
@@ -557,7 +548,6 @@ namespace Litres.Data.Migrations
                         {
                             Id = 10L,
                             Description = "The Chronicles of Narnia by C.S. Lewis * 1; The Hobbit by J.R.R. Tolkien * 1;",
-                            IsPaid = false,
                             PickupPointId = 10L,
                             UserId = 2L
                         });
@@ -1362,7 +1352,7 @@ namespace Litres.Data.Migrations
                             Id = 1L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "f288a263-f681-49ff-ab52-8a8306e4c4d6",
+                            ConcurrencyStamp = "bdb4c28d-cb5c-45e6-87f7-677b43481daa",
                             Email = "a@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1380,7 +1370,7 @@ namespace Litres.Data.Migrations
                             Id = 2L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "e3ea6f97-a73a-4ee8-ae59-d0b3c48cd969",
+                            ConcurrencyStamp = "053775b2-f0fd-4f1b-8481-aa288eca043b",
                             Email = "b@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1398,7 +1388,7 @@ namespace Litres.Data.Migrations
                             Id = 3L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "d93c8038-2dca-4dbf-8d8d-fe3e23a3a33e",
+                            ConcurrencyStamp = "161b5ba3-4eea-4b01-b3bd-9991ac729588",
                             Email = "c@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1416,7 +1406,7 @@ namespace Litres.Data.Migrations
                             Id = 4L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "28b2151a-c4f6-44d9-ba1e-d1d3cc582c26",
+                            ConcurrencyStamp = "74e868e5-0ea6-4c60-898b-b6d8dcf910df",
                             Email = "d@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1434,7 +1424,7 @@ namespace Litres.Data.Migrations
                             Id = 5L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "5632a161-859d-4e65-b094-a5210032b900",
+                            ConcurrencyStamp = "9a833877-9cf8-4477-99d0-d6255574c7ad",
                             Email = "e@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1452,7 +1442,7 @@ namespace Litres.Data.Migrations
                             Id = 6L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "6a45a186-5aef-42bc-80a7-dc6fc3b56181",
+                            ConcurrencyStamp = "2402f5d0-a236-44d2-bbd5-b05a8ebd9d5b",
                             Email = "f@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1470,7 +1460,7 @@ namespace Litres.Data.Migrations
                             Id = 7L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "eece8382-1d6f-4f84-8ebd-857f1767fb7a",
+                            ConcurrencyStamp = "c6decf6e-e6a6-4663-b56f-2d16f2c7c418",
                             Email = "g@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1488,7 +1478,7 @@ namespace Litres.Data.Migrations
                             Id = 8L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "32b903eb-f414-4150-8e09-e2fe35cbf6e5",
+                            ConcurrencyStamp = "556f1a86-120b-48cc-9eb6-15b50b3b2857",
                             Email = "h@mail.com",
                             EmailConfirmed = false,
                             IsModerator = true,
@@ -1666,7 +1656,7 @@ namespace Litres.Data.Migrations
                             Id = 9L,
                             AccessFailedCount = 0,
                             AvatarUrl = "aa",
-                            ConcurrencyStamp = "26f17849-6042-4bd0-8699-0384e252d286",
+                            ConcurrencyStamp = "48d344a0-918c-4954-9ef2-ac49afe7da4a",
                             Email = "pA@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1684,7 +1674,7 @@ namespace Litres.Data.Migrations
                             Id = 10L,
                             AccessFailedCount = 0,
                             AvatarUrl = "bb",
-                            ConcurrencyStamp = "a68abceb-2b5a-42ba-9be6-39f8cf8fb1e4",
+                            ConcurrencyStamp = "acad467f-72eb-41cd-8c63-e7aa7fcb5f3d",
                             Email = "pB@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
