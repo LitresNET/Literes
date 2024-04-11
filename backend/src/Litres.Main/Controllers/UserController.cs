@@ -2,14 +2,16 @@
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Dto.Requests;
 using Litres.Data.Models;
-using Litres.Main.Exceptions;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Litres.Main.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(IUserService userService, IMapper mapper) : ControllerBase
+public class UserController(IUserService userService, IMapper mapper, IConfiguration configuration) : ControllerBase
 {
     [HttpPost("signup")]
     public async Task<IActionResult> RegisterUserAsync([FromBody] UserRegistrationDto registrationDto)
@@ -32,5 +34,34 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
     {
         var token = await userService.LoginUserAsync(loginDto.Email, loginDto.Password);
         return Ok(token);
+    }
+    
+    /*
+    [HttpGet("sign-google")]
+    public IActionResult Authorize()
+    {
+        var authUrl = "https://accounts.google.com/o/oauth2/v2/auth" +
+                      "client_id=" + configuration["Authentication:Google:ClientId"] +
+                      "&redirect_uri=" + configuration["Authentication:Google:RedirectUri"] +
+                      "&response_type=code" +
+                      "&scope=openid%20email%20profile";
+        
+        return Redirect(authUrl);
+    }
+    */
+    
+    [HttpGet("signin-google")]
+    public async Task<IActionResult> SignInWithGoogle()
+    {
+        var authenticationProperties = new AuthenticationProperties { RedirectUri = Url.Action(configuration["Authentication:Google:RedirectUri"]) };
+        
+        //return Challenge(authenticationProperties, JwtBearerDefaults.AuthenticationScheme);
+        throw new NotImplementedException();
+    }
+    
+    [HttpGet("callback-google")]
+    public async Task<IActionResult> LoginGoogleAsync()
+    {
+        throw new NotImplementedException();
     }
 }

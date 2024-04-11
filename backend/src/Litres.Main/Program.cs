@@ -4,6 +4,7 @@ using Litres.Data.Configurations;
 using Litres.Data.Configurations.Mapping;
 using Litres.Main.Extensions;
 using Litres.Main.Middlewares;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,8 +17,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         .UseSqlServer(builder.Configuration["Database:ConnectionString"]));
 builder.Services.AddDefaultIdentity<User>(options =>
     options.User.RequireUniqueEmail = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -33,6 +33,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ),
             ValidateIssuerSigningKey = true,
         };
+    })
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
+        options.CallbackPath = "/callback-google";
+        options.SaveTokens = true;
+        options.ForwardChallenge = JwtBearerDefaults.AuthenticationScheme;
     });
 
 builder.Services.AddAutoMapper(cfg =>
