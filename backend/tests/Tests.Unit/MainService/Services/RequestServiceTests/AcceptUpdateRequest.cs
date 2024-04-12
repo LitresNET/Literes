@@ -1,8 +1,8 @@
 ﻿using AutoFixture;
-using backend.Abstractions;
-using backend.Exceptions;
-using backend.Models;
-using backend.Services;
+using Litres.Data.Abstractions.Repositories;
+using Litres.Data.Models;
+using Litres.Main.Exceptions;
+using Litres.Main.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Tests.Config;
@@ -16,8 +16,6 @@ public class AcceptUpdateRequest
     private readonly Mock<IRequestRepository> _requestRepositoryMock = new();
     
     private RequestService RequestService => new RequestService(
-        _requestRepositoryMock.Object,
-        _bookRepositoryMock.Object,
         _unitOfWorkMock.Object
     );
 
@@ -40,6 +38,12 @@ public class AcceptUpdateRequest
             .With(request => request.RequestType, RequestType.Update)
             .Create();
 
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
+            .Returns(_bookRepositoryMock.Object);
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
+            .Returns(_requestRepositoryMock.Object);
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithOldAndUpdatedBooksByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedRequest);
@@ -57,7 +61,7 @@ public class AcceptUpdateRequest
     }
 
     [Fact]
-    public async Task NotExistingRequest_ThrowsRequestNotFoundException()
+    public async Task NotExistingRequest_ThrowsEntityNotFoundException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
@@ -68,23 +72,28 @@ public class AcceptUpdateRequest
             .Build<Request>()
             .With(request => request.Book, expectedBook)
             .Create();
-
+        
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
+            .Returns(_requestRepositoryMock.Object);
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
             .ReturnsAsync((Request)null);
 
         var service = RequestService;
+        var expected = new EntityNotFoundException(typeof(Request), expectedRequest.Id.ToString());
 
         // Act
-
-        // Assert
-        await Assert.ThrowsAsync<RequestNotFoundException>(
+        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
             async () => await service.AcceptUpdateRequestAsync(expectedRequest.Id)
         );
+        
+        // Assert
+        Assert.Equal(expected.Message, exception.Message);
     }
 
     [Fact]
-    public async Task DatabaseShut_ThrowsStorageUnavailableException()
+    public async Task DatabaseShut_ThrowsDbUpdateException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
@@ -95,6 +104,12 @@ public class AcceptUpdateRequest
             .With(r => r.RequestType, RequestType.Update)
             .Create();
         
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
+            .Returns(_bookRepositoryMock.Object);
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
+            .Returns(_requestRepositoryMock.Object);
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithOldAndUpdatedBooksByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedRequest);
@@ -110,7 +125,7 @@ public class AcceptUpdateRequest
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<StorageUnavailableException>(
+        await Assert.ThrowsAsync<DbUpdateException>(
             async () => await service.AcceptUpdateRequestAsync(expectedRequest.Id)
         );
     }

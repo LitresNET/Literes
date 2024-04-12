@@ -1,1 +1,51 @@
-/* стили SignUpPage */
+.container-sign-up {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.title-sign-up {
+    display: flex;
+    justify-content: center;
+}
+
+.form-container-sign-up {
+    margin-top: 17px;
+    height: 525px;
+    width: 520px;
+    border-style: dashed;
+    border-width: 2px;
+    border-radius: 20px;
+}
+
+.sign-up-form {
+    margin-top: 15px;
+    height: 510px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.label-input-sign-up {
+    margin-top: 20px;
+    width: 420px;
+    height: 78px;
+}
+
+.input-sign-up {
+    width: 420px;
+}
+
+.button-sign-up {
+    margin-top: 30px;
+    width: 420px;
+    height: 50px;
+}
+
+.have-sign-up {
+    margin-top: 40px;
+}

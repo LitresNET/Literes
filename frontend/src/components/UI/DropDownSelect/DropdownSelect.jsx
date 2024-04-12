@@ -10,25 +10,26 @@ export function DropdownSelect(props) {
     const { children, selectgroupname } = props;
 
     const [selectedValue, setSelectedValue] = useState(selectgroupname);
-    const [isOpen, setOpen] = useState(false);
     const [isSelectActive, setSelectActive] = useState(false);
     const menuRef = useRef(null);
 
     useClickOutside(menuRef, () => {
-        if (isOpen)
-            setTimeout(() => setOpen(false), 100);
+        if (isSelectActive)
+            setTimeout(() => setSelectActive(false), 100);
     });
 
     let counter = 0;
-    const updatedChildren = children.map((c) =>
-        <p key={counter++} className={"dropdown-item"} onClick={(c) => selectValue(c)}>
-            {c}
-        </p>
-    )
+    const updatedChildren = children.map((c) => {
+        let k = c;
+        return (
+            <p key={counter++} className={"dropdown-item"} onClick={(e) => selectValue(e)}>
+                {k}
+            </p>
+        )
+    });
 
     function openDropDown() {
-        setSelectActive(!isOpen);
-        setOpen(!isOpen);
+        setSelectActive(!isSelectActive);
     }
 
     function selectValue(e) {
@@ -42,7 +43,7 @@ export function DropdownSelect(props) {
                     <div>{selectedValue}</div>
                     <Icon size="mini" path={ICONS.caret_down}/>
                 </div>
-                <div className={"dropdown" + (isOpen ? " active" : "")}  ref={menuRef}>
+                <div className={"dropdown"}  ref={menuRef}>
                     <div className={"dropdown-items-wrapper"}>
                         {updatedChildren}
                     </div>

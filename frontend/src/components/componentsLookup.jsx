@@ -12,7 +12,6 @@ import {Description} from "./UI/Description/Description.jsx";
 import {Input} from "./UI/Input/Input.jsx";
 import {Quotation} from "./UI/Quotation/Quotation.jsx";
 import {Tag} from "./UI/Tag/Tag";
-import {Checkbox} from "./UI/Checkbox/Checkbox.jsx";
 import {DropdownSelect} from "./UI/DropDownSelect/DropdownSelect.jsx";
 import {BookCard} from "./BookCard/BookCard";
 import {Cover} from "./Cover/Cover.jsx";
@@ -24,7 +23,7 @@ import {DropDownInputSearch} from "./DropDownInputSearch/DropDownInputSearch";
 // Ссылка заглушка
 const googleLink = "https://google.com/"
 
-function componentsLookup() {
+function ComponentsLookup() {
 
     return (
         <>
@@ -105,8 +104,14 @@ function componentsLookup() {
                     <h3>Inputs</h3>
                     <br/>
                     <div className="display-column">
+                        <Input type="checkbox" iconpath={ICONS.binoculars}>
+                            Key feature 1
+                            <p className="price">$30,00</p>
+                        </Input>
+                        <Input type="checkbox" id={"hello"}>
+                            Key feature 1
+                        </Input>
                         <Input placeholder="0" type="number"/>
-                        <div>.</div>
                         <Input defaultValue="Hello!" placeholder="Some text here" type="text"/>
                     </div>
                 </div>
@@ -137,27 +142,6 @@ function componentsLookup() {
                     <div className="display-row">
                         <Tag status="success" actiondescription="create success tag!"/>
                         <Tag status="failure" actiondescription="create success tag!"/>
-                    </div>
-                </div>
-                <div id="checkboxes" className="container">
-                    <h3>Checkboxes</h3>
-                    <br/>
-                    <div className="display-row">
-                        <Checkbox id="creative">
-                            [Some content in text or html]
-                        </Checkbox>
-                        <Checkbox id="creative1">
-                            Key feature 1
-                            <p className="price">$30,00</p>
-                        </Checkbox>
-                        <Checkbox id="creative2">
-                            Key feature 2
-                            <p className="price">$30,00</p>
-                        </Checkbox>
-                        <Checkbox id="creative3">
-                            Key feature 3
-                            <p className="price">$30,00</p>
-                        </Checkbox>
                     </div>
                 </div>
                 <div id="to-refactor dropdown-select" className="container">
@@ -220,4 +204,4 @@ function componentsLookup() {
     );
 }
 
-export default componentsLookup;
+export default ComponentsLookup;
