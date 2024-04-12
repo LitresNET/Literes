@@ -8,7 +8,7 @@ export function DropDownInputSearch(props) {
 
     return (
         <>
-            <Input type="text" placeholder="Пока вместо поиска везде пихается обычный Input"/>
+            <Input type="text" placeholder="Пока вместо поиска везде пихается обычный Input" {...props}/>
         </>
     )
 }
