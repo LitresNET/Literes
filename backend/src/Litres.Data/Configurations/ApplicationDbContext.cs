@@ -96,16 +96,38 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
             .WithOne()
             .HasForeignKey<Publisher>(p => p.UserId);
         
-        //Связи, которые сгенерировал chatgpt. Вставил на пох, просто чтобы работало
-        //TODO: исправить (для аутентификации и авторизации)
+        // <summary>
+        // For external providers
+        // </summary>
         modelBuilder.Entity<IdentityUserLogin<long>>()
             .HasKey(l => new { l.LoginProvider, l.ProviderKey }); 
+        modelBuilder.Entity<User>().HasMany<IdentityUserLogin<long>>().WithOne().HasForeignKey(ul => ul.UserId).IsRequired();
+        
+        // <summary>
+        // For user claims
+        // </summary>
+        modelBuilder.Entity<IdentityUserClaim<long>>()
+            .HasKey(uc => uc.Id);
+        modelBuilder.Entity<User>().HasMany<IdentityUserClaim<long>>().WithOne().HasForeignKey(uc => uc.UserId).IsRequired();
+
+        // <summary>
+        // For user roles
+        // </summary>
         modelBuilder.Entity<IdentityUserRole<long>>()
             .HasKey(r => new { r.UserId, r.RoleId });
+        modelBuilder.Entity<User>().HasMany<IdentityUserRole<long>>().WithOne().HasForeignKey(ur => ur.UserId).IsRequired();
+        modelBuilder.Entity<IdentityRole<long>>(b =>
+        {
+            b.HasMany<IdentityUserRole<long>>().WithOne().HasForeignKey(ur => ur.RoleId).IsRequired();
+            b.HasMany<IdentityRoleClaim<long>>().WithOne().HasForeignKey(rc => rc.RoleId).IsRequired();
+        });
+        
+        // <summary>
+        // For user tokens (2factor or email-change)
+        // </summary>
         modelBuilder.Entity<IdentityUserToken<long>>()
             .HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
-        //Исправить исправить исправить
-        
+        modelBuilder.Entity<User>().HasMany<IdentityUserToken<long>>().WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
         #endregion
 
         #region DefaulValue
