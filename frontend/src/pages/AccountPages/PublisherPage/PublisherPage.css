@@ -1,1 +1,114 @@
-/* стили PublisherPage */
+.publisher-container {
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    gap: 40px;
+    margin-bottom: 100px;
+}
+
+.publisher-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.publisher-info h1 {
+  margin-bottom: 20px;
+  text-wrap: nowrap;
+}
+
+.publisher-info div:first-of-type {
+  margin-bottom: 40px;
+}
+
+.publisher-info-title h1 {
+    text-wrap: nowrap;
+}
+
+.publisher-setting-button {
+    width: 25px;
+}
+.publisher-banner-text {
+    font-size: 25px;
+}
+
+.publisher-balance {
+    display: flex;
+    gap: 15px;
+    font-size: 30px;
+}
+
+.publisher-balance span:last-child {
+    color: var(--orange-500);
+}
+
+.statistics-container {
+  margin-bottom: 100px;
+}
+
+.statistics-title {
+  text-align: center;
+  font-size: xx-large;
+  margin-bottom: 30px;
+}
+
+.statistics-wrapper {
+  padding: 50px 0px 50px 0px;
+  display: flex;
+  justify-content: center;
+}
+
+.statistics-wrapper > div {
+  gap: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.statistics-item {
+  display: flex;
+  gap: 20px;
+  font-size: x-large;
+  align-items: center;
+}
+
+.statistics-item-icon {
+  height: 45px;
+  width: 45px;
+}
+
+.statistics-item span:first-of-type {
+  font-weight: bold;
+}
+
+.books-title {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 900px) {
+  .accaunt-container {
+    gap: 20px;
+  }
+  .accaunt-setting-button {
+   display: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .publisher-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .statistics-item span {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .publisher-info h1 {
+    text-align: center;
+  }
+}

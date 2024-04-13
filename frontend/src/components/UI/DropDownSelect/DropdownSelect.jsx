@@ -1,9 +1,8 @@
-// TODO: надо исправить
 import './DropdownSelect.css';
-import React, {useRef, useState} from "react";
-import {useClickOutside} from "../../../hooks/useClickOutside.js";
-import {Icon} from "../Icon/Icon";
-import ICONS from "../../../assets/icons.jsx";
+import React, { useRef, useState } from "react";
+import { useClickOutside } from "../../../hooks/useClickOutside";
+import { Icon } from "../Icon/Icon";
+import ICONS from "../../../assets/icons";
 
 /// Внутри используется НЕ select и работает вообще не очень
 export function DropdownSelect(props) {
@@ -32,23 +31,24 @@ export function DropdownSelect(props) {
         setSelectActive(!isSelectActive);
     }
 
-    function selectValue(e) {
-        setSelectedValue(e.target.children[0].textContent)
-    }
+    const selectValue = (selectedText) => {
+        onChange(selectedText); // Вызываем onChange с выбранным значением
+        setOpen(false); // Закрываем дропдаун после выбора
+    };
 
     return (
         <>
             <div className="dropdown-wrapper">
-                <div className={"border-solid dropdown-button " + (isSelectActive ? " dropdown-active" : "")} onClick={(e) => openDropDown(e)} {...props}>
-                    <div>{selectedValue}</div>
-                    <Icon size="mini" path={ICONS.caret_down}/>
+                <div className={"border-solid dropdown-button " + (isOpen ? " dropdown-active" : "")} onClick={openDropDown}>
+                    <div>{value || selectgroupname}</div>
+                    <Icon size="mini" path={ICONS.caret_down} />
                 </div>
                 <div className={"dropdown"}  ref={menuRef}>
                     <div className={"dropdown-items-wrapper"}>
                         {updatedChildren}
                     </div>
-                </div>
+                )}
             </div>
         </>
-    )
+    );
 }

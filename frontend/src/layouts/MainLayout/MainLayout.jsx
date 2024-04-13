@@ -1,9 +1,8 @@
-// TODO: сверстать layout, включающий в себя header, footer и sidebar (выезжающую панель с корзиной)
 import ICONS from '../../assets/icons';
 import { Icon } from '../../components/UI/Icon/Icon';
 import { IconButton } from '../../components/UI/Icon/IconButton/IconButton';
 import './MainLayout.css';
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 export default function MainLayout() {
     const links = {
@@ -16,13 +15,19 @@ export default function MainLayout() {
         <>
             <div className="page-container">
                 <header className='page-header'>
-                    <div className="page-logo">
-                        <Icon path={ICONS.book_open}/>
-                        <h3>bookstore</h3>
-                    </div>
+                    <Link to="/" style={{textDecoration: 'none'}}>
+                        <div className="page-logo">
+                            <Icon path={ICONS.book_open}/>
+                            <h3>bookstore</h3>
+                        </div>
+                    </Link>
                     <div className="page-options">
-                        <Icon path={ICONS.account}/>
-                        <Icon path={ICONS.sign_in}/>
+                        <Link to="/account" style={{textDecoration: 'none'}}>
+                            <Icon path={ICONS.account}/>
+                        </Link>
+                        <Link to="/signin" style={{textDecoration: 'none'}}>
+                            <Icon path={ICONS.sign_in}/>
+                        </Link>
                         <Icon path={ICONS.shopping_cart}/>
                     </div>
                 </header>
