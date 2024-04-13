@@ -45,7 +45,7 @@ const CheckoutPage = () => {
                     </div>
                     <div className={'goods-list-checkout-container'}>
                         {goods.map((item) => (
-                            <p className={'good-checkout'}>{item.name}  кол-во: {item.amount}   цена: ${item.price}</p>
+                            <p>{item.name}  кол-во: {item.amount}   цена: ${item.price}</p>
                         ))}
                     </div>
                     <div className={'total-checkout'}>
