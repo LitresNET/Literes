@@ -14,7 +14,7 @@ public class UserService(
     IUnitOfWork unitOfWork, 
     UserManager<User> userManager,
     SignInManager<User> signInManager,
-    IConfiguration configuration) : IUserService
+    IJwtTokenService jwtTokenService) : IUserService
 {
 
     public async Task<IdentityResult> RegisterUserAsync(User user)

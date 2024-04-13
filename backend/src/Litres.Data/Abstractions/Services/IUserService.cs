@@ -1,4 +1,5 @@
-﻿using Litres.Data.Models;
+﻿using System.Security.Claims;
+using Litres.Data.Models;
 using Microsoft.AspNetCore.Identity;
 
 
@@ -11,4 +12,6 @@ public interface IUserService
     public Task<IdentityResult> RegisterPublisherAsync(User user, string contractNumber);
 
     public Task<string> LoginUserAsync(string email, string password);
+
+    public Task<string> LoginUserFromExternalServiceAsync(string email, IEnumerable<Claim> externalClaims = null);
 }
