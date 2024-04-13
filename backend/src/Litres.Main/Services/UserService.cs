@@ -13,12 +13,14 @@ namespace Litres.Main.Services;
 public class UserService(
     IUnitOfWork unitOfWork, 
     UserManager<User> userManager,
+    SignInManager<User> signInManager,
     IConfiguration configuration) : IUserService
 {
 
     public async Task<IdentityResult> RegisterUserAsync(User user)
     { 
         return await userManager.CreateAsync(user, user.PasswordHash);
+        
     }
 
     public async Task<IdentityResult> RegisterPublisherAsync(User user, string contractNumber)
@@ -51,9 +53,9 @@ public class UserService(
         if (user is null)
             throw new EntityNotFoundException(typeof(User), email);
 
-        var result = new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, password);
+        var result = await signInManager.CheckPasswordSignInAsync(user, password, false);
         
-        if (result == PasswordVerificationResult.Failed)
+        if (result == SignInResult.Failed)
             throw new PasswordNotMatchException();
         
         var claims = new List<Claim>

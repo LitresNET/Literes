@@ -3,15 +3,18 @@ using Litres.Data.Abstractions.Services;
 using Litres.Data.Dto.Requests;
 using Litres.Data.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Litres.Main.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(IUserService userService, IMapper mapper, IConfiguration configuration) : ControllerBase
+public class UserController(IUserService userService, IMapper mapper, SignInManager<User> signInManager): ControllerBase
 {
     [HttpPost("signup")]
     public async Task<IActionResult> RegisterUserAsync([FromBody] UserRegistrationDto registrationDto)
@@ -36,32 +39,22 @@ public class UserController(IUserService userService, IMapper mapper, IConfigura
         return Ok(token);
     }
     
-    /*
-    [HttpGet("sign-google")]
-    public IActionResult Authorize()
-    {
-        var authUrl = "https://accounts.google.com/o/oauth2/v2/auth" +
-                      "client_id=" + configuration["Authentication:Google:ClientId"] +
-                      "&redirect_uri=" + configuration["Authentication:Google:RedirectUri"] +
-                      "&response_type=code" +
-                      "&scope=openid%20email%20profile";
-        
-        return Redirect(authUrl);
-    }
-    */
-    
     [HttpGet("signin-google")]
-    public async Task<IActionResult> SignInWithGoogle()
-    {
-        var authenticationProperties = new AuthenticationProperties { RedirectUri = Url.Action(configuration["Authentication:Google:RedirectUri"]) };
-        
-        //return Challenge(authenticationProperties, JwtBearerDefaults.AuthenticationScheme);
-        throw new NotImplementedException();
+    public IActionResult SignInWithGoogle()
+    { 
+        var authenticationProperties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
+        return Challenge(authenticationProperties, GoogleDefaults.AuthenticationScheme);
     }
     
     [HttpGet("callback-google")]
-    public async Task<IActionResult> LoginGoogleAsync()
+    public async Task<IActionResult> GoogleResponseAsync()
     {
-        throw new NotImplementedException();
+        var authenticateResult = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+
+        if (!authenticateResult.Succeeded)
+        {
+            return BadRequest();
+        }
+        return Ok();
     }
 }
