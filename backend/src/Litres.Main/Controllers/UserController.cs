@@ -1,20 +1,19 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using AutoMapper;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Dto.Requests;
 using Litres.Data.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Litres.Main.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(IUserService userService, IMapper mapper, SignInManager<User> signInManager): ControllerBase
+public class UserController(IUserService userService, IMapper mapper): ControllerBase
 {
     [HttpPost("signup")]
     public async Task<IActionResult> RegisterUserAsync([FromBody] UserRegistrationDto registrationDto)
@@ -55,6 +54,17 @@ public class UserController(IUserService userService, IMapper mapper, SignInMana
         {
             return BadRequest();
         }
+        
+        var email = authenticateResult.Principal.FindFirstValue(ClaimTypes.Email);
+        
+        var token = await userService.LoginUserFromExternalServiceAsync(email!, authenticateResult.Principal.Claims);
+        return Ok(token);
+    }
+    
+    [HttpGet("test")]
+    [Authorize]
+    public async Task<IActionResult> Test()
+    {
         return Ok();
     }
-}
+}   

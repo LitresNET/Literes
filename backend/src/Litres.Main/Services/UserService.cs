@@ -68,16 +68,33 @@ public class UserService(
             claims.Add(new Claim(CustomClaimTypes.SubscriptionTypeId, user.SubscriptionId.ToString()!));
             claims.Add(new Claim(CustomClaimTypes.SubscriptionActiveUntil, user.SubscriptionActiveUntil.ToShortDateString()));
         }
+
+        return jwtTokenService.CreateJwtToken(claims);
+    }
+
+    public async Task<string> LoginUserFromExternalServiceAsync(string email, IEnumerable<Claim> externalClaims = null)
+    {
+        var user = await userManager.FindByEmailAsync(email);
         
-        var jwt = new JwtSecurityToken(
-            claims: claims,
-            expires: DateTime.UtcNow.Add(TimeSpan.FromDays(1)),
-            signingCredentials: new SigningCredentials(
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSecurityKey"]!)),
-                SecurityAlgorithms.HmacSha256
-            )
-        );
+        //TODO: реализовать логику дорегистрации
+        if (user == null)
+        {
+            user = new User 
+                { 
+                    Email = email, 
+                    Name = email.Split('@')[0], 
+                    UserName = email,
+                    PasswordHash = "123destroyMe!"
+                };
+            await userManager.CreateAsync(user);
+        }
         
-        return new JwtSecurityTokenHandler().WriteToken(jwt);
+        var claims = new List<Claim>
+        {
+            new(CustomClaimTypes.UserId, user.Id.ToString()),
+        };
+        claims.AddRange(externalClaims);
+
+        return jwtTokenService.CreateJwtToken(claims);
     }
 }
