@@ -1,9 +1,10 @@
-﻿using AutoFixture;
+﻿using System.ComponentModel.DataAnnotations;
+using AutoFixture;
 using AutoFixture.DataAnnotations;
-using backend.Abstractions;
-using backend.Exceptions;
-using backend.Models;
-using backend.Services;
+using Litres.Data.Abstractions.Repositories;
+using Litres.Data.Models;
+using Litres.Main.Exceptions;
+using Litres.Main.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Tests.Config;
@@ -17,14 +18,24 @@ public class PublishBook
     private readonly Mock<IRequestRepository> _requestRepositoryMock = new();
     private readonly Mock<IAuthorRepository> _authorRepositoryMock = new();
     private readonly Mock<ISeriesRepository> _seriesRepositoryMock = new();
+    
+    private BookService BookService => new(
+        _unitOfWorkMock.Object
+    );
 
     public PublishBook()
     {
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Author>())
+            .Returns(_authorRepositoryMock.Object);
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Series>())
+            .Returns(_seriesRepositoryMock.Object);
         _authorRepositoryMock
-            .Setup(repository => repository.GetAuthorByIdAsync(It.IsAny<long>()))
+            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(new Author());
         _seriesRepositoryMock
-            .Setup(repository => repository.GetSeriesByIdAsync(It.IsAny<long>()))
+            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(new Series());
     }
 
@@ -33,7 +44,7 @@ public class PublishBook
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
-        
+
         var expectedBook = fixture
             .Build<Book>()
             .With(b => b.Id, 1)
@@ -45,139 +56,139 @@ public class PublishBook
             .With(r => r.BookId, expectedBook.Id)
             .Create();
 
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
+            .Returns(_bookRepositoryMock.Object);
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
+            .Returns(_requestRepositoryMock.Object);
         _bookRepositoryMock
-            .Setup(repository => repository.AddNewBookAsync(expectedBook))
+            .Setup(repository => repository.AddAsync(expectedBook))
             .ReturnsAsync(expectedBook);
         _requestRepositoryMock
-            .Setup(repository => repository.AddNewRequestAsync(It.IsAny<Request>()))
+            .Setup(repository => repository.AddAsync(It.IsAny<Request>()))
             .ReturnsAsync(expectedRequest);
 
-        var service = new BookService(_bookRepositoryMock.Object, _requestRepositoryMock.Object, _unitOfWorkMock.Object);
+        var service = BookService;
 
         // Act
-        var result = await service.PublishNewBookAsync(
-            expectedBook, 
-            _authorRepositoryMock.Object, 
-            _seriesRepositoryMock.Object
-        );
+        var result = await service.PublishNewBookAsync(expectedBook);
 
         // Assert
         Assert.Equal(expectedRequest, result);
     }
 
     [Fact]
-    public async Task EmptyBook_ThrowsBookValidationFailedException()
+    public async Task EmptyBook_ThrowsEntityValidationFailedException()
     {
         // Arrange
         var fixture = new Fixture()
             .Customize(new AutoFixtureCustomization())
             .Customize(new NoDataAnnotationsCustomization());
-        
+
         var book = fixture
             .Build<Book>()
             .Without(b => b.ContentUrl)
             .Create();
-        var service = new BookService(_bookRepositoryMock.Object, _requestRepositoryMock.Object, _unitOfWorkMock.Object);
+        
+        var service = BookService;
+        
+        // TODO: I guess that's not quite right, because test seems to know internals
+        var expectedValidationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(book, new ValidationContext(book), expectedValidationResults);
+        var expected = new EntityValidationFailedException(typeof(Book), expectedValidationResults);
 
         // Act
-
-        // Assert
-        await Assert.ThrowsAsync<BookValidationFailedException>(
-            async () =>
-                await service.PublishNewBookAsync(
-                    book,
-                    _authorRepositoryMock.Object,
-                    _seriesRepositoryMock.Object
-                )
+        var exception = await Assert.ThrowsAsync<EntityValidationFailedException>(
+            async () => await service.PublishNewBookAsync(book)
         );
+        
+        // Assert
+        Assert.Equal(expected.Message, exception.Message);
     }
 
     [Fact]
-    public async Task BookWithNotExistingAuthor_ThrowsAuthorNotFoundException()
+    public async Task BookWithNotExistingAuthor_ThrowsEntityNotFoundException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
-        
-        var book = fixture
-            .Build<Book>()
-            .With(b => b.AuthorId, 1)
-            .Create();
-        
+
+        var book = fixture.Build<Book>().With(b => b.AuthorId, 1).Create();
+
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Author>())
+            .Returns(_authorRepositoryMock.Object);
         _authorRepositoryMock
-            .Setup(repository => repository.GetAuthorByIdAsync(book.AuthorId))
-            .ReturnsAsync((Author)null);
-        
-        var service = new BookService(_bookRepositoryMock.Object, _requestRepositoryMock.Object, _unitOfWorkMock.Object);
+            .Setup(repository => repository.GetByIdAsync(book.AuthorId))
+            .ReturnsAsync((Author) null);
+
+        var service = BookService;
+        var expected = new EntityNotFoundException(typeof(Author), book.AuthorId.ToString());
 
         // Act
-
-        // Assert
-        await Assert.ThrowsAsync<AuthorNotFoundException>(
-            async () =>
-                await service.PublishNewBookAsync(
-                    book,
-                    _authorRepositoryMock.Object,
-                    _seriesRepositoryMock.Object
-                )
+        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
+            async () => await service.PublishNewBookAsync(book)
         );
+        
+        // Assert
+        Assert.Equal(expected.Message, exception.Message);
     }
 
     [Fact]
-    public async Task BookWithNotExistingSeries_ThrowsSeriesNotFoundException()
+    public async Task BookWithNotExistingSeries_ThrowsEntityNotFoundException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
-        var book = fixture
-            .Build<Book>()
-            .With(b => b.SeriesId, 1)
-            .Create();
         
+        var book = fixture.Build<Book>().With(b => b.SeriesId, 1).Create();
+        
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Series>())
+            .Returns(_seriesRepositoryMock.Object);
         _seriesRepositoryMock
-            .Setup(repository => repository.GetSeriesByIdAsync(book.SeriesId))
-            .ReturnsAsync((Series)null);
+            .Setup(repository => repository.GetByIdAsync((long) book.SeriesId!))
+            .ReturnsAsync((Series) null);
+
+        var service = BookService;
+        var expected = new EntityNotFoundException(typeof(Series), book.SeriesId.ToString());
         
-        var service = new BookService(_bookRepositoryMock.Object, _requestRepositoryMock.Object, _unitOfWorkMock.Object);
-
         // Act
-
-        // Assert
-        await Assert.ThrowsAsync<SeriesNotFoundException>(
-            async () =>
-                await service.PublishNewBookAsync(
-                    book,
-                    _authorRepositoryMock.Object,
-                    _seriesRepositoryMock.Object
-                )
+        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
+            async () => await service.PublishNewBookAsync(book)
         );
+        
+        // Assert
+        Assert.Equal(expected.Message, exception.Message);
     }
 
     [Fact]
-    public async Task DatabaseShut_ThrowsStorageUnavailableException()
+    public async Task DatabaseShut_ThrowsDbUpdateException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
-        
+
         var book = fixture.Create<Book>();
         
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
+            .Returns(_bookRepositoryMock.Object);
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
+            .Returns(_requestRepositoryMock.Object);
         _bookRepositoryMock
-            .Setup(repository => repository.AddNewBookAsync(It.IsAny<Book>()))
+            .Setup(repository => repository.AddAsync(It.IsAny<Book>()))
             .ReturnsAsync(book);
         _unitOfWorkMock
             .Setup(repository => repository.SaveChangesAsync())
             .ThrowsAsync(new DbUpdateException());
-        
-        var service = new BookService(_bookRepositoryMock.Object, _requestRepositoryMock.Object, _unitOfWorkMock.Object);
+
+        var service = BookService;
 
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<StorageUnavailableException>(
-            async () =>
-                await service.PublishNewBookAsync(
-                    book,
-                    _authorRepositoryMock.Object,
-                    _seriesRepositoryMock.Object
-                )
+        await Assert.ThrowsAsync<DbUpdateException>(
+            async () => await service.PublishNewBookAsync(book)
         );
     }
 }

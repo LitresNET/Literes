@@ -4,13 +4,32 @@ import { useClickOutside } from "../../../hooks/useClickOutside";
 import { Icon } from "../Icon/Icon";
 import ICONS from "../../../assets/icons";
 
-export function DropdownSelect({ selectgroupname, onChange, value, children }) {
-    const [isOpen, setOpen] = useState(false);
+/// Внутри используется НЕ select и работает вообще не очень
+export function DropdownSelect(props) {
+    const { children, selectgroupname } = props;
+
+    const [selectedValue, setSelectedValue] = useState(selectgroupname);
+    const [isSelectActive, setSelectActive] = useState(false);
     const menuRef = useRef(null);
 
-    useClickOutside(menuRef, () => isOpen && setOpen(false));
+    useClickOutside(menuRef, () => {
+        if (isSelectActive)
+            setTimeout(() => setSelectActive(false), 100);
+    });
 
-    const openDropDown = () => setOpen(!isOpen);
+    let counter = 0;
+    const updatedChildren = children.map((c) => {
+        let k = c;
+        return (
+            <p key={counter++} className={"dropdown-item"} onClick={(e) => selectValue(e)}>
+                {k}
+            </p>
+        )
+    });
+
+    function openDropDown() {
+        setSelectActive(!isSelectActive);
+    }
 
     const selectValue = (selectedText) => {
         onChange(selectedText); // Вызываем onChange с выбранным значением
@@ -24,15 +43,9 @@ export function DropdownSelect({ selectgroupname, onChange, value, children }) {
                     <div>{value || selectgroupname}</div>
                     <Icon size="mini" path={ICONS.caret_down} />
                 </div>
-                {isOpen && (
-                    <div className="dropdown active" ref={menuRef}>
-                        <div className="dropdown-items-wrapper">
-                            {React.Children.map(children, (child, index) => (
-                                <p key={index} className="dropdown-item" onClick={() => selectValue(child.props.children)}>
-                                    {child.props.children}
-                                </p>
-                            ))}
-                        </div>
+                <div className={"dropdown"}  ref={menuRef}>
+                    <div className={"dropdown-items-wrapper"}>
+                        {updatedChildren}
                     </div>
                 )}
             </div>
