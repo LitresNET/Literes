@@ -6,7 +6,11 @@ input {
     font-size: 14px;
 }
 
-.input-wrapper {
+.input-text input {
+    width: 100%;
+}
+
+.input-number {
     display: flex;
     flex-direction: row;
 
@@ -16,7 +20,7 @@ input {
     max-width: 120px;
 }
 
-.input-wrapper input {
+.input-number input {
     text-align: center;
 
     max-width: 60px;
@@ -27,13 +31,57 @@ input {
     font-size: 18px;
 }
 
+.input-checkbox {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    cursor: pointer;
+
+    max-width: 300px;
+}
+
+.input-checkbox input {
+    z-index: -1;
+    display: none;
+    position: absolute;
+}
+
+.custom-checkbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    min-width: 40px;
+    max-width: 40px;
+    min-height: 40px;
+    max-height: 40px;
+    margin-right: 10px;
+
+    border: 2px solid var(--gray-600);
+    border-radius: 100%;
+
+    box-shadow: var(--blue-500) 2px 4px 0;
+
+    background-color: white;
+    transition: 0.2s linear;
+}
+
+.input-checkbox input:checked +.custom-checkbox {
+    background-color: orange;
+}
+
 input[type="text"] {
-    box-shadow: var(--yellow-500) 12px 14px 0;
+    box-shadow: var(--yellow-500) 8px 12px 0;
     transition: 0.2s linear;
 }
 
 input[type="text"]:focus {
-    box-shadow: var(--orange-500) 12px 14px 0;
+    box-shadow: var(--orange-500) 8px 12px 0;
+}
+
+input[type="checkbox"] {
+    position: absolute;
 }
 
 
