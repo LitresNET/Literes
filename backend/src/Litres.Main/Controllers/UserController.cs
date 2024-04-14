@@ -2,6 +2,7 @@
 using AutoMapper;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Dto.Requests;
+using Litres.Data.Dto.Responses;
 using Litres.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -54,8 +55,8 @@ public class UserController(
     }
 
     [Authorize]
-    [HttpDelete("favourites/{bookIdToDelete}")]
-    public async Task<IActionResult> DeleteBookFromUsersFavourites(long bookIdToDelete)
+    [HttpDelete("favourites/{bookIdToDelete:long}")]
+    public async Task<IActionResult> DeleteBookFromUsersFavourites([FromQuery] long bookIdToDelete)
     {
         if (!long.TryParse(User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.UserId)?.Value, 
                 out var userId))
@@ -64,4 +65,25 @@ public class UserController(
         var result = await userService.UnFavouriteBookAsync(userId, bookIdToDelete);
         return Ok(result);
     }
+
+    [HttpGet("user/get_data/{userId:long}")]
+    public async Task<IActionResult> GetSafeUserData([FromQuery] long userId)
+    {
+        var user = await userService.GetSafeUserData(userId);
+        var result = mapper.Map<UserSafeDataDto>(user);
+        return Ok(result);
+    }
+    
+    [Authorize]
+    [HttpGet("user/get_data")]
+    public async Task<IActionResult> GetUserOwnData()
+    {
+        if (!long.TryParse(User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.UserId)?.Value, 
+                out var userId))
+            return Unauthorized();
+        var result = await userService.GetUserData(userId);
+        return Ok(result);
+
+    }
+  
 }

@@ -7,15 +7,17 @@ namespace Litres.Data.Repositories;
 
 public class UserRepository(ApplicationDbContext appDbContext) : IUserRepository
 {
-    //Скорее всего придётся менять реализацию или в целом удалять этот класс за ненадобностью,т.к.
-    //все операции с пользователем должны по идее должны вызывваться во встроенном UserManager'e от Identity
-    
+    /// <summary>
+    ///     Use UserManager instead of this
+    /// </summary>
     public async Task<User> AddAsync(User user)
     {
         var result = await appDbContext.User.AddAsync(user);
         return result.Entity;
     }
-
+    /// <summary>
+    ///     Use UserManager instead of this
+    /// </summary>
     public User Delete(User user)
     {
         var result = appDbContext.User.Remove(user);
@@ -27,6 +29,14 @@ public class UserRepository(ApplicationDbContext appDbContext) : IUserRepository
         return await appDbContext.User.FirstOrDefaultAsync(u => u.Id == userId);
     }
 
+    public async Task<User?> GetSafeDataById(long userId)
+    {
+        return await appDbContext.User.Where(u => u.Id == userId)
+            .Select(u => new User 
+                {Name = u.Name, AvatarUrl = u.AvatarUrl, Favourites = u.Favourites, Reviews = u.Reviews})
+            .FirstOrDefaultAsync();
+    }
+    
     public User Update(User user)
     {
         var result = appDbContext.User.Update(user);

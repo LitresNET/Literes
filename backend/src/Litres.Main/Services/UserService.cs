@@ -2,6 +2,7 @@ using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Models;
 using Litres.Main.Exceptions;
+using Microsoft.AspNetCore.Identity;
 
 namespace Litres.Main.Services;
 
@@ -38,5 +39,20 @@ public class UserService(IUnitOfWork unitOfWork) : IUserService
         
         await unitOfWork.SaveChangesAsync();
         return book;
+    }
+
+    public async Task<User> GetSafeUserData(long userId)
+    {
+        var userRepository = (IUserRepository)unitOfWork.GetRepository<User>();
+        
+        return await userRepository.GetSafeDataById(userId) ?? 
+               throw new EntityNotFoundException(typeof(User), userId.ToString());
+    }
+    
+    public async Task<User> GetUserData(long userId)
+    {
+        var userRepository = (IUserRepository)unitOfWork.GetRepository<User>();
+        return await userRepository.GetByIdAsync(userId) ?? 
+               throw new EntityNotFoundException(typeof(User), userId.ToString());
     }
 }
