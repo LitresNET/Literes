@@ -108,6 +108,7 @@ public class UserService(
         //TODO: реализовать логику дорегистрации
         if (user == null)
         {
+            /*
             user = new User 
                 { 
                     Email = email, 
@@ -116,6 +117,8 @@ public class UserService(
                     PasswordHash = "123destroyMe!"
                 };
             await userManager.CreateAsync(user);
+            */
+            throw new EntityNotFoundException(typeof(User), email);
         }
         
         var claims = new List<Claim>
