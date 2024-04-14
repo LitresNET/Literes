@@ -1,8 +1,4 @@
 ﻿using System.Globalization;
-using System.Net.Mime;
-using System.Text;
-using System.Text.Json;
-using System.Web;
 using AutoMapper;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Dto.Requests;
@@ -10,14 +6,15 @@ using Litres.Data.Dto.Responses;
 using Litres.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 
 namespace Litres.Main.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class OrderController(IOrderService orderService, IMapper mapper, IHttpClientFactory factory) : ControllerBase
+public class OrderController(IOrderService orderService, IMapper mapper, IConfiguration configuration) : ControllerBase
 {
+    private string PaymentServiceUrl => configuration["PaymentServiceUrl"]!;
+    
     [Authorize]
     [HttpPost("process")]
     public async Task<IActionResult> ProcessOrder([FromBody] OrderProcessDto dto)
@@ -32,11 +29,8 @@ public class OrderController(IOrderService orderService, IMapper mapper, IHttpCl
         var order = mapper.Map<Order>(dto);
         order.UserId = userId;
         var createdOrder = await orderService.CreateOrderAsync(order);
-        
-        // TODO: в конфиг
-        HttpContext.Request.Headers.Append(HeaderNames.Origin, "http://localhost:5032/pay");
 
-        return Redirect($"http://localhost:3000/pay?orderId={createdOrder.Id}");
+        return Redirect($"{PaymentServiceUrl}/pay?orderId={createdOrder.Id}");
     }
 
     [HttpGet("{orderId:long}/info")]
@@ -50,15 +44,10 @@ public class OrderController(IOrderService orderService, IMapper mapper, IHttpCl
     [HttpGet("{orderId:long}/finish")]
     public async Task<IActionResult> CreateOrder([FromRoute] long orderId, [FromQuery] bool isSuccess)
     {
-        if (isSuccess)
-        {
-            await orderService.ConfirmOrderAsync(orderId, isSuccess);
-            return Ok("Transaction committed\nNew order created");
-        }
-        else
-        {
-            await orderService.ConfirmOrderAsync(orderId, isSuccess);
-            return Ok("Transaction rollback\nCouldn't create order");
-        }
+        await orderService.ConfirmOrderAsync(orderId, isSuccess);
+        return Ok(isSuccess 
+            ? "Transaction committed\nNew order created" 
+            : "Transaction rollback\nCouldn't create order"
+        );
     }
 }

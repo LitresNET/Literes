@@ -28,8 +28,7 @@ public class OrderService(IUnitOfWork unitOfWork) : IOrderService
             var book = await unitOfWork.GetRepository<Book>().GetByIdAsync(orderBook.BookId);
             if (book is null || book.Count < orderBook.Quantity)
             {
-                // TODO: выбрасывать ошибку об отсутствии товаров
-                return null;
+                throw new BusinessException("More books have been requested than are left in stock");
             }
             order.Books.Add(book);
         }
@@ -45,7 +44,7 @@ public class OrderService(IUnitOfWork unitOfWork) : IOrderService
         var orderRepository = (IOrderRepository)unitOfWork.GetRepository<Order>();
         var order = await orderRepository.GetAsync(
             x => x.Id == orderId, 
-            [ y => y.OrderedBooks ]);
+            new List<Expression<Func<Order, object>>> {y => y.OrderedBooks});
             
         if (order is null)
         {
