@@ -16,6 +16,7 @@ public class RegisterUser
         null, null, null, null, null, null, null, null);
 
     private readonly Mock<SignInManager<User>> _signInManagerMock = new(null, null, null, null, null, null);
+    private readonly Mock<RoleManager<IdentityRole<long>>> _roleManagerMock = new();
     
     private readonly Mock<IJwtTokenService> _jwtTokenServiceMock = new();
 
@@ -23,6 +24,7 @@ public class RegisterUser
         _unitOfWorkMock.Object,
         _userManagerMock.Object,
         _signInManagerMock.Object,
+        _roleManagerMock.Object,
         _jwtTokenServiceMock.Object
     );
     

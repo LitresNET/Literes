@@ -62,7 +62,7 @@ public class UserController(IUserService userService, IMapper mapper): Controlle
     }
     
     [HttpGet("test")]
-    [Authorize]
+    [Authorize(Roles = "Publisher")]
     public async Task<IActionResult> Test()
     {
         return Ok();

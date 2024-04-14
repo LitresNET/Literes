@@ -14,13 +14,25 @@ public class UserService(
     IUnitOfWork unitOfWork, 
     UserManager<User> userManager,
     SignInManager<User> signInManager,
+    RoleManager<IdentityRole<long>> roleManager,
     IJwtTokenService jwtTokenService) : IUserService
 {
 
     public async Task<IdentityResult> RegisterUserAsync(User user)
-    { 
-        return await userManager.CreateAsync(user, user.PasswordHash);
-        
+    {
+        await using var transaction = await unitOfWork.BeginTransactionAsync();
+        var createResult = await userManager.CreateAsync(user, user.PasswordHash);
+        if (createResult.Succeeded)
+        {
+            var roleResult = await userManager.AddToRoleAsync(user, "Member");
+            if (roleResult.Succeeded)
+                await transaction.CommitAsync();
+            else
+                await transaction.RollbackAsync();
+            return roleResult;
+        }
+        await transaction.RollbackAsync();
+        return createResult;
     }
 
     public async Task<IdentityResult> RegisterPublisherAsync(User user, string contractNumber)
@@ -34,16 +46,29 @@ public class UserService(
                 Code = "SerialNumberNotFound",
                 Description = "Contract serial number not found"
             });
-        var result = await userManager.CreateAsync(user, user.PasswordHash);
-        if (!result.Succeeded) return result;
+        
+        await using var transaction = await unitOfWork.BeginTransactionAsync();
+        var createResult = await userManager.CreateAsync(user, user.PasswordHash);
+        if (!createResult.Succeeded)
+        {
+            await transaction.RollbackAsync();
+            return createResult;
+        }
         
         await publisherRepository.AddAsync(new Publisher
         {
             UserId = user.Id,
             ContractId = contract.Id
         });
+        var roleResult = await userManager.AddToRoleAsync(user, "Publisher");
+        if (!roleResult.Succeeded)
+        {
+            await transaction.RollbackAsync();
+            return roleResult;
+        }
         await unitOfWork.SaveChangesAsync();
-        return result;
+        await transaction.CommitAsync();
+        return createResult;
     }
 
     public async Task<string> LoginUserAsync(string email, string password)
@@ -62,7 +87,11 @@ public class UserService(
         {
             new(CustomClaimTypes.UserId, user.Id.ToString()),
         };
-
+        foreach (var role in await userManager.GetRolesAsync(user))
+        {
+            var identityRole = await roleManager.FindByNameAsync(role);
+            claims.AddRange(await roleManager.GetClaimsAsync(identityRole!));
+        }
         if (user.SubscriptionId is not null)
         {
             claims.Add(new Claim(CustomClaimTypes.SubscriptionTypeId, user.SubscriptionId.ToString()!));
@@ -93,6 +122,16 @@ public class UserService(
         {
             new(CustomClaimTypes.UserId, user.Id.ToString()),
         };
+        foreach (var role in await userManager.GetRolesAsync(user))
+        {
+            var identityRole = await roleManager.FindByNameAsync(role);
+            claims.AddRange(await roleManager.GetClaimsAsync(identityRole!));
+        }
+        if (user.SubscriptionId is not null)
+        {
+            claims.Add(new Claim(CustomClaimTypes.SubscriptionTypeId, user.SubscriptionId.ToString()!));
+            claims.Add(new Claim(CustomClaimTypes.SubscriptionActiveUntil, user.SubscriptionActiveUntil.ToShortDateString()));
+        }
         claims.AddRange(externalClaims);
 
         return jwtTokenService.CreateJwtToken(claims);

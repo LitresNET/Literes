@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using Litres.Data.Models;
 using Litres.Data.Configurations;
@@ -103,6 +104,8 @@ using (var scope = app.Services.CreateScope())
         if (!await roleManager.RoleExistsAsync(role))
         {
             await roleManager.CreateAsync(new IdentityRole<long>(role));
+            await roleManager.AddClaimAsync((await roleManager.FindByNameAsync(role))!,
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, role));
         }
     }
 }
