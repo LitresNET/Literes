@@ -44,8 +44,8 @@ public class OrderController(IOrderService orderService, IMapper mapper, IConfig
     [HttpGet("{orderId:long}/finish")]
     public async Task<IActionResult> CreateOrder([FromRoute] long orderId, [FromQuery] bool isSuccess)
     {
-        await orderService.ConfirmOrderAsync(orderId, isSuccess);
-        return Ok(isSuccess 
+        var result = await orderService.ConfirmOrderAsync(orderId, isSuccess);
+        return Ok(result.IsPaid 
             ? "Transaction committed\nNew order created" 
             : "Transaction rollback\nCouldn't create order"
         );

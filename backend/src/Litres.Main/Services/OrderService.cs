@@ -26,14 +26,18 @@ public class OrderService(IUnitOfWork unitOfWork) : IOrderService
         foreach (var orderBook in order.OrderedBooks)
         {
             var book = await unitOfWork.GetRepository<Book>().GetByIdAsync(orderBook.BookId);
-            if (book is null || book.Count < orderBook.Quantity)
+            if (book is null)
+            {
+                throw new EntityNotFoundException(typeof(Book), orderBook.BookId.ToString());
+            }
+            if (book.Count < orderBook.Quantity)
             {
                 throw new BusinessException("More books have been requested than are left in stock");
             }
             order.Books.Add(book);
         }
 
-        await unitOfWork.GetRepository<Order>().AddAsync(order);
+        order = await unitOfWork.GetRepository<Order>().AddAsync(order);
         await unitOfWork.SaveChangesAsync();
         
         return order;
@@ -54,15 +58,17 @@ public class OrderService(IUnitOfWork unitOfWork) : IOrderService
         return order;
     }
 
-    public async Task ConfirmOrderAsync(long orderId, bool isSuccess)
+    public async Task<Order> ConfirmOrderAsync(long orderId, bool isSuccess)
     {
         var order = await unitOfWork.GetRepository<Order>().GetByIdAsync(orderId);
         if (order is null)
             throw new EntityNotFoundException(typeof(Order), orderId.ToString());
 
         order.IsPaid = isSuccess;
-        unitOfWork.GetRepository<Order>().Update(order);
+        order = unitOfWork.GetRepository<Order>().Update(order);
         
         await unitOfWork.SaveChangesAsync();
+
+        return order;
     }
 }
