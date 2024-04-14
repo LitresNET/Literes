@@ -4,7 +4,7 @@ namespace Litres.Data.Abstractions.Services;
 
 public interface IUserService
 {
-    public Task<User> ChangeUserSettingsAsync(User user);
+    public Task<User> ChangeUserSettingsAsync(User patchedUser);
 
-    public Task<Book> UnreadBook(long userId, long bookIdToDelete);
+    public Task<Book> UnFavouriteBookAsync(long userId, long bookIdToDelete);
 }
