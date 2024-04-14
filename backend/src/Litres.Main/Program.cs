@@ -2,6 +2,7 @@ using System.Text;
 using Litres.Data.Models;
 using Litres.Data.Configurations;
 using Litres.Data.Configurations.Mapping;
+using Litres.Data.Dto.Requests;
 using Litres.Main.Extensions;
 using Litres.Main.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -40,6 +41,7 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<RequestMapperProfile>();
     cfg.AddProfile<UserMapperProfile>();
     cfg.AddProfile<BookMapperProfile>();
+    cfg.AddProfile<ReviewMapperProfile>();
 });
 
 builder.Services.AddControllers();
