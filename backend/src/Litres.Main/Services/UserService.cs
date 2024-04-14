@@ -13,12 +13,26 @@ namespace Litres.Main.Services;
 public class UserService(
     IUnitOfWork unitOfWork, 
     UserManager<User> userManager,
-    IConfiguration configuration) : IRegistrationService
+    SignInManager<User> signInManager,
+    RoleManager<IdentityRole<long>> roleManager,
+    IJwtTokenService jwtTokenService) : IUserService
 {
 
     public async Task<IdentityResult> RegisterUserAsync(User user)
-    { 
-        return await userManager.CreateAsync(user, user.PasswordHash);
+    {
+        await using var transaction = await unitOfWork.BeginTransactionAsync();
+        var createResult = await userManager.CreateAsync(user, user.PasswordHash);
+        if (createResult.Succeeded)
+        {
+            var roleResult = await userManager.AddToRoleAsync(user, "Member");
+            if (roleResult.Succeeded)
+                await transaction.CommitAsync();
+            else
+                await transaction.RollbackAsync();
+            return roleResult;
+        }
+        await transaction.RollbackAsync();
+        return createResult;
     }
 
     public async Task<IdentityResult> RegisterPublisherAsync(User user, string contractNumber)
@@ -32,16 +46,29 @@ public class UserService(
                 Code = "SerialNumberNotFound",
                 Description = "Contract serial number not found"
             });
-        var result = await userManager.CreateAsync(user, user.PasswordHash);
-        if (!result.Succeeded) return result;
+        
+        await using var transaction = await unitOfWork.BeginTransactionAsync();
+        var createResult = await userManager.CreateAsync(user, user.PasswordHash);
+        if (!createResult.Succeeded)
+        {
+            await transaction.RollbackAsync();
+            return createResult;
+        }
         
         await publisherRepository.AddAsync(new Publisher
         {
-            Id = user.Id,
+            UserId = user.Id,
             ContractId = contract.Id
         });
+        var roleResult = await userManager.AddToRoleAsync(user, "Publisher");
+        if (!roleResult.Succeeded)
+        {
+            await transaction.RollbackAsync();
+            return roleResult;
+        }
         await unitOfWork.SaveChangesAsync();
-        return result;
+        await transaction.CommitAsync();
+        return createResult;
     }
 
     public async Task<string> LoginUserAsync(string email, string password)
@@ -51,31 +78,65 @@ public class UserService(
         if (user is null)
             throw new EntityNotFoundException(typeof(User), email);
 
-        var result = new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, password);
+        var result = await signInManager.CheckPasswordSignInAsync(user, password, false);
         
-        if (result == PasswordVerificationResult.Failed)
+        if (result == SignInResult.Failed)
             throw new PasswordNotMatchException();
         
         var claims = new List<Claim>
         {
             new(CustomClaimTypes.UserId, user.Id.ToString()),
         };
-
+        foreach (var role in await userManager.GetRolesAsync(user))
+        {
+            var identityRole = await roleManager.FindByNameAsync(role);
+            claims.AddRange(await roleManager.GetClaimsAsync(identityRole!));
+        }
         if (user.SubscriptionId is not null)
         {
             claims.Add(new Claim(CustomClaimTypes.SubscriptionTypeId, user.SubscriptionId.ToString()!));
             claims.Add(new Claim(CustomClaimTypes.SubscriptionActiveUntil, user.SubscriptionActiveUntil.ToShortDateString()));
         }
+
+        return jwtTokenService.CreateJwtToken(claims);
+    }
+
+    public async Task<string> LoginUserFromExternalServiceAsync(string email, IEnumerable<Claim> externalClaims = null)
+    {
+        var user = await userManager.FindByEmailAsync(email);
         
-        var jwt = new JwtSecurityToken(
-            claims: claims,
-            expires: DateTime.UtcNow.Add(TimeSpan.FromDays(1)),
-            signingCredentials: new SigningCredentials(
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSecurityKey"]!)),
-                SecurityAlgorithms.HmacSha256
-            )
-        );
+        //TODO: реализовать логику дорегистрации
+        if (user == null)
+        {
+            /*
+            user = new User 
+                { 
+                    Email = email, 
+                    Name = email.Split('@')[0], 
+                    UserName = email,
+                    PasswordHash = "123destroyMe!"
+                };
+            await userManager.CreateAsync(user);
+            */
+            throw new EntityNotFoundException(typeof(User), email);
+        }
         
-        return new JwtSecurityTokenHandler().WriteToken(jwt);
+        var claims = new List<Claim>
+        {
+            new(CustomClaimTypes.UserId, user.Id.ToString()),
+        };
+        foreach (var role in await userManager.GetRolesAsync(user))
+        {
+            var identityRole = await roleManager.FindByNameAsync(role);
+            claims.AddRange(await roleManager.GetClaimsAsync(identityRole!));
+        }
+        if (user.SubscriptionId is not null)
+        {
+            claims.Add(new Claim(CustomClaimTypes.SubscriptionTypeId, user.SubscriptionId.ToString()!));
+            claims.Add(new Claim(CustomClaimTypes.SubscriptionActiveUntil, user.SubscriptionActiveUntil.ToShortDateString()));
+        }
+        claims.AddRange(externalClaims);
+
+        return jwtTokenService.CreateJwtToken(claims);
     }
 }
