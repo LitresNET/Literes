@@ -38,6 +38,12 @@ public class UnitOfWork(ApplicationDbContext appDbContext) : IUnitOfWork
             case not null when type == typeof(User):
                 _repositories.Add(type, new UserRepository(appDbContext));
                 break;
+            case not null when type == typeof(PickupPoint):
+                _repositories.Add(type, new PickupPointRepository(appDbContext));
+                break;
+            case not null when type == typeof(Order):
+                _repositories.Add(type, new OrderRepository(appDbContext));
+                break;
         }
         return (IRepository<TEntity>)_repositories[type!];
     }
