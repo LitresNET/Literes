@@ -6,5 +6,5 @@ public interface ISubscriptionService
 {
     public Task<Subscription> GetAsync(long userId);
     public Subscription Update(long userId, Subscription newSubscription);
-    public void Reset(long userId);
+    public Task Reset(long userId);
 }

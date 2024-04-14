@@ -17,6 +17,17 @@ public class UpdateSubscription
 
     private SubscriptionService SubscriptionService => new(_unitOfWorkMock.Object);
 
+    public UpdateSubscription()
+    {
+        _unitOfWorkMock
+            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
+            .Returns(_userRepositoryMock.Object);
+        _unitOfWorkMock
+            .Setup(unitOfWork => unitOfWork.GetRepository<Subscription>())
+            .Returns(_subscriptionRepositoryMock.Object);
+
+    }
+    
     [Theory]
     [InlineData(100, 30, 90)]
     [InlineData(100, 0, 100)]
@@ -53,20 +64,17 @@ public class UpdateSubscription
         _subscriptionRepositoryMock
             .Setup(repository => repository.GetByTypeAsync(It.IsAny<SubscriptionType>()))
             .ReturnsAsync(oldSubscription);
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
-            .Returns(_userRepositoryMock.Object);
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<Subscription>())
-            .Returns(_subscriptionRepositoryMock.Object);
         
         var expected = newSubscription;
+        var expectedWallet = wallet - newSubscriptionPrice;
 
         // Act
         var actual = SubscriptionService.Update(userId, newSubscription);
+        var actualWallet = user.Wallet;
         
         // Assert
         Assert.Equal(expected, actual);
+        Assert.Equal(expectedWallet, actualWallet);
     }
     
     [Theory]
@@ -105,20 +113,17 @@ public class UpdateSubscription
         _subscriptionRepositoryMock
             .Setup(repository => repository.GetByTypeAsync(It.IsAny<SubscriptionType>()))
             .ReturnsAsync(oldSubscription);
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
-            .Returns(_userRepositoryMock.Object);
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<Subscription>())
-            .Returns(_subscriptionRepositoryMock.Object);
         
         var expected = oldSubscription;
-
+        var expectedWallet = wallet;
+        
         // Act
         var actual = SubscriptionService.Update(userId, newSubscription);
+        var actualWallet = user.Wallet;
         
         // Assert
         Assert.Equal(expected, actual);
+        Assert.Equal(expectedWallet, actualWallet);
     }
     
     [Theory]
@@ -158,20 +163,17 @@ public class UpdateSubscription
         _subscriptionRepositoryMock
             .Setup(repository => repository.GetByTypeAsync(It.IsAny<SubscriptionType>()))
             .ReturnsAsync(oldSubscription);
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
-            .Returns(_userRepositoryMock.Object);
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<Subscription>())
-            .Returns(_subscriptionRepositoryMock.Object);
         
         var expected = newSubscription;
+        var expectedWallet = wallet;
 
         // Act
         var actual = SubscriptionService.Update(userId, newSubscription);
+        var actualWallet = user.Wallet;
         
         // Assert
         Assert.Equal(expected, actual);
+        Assert.Equal(expectedWallet, actualWallet);
     }
 
     [Fact]
@@ -183,9 +185,6 @@ public class UpdateSubscription
         _userRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync((User?) null);
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
-            .Returns(_userRepositoryMock.Object);
 
         var expected = new EntityNotFoundException(typeof(User), userId.ToString());
         
@@ -205,9 +204,6 @@ public class UpdateSubscription
         _userRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .Throws(new DbUpdateException());
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
-            .Returns(_userRepositoryMock.Object);
 
         var expected = new DbUpdateException();
         

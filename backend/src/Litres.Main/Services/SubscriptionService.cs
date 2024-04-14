@@ -45,8 +45,6 @@ public class SubscriptionService(IUnitOfWork unitOfWork) : ISubscriptionService
             newSubscription = dbSubscription ?? throw new EntityNotFoundException(typeof(Subscription), newSubscription.Name);
         }
         
-        // Бесплатный ли у нас переход на подписку с меньшей стоимостью?
-        // Сделано так, что да
         if (currentSubscription.Price > newSubscription.Price)
         {
             if (newSubscription.Name == SubscriptionType.Custom.ToString())
@@ -55,8 +53,6 @@ public class SubscriptionService(IUnitOfWork unitOfWork) : ISubscriptionService
         }
         else
         {
-            // Нужно доплатить или заплатить полностью при переходе на подписку дороже?
-            // Сделано так, что оплата полная
             if (dbUser.Wallet < newSubscription.Price)
                 return dbUser.Subscription;
             
@@ -79,7 +75,7 @@ public class SubscriptionService(IUnitOfWork unitOfWork) : ISubscriptionService
     /// </summary>
     /// <param name="userId">Идентификатор пользователя</param>
     /// <exception cref="EntityNotFoundException">Если нет такого пользователя</exception>
-    public void Reset(long userId)
+    public async Task Reset(long userId)
     {
         var userRepository = unitOfWork.GetRepository<User>();
         
@@ -93,6 +89,6 @@ public class SubscriptionService(IUnitOfWork unitOfWork) : ISubscriptionService
         dbUser.SubscriptionId = 1L;
         userRepository.Update(dbUser);
         
-        unitOfWork.SaveChangesAsync().Wait();
+        await unitOfWork.SaveChangesAsync();
     }
 }

@@ -16,6 +16,13 @@ public class GetSubscription
     
     private SubscriptionService SubscriptionService => new(_unitOfWorkMock.Object);
 
+    public GetSubscription()
+    {
+        _unitOfWorkMock
+            .Setup(unitOfWork => unitOfWork.GetRepository<Subscription>())
+            .Returns(_subscriptionRepositoryMock.Object);
+    }
+    
     [Theory]
     [InlineData(1)]
     [InlineData(3)]
@@ -33,9 +40,6 @@ public class GetSubscription
         _subscriptionRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expected);
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<Subscription>())
-            .Returns(_subscriptionRepositoryMock.Object);
         
         // Act
         var actual = await SubscriptionService.GetAsync(subscriptionId);
@@ -53,9 +57,6 @@ public class GetSubscription
         _subscriptionRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(It.IsAny<Subscription>());
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<Subscription>())
-            .Returns(_subscriptionRepositoryMock.Object);
         
         // Act
         var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => SubscriptionService.GetAsync(-1L));
@@ -70,9 +71,6 @@ public class GetSubscription
         // Arrange
         var expected = new DbUpdateException();
 
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<Subscription>())
-            .Returns(_subscriptionRepositoryMock.Object);
         _subscriptionRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .Throws(new DbUpdateException());

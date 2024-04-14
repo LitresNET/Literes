@@ -16,8 +16,15 @@ public class ResetSubscription
 
     private SubscriptionService SubscriptionService => new(_unitOfWorkMock.Object);
 
+    public ResetSubscription()
+    {
+        _unitOfWorkMock
+            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
+            .Returns(_userRepositoryMock.Object);
+    }
+    
     [Fact]
-    public void DefaultUserId_ResetsSubscription()
+    public async Task DefaultUserId_ResetsSubscription()
     {
         // Arrange
         const long userId = 42L;
@@ -37,19 +44,16 @@ public class ResetSubscription
         _userRepositoryMock
             .Setup(repository => repository.Update(user))
             .Returns(user);
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
-            .Returns(_userRepositoryMock.Object);
         
         // Act
-        SubscriptionService.Reset(userId);
+        await SubscriptionService.Reset(userId);
         
         // Assert
         Assert.Equal(resetSubscriptionId, user.SubscriptionId);
     }
     
     [Fact]
-    public void NotExistingUserId_ThrowsEntityNotFoundException()
+    public async Task NotExistingUserId_ThrowsEntityNotFoundException()
     {
         // Arrange
         const long userId = 1L;
@@ -64,14 +68,14 @@ public class ResetSubscription
         var expected = new EntityNotFoundException(typeof(User), userId.ToString());
         
         // Act
-        var actual = Assert.Throws<EntityNotFoundException>(() => SubscriptionService.Reset(userId));
+        var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => SubscriptionService.Reset(userId));
 
         // Assert
         Assert.Equal(expected.Message, actual.Message);
     }
     
     [Fact]
-    public void DatabaseShut_ThrowsDbUpdateException()
+    public async Task DatabaseShut_ThrowsDbUpdateException()
     {
         // Arrange
         const long userId = 42;
@@ -86,7 +90,7 @@ public class ResetSubscription
         var expected = new DbUpdateException();
         
         // Act
-        var actual = Assert.Throws<DbUpdateException>(() => SubscriptionService.Reset(userId));
+        var actual = await Assert.ThrowsAsync<DbUpdateException>(() => SubscriptionService.Reset(userId));
         
         // Assert
         Assert.Equal(expected.GetType(), actual.GetType());
