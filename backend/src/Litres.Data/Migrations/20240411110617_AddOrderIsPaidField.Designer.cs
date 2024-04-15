@@ -4,6 +4,7 @@ using Litres.Data.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Litres.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240411110617_AddOrderIsPaidField")]
+    partial class AddOrderIsPaidField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1333,7 +1336,7 @@ namespace Litres.Data.Migrations
                     b.Property<DateTime>("SubscriptionActiveUntil")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("SubscriptionId")
+                    b.Property<long?>("SubscriptionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasDefaultValue(1L);
@@ -1362,7 +1365,7 @@ namespace Litres.Data.Migrations
                             Id = 1L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "09b644cb-d5a0-4fb8-86c1-d63e68c488d2",
+                            ConcurrencyStamp = "f288a263-f681-49ff-ab52-8a8306e4c4d6",
                             Email = "a@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1380,7 +1383,7 @@ namespace Litres.Data.Migrations
                             Id = 2L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "d0a7fb37-7bf1-4d8f-9f6d-770d09774ba6",
+                            ConcurrencyStamp = "e3ea6f97-a73a-4ee8-ae59-d0b3c48cd969",
                             Email = "b@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1398,7 +1401,7 @@ namespace Litres.Data.Migrations
                             Id = 3L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "8d3d213d-8bdd-428c-9f35-ce69384f598f",
+                            ConcurrencyStamp = "d93c8038-2dca-4dbf-8d8d-fe3e23a3a33e",
                             Email = "c@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1416,7 +1419,7 @@ namespace Litres.Data.Migrations
                             Id = 4L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "0751d8c2-62df-4435-8075-1ac9a7d3f8be",
+                            ConcurrencyStamp = "28b2151a-c4f6-44d9-ba1e-d1d3cc582c26",
                             Email = "d@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1434,7 +1437,7 @@ namespace Litres.Data.Migrations
                             Id = 5L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "ce7ffd77-8ae4-4651-a576-a77ad3646096",
+                            ConcurrencyStamp = "5632a161-859d-4e65-b094-a5210032b900",
                             Email = "e@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1452,7 +1455,7 @@ namespace Litres.Data.Migrations
                             Id = 6L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "d9624be5-0dee-4b6c-a00d-df32bb179b1a",
+                            ConcurrencyStamp = "6a45a186-5aef-42bc-80a7-dc6fc3b56181",
                             Email = "f@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1470,7 +1473,7 @@ namespace Litres.Data.Migrations
                             Id = 7L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "a529bc9f-d07b-4efa-b90f-756ff2fd99b7",
+                            ConcurrencyStamp = "eece8382-1d6f-4f84-8ebd-857f1767fb7a",
                             Email = "g@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1488,7 +1491,7 @@ namespace Litres.Data.Migrations
                             Id = 8L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "b1d1dd02-c216-4819-95c0-2948a7560bf6",
+                            ConcurrencyStamp = "32b903eb-f414-4150-8e09-e2fe35cbf6e5",
                             Email = "h@mail.com",
                             EmailConfirmed = false,
                             IsModerator = true,
@@ -1497,7 +1500,6 @@ namespace Litres.Data.Migrations
                             PasswordHash = "hhh",
                             PhoneNumberConfirmed = false,
                             SubscriptionActiveUntil = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SubscriptionId = 0L,
                             TwoFactorEnabled = false,
                             Wallet = 0m
                         });
@@ -1667,7 +1669,7 @@ namespace Litres.Data.Migrations
                             Id = 9L,
                             AccessFailedCount = 0,
                             AvatarUrl = "aa",
-                            ConcurrencyStamp = "e2ed3bb8-01ca-40c6-9921-3ba4e3d153f2",
+                            ConcurrencyStamp = "26f17849-6042-4bd0-8699-0384e252d286",
                             Email = "pA@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1676,7 +1678,6 @@ namespace Litres.Data.Migrations
                             PasswordHash = "aaa",
                             PhoneNumberConfirmed = false,
                             SubscriptionActiveUntil = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SubscriptionId = 0L,
                             TwoFactorEnabled = false,
                             Wallet = 6.78m,
                             ContractId = 1L
@@ -1686,7 +1687,7 @@ namespace Litres.Data.Migrations
                             Id = 10L,
                             AccessFailedCount = 0,
                             AvatarUrl = "bb",
-                            ConcurrencyStamp = "ce8622a9-56b8-4bae-9e16-2e4d0a5c3d53",
+                            ConcurrencyStamp = "a68abceb-2b5a-42ba-9be6-39f8cf8fb1e4",
                             Email = "pB@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1695,7 +1696,6 @@ namespace Litres.Data.Migrations
                             PasswordHash = "bbb",
                             PhoneNumberConfirmed = false,
                             SubscriptionActiveUntil = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SubscriptionId = 0L,
                             TwoFactorEnabled = false,
                             Wallet = 4.50m,
                             ContractId = 2L
@@ -1866,8 +1866,7 @@ namespace Litres.Data.Migrations
                     b.HasOne("Litres.Data.Models.Subscription", "Subscription")
                         .WithMany("Users")
                         .HasForeignKey("SubscriptionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Subscription");
                 });

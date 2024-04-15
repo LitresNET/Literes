@@ -41,6 +41,12 @@ public class UnitOfWork(ApplicationDbContext appDbContext) : IUnitOfWork
             case not null when type == typeof(Subscription):
                 _repositories.Add(type, new SubscriptionRepository(appDbContext));
                 break;
+            case not null when type == typeof(PickupPoint):
+                _repositories.Add(type, new PickupPointRepository(appDbContext));
+                break;
+            case not null when type == typeof(Order):
+                _repositories.Add(type, new OrderRepository(appDbContext));
+                break;
         }
         return (IRepository<TEntity>)_repositories[type!];
     }

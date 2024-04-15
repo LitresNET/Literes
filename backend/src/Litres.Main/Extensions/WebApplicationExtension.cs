@@ -21,6 +21,7 @@ public static class WebApplicationExtension
         builder.Services.AddScoped<IRegistrationService, UserService>();
         builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
         builder.Services.AddScoped<ISubscriptionCheckerService, SubscriptionCheckerService>();
+        builder.Services.AddScoped<IOrderService, OrderService>();
         #endregion
         
         #region Repositories
