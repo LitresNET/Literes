@@ -13,7 +13,9 @@ import WelcomePage from "../pages/MainPages/WelcomePage/WelcomePage";
 import SignInPage from "../pages/AuthPages/SignInPage/SignInPage.jsx";
 import SignUpPage from "../pages/AuthPages/SignUpPage/SignUpPage.jsx";
 import SearchPage from "../pages/MainPages/SearchPage/SearchPage";
-import SubscriptionPage from "../pages/SubscriptionPages/SubscriptionPage/SubscriptionPage";
+import NotFoundPage from "../pages/RedirectPages/NotFoundPage/NotFoundPage.jsx";
+import OrderSuccessPage from "../pages/RedirectPages/OrderSuccessPage/OrderSuccessPage";
+import UnauthorizedPage from "../pages/RedirectPages/UnauthorizedPage/UnauthorizedPage.jsx";
 
 const routes = [
     {
@@ -25,44 +27,44 @@ const routes = [
       element: <MainLayout />,
       children: [
         {
-          path: 'checkout',
-          element: <CheckoutPage />,
-        },
-        {
-          path: 'signin',
-          element: <SignInPage />
-        },
-        {
-          path: 'signup',
-          element: <SignUpPage />
-        },
-        {
-          path: 'search',
-          element: <SearchPage />
-        },
-        {
-          path: 'subscription',
-          element: <SubscriptionPage />
-        },
-        {
-          path: 'subscription/custom',
-          element: <CustomSubscriptionPage />
+          path:'',
+          element: <WelcomePage />
         },
         {
           path:'home',
-            element: <WelcomePage />
+          element: <WelcomePage />
         },
         {
-          path:'',
-            element: <WelcomePage />
+          path: '/success',
+          element: <OrderSuccessPage />,
         },
         {
-          path: 'subscription',
-          element: <SubscriptionPage />,
+          path: '/unauthorized',
+          element: <UnauthorizedPage />
         },
         {
-          path: 'subscription/custom',
-          element: <CustomSubscriptionPage/>
+          path: '/checkout',
+          element: <CheckoutPage />,
+        },
+        {
+          path: '/signin',
+          element: <SignInPage />
+        },
+        {
+          path: '/signup',
+          element: <SignUpPage />
+        },
+        {
+          path: '/search',
+          element: <SearchPage />
+        },
+        {
+          path: '/subscription',
+          element: <SubscriptionPage />
+        },
+        {
+          path: '/subscription/custom',
+          element: <CustomSubscriptionPage />
         },
         {
           path: 'account',
@@ -84,6 +86,10 @@ const routes = [
           path: 'account/publisher/book/:id/settings',
           element: <BookSettingsPage/>
         },
+        {
+          path: '*',
+          element: <NotFoundPage />,
+        }
       ]
     },
   ];
