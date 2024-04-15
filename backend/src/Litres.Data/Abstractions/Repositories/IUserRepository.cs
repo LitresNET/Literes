@@ -4,4 +4,5 @@ namespace Litres.Data.Abstractions.Repositories;
 
 public interface IUserRepository : IRepository<User>
 {
+    public Task<List<User>> GetAllAsync();
 }

@@ -1,6 +1,7 @@
 ﻿using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Configurations;
 using Litres.Data.Models;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Litres.Data.Repositories;
 
@@ -38,6 +39,17 @@ public class UnitOfWork(ApplicationDbContext appDbContext) : IUnitOfWork
             case not null when type == typeof(User):
                 _repositories.Add(type, new UserRepository(appDbContext));
                 break;
+            case not null when type == typeof(Review):
+                _repositories.Add(type, new ReviewRepository(appDbContext));
+            case not null when type == typeof(Subscription):
+                _repositories.Add(type, new SubscriptionRepository(appDbContext));
+                break;
+            case not null when type == typeof(PickupPoint):
+                _repositories.Add(type, new PickupPointRepository(appDbContext));
+                break;
+            case not null when type == typeof(Order):
+                _repositories.Add(type, new OrderRepository(appDbContext));
+                break;
         }
         return (IRepository<TEntity>)_repositories[type!];
     }
@@ -46,6 +58,12 @@ public class UnitOfWork(ApplicationDbContext appDbContext) : IUnitOfWork
     {
         await appDbContext.SaveChangesAsync();
     }
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return await appDbContext.Database.BeginTransactionAsync();
+    }
+    
     public void Dispose()
     {
         Dispose(disposing: true);

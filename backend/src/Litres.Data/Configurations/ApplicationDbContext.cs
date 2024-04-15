@@ -46,7 +46,6 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
             .Property(u => u.Wallet)
             .HasPrecision(18, 4);
         
-        
         // TODO: в конфиг
         #region Relationships
         
@@ -80,6 +79,14 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
                 l => l.HasOne(typeof(ExternalService)).WithMany().HasForeignKey("ExternalServiceId").HasPrincipalKey(nameof(Litres.Data.Models.ExternalService.Id)),
                 r => r.HasOne(typeof(User)).WithMany().HasForeignKey("UserId").HasPrincipalKey(nameof(Litres.Data.Models.User.Id)),
                 j => j.HasKey("UserId", "ExternalServiceId"));;
+
+        modelBuilder.Entity<Order>()
+            .HasMany(e => e.Books)
+            .WithMany(e => e.Orders)
+            .UsingEntity<BookOrder>( 
+                j => j.HasOne(e => e.Book).WithMany(b => b.BookOrders).HasForeignKey(e => e.BookId),
+                j => j.HasOne(e => e.Order).WithMany(o => o.OrderedBooks).HasForeignKey(e => e.OrderId),
+                j => j.HasKey(e => e.Id));
         
         foreach (var foreignKey in modelBuilder.Model.GetEntityTypes()
                      .SelectMany(e => e.GetForeignKeys()))
@@ -90,18 +97,48 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
         modelBuilder.Entity<User>()
             .HasOne(u => u.Subscription)
             .WithMany(s => s.Users);
+
+        modelBuilder.Entity<Publisher>()
+            .HasOne(p => p.User)
+            .WithOne()
+            .HasForeignKey<Publisher>(p => p.UserId);
         
-        
-        //Связи, которые сгенерировал chatgpt. Вставил на пох, просто чтобы работало
-        //TODO: исправить (для аутентификации и авторизации)
+
         modelBuilder.Entity<IdentityUserLogin<long>>()
             .HasKey(l => new { l.LoginProvider, l.ProviderKey }); 
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Logins)
+            .WithOne()
+            .HasForeignKey(ul => ul.UserId)
+            .IsRequired();
+        
+        modelBuilder.Entity<IdentityUserClaim<long>>()
+            .HasKey(uc => uc.Id);
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Claims)
+            .WithOne()
+            .HasForeignKey(uc => uc.UserId)
+            .IsRequired();
+        
         modelBuilder.Entity<IdentityUserRole<long>>()
             .HasKey(r => new { r.UserId, r.RoleId });
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Roles)
+            .WithMany();
+        modelBuilder.Entity<IdentityRole<long>>(b =>
+        {
+            b.HasMany<IdentityUserRole<long>>().WithOne().HasForeignKey(ur => ur.RoleId).IsRequired();
+            b.HasMany<IdentityRoleClaim<long>>().WithOne().HasForeignKey(rc => rc.RoleId).IsRequired();
+        });
+        
+
         modelBuilder.Entity<IdentityUserToken<long>>()
             .HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
-        //Исправить исправить исправить
-        
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Tokens)
+            .WithOne()
+            .HasForeignKey(ut => ut.UserId)
+            .IsRequired();
         #endregion
 
         #region DefaulValue
@@ -111,7 +148,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
             .HasDefaultValue("/"); //TODO: ссылка на дефолтную аватарку
         modelBuilder.Entity<User>()
             .Property(u => u.SubscriptionId)
-            .HasDefaultValue((long?) 1);
+            .HasDefaultValue(1L);
         
         #endregion
         
