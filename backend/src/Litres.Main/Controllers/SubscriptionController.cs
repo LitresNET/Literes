@@ -26,7 +26,7 @@ public class SubscriptionController(
 
     [Authorize]
     [HttpPatch("update/{name}")]
-    public IActionResult UpdateSubscription(
+    public async Task<IActionResult> UpdateSubscription(
         [FromQuery] string name,
         [FromBody] SubscriptionRequestDto customSubscription)
     {
@@ -40,13 +40,13 @@ public class SubscriptionController(
         customSubscription.Name = name;
         var subscription = mapper.Map<Subscription>(customSubscription);
             
-        var result = subscriptionService.ChangeAsync(userId, subscription);
+        var result = await subscriptionService.ChangeAsync(userId, subscription);
         return result.Id == subscription.Id ? Ok() : BadRequest("The account lacks the necessary funds");
     }
 
     [Authorize]
     [HttpPatch("reset")]
-    public IActionResult ResetSubscription()
+    public async Task<IActionResult> ResetSubscription()
     {
         if (!long.TryParse(
                 User.FindFirst(CustomClaimTypes.UserId)?.Value,
@@ -55,7 +55,7 @@ public class SubscriptionController(
             ))
             return BadRequest();
         
-        subscriptionService.ResetAsync(userId);
+        await subscriptionService.ResetAsync(userId);
         return Ok();
     }
 }
