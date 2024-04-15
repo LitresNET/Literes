@@ -80,6 +80,14 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
                 l => l.HasOne(typeof(ExternalService)).WithMany().HasForeignKey("ExternalServiceId").HasPrincipalKey(nameof(Litres.Data.Models.ExternalService.Id)),
                 r => r.HasOne(typeof(User)).WithMany().HasForeignKey("UserId").HasPrincipalKey(nameof(Litres.Data.Models.User.Id)),
                 j => j.HasKey("UserId", "ExternalServiceId"));;
+
+        modelBuilder.Entity<Order>()
+            .HasMany(e => e.Books)
+            .WithMany(e => e.Orders)
+            .UsingEntity<BookOrder>( 
+                j => j.HasOne(e => e.Book).WithMany(b => b.BookOrders).HasForeignKey(e => e.BookId),
+                j => j.HasOne(e => e.Order).WithMany(o => o.OrderedBooks).HasForeignKey(e => e.OrderId),
+                j => j.HasKey(e => e.Id));
         
         foreach (var foreignKey in modelBuilder.Model.GetEntityTypes()
                      .SelectMany(e => e.GetForeignKeys()))
