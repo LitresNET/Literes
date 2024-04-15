@@ -1,27 +1,30 @@
-.page-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 50px;
-}
-
-h1 {
+.page-title {
     text-align: center;
+    margin-bottom: 50px;
 }
 
 .page-features-wrapper {
     display: flex;
+    gap: 50px;
+    justify-content: space-between;
 }
 
 .page-features {
+    flex: 1;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    width: 50%;
+    gap: 10px;
 }
 
-.page-description {
+.page-features-item {
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.page-info {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    width: 50%;
     gap: 30px;
 }
 
@@ -29,11 +32,31 @@ h1 {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    width: 40vw;
 }
 
 .cheque-total {
     display: flex;
     justify-content: space-between;
+    gap: 30px;
     align-items: center;
+}
+
+@media (max-width: 768px) {
+    .page-features-wrapper {
+        flex-direction: column;
+    }
+
+    .page-info-title {
+        display: none;
+    }
+
+    .page-info-description {
+        display: none;
+    }
+}
+
+@media (max-width: 450px) {
+    .page-features {
+        display: block;
+    }
 }
