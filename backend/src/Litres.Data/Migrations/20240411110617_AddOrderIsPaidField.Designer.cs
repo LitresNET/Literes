@@ -4,6 +4,7 @@ using Litres.Data.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Litres.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240411110617_AddOrderIsPaidField")]
+    partial class AddOrderIsPaidField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,21 +41,6 @@ namespace Litres.Data.Migrations
                     b.HasIndex("BookId");
 
                     b.ToTable("Favourites");
-                });
-
-            modelBuilder.Entity("IdentityRole<long>User", b =>
-                {
-                    b.Property<long>("RolesId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("RolesId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("IdentityRole<long>User");
                 });
 
             modelBuilder.Entity("Litres.Data.Models.Author", b =>
@@ -675,33 +663,6 @@ namespace Litres.Data.Migrations
                             Address = "ул. Петра Полушкина, д.6",
                             FiasAdress = "f717cf33-87d3-474a-93b3-0d4e804a5462",
                             WorkingHours = "08:00-21:00"
-                        });
-                });
-
-            modelBuilder.Entity("Litres.Data.Models.Publisher", b =>
-                {
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ContractId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("UserId");
-
-                    b.HasIndex("ContractId");
-
-                    b.ToTable("Publisher", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 9L,
-                            ContractId = 1L
-                        },
-                        new
-                        {
-                            UserId = 10L,
-                            ContractId = 2L
                         });
                 });
 
@@ -1375,7 +1336,7 @@ namespace Litres.Data.Migrations
                     b.Property<DateTime>("SubscriptionActiveUntil")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("SubscriptionId")
+                    b.Property<long?>("SubscriptionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasDefaultValue(1L);
@@ -1396,13 +1357,15 @@ namespace Litres.Data.Migrations
 
                     b.ToTable("User");
 
+                    b.UseTptMappingStrategy();
+
                     b.HasData(
                         new
                         {
                             Id = 1L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "40edce97-551f-4b2f-bce4-b3b8db3112f9",
+                            ConcurrencyStamp = "f288a263-f681-49ff-ab52-8a8306e4c4d6",
                             Email = "a@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1420,7 +1383,7 @@ namespace Litres.Data.Migrations
                             Id = 2L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "2104deed-cdc9-4305-969e-614914f5e135",
+                            ConcurrencyStamp = "e3ea6f97-a73a-4ee8-ae59-d0b3c48cd969",
                             Email = "b@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1438,7 +1401,7 @@ namespace Litres.Data.Migrations
                             Id = 3L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "e9ed2ae5-44b7-4946-b771-a12e96c372b4",
+                            ConcurrencyStamp = "d93c8038-2dca-4dbf-8d8d-fe3e23a3a33e",
                             Email = "c@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1456,7 +1419,7 @@ namespace Litres.Data.Migrations
                             Id = 4L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "3f429b40-da75-4333-9c0d-62bc3d7bb133",
+                            ConcurrencyStamp = "28b2151a-c4f6-44d9-ba1e-d1d3cc582c26",
                             Email = "d@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1474,7 +1437,7 @@ namespace Litres.Data.Migrations
                             Id = 5L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "d29cb9aa-2589-4f11-803c-ee1fc223b388",
+                            ConcurrencyStamp = "5632a161-859d-4e65-b094-a5210032b900",
                             Email = "e@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1492,7 +1455,7 @@ namespace Litres.Data.Migrations
                             Id = 6L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "37bf7098-1544-4fb2-9947-6ffb995e335a",
+                            ConcurrencyStamp = "6a45a186-5aef-42bc-80a7-dc6fc3b56181",
                             Email = "f@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1510,7 +1473,7 @@ namespace Litres.Data.Migrations
                             Id = 7L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "941b0993-586d-4243-b56c-d6f3ad588cf9",
+                            ConcurrencyStamp = "eece8382-1d6f-4f84-8ebd-857f1767fb7a",
                             Email = "g@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1528,7 +1491,7 @@ namespace Litres.Data.Migrations
                             Id = 8L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "52f76a01-9f7f-4301-be23-4bbb886e1b7d",
+                            ConcurrencyStamp = "32b903eb-f414-4150-8e09-e2fe35cbf6e5",
                             Email = "h@mail.com",
                             EmailConfirmed = false,
                             IsModerator = true,
@@ -1537,43 +1500,8 @@ namespace Litres.Data.Migrations
                             PasswordHash = "hhh",
                             PhoneNumberConfirmed = false,
                             SubscriptionActiveUntil = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SubscriptionId = 0L,
                             TwoFactorEnabled = false,
                             Wallet = 0m
-                        },
-                        new
-                        {
-                            Id = 9L,
-                            AccessFailedCount = 0,
-                            AvatarUrl = "aa",
-                            ConcurrencyStamp = "f6833822-225b-44c5-8861-041e3ab36fe2",
-                            Email = "pA@mail.com",
-                            EmailConfirmed = false,
-                            IsModerator = false,
-                            LockoutEnabled = false,
-                            Name = "Publisher A",
-                            PasswordHash = "aaa",
-                            PhoneNumberConfirmed = false,
-                            SubscriptionActiveUntil = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TwoFactorEnabled = false,
-                            Wallet = 6.78m
-                        },
-                        new
-                        {
-                            Id = 10L,
-                            AccessFailedCount = 0,
-                            AvatarUrl = "bb",
-                            ConcurrencyStamp = "5b503d3f-6e07-4002-9adf-4db1597f4778",
-                            Email = "pB@mail.com",
-                            EmailConfirmed = false,
-                            IsModerator = false,
-                            LockoutEnabled = false,
-                            Name = "Publisher B",
-                            PasswordHash = "bbb",
-                            PhoneNumberConfirmed = false,
-                            SubscriptionActiveUntil = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TwoFactorEnabled = false,
-                            Wallet = 4.50m
                         });
                 });
 
@@ -1618,7 +1546,6 @@ namespace Litres.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
                     b.ToTable("RoleClaims");
                 });
 
@@ -1641,8 +1568,6 @@ namespace Litres.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("UserClaims");
                 });
 
@@ -1662,8 +1587,6 @@ namespace Litres.Data.Migrations
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("UserLogins");
                 });
 
@@ -1676,8 +1599,6 @@ namespace Litres.Data.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles");
                 });
@@ -1731,6 +1652,56 @@ namespace Litres.Data.Migrations
                     b.ToTable("UserExternalServices");
                 });
 
+            modelBuilder.Entity("Litres.Data.Models.Publisher", b =>
+                {
+                    b.HasBaseType("Litres.Data.Models.User");
+
+                    b.Property<long>("ContractId")
+                        .HasColumnType("bigint");
+
+                    b.HasIndex("ContractId");
+
+                    b.ToTable("Publisher", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 9L,
+                            AccessFailedCount = 0,
+                            AvatarUrl = "aa",
+                            ConcurrencyStamp = "26f17849-6042-4bd0-8699-0384e252d286",
+                            Email = "pA@mail.com",
+                            EmailConfirmed = false,
+                            IsModerator = false,
+                            LockoutEnabled = false,
+                            Name = "Publisher A",
+                            PasswordHash = "aaa",
+                            PhoneNumberConfirmed = false,
+                            SubscriptionActiveUntil = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TwoFactorEnabled = false,
+                            Wallet = 6.78m,
+                            ContractId = 1L
+                        },
+                        new
+                        {
+                            Id = 10L,
+                            AccessFailedCount = 0,
+                            AvatarUrl = "bb",
+                            ConcurrencyStamp = "a68abceb-2b5a-42ba-9be6-39f8cf8fb1e4",
+                            Email = "pB@mail.com",
+                            EmailConfirmed = false,
+                            IsModerator = false,
+                            LockoutEnabled = false,
+                            Name = "Publisher B",
+                            PasswordHash = "bbb",
+                            PhoneNumberConfirmed = false,
+                            SubscriptionActiveUntil = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TwoFactorEnabled = false,
+                            Wallet = 4.50m,
+                            ContractId = 2L
+                        });
+                });
+
             modelBuilder.Entity("Favourites", b =>
                 {
                     b.HasOne("Litres.Data.Models.Book", null)
@@ -1743,21 +1714,6 @@ namespace Litres.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("IdentityRole<long>User", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<long>", null)
-                        .WithMany()
-                        .HasForeignKey("RolesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Litres.Data.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -1820,25 +1776,6 @@ namespace Litres.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("PickupPoint");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Litres.Data.Models.Publisher", b =>
-                {
-                    b.HasOne("Litres.Data.Models.Contract", "Contract")
-                        .WithMany()
-                        .HasForeignKey("ContractId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Litres.Data.Models.User", "User")
-                        .WithOne()
-                        .HasForeignKey("Litres.Data.Models.Publisher", "UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Contract");
 
                     b.Navigation("User");
                 });
@@ -1929,55 +1866,9 @@ namespace Litres.Data.Migrations
                     b.HasOne("Litres.Data.Models.Subscription", "Subscription")
                         .WithMany("Users")
                         .HasForeignKey("SubscriptionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Subscription");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<long>", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
-                {
-                    b.HasOne("Litres.Data.Models.User", null)
-                        .WithMany("Claims")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
-                {
-                    b.HasOne("Litres.Data.Models.User", null)
-                        .WithMany("Logins")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<long>", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
-                {
-                    b.HasOne("Litres.Data.Models.User", null)
-                        .WithMany("Tokens")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Purchased", b =>
@@ -2010,6 +1901,23 @@ namespace Litres.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Litres.Data.Models.Publisher", b =>
+                {
+                    b.HasOne("Litres.Data.Models.Contract", "Contract")
+                        .WithMany()
+                        .HasForeignKey("ContractId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Litres.Data.Models.User", null)
+                        .WithOne()
+                        .HasForeignKey("Litres.Data.Models.Publisher", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Contract");
+                });
+
             modelBuilder.Entity("Litres.Data.Models.Author", b =>
                 {
                     b.Navigation("Books");
@@ -2034,13 +1942,6 @@ namespace Litres.Data.Migrations
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("Litres.Data.Models.Publisher", b =>
-                {
-                    b.Navigation("Books");
-
-                    b.Navigation("Requests");
-                });
-
             modelBuilder.Entity("Litres.Data.Models.Review", b =>
                 {
                     b.Navigation("ReviewLikes");
@@ -2058,17 +1959,18 @@ namespace Litres.Data.Migrations
 
             modelBuilder.Entity("Litres.Data.Models.User", b =>
                 {
-                    b.Navigation("Claims");
-
-                    b.Navigation("Logins");
-
                     b.Navigation("Orders");
 
                     b.Navigation("ReviewLikes");
 
                     b.Navigation("Reviews");
+                });
 
-                    b.Navigation("Tokens");
+            modelBuilder.Entity("Litres.Data.Models.Publisher", b =>
+                {
+                    b.Navigation("Books");
+
+                    b.Navigation("Requests");
                 });
 #pragma warning restore 612, 618
         }
