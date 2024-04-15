@@ -2,6 +2,7 @@
 using AutoMapper;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Dto.Requests;
+using Litres.Data.Dto.Responses;
 using Litres.Data.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -57,8 +58,8 @@ public class UserController(
     }
 
     [Authorize]
-    [HttpDelete("favourites/{bookIdToDelete}")]
-    public async Task<IActionResult> DeleteBookFromUsersFavourites(long bookIdToDelete)
+    [HttpDelete("favourites/{bookIdToDelete:long}")]
+    public async Task<IActionResult> DeleteBookFromUsersFavourites([FromQuery] long bookIdToDelete)
     {
         if (!long.TryParse(User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.UserId)?.Value, 
                 out var userId))
@@ -67,6 +68,35 @@ public class UserController(
         var result = await userService.UnFavouriteBookAsync(userId, bookIdToDelete);
         return Ok(result);
     }
+
+    [HttpGet("user/get-data/{userId:long}")]
+    public async Task<IActionResult> GetSafeUserData([FromQuery] long userId)
+    {
+        var user = await userService.GetSafeUserDataAsync(userId);
+        var result = mapper.Map<UserSafeDataDto>(user);
+        return Ok(result);
+    }
+    
+    [Authorize]
+    [HttpGet("user/get-data")]
+    public async Task<IActionResult> GetUserOwnData()
+    {
+        if (!long.TryParse(User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.UserId)?.Value, 
+                out var userId))
+            return Unauthorized();
+        var result = await userService.GetUserDataAsync(userId);
+        return Ok(result);
+    }
+    
+    [HttpGet("publisher/get-data/{publisherId:long}")]
+    public async Task<IActionResult> GetPublisherData([FromQuery] long publisherId)
+    {
+        var publisher = await userService.GetPublisherAsync(publisherId);
+        var result = mapper.Map<PublisherStatisticsDto>(publisher);
+        return Ok(result);
+    }
+  
+}
         
     [HttpGet("signin-google")]
     public IActionResult SignInWithGoogle()

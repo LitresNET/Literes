@@ -1,7 +1,9 @@
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Abstractions.Services;
+using Litres.Data.Dto.Responses;
 using Litres.Data.Models;
 using Litres.Main.Exceptions;
+using Microsoft.AspNetCore.Identity;
 
 namespace Litres.Main.Services;
 
@@ -97,6 +99,28 @@ public class UserService(
         await unitOfWork.SaveChangesAsync();
         return book;
     }
+
+    public async Task<User> GetSafeUserDataAsync(long userId)
+    {
+        var userRepository = (IUserRepository)unitOfWork.GetRepository<User>();
+        
+        return await userRepository.GetSafeDataById(userId) ?? 
+               throw new EntityNotFoundException(typeof(User), userId.ToString());
+    }
+    
+    public async Task<User> GetUserDataAsync(long userId)
+    {
+        var userRepository = (IUserRepository)unitOfWork.GetRepository<User>();
+        return await userRepository.GetByIdAsync(userId) ?? 
+               throw new EntityNotFoundException(typeof(User), userId.ToString());
+    }
+
+    public async Task<Publisher> GetPublisherAsync(long publisherId)
+    {
+        var publisherRepository = (IPublisherRepository)unitOfWork.GetRepository<Publisher>();
+        
+        return await publisherRepository.GetByIdAsync(publisherId) ??
+               throw new EntityNotFoundException(typeof(Publisher), publisherId.ToString());
     
     public async Task<string> LoginUserAsync(string email, string password)
     {
