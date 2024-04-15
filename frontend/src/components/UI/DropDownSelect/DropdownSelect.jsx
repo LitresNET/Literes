@@ -4,32 +4,13 @@ import { useClickOutside } from "../../../hooks/useClickOutside";
 import { Icon } from "../Icon/Icon";
 import ICONS from "../../../assets/icons";
 
-/// Внутри используется НЕ select и работает вообще не очень
-export function DropdownSelect(props) {
-    const { children, selectgroupname } = props;
-
-    const [selectedValue, setSelectedValue] = useState(selectgroupname);
-    const [isSelectActive, setSelectActive] = useState(false);
+export function DropdownSelect({ selectgroupname, onChange, value, children }) {
+    const [isOpen, setOpen] = useState(false);
     const menuRef = useRef(null);
 
-    useClickOutside(menuRef, () => {
-        if (isSelectActive)
-            setTimeout(() => setSelectActive(false), 100);
-    });
+    useClickOutside(menuRef, () => isOpen && setOpen(false));
 
-    let counter = 0;
-    const updatedChildren = children.map((c) => {
-        let k = c;
-        return (
-            <p key={counter++} className={"dropdown-item"} onClick={(e) => selectValue(e)}>
-                {k}
-            </p>
-        )
-    });
-
-    function openDropDown() {
-        setSelectActive(!isSelectActive);
-    }
+    const openDropDown = () => setOpen(!isOpen);
 
     const selectValue = (selectedText) => {
         onChange(selectedText); // Вызываем onChange с выбранным значением
@@ -43,9 +24,15 @@ export function DropdownSelect(props) {
                     <div>{value || selectgroupname}</div>
                     <Icon size="mini" path={ICONS.caret_down} />
                 </div>
-                <div className={"dropdown"}  ref={menuRef}>
-                    <div className={"dropdown-items-wrapper"}>
-                        {updatedChildren}
+                {isOpen && (
+                    <div className="dropdown active" ref={menuRef}>
+                        <div className="dropdown-items-wrapper">
+                            {React.Children.map(children, (child, index) => (
+                                <p key={index} className="dropdown-item" onClick={() => selectValue(child.props.children)}>
+                                    {child.props.children}
+                                </p>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
