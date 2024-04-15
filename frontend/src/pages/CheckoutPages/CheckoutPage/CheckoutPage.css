@@ -1,7 +1,127 @@
-.container {
+.container-checkout {
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 16px;
+}
+
+.title-checkout {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 42px;
+}
+
+.label-input-checkout {
+    display: flex;
+    flex-direction: column;
+    width: 414px;
+    height: 84px;
+}
+
+.label-checkout {
+    margin-bottom: 13px;
+}
+
+.goods-list-checkout-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 31px;
+    margin-bottom: 15px;
+}
+
+.total-checkout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 23px;
+}
+
+.subtotal-checkout {
+    font-size: 24px;
+}
+
+.total-button-checkout {
+    width: 142px;
+}
+
+.pay-button-checkout {
+    width: 410px;
+}
+
+.modal-overlay-checkout {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content-checkout {
+    background-color: white;
+    padding: 20px;
+    width: 400px;
+    border-radius: 8px;
+}
+
+.close-checkout {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .title-checkout {
+        margin-bottom: 34px;
+    }
+
+    .label-input-checkout {
+        width: 260px;
+    }
+
+    .label-checkout {
+
+    }
+
+    .goods-list-checkout-container {
+        width: 260px;
+        margin-top: 21px;
+        margin-bottom: 22px;
+    }
+
+    .total-checkout {
+        width: 260px;
+        margin-bottom: 16px;
+    }
+
+    .subtotal-checkout {
+        font-size: 22px;
+    }
+
+    .total-button-checkout {
+        width: 100px;
+    }
+
+    .pay-button-checkout {
+        width: 260px;
+    }
+
+    .modal-overlay-checkout {
+
+    }
+
+    .modal-content-checkout {
+
+    }
+
+    .close-checkout {
+
+    }
 }
