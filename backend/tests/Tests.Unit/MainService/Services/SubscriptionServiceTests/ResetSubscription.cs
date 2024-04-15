@@ -46,7 +46,7 @@ public class ResetSubscription
             .Returns(user);
         
         // Act
-        await SubscriptionService.Reset(userId);
+        await SubscriptionService.ResetAsync(userId);
         
         // Assert
         Assert.Equal(resetSubscriptionId, user.SubscriptionId);
@@ -68,7 +68,7 @@ public class ResetSubscription
         var expected = new EntityNotFoundException(typeof(User), userId.ToString());
         
         // Act
-        var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => SubscriptionService.Reset(userId));
+        var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => SubscriptionService.ResetAsync(userId));
 
         // Assert
         Assert.Equal(expected.Message, actual.Message);
@@ -90,7 +90,7 @@ public class ResetSubscription
         var expected = new DbUpdateException();
         
         // Act
-        var actual = await Assert.ThrowsAsync<DbUpdateException>(() => SubscriptionService.Reset(userId));
+        var actual = await Assert.ThrowsAsync<DbUpdateException>(() => SubscriptionService.ResetAsync(userId));
         
         // Assert
         Assert.Equal(expected.GetType(), actual.GetType());

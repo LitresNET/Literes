@@ -32,4 +32,9 @@ public class UserRepository(ApplicationDbContext appDbContext) : IUserRepository
         var result = appDbContext.User.Update(user);
         return result.Entity;
     }
+
+    public async Task<List<User>> GetAllAsync()
+    {
+        return await appDbContext.User.ToListAsync();
+    } 
 }

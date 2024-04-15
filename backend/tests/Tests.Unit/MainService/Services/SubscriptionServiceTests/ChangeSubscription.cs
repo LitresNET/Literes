@@ -9,7 +9,7 @@ using Tests.Config;
 
 namespace Tests.MainService.Services.SubscriptionServiceTests;
 
-public class UpdateSubscription
+public class ChangeSubscription
 {
     private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
     private readonly Mock<ISubscriptionRepository> _subscriptionRepositoryMock = new();
@@ -17,7 +17,7 @@ public class UpdateSubscription
 
     private SubscriptionService SubscriptionService => new(_unitOfWorkMock.Object);
 
-    public UpdateSubscription()
+    public ChangeSubscription()
     {
         _unitOfWorkMock
             .Setup(unitOfWork => unitOfWork.GetRepository<User>())
@@ -31,7 +31,7 @@ public class UpdateSubscription
     [Theory]
     [InlineData(100, 30, 90)]
     [InlineData(100, 0, 100)]
-    public void UserWithEnoughMoneyAndPricierSubscription_ReturnsPricierSubscription(
+    public async Task UserWithEnoughMoneyAndPricierSubscription_ReturnsPricierSubscription(
         decimal wallet, 
         decimal oldSubscriptionPrice, 
         decimal newSubscriptionPrice)
@@ -69,7 +69,7 @@ public class UpdateSubscription
         var expectedWallet = wallet - newSubscriptionPrice;
 
         // Act
-        var actual = SubscriptionService.Update(userId, newSubscription);
+        var actual = await SubscriptionService.ChangeAsync(userId, newSubscription);
         var actualWallet = user.Wallet;
         
         // Assert
@@ -80,7 +80,7 @@ public class UpdateSubscription
     [Theory]
     [InlineData(100, 50, 150)]
     [InlineData(100, 100, 101)]
-    public void UserWithNotEnoughMoneyAndPricierSubscription_ReturnsOldSubscription(
+    public async Task UserWithNotEnoughMoneyAndPricierSubscription_ReturnsOldSubscription(
         decimal wallet, 
         decimal oldSubscriptionPrice, 
         decimal newSubscriptionPrice)
@@ -118,7 +118,7 @@ public class UpdateSubscription
         var expectedWallet = wallet;
         
         // Act
-        var actual = SubscriptionService.Update(userId, newSubscription);
+        var actual = await SubscriptionService.ChangeAsync(userId, newSubscription);
         var actualWallet = user.Wallet;
         
         // Assert
@@ -130,7 +130,7 @@ public class UpdateSubscription
     [InlineData(0, 150, 50)]
     [InlineData(1000, 900, 899)]
     [InlineData(-300, 100, 0)]
-    public void UserWithAnyAmountOfMoneyAndCheaperSubscription_ReturnsCheaperSubscription(
+    public async Task UserWithAnyAmountOfMoneyAndCheaperSubscription_ReturnsCheaperSubscription(
         decimal wallet, 
         decimal oldSubscriptionPrice, 
         decimal newSubscriptionPrice)
@@ -168,7 +168,7 @@ public class UpdateSubscription
         var expectedWallet = wallet;
 
         // Act
-        var actual = SubscriptionService.Update(userId, newSubscription);
+        var actual = await SubscriptionService.ChangeAsync(userId, newSubscription);
         var actualWallet = user.Wallet;
         
         // Assert
@@ -177,7 +177,7 @@ public class UpdateSubscription
     }
 
     [Fact]
-    public void NotExistentUserId_ThrowsEntityNotFoundException()
+    public async Task NotExistentUserId_ThrowsEntityNotFoundException()
     {
         // Arrange
         const long userId = 42;
@@ -189,14 +189,14 @@ public class UpdateSubscription
         var expected = new EntityNotFoundException(typeof(User), userId.ToString());
         
         // Act
-        var actual = Assert.Throws<EntityNotFoundException>(() => SubscriptionService.Update(userId, new Subscription()));
+        var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => SubscriptionService.ChangeAsync(userId, new Subscription()));
         
         // Assert
         Assert.Equal(expected.Message, actual.Message);
     }
 
     [Fact]
-    public void DatabaseShut_ThrowsDbUpdateException()
+    public async Task DatabaseShut_ThrowsDbUpdateException()
     {
         // Arrange
         const long userId = 42;
@@ -208,7 +208,7 @@ public class UpdateSubscription
         var expected = new DbUpdateException();
         
         // Act
-        var actual = Assert.Throws<DbUpdateException>(() => SubscriptionService.Update(userId, new Subscription()));
+        var actual = await Assert.ThrowsAsync<DbUpdateException>(() => SubscriptionService.ChangeAsync(userId, new Subscription()));
         
         // Assert
         Assert.Equal(expected.GetType(), actual.GetType());

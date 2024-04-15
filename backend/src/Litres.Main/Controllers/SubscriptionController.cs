@@ -40,7 +40,7 @@ public class SubscriptionController(
         customSubscription.Name = name;
         var subscription = mapper.Map<Subscription>(customSubscription);
             
-        var result = subscriptionService.Update(userId, subscription);
+        var result = subscriptionService.ChangeAsync(userId, subscription);
         return result.Id == subscription.Id ? Ok() : BadRequest("The account lacks the necessary funds");
     }
 
@@ -55,7 +55,7 @@ public class SubscriptionController(
             ))
             return BadRequest();
         
-        subscriptionService.Reset(userId);
+        subscriptionService.ResetAsync(userId);
         return Ok();
     }
 }
