@@ -108,7 +108,7 @@ public class Book
     /// <summary>
     /// Пользователи, добавившие книгу в избранное
     /// </summary>
-    public virtual List<User>? Favourites { get; set; } = null;
+    public virtual List<User>? Favourites { get; set; }
     
     /// <summary>
     /// Отзывы пользователей на книгу
