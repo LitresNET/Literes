@@ -1,8 +1,14 @@
 import { createBrowserRouter } from "react-router-dom";
 import ComponentsLookup from "../components/componentsLookup";
 import CheckoutPage from "../pages/CheckoutPages/CheckoutPage/CheckoutPage";
+import SubscriptionPage from "../pages/SubscriptionPages/SubscriptionPage/SubscriptionPage";
 import CustomSubscriptionPage from "../pages/SubscriptionPages/CustomSubscriptionPage/CustomSubscriptionPage";
 import MainLayout from "../layouts/MainLayout/MainLayout";
+import UserSettingsPage from "../pages/AccountPages/UserSettingsPage/UserSettingsPage";
+import UserAccountPage from "../pages/AccountPages/UserAccountPage/UserAccountPage";
+import PublisherPage from "../pages/AccountPages/PublisherPage/PublisherPage";
+import ModeratorPage from "../pages/AccountPages/ModeratorPage/ModeratorPage";
+import BookSettingsPage from "../pages/MainPages/BookSettingsPage/BookSettingsPage";
 import WelcomePage from "../pages/MainPages/WelcomePage/WelcomePage";
 import SignInPage from "../pages/AuthPages/SignInPage/SignInPage.jsx";
 import SignUpPage from "../pages/AuthPages/SignUpPage/SignUpPage.jsx";
@@ -21,6 +27,13 @@ const routes = [
       path: '/',
       element: <MainLayout />,
       children: [
+        {
+          path:'',
+          element: <WelcomePage />
+        },
+          path:'home',
+            element: <WelcomePage />
+        },
         {
           path: '/success',
           element: <OrderSuccessPage />,
@@ -54,13 +67,29 @@ const routes = [
           element: <CustomSubscriptionPage />
         },
         {
-          path:'',
-          element: <WelcomePage />
+          path: 'account',
+          element: <UserAccountPage/>
+        },
+        {
+          path: 'account/publisher',
+          element: <PublisherPage/>
+        },
+        {
+          path: 'account/moderator',
+          element: <ModeratorPage/>
+        },
+        {
+          path: 'account/settings',
+          element: <UserSettingsPage/>
+        },
+        {
+          path: 'account/publisher/book/:id/settings',
+          element: <BookSettingsPage/>
         },
         {
           path: '*',
           element: <NotFoundPage />,
-        },
+        }
       ]
     },
   ];

@@ -1,0 +1,41 @@
+.subscription {
+  width: 100%;
+}
+
+.subscription-open-button div {
+  transition: 0.2s linear;
+  display: none;
+}
+
+.subscription-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.subscription-description {
+  display: none;
+  flex-direction: column;
+
+  margin-left: 10%;
+
+  opacity: 0;
+  transform: translateY(-10px);
+  visibility: hidden;
+
+  transition: 0.3s linear;
+}
+
+.subscription-description.active {
+  display: flex;
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (max-width: 768px) {
+  .subscription-open-button div {
+    display: block;
+  }
+}
