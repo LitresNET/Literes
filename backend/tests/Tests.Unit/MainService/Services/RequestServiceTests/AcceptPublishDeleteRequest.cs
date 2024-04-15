@@ -19,6 +19,16 @@ public class AcceptPublishDeleteRequest
         _unitOfWorkMock.Object
     );
 
+    public AcceptPublishDeleteRequest()
+    {
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
+            .Returns(_bookRepositoryMock.Object);
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
+            .Returns(_requestRepositoryMock.Object);
+    }
+
     [Theory]
     [InlineData(RequestType.Create, true, true, true)]
     [InlineData(RequestType.Create, false, false, false)]
@@ -94,12 +104,6 @@ public class AcceptPublishDeleteRequest
         var expectedBook = fixture.Create<Book>();
         var expectedRequest = fixture.Create<Request>();
         
-        _unitOfWorkMock
-            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
-            .Returns(_bookRepositoryMock.Object);
-        _unitOfWorkMock
-            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
-            .Returns(_requestRepositoryMock.Object);
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedRequest);

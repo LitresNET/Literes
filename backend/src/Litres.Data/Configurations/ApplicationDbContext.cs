@@ -90,18 +90,48 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
         modelBuilder.Entity<User>()
             .HasOne(u => u.Subscription)
             .WithMany(s => s.Users);
+
+        modelBuilder.Entity<Publisher>()
+            .HasOne(p => p.User)
+            .WithOne()
+            .HasForeignKey<Publisher>(p => p.UserId);
         
-        
-        //Связи, которые сгенерировал chatgpt. Вставил на пох, просто чтобы работало
-        //TODO: исправить (для аутентификации и авторизации)
+
         modelBuilder.Entity<IdentityUserLogin<long>>()
             .HasKey(l => new { l.LoginProvider, l.ProviderKey }); 
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Logins)
+            .WithOne()
+            .HasForeignKey(ul => ul.UserId)
+            .IsRequired();
+        
+        modelBuilder.Entity<IdentityUserClaim<long>>()
+            .HasKey(uc => uc.Id);
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Claims)
+            .WithOne()
+            .HasForeignKey(uc => uc.UserId)
+            .IsRequired();
+        
         modelBuilder.Entity<IdentityUserRole<long>>()
             .HasKey(r => new { r.UserId, r.RoleId });
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Roles)
+            .WithMany();
+        modelBuilder.Entity<IdentityRole<long>>(b =>
+        {
+            b.HasMany<IdentityUserRole<long>>().WithOne().HasForeignKey(ur => ur.RoleId).IsRequired();
+            b.HasMany<IdentityRoleClaim<long>>().WithOne().HasForeignKey(rc => rc.RoleId).IsRequired();
+        });
+        
+
         modelBuilder.Entity<IdentityUserToken<long>>()
             .HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
-        //Исправить исправить исправить
-        
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Tokens)
+            .WithOne()
+            .HasForeignKey(ut => ut.UserId)
+            .IsRequired();
         #endregion
 
         #region DefaulValue
