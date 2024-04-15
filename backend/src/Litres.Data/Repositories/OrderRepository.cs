@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Configurations;
 using Litres.Data.Models;
@@ -28,5 +29,19 @@ public class OrderRepository(ApplicationDbContext appDbContext) : IOrderReposito
     public async Task<Order?> GetByIdAsync(long orderId)
     {
         return await appDbContext.Order.FirstOrDefaultAsync(o => o.Id == orderId);
+    }
+    
+    public async Task<Order?> GetAsync(Expression<Func<Order, bool>> filter, List<Expression<Func<Order, object>>> includeProperties)
+    {
+        var query = appDbContext.Order.AsQueryable();
+
+        query = query.Where(filter);
+
+        foreach (var includeProperty in includeProperties)
+        {
+            query = query.Include(includeProperty);
+        }
+            
+        return await query.FirstOrDefaultAsync();
     }
 }

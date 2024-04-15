@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Models;
@@ -8,56 +9,67 @@ namespace Litres.Main.Services;
 
 public class OrderService(IUnitOfWork unitOfWork) : IOrderService
 {
-    public Task<Order> GetByIdAsync(long orderId)
+    public async Task<Order> CreateOrderAsync(Order order)
     {
-        throw new NotImplementedException();
-    }
+        var user = await unitOfWork.GetRepository<User>().GetByIdAsync(order.UserId);
+        var pickUpPoint = await unitOfWork.GetRepository<PickupPoint>().GetByIdAsync(order.PickupPointId);
 
-    public async Task<Order> CreateAsync(Order order)
-    {
-        var context = new ValidationContext(order);
-        var results = new List<ValidationResult>();
-
-        if (!Validator.TryValidateObject(order, context, results))
-            throw new EntityValidationFailedException(typeof(Order), results);
-        
-        if (await unitOfWork.GetRepository<PickupPoint>().GetByIdAsync(order.PickupPointId) is null)
-            throw new EntityNotFoundException(typeof(PickupPoint), order.PickupPointId.ToString());
-
-        if (await unitOfWork.GetRepository<User>().GetByIdAsync(order.UserId) is null)
+        if (user is null)
+        {
             throw new EntityNotFoundException(typeof(User), order.UserId.ToString());
+        }
+        if (pickUpPoint is null)
+        {
+            throw new EntityNotFoundException(typeof(PickupPoint), order.PickupPointId.ToString());
+        }
         
-        await unitOfWork.GetRepository<Order>().AddAsync(order);
+        order.Books = new List<Book>();
+        foreach (var orderBook in order.OrderedBooks)
+        {
+            var book = await unitOfWork.GetRepository<Book>().GetByIdAsync(orderBook.BookId);
+            if (book is null)
+            {
+                throw new EntityNotFoundException(typeof(Book), orderBook.BookId.ToString());
+            }
+            if (book.Count < orderBook.Quantity)
+            {
+                throw new BusinessException("More books have been requested than are left in stock");
+            }
+            order.Books.Add(book);
+        }
+
+        order = await unitOfWork.GetRepository<Order>().AddAsync(order);
         await unitOfWork.SaveChangesAsync();
+        
         return order;
     }
 
-    public async Task<Order> DeleteAsync(long orderId)
+    public async Task<Order> GetOrderInfo(long orderId)
     {
-        var orderRepository = unitOfWork.GetRepository<Order>();
-
-        var dbOrder = await orderRepository.GetByIdAsync(orderId);
-        if (dbOrder is null)
+        var orderRepository = (IOrderRepository)unitOfWork.GetRepository<Order>();
+        var order = await orderRepository.GetAsync(
+            x => x.Id == orderId, 
+            new List<Expression<Func<Order, object>>> {y => y.OrderedBooks});
+            
+        if (order is null)
+        {
             throw new EntityNotFoundException(typeof(Order), orderId.ToString());
-        
-        orderRepository.Delete(dbOrder);
-        await unitOfWork.SaveChangesAsync();
-        return dbOrder;
+        }
+
+        return order;
     }
 
-    public async Task<Order> ChangeStatusAsync(long orderId, OrderStatus status)
+    public async Task<Order> ConfirmOrderAsync(long orderId, bool isSuccess)
     {
-        var orderRepository = unitOfWork.GetRepository<Order>();
-
-        var dbOrder = await orderRepository.GetByIdAsync(orderId);
-        if (dbOrder is null)
+        var order = await unitOfWork.GetRepository<Order>().GetByIdAsync(orderId);
+        if (order is null)
             throw new EntityNotFoundException(typeof(Order), orderId.ToString());
 
-        if (dbOrder.Status > status)
-            throw new InvalidOperationException("Can't change status of order to lower one.");
+        order.IsPaid = isSuccess;
+        order = unitOfWork.GetRepository<Order>().Update(order);
         
-        dbOrder.Status = status;
         await unitOfWork.SaveChangesAsync();
-        return dbOrder;
+
+        return order;
     }
 }

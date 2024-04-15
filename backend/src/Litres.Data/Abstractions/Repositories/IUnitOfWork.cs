@@ -1,4 +1,6 @@
-﻿namespace Litres.Data.Abstractions.Repositories;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+
+namespace Litres.Data.Abstractions.Repositories;
 
 /// <summary>
 /// В EntityFramework есть особенность - метод SaveChanges можно вызвать только 1 раз в рамках
@@ -12,4 +14,5 @@ public interface IUnitOfWork : IDisposable
 {
     public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class;
     public Task SaveChangesAsync();
+    public Task<IDbContextTransaction> BeginTransactionAsync();
 }
