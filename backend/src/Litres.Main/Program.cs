@@ -40,6 +40,7 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<RequestMapperProfile>();
     cfg.AddProfile<UserMapperProfile>();
     cfg.AddProfile<BookMapperProfile>();
+    cfg.AddProfile<PublisherMapperProfile>();
 });
 
 builder.Services.AddControllers();
