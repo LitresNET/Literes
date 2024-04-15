@@ -19,6 +19,7 @@ public static class WebApplicationExtension
         builder.Services.AddScoped<IBookService, BookService>();
         builder.Services.AddScoped<IRegistrationService, RegistrationService>();
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
         #endregion
         
         #region Repositories
