@@ -8,7 +8,6 @@ import SignInPage from "../pages/AuthPages/SignInPage/SignInPage.jsx";
 import SignUpPage from "../pages/AuthPages/SignUpPage/SignUpPage.jsx";
 import SearchPage from "../pages/MainPages/SearchPage/SearchPage";
 import SubscriptionPage from "../pages/SubscriptionPages/SubscriptionPage/SubscriptionPage";
-import ErrorPage from "../pages/RedirectPages/ErrorPage/ErrorPage.jsx";
 import NotFoundPage from "../pages/RedirectPages/NotFoundPage/NotFoundPage.jsx";
 import OrderSuccessPage from "../pages/RedirectPages/OrderSuccessPage/OrderSuccessPage";
 import UnauthorizedPage from "../pages/RedirectPages/UnauthorizedPage/UnauthorizedPage.jsx";
@@ -23,49 +22,45 @@ const routes = [
       element: <MainLayout />,
       children: [
         {
-          path: '/error',
-          element: <ErrorPage />,
-        },
-        {
-          path: '/error/notfound',
-          element: <NotFoundPage />,
-        },
-        {
           path: '/success',
           element: <OrderSuccessPage />,
         },
         {
-          path: '/error/unauthorized',
+          path: '/unauthorized',
           element: <UnauthorizedPage />
         },
         {
-          path: 'checkout',
+          path: '/checkout',
           element: <CheckoutPage />,
         },
         {
-          path: 'signin',
+          path: '/signin',
           element: <SignInPage />
         },
         {
-          path: 'signup',
+          path: '/signup',
           element: <SignUpPage />
         },
         {
-          path: 'search',
+          path: '/search',
           element: <SearchPage />
         },
         {
-          path: 'subscription',
+          path: '/subscription',
           element: <SubscriptionPage />
         },
         {
-          path: 'subscription/custom',
+          path: '/subscription/custom',
           element: <CustomSubscriptionPage />
         },
         {
           path:'',
-            element: <WelcomePage />
-        }
+          element: <WelcomePage />
+        },
+        {
+          path: '*',
+          element: <NotFoundPage />,
+        },
       ]
     },
   ];
