@@ -47,7 +47,7 @@ export function DropdownSelect(props) {
                     <div className={"dropdown-items-wrapper"}>
                         {updatedChildren}
                     </div>
-                )}
+                </div>
             </div>
         </>
     );

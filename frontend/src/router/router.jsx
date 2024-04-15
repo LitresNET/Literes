@@ -13,7 +13,7 @@ import WelcomePage from "../pages/MainPages/WelcomePage/WelcomePage";
 import SignInPage from "../pages/AuthPages/SignInPage/SignInPage.jsx";
 import SignUpPage from "../pages/AuthPages/SignUpPage/SignUpPage.jsx";
 import SearchPage from "../pages/MainPages/SearchPage/SearchPage";
-import SubscriptionPage from "../pages/SubscriptionPages/SubscriptionPage/SubscriptionPage";
+import BookPage from "../pages/MainPages/BookPage/BookPage.jsx";
 
 const routes = [
     {
@@ -84,6 +84,10 @@ const routes = [
           path: 'account/publisher/book/:id/settings',
           element: <BookSettingsPage/>
         },
+        {
+          path: 'book/:id',
+          element: <BookPage/>
+        }
       ]
     },
   ];
