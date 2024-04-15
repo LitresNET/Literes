@@ -60,8 +60,8 @@ public class User : IdentityUser<long>
     /// <summary>
     /// Текущий тип подписки
     /// </summary>
-    public long? SubscriptionId { get; set; }
-    public virtual Subscription? Subscription { get; set; }
+    public long SubscriptionId { get; set; }
+    public virtual Subscription Subscription { get; set; }
     
     /// <summary>
     /// Список всех сторонних сервисов, через которые авторизовался пользователь

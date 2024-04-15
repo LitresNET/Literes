@@ -128,6 +128,7 @@ public class UserService(
         return jwtTokenService.CreateJwtToken(claims);
     }
 
+
     public async Task<string> LoginUserFromExternalServiceAsync(string email, IEnumerable<Claim> externalClaims = null)
     {
         var user = await userManager.FindByEmailAsync(email);

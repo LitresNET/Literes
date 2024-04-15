@@ -11,7 +11,7 @@ public class RequestService(IUnitOfWork unitOfWork) : IRequestService
         long requestId,
         bool requestAccepted = true
     )
-{
+    {
         var requestRepository = (IRequestRepository)unitOfWork.GetRepository<Request>();
         var request = await requestRepository.GetRequestWithBookByIdAsync(requestId);
         if (request is null || request.RequestType == RequestType.Update)
