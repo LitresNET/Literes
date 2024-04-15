@@ -92,4 +92,24 @@ public class User : IdentityUser<long>
     /// Все заказы, оформленные пользователем
     /// </summary>
     public virtual List<Order> Orders { get; set; }
+    
+    /// <summary>
+    /// Все claims пользователя
+    /// </summary>
+    public virtual List<IdentityUserClaim<long>> Claims { get; set; }
+    
+    /// <summary>
+    /// Все внешние провайдеры авторизации пользователя
+    /// </summary>
+    public virtual List<IdentityUserLogin<long>> Logins { get; set; }
+    
+    /// <summary>
+    /// Все токены пользователя (для двухфакторки и смены почты)
+    /// </summary>
+    public virtual List<IdentityUserToken<long>> Tokens { get; set; }
+    
+    /// <summary>
+    /// Все роли пользователя
+    /// </summary>
+    public virtual List<IdentityRole<long>> Roles { get; set; }
 }

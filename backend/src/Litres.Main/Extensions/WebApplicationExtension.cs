@@ -18,10 +18,12 @@ public static class WebApplicationExtension
         #region Services
         builder.Services.AddScoped<IRequestService, RequestService>();
         builder.Services.AddScoped<IBookService, BookService>();
-        builder.Services.AddScoped<IRegistrationService, UserService>();
         builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
         builder.Services.AddScoped<ISubscriptionCheckerService, SubscriptionCheckerService>();
         builder.Services.AddScoped<IOrderService, OrderService>();
+        builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
         #endregion
         
         #region Repositories
