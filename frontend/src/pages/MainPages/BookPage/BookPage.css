@@ -1,1 +1,134 @@
-/* стили BookPage */
+.book-container {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    gap: 90px;
+    margin-bottom: 130px;
+}
+
+.book-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.book-info-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.book-info-title h1 {
+    font-size: 36px;
+    color: black;
+}
+
+.book-favorite {
+    height: 46px;
+    width: 57px;
+}
+
+.book-banner-name {
+    font-size: 18px;
+}
+
+.book-banner-description {
+    font-size: 14px;
+}
+
+.book-price {
+    display: flex;
+    gap: 15px;
+    font-size: 30px;
+    align-items: center;
+}
+
+.book-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.book-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.book-price span {
+    color: var(--orange-500);
+}
+
+.container-title {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.container-title h1 {
+    font-size: 36px;
+    color: black;
+}
+
+.books {
+    margin-bottom: 130px;
+}
+
+.under-reviews-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.under-reviews-title h5{
+    color: black;
+    display: flex;
+}
+
+.dropdown-link select {
+    appearance: none;
+    font-family: "Syne", sans-serif;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    color: blue;
+    outline: none;
+}
+
+.dropdown-link select:hover {
+    text-decoration: underline;
+}
+
+.sort-container {
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 900px) {
+    .book-container {
+        gap: 20px;
+    }
+    .book-favorite {
+        display: none;
+    }
+}
+
+@media (max-width: 680px) {
+    .book-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .book-balance-container {
+        flex-direction: row;
+        gap: 20px;
+        justify-content: space-between;
+    }
+
+    .book-info-title {
+        justify-content: center !important;
+    }
+}
