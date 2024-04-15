@@ -1,6 +1,7 @@
 ﻿using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Configurations;
 using Litres.Data.Models;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Litres.Data.Repositories;
 
@@ -49,6 +50,12 @@ public class UnitOfWork(ApplicationDbContext appDbContext) : IUnitOfWork
     {
         await appDbContext.SaveChangesAsync();
     }
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return await appDbContext.Database.BeginTransactionAsync();
+    }
+    
     public void Dispose()
     {
         Dispose(disposing: true);

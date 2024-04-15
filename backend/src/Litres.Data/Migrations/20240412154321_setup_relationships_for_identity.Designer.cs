@@ -4,6 +4,7 @@ using Litres.Data.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Litres.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240412154321_setup_relationships_for_identity")]
+    partial class setup_relationships_for_identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,21 +41,6 @@ namespace Litres.Data.Migrations
                     b.HasIndex("BookId");
 
                     b.ToTable("Favourites");
-                });
-
-            modelBuilder.Entity("IdentityRole<long>User", b =>
-                {
-                    b.Property<long>("RolesId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("RolesId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("IdentityRole<long>User");
                 });
 
             modelBuilder.Entity("Litres.Data.Models.Author", b =>
@@ -1363,7 +1351,7 @@ namespace Litres.Data.Migrations
                             Id = 1L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "40edce97-551f-4b2f-bce4-b3b8db3112f9",
+                            ConcurrencyStamp = "97aad3c5-8ffc-4e50-b36d-4374ef5f9a25",
                             Email = "a@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1381,7 +1369,7 @@ namespace Litres.Data.Migrations
                             Id = 2L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "2104deed-cdc9-4305-969e-614914f5e135",
+                            ConcurrencyStamp = "f76dbaf3-eff4-48bc-8fb2-dd712dc6f628",
                             Email = "b@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1399,7 +1387,7 @@ namespace Litres.Data.Migrations
                             Id = 3L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "e9ed2ae5-44b7-4946-b771-a12e96c372b4",
+                            ConcurrencyStamp = "dbf1fcec-3b81-4a6f-a5e0-17841787e388",
                             Email = "c@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1417,7 +1405,7 @@ namespace Litres.Data.Migrations
                             Id = 4L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "3f429b40-da75-4333-9c0d-62bc3d7bb133",
+                            ConcurrencyStamp = "cccaa96b-1dea-4851-ad0d-1d4f655cac5d",
                             Email = "d@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1435,7 +1423,7 @@ namespace Litres.Data.Migrations
                             Id = 5L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "d29cb9aa-2589-4f11-803c-ee1fc223b388",
+                            ConcurrencyStamp = "acbfd5d0-b7e2-4eb6-bc2e-fc2ae2396586",
                             Email = "e@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1453,7 +1441,7 @@ namespace Litres.Data.Migrations
                             Id = 6L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "37bf7098-1544-4fb2-9947-6ffb995e335a",
+                            ConcurrencyStamp = "12162422-157e-4b7b-8b6b-eb4f6c6370f4",
                             Email = "f@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1471,7 +1459,7 @@ namespace Litres.Data.Migrations
                             Id = 7L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "941b0993-586d-4243-b56c-d6f3ad588cf9",
+                            ConcurrencyStamp = "603779eb-197e-4c3f-8687-542c21219e96",
                             Email = "g@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1489,7 +1477,7 @@ namespace Litres.Data.Migrations
                             Id = 8L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "52f76a01-9f7f-4301-be23-4bbb886e1b7d",
+                            ConcurrencyStamp = "da1b2295-c3f6-496f-8069-6ade10ca12d1",
                             Email = "h@mail.com",
                             EmailConfirmed = false,
                             IsModerator = true,
@@ -1506,7 +1494,7 @@ namespace Litres.Data.Migrations
                             Id = 9L,
                             AccessFailedCount = 0,
                             AvatarUrl = "aa",
-                            ConcurrencyStamp = "f6833822-225b-44c5-8861-041e3ab36fe2",
+                            ConcurrencyStamp = "8b423a83-a51e-45ee-a603-df848c1ce3a2",
                             Email = "pA@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1523,7 +1511,7 @@ namespace Litres.Data.Migrations
                             Id = 10L,
                             AccessFailedCount = 0,
                             AvatarUrl = "bb",
-                            ConcurrencyStamp = "5b503d3f-6e07-4002-9adf-4db1597f4778",
+                            ConcurrencyStamp = "8b48367c-1e97-41e8-85da-6368e4f6057a",
                             Email = "pB@mail.com",
                             EmailConfirmed = false,
                             IsModerator = false,
@@ -1707,21 +1695,6 @@ namespace Litres.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("IdentityRole<long>User", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<long>", null)
-                        .WithMany()
-                        .HasForeignKey("RolesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Litres.Data.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Litres.Data.Models.Book", b =>
                 {
                     b.HasOne("Litres.Data.Models.Author", "Author")
@@ -1888,18 +1861,18 @@ namespace Litres.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
                 {
                     b.HasOne("Litres.Data.Models.User", null)
-                        .WithMany("Claims")
+                        .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
                 {
                     b.HasOne("Litres.Data.Models.User", null)
-                        .WithMany("Logins")
+                        .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -1910,14 +1883,20 @@ namespace Litres.Data.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Litres.Data.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
                 {
                     b.HasOne("Litres.Data.Models.User", null)
-                        .WithMany("Tokens")
+                        .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -1992,17 +1971,11 @@ namespace Litres.Data.Migrations
 
             modelBuilder.Entity("Litres.Data.Models.User", b =>
                 {
-                    b.Navigation("Claims");
-
-                    b.Navigation("Logins");
-
                     b.Navigation("Orders");
 
                     b.Navigation("ReviewLikes");
 
                     b.Navigation("Reviews");
-
-                    b.Navigation("Tokens");
                 });
 #pragma warning restore 612, 618
         }

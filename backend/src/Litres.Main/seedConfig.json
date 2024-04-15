@@ -340,24 +340,12 @@
   "Publisher": 
   [
     {
-      "Id": 9,
-      "ContractId": 1,
-      "Name": "Publisher A",
-      "Email": "pA@mail.com",
-      "PasswordHash": "aaa",
-      "AvatarUrl": "aa",
-      "IsModerator": false,
-      "Wallet": 6.78
+      "UserId": 9,
+      "ContractId": 1
     },
     {
-      "Id": 10,
-      "ContractId": 2,
-      "Name": "Publisher B",
-      "Email": "pB@mail.com",
-      "PasswordHash": "bbb",
-      "AvatarUrl": "bb",
-      "IsModerator": false,
-      "Wallet": 4.50
+      "UserId": 10,
+      "ContractId": 2
     }
   ],
   "Review": 
@@ -849,6 +837,24 @@
       "PasswordHash": "hhh",
       "AvatarUrl": "",
       "IsModerator": true
+    },
+    {
+      "Id": 9,
+      "Name": "Publisher A",
+      "Email": "pA@mail.com",
+      "PasswordHash": "aaa",
+      "AvatarUrl": "aa",
+      "IsModerator": false,
+      "Wallet": 6.78
+    },
+    {
+      "Id": 10,
+      "Name": "Publisher B",
+      "Email": "pB@mail.com",
+      "PasswordHash": "bbb",
+      "AvatarUrl": "bb",
+      "IsModerator": false,
+      "Wallet": 4.50
     }
   ]
 }

@@ -22,6 +22,16 @@ public class DeleteBook
         _unitOfWorkMock.Object
     );
 
+    public DeleteBook()
+    {
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
+            .Returns(_bookRepositoryMock.Object);
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
+            .Returns(_requestRepositoryMock.Object);
+    }
+
     [Fact]
     public async Task DefaultBook_ReturnsRequestDelete()
     {
@@ -36,12 +46,6 @@ public class DeleteBook
             .With(r => r.BookId, expectedBook.Id)
             .Create();
         
-        _unitOfWorkMock
-            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
-            .Returns(_bookRepositoryMock.Object);
-        _unitOfWorkMock
-            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
-            .Returns(_requestRepositoryMock.Object);
         _bookRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedBook);
@@ -73,10 +77,6 @@ public class DeleteBook
             .With(b => b.PublisherId, 2)
             .Create();
 
-        _unitOfWorkMock
-            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
-            .Returns(_bookRepositoryMock.Object);
-
         _bookRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedBook);
@@ -98,10 +98,7 @@ public class DeleteBook
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
 
         var book = fixture.Create<Book>();
-
-        _unitOfWorkMock
-            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
-            .Returns(_bookRepositoryMock.Object);
+        
         _bookRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync((Book)null);
@@ -125,13 +122,7 @@ public class DeleteBook
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
 
         var book = fixture.Create<Book>();
-
-        _unitOfWorkMock
-            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
-            .Returns(_bookRepositoryMock.Object);
-        _unitOfWorkMock
-            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
-            .Returns(_requestRepositoryMock.Object);
+        
         _bookRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(book);
