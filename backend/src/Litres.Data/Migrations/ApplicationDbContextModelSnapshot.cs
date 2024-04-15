@@ -379,6 +379,32 @@ namespace Litres.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Litres.Data.Models.BookOrder", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("BookId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("OrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("BookOrder");
+                });
+
             modelBuilder.Entity("Litres.Data.Models.Contract", b =>
                 {
                     b.Property<long>("Id")
@@ -452,6 +478,9 @@ namespace Litres.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
+
                     b.Property<long>("PickupPointId")
                         .HasColumnType("bigint");
 
@@ -471,6 +500,7 @@ namespace Litres.Data.Migrations
                         {
                             Id = 1L,
                             Description = "Harry Potter and the Philosopher's Stone * 1; Harry Potter and the Chamber of SecretsЫ * 1;",
+                            IsPaid = false,
                             PickupPointId = 1L,
                             UserId = 1L
                         },
@@ -478,6 +508,7 @@ namespace Litres.Data.Migrations
                         {
                             Id = 2L,
                             Description = "The Lord of the Rings: The Fellowship of the Ring * 1; The Lord of the Rings: The Two Towers * 1;",
+                            IsPaid = false,
                             PickupPointId = 2L,
                             UserId = 2L
                         },
@@ -485,6 +516,7 @@ namespace Litres.Data.Migrations
                         {
                             Id = 3L,
                             Description = "Pride and Prejudice by Jane Austen * 1; Sense and Sensibility by Jane Austen * 1;",
+                            IsPaid = false,
                             PickupPointId = 3L,
                             UserId = 3L
                         },
@@ -492,6 +524,7 @@ namespace Litres.Data.Migrations
                         {
                             Id = 4L,
                             Description = "To Kill a Mockingbird by Harper Lee * 1; The Great Gatsby by F. Scott Fitzgerald * 1;",
+                            IsPaid = false,
                             PickupPointId = 4L,
                             UserId = 4L
                         },
@@ -499,6 +532,7 @@ namespace Litres.Data.Migrations
                         {
                             Id = 5L,
                             Description = "1984 by George Orwell * 1; Animal Farm by George Orwell * 1;",
+                            IsPaid = false,
                             PickupPointId = 5L,
                             UserId = 5L
                         },
@@ -506,6 +540,7 @@ namespace Litres.Data.Migrations
                         {
                             Id = 6L,
                             Description = "The Catcher in the Rye by J.D. Salinger * 1; Catch-22 by Joseph Heller * 1;",
+                            IsPaid = false,
                             PickupPointId = 6L,
                             UserId = 6L
                         },
@@ -513,6 +548,7 @@ namespace Litres.Data.Migrations
                         {
                             Id = 7L,
                             Description = "The Chronicles of Narnia by C.S. Lewis * 1; The Hobbit by J.R.R. Tolkien * 1;",
+                            IsPaid = false,
                             PickupPointId = 7L,
                             UserId = 7L
                         },
@@ -520,6 +556,7 @@ namespace Litres.Data.Migrations
                         {
                             Id = 8L,
                             Description = "The Da Vinci Code by Dan Brown * 1; Angels & Demons by Dan Brown * 1;",
+                            IsPaid = false,
                             PickupPointId = 8L,
                             UserId = 8L
                         },
@@ -527,6 +564,7 @@ namespace Litres.Data.Migrations
                         {
                             Id = 9L,
                             Description = "The Catcher in the Rye by J.D. Salinger * 1; Catch-22 by Joseph Heller * 1;",
+                            IsPaid = false,
                             PickupPointId = 9L,
                             UserId = 1L
                         },
@@ -534,6 +572,7 @@ namespace Litres.Data.Migrations
                         {
                             Id = 10L,
                             Description = "The Chronicles of Narnia by C.S. Lewis * 1; The Hobbit by J.R.R. Tolkien * 1;",
+                            IsPaid = false,
                             PickupPointId = 10L,
                             UserId = 2L
                         });
@@ -1336,7 +1375,7 @@ namespace Litres.Data.Migrations
                     b.Property<DateTime>("SubscriptionActiveUntil")
                         .HasColumnType("datetime2");
 
-                    b.Property<long?>("SubscriptionId")
+                    b.Property<long>("SubscriptionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasDefaultValue(1L);
@@ -1498,6 +1537,7 @@ namespace Litres.Data.Migrations
                             PasswordHash = "hhh",
                             PhoneNumberConfirmed = false,
                             SubscriptionActiveUntil = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SubscriptionId = 0L,
                             TwoFactorEnabled = false,
                             Wallet = 0m
                         },
@@ -1579,7 +1619,6 @@ namespace Litres.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("RoleId");
-
                     b.ToTable("RoleClaims");
                 });
 
@@ -1747,6 +1786,25 @@ namespace Litres.Data.Migrations
                     b.Navigation("Series");
                 });
 
+            modelBuilder.Entity("Litres.Data.Models.BookOrder", b =>
+                {
+                    b.HasOne("Litres.Data.Models.Book", "Book")
+                        .WithMany("BookOrders")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Litres.Data.Models.Order", "Order")
+                        .WithMany("OrderedBooks")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("Litres.Data.Models.Order", b =>
                 {
                     b.HasOne("Litres.Data.Models.PickupPoint", "PickupPoint")
@@ -1871,7 +1929,8 @@ namespace Litres.Data.Migrations
                     b.HasOne("Litres.Data.Models.Subscription", "Subscription")
                         .WithMany("Users")
                         .HasForeignKey("SubscriptionId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Subscription");
                 });
@@ -1960,7 +2019,14 @@ namespace Litres.Data.Migrations
 
             modelBuilder.Entity("Litres.Data.Models.Book", b =>
                 {
+                    b.Navigation("BookOrders");
+
                     b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("Litres.Data.Models.Order", b =>
+                {
+                    b.Navigation("OrderedBooks");
                 });
 
             modelBuilder.Entity("Litres.Data.Models.PickupPoint", b =>
