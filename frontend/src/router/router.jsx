@@ -13,6 +13,7 @@ import WelcomePage from "../pages/MainPages/WelcomePage/WelcomePage";
 import SignInPage from "../pages/AuthPages/SignInPage/SignInPage.jsx";
 import SignUpPage from "../pages/AuthPages/SignUpPage/SignUpPage.jsx";
 import SearchPage from "../pages/MainPages/SearchPage/SearchPage";
+import BookPage from "../pages/MainPages/BookPage/BookPage.jsx";
 import NotFoundPage from "../pages/RedirectPages/NotFoundPage/NotFoundPage.jsx";
 import OrderSuccessPage from "../pages/RedirectPages/OrderSuccessPage/OrderSuccessPage";
 import UnauthorizedPage from "../pages/RedirectPages/UnauthorizedPage/UnauthorizedPage.jsx";
@@ -85,6 +86,10 @@ const routes = [
         {
           path: 'account/publisher/book/:id/settings',
           element: <BookSettingsPage/>
+        },
+        {
+          path: 'book/:id',
+          element: <BookPage/>
         },
         {
           path: '*',

@@ -1,4 +1,4 @@
-.accaunt-container {
+.account-container {
   max-width: 700px;
   margin: 0 auto;
   display: flex;
@@ -6,39 +6,39 @@
   margin-bottom: 130px;
 }
 
-.accaunt-info {
+.account-info {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 30px;
 }
 
-.accaunt-info-title {
+.account-info-title {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 30px;
 }
 
-.accaunt-info-title h1 {
+.account-info-title h1 {
   text-wrap: nowrap;
 }
 
-.accaunt-setting-button {
+.account-setting-button {
   width: 25px;
 }
-.accaunt-banner-text {
+.account-banner-text {
   font-size: 25px;
 }
 
-.accaunt-balance {
+.account-balance {
   display: flex;
   gap: 15px;
   font-size: 30px;
   align-items: center;
 }
 
-.accaunt-balance span:last-child {
+.account-balance span:last-child {
   color: var(--orange-500);
 }
 
@@ -49,27 +49,27 @@
 }
 
 @media (max-width: 900px) {
-  .accaunt-container {
+  .account-container {
     gap: 20px;
   }
-  .accaunt-setting-button {
+  .account-setting-button {
    display: none;
   }
 }
 
 @media (max-width: 680px) {
-  .accaunt-container {
+  .account-container {
     flex-direction: column;
     gap: 10px;
   }
 
-  .accaunt-balance-container {
+  .account-balance-container {
     flex-direction: row;
     gap: 20px;
     justify-content: space-between;
   }
 
-  .accaunt-info-title {
+  .account-info-title {
     justify-content: center !important;
   }
 }
