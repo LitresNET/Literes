@@ -19,7 +19,6 @@ export default function CustomSubscriptionPage() {
     ]
     const [currentFeature, setCurrent] = useState(features[0])
     const [selectedFeatures, setSelected] = useState([])
-    const [isOpen, setOpen] = useState(false)
 
     const handleFeatureChoose = (feature) => {
         const isFeatureSelected = selectedFeatures.some(
@@ -45,13 +44,10 @@ export default function CustomSubscriptionPage() {
                 <div className="page-features-wrapper">
                     <div className="page-features">
                         {features.map((item) => (
-                            <div
-                                className="page-features-item"
+                            <div className="page-features-item"
                                 onClick={() => handleFeatureChoose(item)}
                                 key={item.id}
                             >
-                                {/* TODO: чекбокс никак не помечается, когда он выбран */}
-                                <Input type={"checkbox"}>{item.name}</Input>
                                 <SubscriptionFeature name={item.name} description={'Lorem ipsum'} />
                             </div>
                         ))}
@@ -68,7 +64,6 @@ export default function CustomSubscriptionPage() {
                             </Banner>
                         </div>
 
-                        {/* TODO: Разобраться, почему кастомные стили на Banner сбрасывают базовые */}
                         <Banner>
                             <div className="cheque-wrapper">
                                 <div className="cheque-total">

@@ -13,7 +13,6 @@ import WelcomePage from "../pages/MainPages/WelcomePage/WelcomePage";
 import SignInPage from "../pages/AuthPages/SignInPage/SignInPage.jsx";
 import SignUpPage from "../pages/AuthPages/SignUpPage/SignUpPage.jsx";
 import SearchPage from "../pages/MainPages/SearchPage/SearchPage";
-import SubscriptionPage from "../pages/SubscriptionPages/SubscriptionPage/SubscriptionPage";
 import NotFoundPage from "../pages/RedirectPages/NotFoundPage/NotFoundPage.jsx";
 import OrderSuccessPage from "../pages/RedirectPages/OrderSuccessPage/OrderSuccessPage";
 import UnauthorizedPage from "../pages/RedirectPages/UnauthorizedPage/UnauthorizedPage.jsx";
@@ -31,8 +30,9 @@ const routes = [
           path:'',
           element: <WelcomePage />
         },
+        {
           path:'home',
-            element: <WelcomePage />
+          element: <WelcomePage />
         },
         {
           path: '/success',
