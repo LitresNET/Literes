@@ -70,21 +70,6 @@ namespace Litres.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RoleClaims",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<long>(type: "bigint", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RoleClaims", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
                 {
@@ -115,61 +100,6 @@ namespace Litres.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserClaims",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserClaims", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserLogins",
-                columns: table => new
-                {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserLogins", x => new { x.LoginProvider, x.ProviderKey });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserRoles",
-                columns: table => new
-                {
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    RoleId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserRoles", x => new { x.UserId, x.RoleId });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserTokens",
-                columns: table => new
-                {
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Series",
                 columns: table => new
                 {
@@ -190,11 +120,51 @@ namespace Litres.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RoleClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleId = table.Column<long>(type: "bigint", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RoleClaims_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserRoles",
+                columns: table => new
+                {
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    RoleId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_UserRoles_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    UserRole = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -202,7 +172,7 @@ namespace Litres.Data.Migrations
                     SubscriptionActiveUntil = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsModerator = table.Column<bool>(type: "bit", nullable: false),
                     Wallet = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
-                    SubscriptionId = table.Column<long>(type: "bigint", nullable: true, defaultValue: 1L),
+                    SubscriptionId = table.Column<long>(type: "bigint", nullable: false, defaultValue: 1L),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -228,12 +198,39 @@ namespace Litres.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "IdentityRole<long>User",
+                columns: table => new
+                {
+                    RolesId = table.Column<long>(type: "bigint", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_IdentityRole<long>User", x => new { x.RolesId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_IdentityRole<long>User_Roles_RolesId",
+                        column: x => x.RolesId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_IdentityRole<long>User_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Order",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    ExpectedDeliveryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsPaid = table.Column<bool>(type: "bit", nullable: false),
                     PickupPointId = table.Column<long>(type: "bigint", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false)
                 },
@@ -258,12 +255,12 @@ namespace Litres.Data.Migrations
                 name: "Publisher",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
                     ContractId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Publisher", x => x.Id);
+                    table.PrimaryKey("PK_Publisher", x => x.UserId);
                     table.ForeignKey(
                         name: "FK_Publisher_Contract_ContractId",
                         column: x => x.ContractId,
@@ -271,11 +268,32 @@ namespace Litres.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Publisher_User_Id",
-                        column: x => x.Id,
+                        name: "FK_Publisher_User_UserId",
+                        column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserClaims_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -296,6 +314,46 @@ namespace Litres.Data.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_UserExternalServices_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserLogins",
+                columns: table => new
+                {
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                    table.ForeignKey(
+                        name: "FK_UserLogins_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserTokens",
+                columns: table => new
+                {
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_UserTokens_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
@@ -338,12 +396,39 @@ namespace Litres.Data.Migrations
                         name: "FK_Book_Publisher_PublisherId",
                         column: x => x.PublisherId,
                         principalTable: "Publisher",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Book_Series_SeriesId",
                         column: x => x.SeriesId,
                         principalTable: "Series",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BookOrder",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderId = table.Column<long>(type: "bigint", nullable: false),
+                    BookId = table.Column<long>(type: "bigint", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookOrder", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BookOrder_Book_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Book",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BookOrder_Order_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Order",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -405,7 +490,7 @@ namespace Litres.Data.Migrations
                     RequestType = table.Column<int>(type: "int", nullable: false),
                     BookId = table.Column<long>(type: "bigint", nullable: false),
                     PublisherId = table.Column<long>(type: "bigint", nullable: false),
-                    UpdatedBookId = table.Column<long>(type: "bigint", nullable: false)
+                    UpdatedBookId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -426,7 +511,7 @@ namespace Litres.Data.Migrations
                         name: "FK_Request_Publisher_PublisherId",
                         column: x => x.PublisherId,
                         principalTable: "Publisher",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -564,48 +649,48 @@ namespace Litres.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "User",
-                columns: new[] { "Id", "AccessFailedCount", "AvatarUrl", "ConcurrencyStamp", "Email", "EmailConfirmed", "IsModerator", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "SubscriptionActiveUntil", "SubscriptionId", "TwoFactorEnabled", "UserName", "Wallet" },
+                columns: new[] { "Id", "AccessFailedCount", "AvatarUrl", "ConcurrencyStamp", "Email", "EmailConfirmed", "IsModerator", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "SubscriptionActiveUntil", "SubscriptionId", "TwoFactorEnabled", "UserName", "UserRole", "Wallet" },
                 values: new object[,]
                 {
-                    { 1L, 0, "", "40cec47f-57a4-462a-893b-d1a63f6fcd6d", "a@mail.com", false, false, false, null, "User A", null, null, "aaa", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, false, null, 0.00m },
-                    { 2L, 0, "", "6f4e7aea-53c7-4641-ba5f-8c8f19722066", "b@mail.com", false, false, false, null, "User B", null, null, "bbb", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, false, null, 3.59m },
-                    { 3L, 0, "", "995f15d6-6156-44f3-b3a1-fb3c8d3d570b", "c@mail.com", false, false, false, null, "User C", null, null, "ccc", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3L, false, null, 10.00m },
-                    { 4L, 0, "", "9885f582-8c0e-4076-9581-d64502420e73", "d@mail.com", false, false, false, null, "User D", null, null, "ddd", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4L, false, null, 5.32m },
-                    { 5L, 0, "", "50564fd9-8933-4757-881f-839d41db2efd", "e@mail.com", false, false, false, null, "User E", null, null, "eee", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 5L, false, null, 1.99m },
-                    { 6L, 0, "", "35eddc2e-c9ca-4640-ad1f-9175a2cb93d9", "f@mail.com", false, false, false, null, "User F", null, null, "fff", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 6L, false, null, 7.25m },
-                    { 7L, 0, "", "f47e3699-9c6f-463e-b8b2-c3cecbbc69ea", "g@mail.com", false, false, false, null, "User G", null, null, "ggg", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, false, null, 0.50m }
+                    { 1L, 0, "", "d2db7cd4-c3b0-4828-b6bf-5124b04ceb2a", "a@mail.com", false, false, false, null, "User A", null, null, "aaa", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, false, null, 0, 0.00m },
+                    { 2L, 0, "", "a9d03285-9af2-4515-8ceb-75d562f8c92e", "b@mail.com", false, false, false, null, "User B", null, null, "bbb", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, false, null, 0, 3.59m },
+                    { 3L, 0, "", "dfbd480d-8782-4ca8-a9cd-d029869210aa", "c@mail.com", false, false, false, null, "User C", null, null, "ccc", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3L, false, null, 0, 10.00m },
+                    { 4L, 0, "", "6d6447ba-7b46-4425-8e4e-b93afbf3d7a5", "d@mail.com", false, false, false, null, "User D", null, null, "ddd", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4L, false, null, 0, 5.32m },
+                    { 5L, 0, "", "f3a3b169-9ed2-497d-95b5-a13bfa0d8948", "e@mail.com", false, false, false, null, "User E", null, null, "eee", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 5L, false, null, 0, 1.99m },
+                    { 6L, 0, "", "5846da29-1b11-4c64-8b9a-f37a1ad92c30", "f@mail.com", false, false, false, null, "User F", null, null, "fff", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 6L, false, null, 0, 7.25m },
+                    { 7L, 0, "", "723d9a43-847f-4cd2-ab00-8ae1ec2fb021", "g@mail.com", false, false, false, null, "User G", null, null, "ggg", null, false, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, false, null, 0, 0.50m }
                 });
 
             migrationBuilder.InsertData(
                 table: "User",
-                columns: new[] { "Id", "AccessFailedCount", "AvatarUrl", "ConcurrencyStamp", "Email", "EmailConfirmed", "IsModerator", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "SubscriptionActiveUntil", "TwoFactorEnabled", "UserName", "Wallet" },
+                columns: new[] { "Id", "AccessFailedCount", "AvatarUrl", "ConcurrencyStamp", "Email", "EmailConfirmed", "IsModerator", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "SubscriptionActiveUntil", "TwoFactorEnabled", "UserName", "UserRole", "Wallet" },
                 values: new object[,]
                 {
-                    { 8L, 0, "", "79302e5d-c9b0-4dee-9b7a-5e486f638a23", "h@mail.com", false, true, false, null, "User H", null, null, "hhh", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 0m },
-                    { 9L, 0, "aa", "1ca0e690-1fd2-42bb-bfa6-a3d86807ff18", "pA@mail.com", false, false, false, null, "Publisher A", null, null, "aaa", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 6.78m },
-                    { 10L, 0, "bb", "ea884586-2655-495b-9d04-48d0744e52c4", "pB@mail.com", false, false, false, null, "Publisher B", null, null, "bbb", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 4.50m }
+                    { 8L, 0, "", "e983df07-71d0-44aa-a3e0-339318393b12", "h@mail.com", false, true, false, null, "User H", null, null, "hhh", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 0, 0m },
+                    { 9L, 0, "aa", "0dc332c6-803d-4174-bd24-1ea1b07320d1", "pA@mail.com", false, false, false, null, "Publisher A", null, null, "aaa", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 0, 6.78m },
+                    { 10L, 0, "bb", "49071091-e0d5-4cb3-aa36-3d897e2dea40", "pB@mail.com", false, false, false, null, "Publisher B", null, null, "bbb", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 0, 4.50m }
                 });
 
             migrationBuilder.InsertData(
                 table: "Order",
-                columns: new[] { "Id", "Description", "PickupPointId", "UserId" },
+                columns: new[] { "Id", "Description", "ExpectedDeliveryTime", "IsPaid", "PickupPointId", "Status", "UserId" },
                 values: new object[,]
                 {
-                    { 1L, "Harry Potter and the Philosopher's Stone * 1; Harry Potter and the Chamber of SecretsЫ * 1;", 1L, 1L },
-                    { 2L, "The Lord of the Rings: The Fellowship of the Ring * 1; The Lord of the Rings: The Two Towers * 1;", 2L, 2L },
-                    { 3L, "Pride and Prejudice by Jane Austen * 1; Sense and Sensibility by Jane Austen * 1;", 3L, 3L },
-                    { 4L, "To Kill a Mockingbird by Harper Lee * 1; The Great Gatsby by F. Scott Fitzgerald * 1;", 4L, 4L },
-                    { 5L, "1984 by George Orwell * 1; Animal Farm by George Orwell * 1;", 5L, 5L },
-                    { 6L, "The Catcher in the Rye by J.D. Salinger * 1; Catch-22 by Joseph Heller * 1;", 6L, 6L },
-                    { 7L, "The Chronicles of Narnia by C.S. Lewis * 1; The Hobbit by J.R.R. Tolkien * 1;", 7L, 7L },
-                    { 8L, "The Da Vinci Code by Dan Brown * 1; Angels & Demons by Dan Brown * 1;", 8L, 8L },
-                    { 9L, "The Catcher in the Rye by J.D. Salinger * 1; Catch-22 by Joseph Heller * 1;", 9L, 1L },
-                    { 10L, "The Chronicles of Narnia by C.S. Lewis * 1; The Hobbit by J.R.R. Tolkien * 1;", 10L, 2L }
+                    { 1L, "Harry Potter and the Philosopher's Stone * 1; Harry Potter and the Chamber of SecretsЫ * 1;", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 1L, 0, 1L },
+                    { 2L, "The Lord of the Rings: The Fellowship of the Ring * 1; The Lord of the Rings: The Two Towers * 1;", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 2L, 0, 2L },
+                    { 3L, "Pride and Prejudice by Jane Austen * 1; Sense and Sensibility by Jane Austen * 1;", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 3L, 0, 3L },
+                    { 4L, "To Kill a Mockingbird by Harper Lee * 1; The Great Gatsby by F. Scott Fitzgerald * 1;", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 4L, 0, 4L },
+                    { 5L, "1984 by George Orwell * 1; Animal Farm by George Orwell * 1;", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 5L, 0, 5L },
+                    { 6L, "The Catcher in the Rye by J.D. Salinger * 1; Catch-22 by Joseph Heller * 1;", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 6L, 0, 6L },
+                    { 7L, "The Chronicles of Narnia by C.S. Lewis * 1; The Hobbit by J.R.R. Tolkien * 1;", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 7L, 0, 7L },
+                    { 8L, "The Da Vinci Code by Dan Brown * 1; Angels & Demons by Dan Brown * 1;", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 8L, 0, 8L },
+                    { 9L, "The Catcher in the Rye by J.D. Salinger * 1; Catch-22 by Joseph Heller * 1;", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 9L, 0, 1L },
+                    { 10L, "The Chronicles of Narnia by C.S. Lewis * 1; The Hobbit by J.R.R. Tolkien * 1;", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 10L, 0, 2L }
                 });
 
             migrationBuilder.InsertData(
                 table: "Publisher",
-                columns: new[] { "Id", "ContractId" },
+                columns: new[] { "UserId", "ContractId" },
                 values: new object[,]
                 {
                     { 9L, 1L },
@@ -734,9 +819,24 @@ namespace Litres.Data.Migrations
                 column: "SeriesId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BookOrder_BookId",
+                table: "BookOrder",
+                column: "BookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookOrder_OrderId",
+                table: "BookOrder",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Favourites_BookId",
                 table: "Favourites",
                 column: "BookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_IdentityRole<long>User_UserId",
+                table: "IdentityRole<long>User",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_PickupPointId",
@@ -799,6 +899,11 @@ namespace Litres.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RoleClaims_RoleId",
+                table: "RoleClaims",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Series_AuthorId",
                 table: "Series",
                 column: "AuthorId");
@@ -809,19 +914,37 @@ namespace Litres.Data.Migrations
                 column: "SubscriptionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserClaims_UserId",
+                table: "UserClaims",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserExternalServices_ExternalServiceId",
                 table: "UserExternalServices",
                 column: "ExternalServiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserLogins_UserId",
+                table: "UserLogins",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRoles_RoleId",
+                table: "UserRoles",
+                column: "RoleId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "BookOrder");
+
+            migrationBuilder.DropTable(
                 name: "Favourites");
 
             migrationBuilder.DropTable(
-                name: "Order");
+                name: "IdentityRole<long>User");
 
             migrationBuilder.DropTable(
                 name: "Purchased");
@@ -834,9 +957,6 @@ namespace Litres.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "RoleClaims");
-
-            migrationBuilder.DropTable(
-                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "UserClaims");
@@ -854,13 +974,19 @@ namespace Litres.Data.Migrations
                 name: "UserTokens");
 
             migrationBuilder.DropTable(
-                name: "PickupPoint");
+                name: "Order");
 
             migrationBuilder.DropTable(
                 name: "Review");
 
             migrationBuilder.DropTable(
                 name: "ExternalService");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "PickupPoint");
 
             migrationBuilder.DropTable(
                 name: "Book");

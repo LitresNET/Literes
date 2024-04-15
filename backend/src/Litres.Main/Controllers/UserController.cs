@@ -4,7 +4,6 @@ using Litres.Data.Abstractions.Services;
 using Litres.Data.Dto.Requests;
 using Litres.Data.Models;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +21,7 @@ public class UserController(
     public async Task<IActionResult> RegisterUserAsync([FromBody] UserRegistrationDto registrationDto)
     {
         var user = mapper.Map<User>(registrationDto);
-        var result = await userService.RegisterUserAsync(user);
+        var result = await registrationService.RegisterUserAsync(user);
         return result.Succeeded ? Ok(result) : BadRequest(result);
     }
     
@@ -30,14 +29,14 @@ public class UserController(
     public async Task<IActionResult> RegisterPublisherAsync([FromBody] PublisherRegistrationDto registrationDto)
     {
         var user = mapper.Map<User>(registrationDto);
-        var result = await userService.RegisterPublisherAsync(user, registrationDto.ContractNumber);
+        var result = await registrationService.RegisterPublisherAsync(user, registrationDto.ContractNumber);
         return result.Succeeded ? Ok(result) : BadRequest(result);
     }
 
     [HttpPost("signin")]
     public async Task<IActionResult> LoginUserAsync([FromBody] UserLoginDto loginDto)
     {
-        var token = await userService.LoginUserAsync(loginDto.Email, loginDto.Password);
+        var token = await registrationService.LoginUserAsync(loginDto.Email, loginDto.Password);
         return Ok(token);
     }
 
@@ -87,7 +86,7 @@ public class UserController(
         
         var email = authenticateResult.Principal.FindFirstValue(ClaimTypes.Email);
         
-        var token = await userService.LoginUserFromExternalServiceAsync(email!, authenticateResult.Principal.Claims);
+        var token = await registrationService.LoginUserFromExternalServiceAsync(email!, authenticateResult.Principal.Claims);
         return Ok(token);
     }
     
