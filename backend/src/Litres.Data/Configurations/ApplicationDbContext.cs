@@ -46,7 +46,6 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
             .Property(u => u.Wallet)
             .HasPrecision(18, 4);
         
-        
         // TODO: в конфиг
         #region Relationships
         
@@ -119,7 +118,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
             .HasDefaultValue("/"); //TODO: ссылка на дефолтную аватарку
         modelBuilder.Entity<User>()
             .Property(u => u.SubscriptionId)
-            .HasDefaultValue((long?) 1);
+            .HasDefaultValue(1L);
         
         #endregion
         

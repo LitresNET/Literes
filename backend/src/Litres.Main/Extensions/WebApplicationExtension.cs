@@ -1,4 +1,5 @@
-﻿using Litres.Data.Abstractions.Repositories;
+﻿using Hangfire;
+using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Repositories;
 using Litres.Main.Middlewares;
@@ -18,6 +19,8 @@ public static class WebApplicationExtension
         builder.Services.AddScoped<IRequestService, RequestService>();
         builder.Services.AddScoped<IBookService, BookService>();
         builder.Services.AddScoped<IRegistrationService, UserService>();
+        builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+        builder.Services.AddScoped<ISubscriptionCheckerService, SubscriptionCheckerService>();
         builder.Services.AddScoped<IOrderService, OrderService>();
         #endregion
         
