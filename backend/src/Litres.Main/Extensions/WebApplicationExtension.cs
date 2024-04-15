@@ -18,6 +18,7 @@ public static class WebApplicationExtension
         #region Services
         builder.Services.AddScoped<IRequestService, RequestService>();
         builder.Services.AddScoped<IBookService, BookService>();
+        builder.Services.AddScoped<IOrderService, OrderService>();
         builder.Services.AddScoped<IReviewService, ReviewService>();
         builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
         builder.Services.AddScoped<ISubscriptionCheckerService, SubscriptionCheckerService>();

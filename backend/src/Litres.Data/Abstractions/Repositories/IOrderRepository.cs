@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Litres.Data.Models;
 
 namespace Litres.Data.Abstractions.Repositories;
