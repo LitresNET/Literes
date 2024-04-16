@@ -60,5 +60,15 @@ export function Input({type, children, id, iconpath, ...rest}) {
                     </div>
                 </>
             )
+        case 'password':
+            return (
+                <>
+                    <div className="input-wrapper">
+                        <div className="input-text">
+                            <input type="password" id={id} {...rest}/>
+                        </div>
+                    </div>
+                </>
+            )
     }
 }

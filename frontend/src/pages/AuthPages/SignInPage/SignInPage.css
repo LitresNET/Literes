@@ -88,3 +88,7 @@
         gap: 0;
     }
 }
+
+.sign-up-error{
+    color: red;
+}

@@ -101,7 +101,12 @@ builder.Services.AddSwaggerGen(option =>
 builder.AddDependencies();
 builder.Services.AddRouting(opt => opt.LowercaseUrls = true);
 
-
+builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder => 
+    policyBuilder
+        .WithOrigins(builder.Configuration["CorsPolicy:Origin"]!)
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()));
 
 var app = builder.Build();
 
@@ -128,6 +133,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+app.UseCors();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
