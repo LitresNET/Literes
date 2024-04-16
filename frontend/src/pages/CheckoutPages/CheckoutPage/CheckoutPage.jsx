@@ -3,34 +3,25 @@ import {useState} from "react";
 import {Button} from "../../../components/UI/Button/Button.jsx";
 import {Banner} from "../../../components/UI/Banner/Banner.jsx";
 import {Input} from "../../../components/UI/Input/Input.jsx";
-
+import PickUpPointModal from './../PickUpPointModal/PickUpPointModal.jsx';
+import { Link } from "react-router-dom";
 
 const CheckoutPage = () => {
     const [isOpen, setIsOpen] = useState(false);
 
+    let totalPrice = 0;
     const goods = [
         {name: 'Товар 1', amount: 1, price: 1},
         {name: 'Товар 2', amount: 2, price: 1},
         {name: 'Товар 3', amount: 3, price: 1},
         {name: 'Товар 4', amount: 4, price: 1},
     ]
-
-    let totalPrice = 0;
-
     goods.forEach(function (item){
         totalPrice += item.amount * item.price;
     })
 
     const openModal = () => setIsOpen(true);
-
     const closeModal = () => setIsOpen(false);
-
-    const handleOverlayClick = (e) => {
-        if (e.target.classList.contains('modal-overlay')) {
-            closeModal();
-        }
-    };
-
 
     return (
         <>
@@ -41,11 +32,11 @@ const CheckoutPage = () => {
                 <Banner>
                     <div className={'label-input-checkout'} onClick={openModal}>
                         <label className={'label-checkout'} htmlFor={'address'}>Enter your email</label>
-                        <Input class="input-checkout" id="address" placeholder="Type the address" type="text"/>
+                        <Input className="input-checkout" id="address" placeholder="Type the address" type="text"/>
                     </div>
                     <div className={'goods-list-checkout-container'}>
-                        {goods.map((item) => (
-                            <p>{item.name}  кол-во: {item.amount}   цена: ${item.price}</p>
+                        {goods.map((item, index) => (
+                            <p key={index}>{item.name}  кол-во: {item.amount}   цена: ${item.price}</p>
                         ))}
                     </div>
                     <div className={'total-checkout'}>
@@ -55,19 +46,13 @@ const CheckoutPage = () => {
                         </div>
                     </div>
                     <div className={'pay-button-checkout'}>
-                        <Button color="orange" round={"true"} text={"Pay with stripe"}></Button>
+                        <Link to="/success" style={{textDecoration: 'none'}}>
+                            <Button color="orange" round={"true"} text={"Pay with stripe"}></Button>
+                        </Link>
                     </div>
                 </Banner>
             </div>
-            {isOpen && (
-                <div className={'modal-overlay-checkout'} onClick={handleOverlayClick}>
-                    <div className={'modal-content-checkout'}>
-                        <h2>TODO</h2>
-                        <p>TODO</p>
-                        <Button text={"close"} round={"true"} onClick={closeModal} color={"yellow"}></Button>
-                    </div>
-                </div>
-            )}
+            <PickUpPointModal isOpen={isOpen} onClose={closeModal}></PickUpPointModal>
         </>
     );
 }

@@ -3,8 +3,11 @@ import { Icon } from '../../components/UI/Icon/Icon';
 import { IconButton } from '../../components/UI/Icon/IconButton/IconButton';
 import './MainLayout.css';
 import { Link, Outlet } from "react-router-dom";
+import ShoppingCartSidePanel from "./../ShoppingCartSidePanel/ShoppingCartSidePanel";
+import { useState } from 'react';
 
 export default function MainLayout() {
+    const [isSidePanelOpen, setPanelOpen] = useState(false);
     const links = {
         linked_in: 'https://docs.google.com/spreadsheets/d/1KwgJcmW-W2pFGUNEknmfJ6GnDMTb-gJrZUAjYA1jEAQ/edit#gid=2048177681',
         github: 'https://github.com/LitresNET/Literes',
@@ -13,6 +16,7 @@ export default function MainLayout() {
 
     return (
         <>
+        <ShoppingCartSidePanel isOpen={isSidePanelOpen} handleClose={() => setPanelOpen(false)}/>
             <div className="page-container">
                 <header className='page-header'>
                     <Link to="/" style={{textDecoration: 'none'}}>
@@ -28,7 +32,9 @@ export default function MainLayout() {
                         <Link to="/signin" style={{textDecoration: 'none'}}>
                             <Icon path={ICONS.sign_in}/>
                         </Link>
-                        <Icon path={ICONS.shopping_cart}/>
+                        <div onClick={() => setPanelOpen(true)} style={{ cursor: 'pointer' }}>
+                            <Icon path={ICONS.shopping_cart}/>
+                        </div>
                     </div>
                 </header>
                 <div className="page-content">
