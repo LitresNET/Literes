@@ -15,6 +15,12 @@ public class UserMapperProfile : Profile
 
         CreateMap<UserSettingsDto, User>();
         CreateMap<User, UserSettingsDto>();
-        CreateMap<User, UserSafeDataDto>();
+        CreateMap<User, UserSafeDataDto>()
+            .ForMember("Favourites", opt => opt.MapFrom(favourites => favourites.Favourites.Select(f => f.Id)))
+            .ForMember("Reviews", opt => opt.MapFrom(reviews => reviews.Reviews.Select(r => r.Id)));;
+        CreateMap<User, UserDataDto>()
+            .ForMember("Purchased", opt => opt.MapFrom(user => user.Purchased.Select(p => p.Id)))
+            .ForMember("Favourites", opt => opt.MapFrom(favourites => favourites.Favourites.Select(f => f.Id)))
+            .ForMember("Reviews", opt => opt.MapFrom(reviews => reviews.Reviews.Select(r => r.Id)));
     }
 }

@@ -11,7 +11,7 @@ public class PublisherMapperProfile : Profile
         CreateMap<Publisher, PublisherStatisticsDto>()
             .ForMember("Publisher", opt => opt.MapFrom(publisher => publisher))
             .ForMember("PublishedBookCount", opt => opt.MapFrom(publisher => publisher.Books.Count))
-            .ForMember("PasswordHash", opt => opt.MapFrom(publisher => publisher.Books.Select(b => b.Count).Sum()));
+            .ForMember("OwnedBookCount", opt => opt.MapFrom(publisher => publisher.Books.Select(b => b.Count).Sum()));
     }
    
 }

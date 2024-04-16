@@ -11,6 +11,7 @@ public class UnitOfWork(ApplicationDbContext appDbContext) : IUnitOfWork
     private bool _disposed;
     private readonly Dictionary<Type, object> _repositories = new();
     
+    [Obsolete("Не используйте умоляю")]
     public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class
     {
         var type = typeof(TEntity);

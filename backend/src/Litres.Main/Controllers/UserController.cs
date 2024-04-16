@@ -58,7 +58,7 @@ public class UserController(
 
     [Authorize]
     [HttpDelete("favourites/{bookIdToDelete:long}")]
-    public async Task<IActionResult> DeleteBookFromUsersFavourites([FromQuery] long bookIdToDelete)
+    public async Task<IActionResult> DeleteBookFromUsersFavourites(long bookIdToDelete)
     {
         if (!long.TryParse(User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.UserId)?.Value, 
                 out var userId))
@@ -69,7 +69,7 @@ public class UserController(
     }
 
     [HttpGet("user/get-data/{userId:long}")]
-    public async Task<IActionResult> GetSafeUserData([FromQuery] long userId)
+    public async Task<IActionResult> GetSafeUserData(long userId)
     {
         var user = await userService.GetSafeUserDataAsync(userId);
         var result = mapper.Map<UserSafeDataDto>(user);
@@ -83,19 +83,18 @@ public class UserController(
         if (!long.TryParse(User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.UserId)?.Value, 
                 out var userId))
             return Unauthorized();
-        var result = await userService.GetUserDataAsync(userId);
+        var user = await userService.GetUserDataAsync(userId);
+        var result = mapper.Map<UserDataDto>(user);
         return Ok(result);
     }
     
     [HttpGet("publisher/get-data/{publisherId:long}")]
-    public async Task<IActionResult> GetPublisherData([FromQuery] long publisherId)
+    public async Task<IActionResult> GetPublisherData(long publisherId)
     {
         var publisher = await userService.GetPublisherAsync(publisherId);
         var result = mapper.Map<PublisherStatisticsDto>(publisher);
         return Ok(result);
     }
-  
-}
         
     [HttpGet("signin-google")]
     public IActionResult SignInWithGoogle()

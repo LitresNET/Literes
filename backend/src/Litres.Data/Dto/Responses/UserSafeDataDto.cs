@@ -6,6 +6,6 @@ public class UserSafeDataDto
 {
     public string Name { get; set; }
     public string AvatarUrl { get; set; }
-    public List<Review> Reviews { get; set; }
-    public List<Book> Favourites { get; set; }
+    public List<long> Reviews { get; set; }
+    public List<long> Favourites { get; set; }
 }

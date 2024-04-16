@@ -7,17 +7,14 @@ namespace Litres.Data.Repositories;
 
 public class UserRepository(ApplicationDbContext appDbContext) : IUserRepository
 {
-    /// <summary>
-    ///     Use UserManager instead of this
-    /// </summary>
+    [Obsolete("Используем UserManager")]
     public async Task<User> AddAsync(User user)
     {
         var result = await appDbContext.User.AddAsync(user);
         return result.Entity;
     }
-    /// <summary>
-    ///     Use UserManager instead of this
-    /// </summary>
+    
+    [Obsolete("Используем UserManager")]
     public User Delete(User user)
     {
         var result = appDbContext.User.Remove(user);
