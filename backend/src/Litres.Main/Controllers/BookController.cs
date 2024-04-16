@@ -13,6 +13,7 @@ namespace Litres.Main.Controllers;
 [Route("api/[controller]")]
 public class BookController(IBookService bookService, IMapper mapper) : ControllerBase
 {
+    [Authorize]
     [HttpGet("read/{bookId:long}")]
     public async Task<IActionResult> Get(long bookId)
     {
@@ -24,17 +25,17 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
             return BadRequest();
         
         var book = await bookService.GetBookWithAccessCheckAsync(userId, bookId);
-        return Ok(book);
+        return Ok(mapper.Map<BookResponseDto>(book));
     }
     
     [HttpGet("catalog/page/{pageNumber:int}/take/{amount:int}")]
     public async Task<IActionResult> GetCatalog(
-        [FromBody] Dictionary<SearchParameter, string> searchParameters,
-        [FromQuery] int pageNumber,
-        [FromQuery] int amount)
+        [FromQuery] Dictionary<SearchParameter, string> searchParameters,
+        [FromRoute] int pageNumber,
+        [FromRoute] int amount)
     {
         var result = await bookService.GetBookCatalogAsync(searchParameters, pageNumber, amount);
-        return Ok(result);
+        return Ok(mapper.Map<List<BookResponseDto>>(result));
     }
     
     [HttpPost("publish")]

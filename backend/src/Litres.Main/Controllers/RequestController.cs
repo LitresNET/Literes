@@ -1,5 +1,7 @@
+using AutoMapper;
 using Azure.Core;
 using Litres.Data.Abstractions.Services;
+using Litres.Data.Dto.Responses;
 using Litres.Main.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,14 +9,14 @@ namespace Litres.Main.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class RequestController(IRequestService requestService) : ControllerBase
+public class RequestController(IRequestService requestService, IMapper mapper) : ControllerBase
 {
     [HttpPost]
     [Route("accept/{id}")]
     public async Task<IActionResult> AcceptPublishRequest([FromRoute] long id)
     {
         var result = await requestService.AcceptPublishDeleteRequestAsync(id, requestAccepted:true);
-        return Ok(result);
+        return Ok(mapper.Map<BookResponseDto>(result));
     }
 
     [HttpPost]
@@ -22,6 +24,6 @@ public class RequestController(IRequestService requestService) : ControllerBase
     public async Task<IActionResult> DeclinePublishRequest([FromRoute] long id)
     {
         var result = await requestService.AcceptPublishDeleteRequestAsync(id, requestAccepted:false);
-        return Ok(result);
+        return Ok(mapper.Map<BookResponseDto>(result));
     }
 }
