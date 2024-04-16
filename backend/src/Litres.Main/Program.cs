@@ -65,6 +65,7 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<RequestMapperProfile>();
     cfg.AddProfile<UserMapperProfile>();
     cfg.AddProfile<BookMapperProfile>();
+    cfg.AddProfile<PublisherMapperProfile>();
     cfg.AddProfile<ReviewMapperProfile>();
     cfg.AddProfile<OrderMapperProfile>();
 });
