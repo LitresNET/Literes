@@ -22,13 +22,14 @@ jobs:
           dotnet-version: 8.0.x
       - name: Restore dependencies
         run: dotnet restore
+        working-directory: ./backend
       - name: Build and test back-end projects
         run: |
-          cd backend/src/Litres.Data
+          cd ./src/Litres.Data
           dotnet build --configuration Release
           dotnet test --configuration Release
 
-          cd ../Litres.Main
+          cd ./../Litres.Main
           dotnet build --configuration Release
           dotnet test --configuration Release
 
@@ -39,7 +40,7 @@ jobs:
 
       - name: Install dependencies and build front-end
         run: |
-          cd ../../../frontend
+          cd ./../../../frontend
           npm install
           npm run build
 
@@ -48,14 +49,14 @@ jobs:
 
       - name: Build and test PaymentService
         run: |
-          cd ../backend/src/PaymentService
+          cd ./../backend/src/PaymentService
           npm install
           npm run build
           npm run test
 
       - name: Build and test unit tests
         run: |
-          cd ../../tests/Tests.Unit
+          cd ./../../tests/Tests.Unit
           dotnet build --configuration Release
           dotnet test --configuration Release
 
