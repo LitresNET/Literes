@@ -40,7 +40,7 @@ jobs:
 
       - name: Install dependencies and build front-end
         run: |
-          cd ./../../../frontend
+          cd ./frontend
           npm install
           npm run build
 
