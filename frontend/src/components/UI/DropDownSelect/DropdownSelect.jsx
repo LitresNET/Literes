@@ -34,7 +34,7 @@ export function DropdownSelect({ selectgroupname, onChange, value, children }) {
                             ))}
                         </div>
                     </div>
-                </div>
+                )}
             </div>
         </>
     );
