@@ -33,10 +33,15 @@ public class OrderController(IOrderService orderService, IMapper mapper, IConfig
         return Redirect($"{PaymentServiceUrl}/pay?orderId={createdOrder.Id}");
     }
 
+    [Authorize]
     [HttpGet("{orderId:long}/info")]
     public async Task<IActionResult> GetOrderInfo([FromRoute] long orderId)
     {
+        if (!long.TryParse(User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.UserId)?.Value, out var userId))
+            return Unauthorized();
         var order = await orderService.GetOrderInfo(orderId);
+        if (order.UserId != userId)
+            return Forbid();
         var orderInfo = mapper.Map<OrderResponseDto>(order);
         return Ok(orderInfo);
     }
