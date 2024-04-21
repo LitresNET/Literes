@@ -44,7 +44,7 @@ public class UserService(
         return book;
     }
 
-    public async Task<User> GetSafeUserDataAsync(long userId)
+    public async Task<User> GetSafeUserInfoAsync(long userId)
     {
         var userRepository = (IUserRepository)unitOfWork.GetRepository<User>();
         
@@ -52,7 +52,7 @@ public class UserService(
                throw new EntityNotFoundException(typeof(User), userId.ToString());
     }
     
-    public async Task<User> GetUserDataAsync(long userId)
+    public async Task<User> GetUserInfoAsync(long userId)
     {
         var userRepository = (IUserRepository)unitOfWork.GetRepository<User>();
         
@@ -60,7 +60,7 @@ public class UserService(
                throw new EntityNotFoundException(typeof(User), userId.ToString());
     }
 
-    public async Task<Publisher> GetPublisherAsync(long publisherId)
+    public async Task<Publisher> GetPublisherInfoAsync(long publisherId)
     {
         var publisherRepository = (IPublisherRepository)unitOfWork.GetRepository<Publisher>();
         
