@@ -1,4 +1,4 @@
-﻿using AutoFixture;
+using AutoFixture;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Models;
 using Litres.Main.Exceptions;

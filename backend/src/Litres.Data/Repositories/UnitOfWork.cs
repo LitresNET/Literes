@@ -41,6 +41,7 @@ public class UnitOfWork(ApplicationDbContext appDbContext) : IUnitOfWork
                 break;
             case not null when type == typeof(Review):
                 _repositories.Add(type, new ReviewRepository(appDbContext));
+                break;
             case not null when type == typeof(Subscription):
                 _repositories.Add(type, new SubscriptionRepository(appDbContext));
                 break;

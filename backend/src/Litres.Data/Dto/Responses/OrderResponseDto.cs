@@ -1,4 +1,4 @@
-﻿namespace Litres.Data.Dto.Responses;
+namespace Litres.Data.Dto.Responses;
 
 public class OrderResponseDto
 {

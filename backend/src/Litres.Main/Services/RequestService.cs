@@ -22,7 +22,7 @@ public class RequestService(IUnitOfWork unitOfWork) : IRequestService
             request.RequestType == RequestType.Create ? requestAccepted : !requestAccepted;
 
         var bookResult = unitOfWork.GetRepository<Book>().Update(request.Book);
-        requestRepository.Delete(request);
+        // requestRepository.Delete(request);
 
         await unitOfWork.SaveChangesAsync();
         return bookResult;

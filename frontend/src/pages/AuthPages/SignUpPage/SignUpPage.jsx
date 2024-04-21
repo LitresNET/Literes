@@ -2,6 +2,7 @@ import {Input} from "../../../components/UI/Input/Input.jsx";
 import {Button} from "../../../components/UI/Button/Button.jsx";
 import ICONS from "../../../assets/icons.jsx";
 import "./SignUpPage.css";
+import {Banner} from "../../../components/UI/Banner/Banner.jsx";
 
 const SignUpPage = () => {
 
@@ -11,7 +12,7 @@ const SignUpPage = () => {
                 <div className={'title-sign-up'}>
                     <h1>SIGN UP</h1>
                 </div>
-                <div className={'form-container-sign-up'}>
+                <Banner>
                     <form className={'sign-up-form'}>
                         <div className={'label-input-sign-up'}>
                             <label htmlFor={'name'}>Enter your name</label>
@@ -34,9 +35,9 @@ const SignUpPage = () => {
                                     iconpath={ICONS.next}/>
                         </div>
                     </form>
-                </div>
+                </Banner>
                 <div className={'have-sign-up'}>
-                    <a>Already have an account? Sign in -{'>'}</a>
+                    <a><p>Already have an account?</p> <p>Sign in -{'>'}</p></a>
                 </div>
             </div>
         </>
