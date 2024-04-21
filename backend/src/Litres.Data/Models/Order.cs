@@ -19,6 +19,16 @@ public class Order
     public string Description { get; set; }
 
     /// <summary>
+    /// Статус заказа
+    /// </summary>
+    [DefaultValue(OrderStatus.Created)]
+    public OrderStatus Status { get; set; }
+
+    /// <summary>
+    /// Ожидаемое время доставки
+    /// </summary>
+    public DateTime ExpectedDeliveryTime { get; set; }
+    
     /// Оплачен ли заказ
     /// </summary>
     public bool IsPaid { get; set; }

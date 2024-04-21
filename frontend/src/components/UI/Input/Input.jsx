@@ -1,6 +1,6 @@
 import './Input.css';
-import React, {useState} from "react";
-import {Icon} from "../Icon/Icon";
+import React, { useState } from "react";
+import { Icon } from "../Icon/Icon";
 import ICONS from "../../../assets/icons.jsx";
 
 /// Input, с настройкой стилей зависящей от поля type
@@ -14,11 +14,11 @@ export function Input({type, children, id, iconpath, ...rest}) {
         } else if (n > 99) {
             setAmount(99);
         } else if (Number.parseInt(n).toString().length !== n.toString().length) {
-            setAmount(1)
+            setAmount(1);
         } else {
             setAmount(Number.parseInt(n));
         }
-    }
+    };
 
     switch (type) {
         case 'text':

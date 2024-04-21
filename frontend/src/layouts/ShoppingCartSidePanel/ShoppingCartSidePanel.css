@@ -1,0 +1,133 @@
+.shopping-cart-side-panel-darker {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,.4);
+    display: block;
+}
+
+.shopping-cart-side-panel-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    width: 486px;
+    background: white;
+    padding-top: 40px;
+    z-index:1;
+}
+
+.container-top-shopping-cart-side-panel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 193px;
+    justify-content: space-between;
+}
+
+.container-top-shopping-cart-side-panel > p {
+    color: black;
+}
+
+.container-top-shopping-cart-side-panel > p > span{
+    color: #3AB8EB;
+}
+
+.cart-item-list-shopping-cart-side-panel {
+    display: flex;
+    flex-direction: column;
+    margin-top: 33px;
+    gap: 5px;
+    height: 65%;
+    width: 486px;
+    overflow: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.cart-item-shopping-cart-side-panel {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cart-item-list-shopping-cart-side-panel::-webkit-scrollbar {
+    display: none;
+}
+
+.payment-container-shopping-cart-side-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    width: 486px;
+    border-top: solid #3D3C3C 2px;
+    border-left: solid #3D3C3C 2px;
+    border-top-left-radius: 20px;
+    gap: 20px;
+    padding: 16px;
+    background: white;
+}
+
+.total-shopping-cart-side-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 426px;
+}
+
+.subtotal-shopping-cart-side-panel {
+    font-size: 26px;
+}
+
+.total-button-shopping-cart-side-panel {
+    width: 142px;
+}
+
+.pay-button-shopping-cart-side-panel {
+    width: 426px;
+}
+
+@media (max-width: 768px) {
+    .shopping-cart-side-panel-container {
+        width: 100vw;
+    }
+
+    .container-top-shopping-cart-side-panel {
+
+    }
+
+    .cart-item-list-shopping-cart-side-panel {
+        width: 100vw;
+    }
+
+    .cart-item-shopping-cart-side-panel {
+        width: 289px;
+    }
+
+    .payment-container-shopping-cart-side-panel {
+        width: 100vw;
+        gap: 14px;
+        padding: 13px;
+    }
+
+    .total-shopping-cart-side-panel {
+        width: 289px;
+    }
+
+    .subtotal-shopping-cart-side-panel {
+
+    }
+
+    .total-button-shopping-cart-side-panel {
+
+    }
+
+    .pay-button-shopping-cart-side-panel {
+        width: 289px;
+    }
+}

@@ -2,8 +2,8 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
@@ -13,10 +13,12 @@
 
 .modal-window {
     background: white;
-    padding: 2%;
+    padding: 40px;
     display: grid;
-    grid-template-columns: minmax(220px, 1fr) 3fr;
+    grid-template-columns: 1fr 4fr;
     gap: 40px;
+    width: 1200px;
+    height: 700px;
 
     border-style: dashed;
     border-radius: 20px;
@@ -45,9 +47,11 @@
 .modal-pick-up-points::-webkit-scrollbar {
     width: 4px;
 }
+
 .modal-pick-up-points::-webkit-scrollbar-track {
     background: #eeeeee;
 }
+
 .modal-pick-up-points::-webkit-scrollbar-thumb {
     background-color: #999999;
 }
@@ -55,4 +59,65 @@
 .modal-map {
     width: 100%;
     height: 100%;
+}
+
+.modal-pick-up-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.subscription-open-button div {
+    transition: 0.2s linear;
+  }
+
+@media (max-width: 768px) {
+    .modal-window {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0%;
+        grid-template-columns: auto;
+        grid-template-rows: 1fr 1fr;
+        padding: 0px;
+        border-width: 0px;
+    }
+
+    .modal-pick-up-points-container {
+        grid-row: 1fr 1fr;
+        padding: 30px 30px 0px 30px;
+        border-style: dashed;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-color: var(--gray-800);
+        border-width: 2px;
+        transition: transform 0.5s ease;
+        border-bottom-width: 0;
+
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 70%;
+        z-index: 2;
+        transform: none;
+        background: white;
+    }
+
+    .modal-pick-up-points-container.hidden {
+        transform: translateY(75%);
+    }
+
+    .modal-pick-up-points-container.expanded {
+        transform: translateY(0%);
+    }
+
+    .modal-map {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
 }

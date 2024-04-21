@@ -23,6 +23,13 @@ public class BookRepository(ApplicationDbContext appDbContext) : IBookRepository
     {
         return await appDbContext.Book.FirstOrDefaultAsync(b => b.Id == bookId);
     }
+    
+    public async Task<IQueryable<Book>> GetBooksByFilterAsync(Func<Book, bool>? predicate)
+    {
+        return predicate is not null 
+            ? appDbContext.Book.Where(b => predicate(b)) 
+            : appDbContext.Book;
+    }
 
     public async Task<Book> DeleteByIdAsync(long bookId)
     {

@@ -1,9 +1,15 @@
-input {
+input,
+textarea {
     border-radius: 20px;
     border-color: var(--gray-800);
 
     padding: 12px 20px;
     font-size: 14px;
+    /* resize: none; */
+}
+
+textarea {
+    height: 150px;
 }
 
 .input-text input {
@@ -83,6 +89,5 @@ input[type="text"]:focus {
 input[type="checkbox"] {
     position: absolute;
 }
-
 
 

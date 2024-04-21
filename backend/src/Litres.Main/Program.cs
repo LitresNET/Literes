@@ -1,10 +1,12 @@
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json.Serialization;
 using Hangfire;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Models;
 using Litres.Data.Configurations;
 using Litres.Data.Configurations.Mapping;
+using Litres.Data.Dto.Requests;
 using Litres.Main.Extensions;
 using Litres.Main.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -63,6 +65,8 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<RequestMapperProfile>();
     cfg.AddProfile<UserMapperProfile>();
     cfg.AddProfile<BookMapperProfile>();
+    cfg.AddProfile<PublisherMapperProfile>();
+    cfg.AddProfile<ReviewMapperProfile>();
     cfg.AddProfile<OrderMapperProfile>();
 });
 
@@ -96,6 +100,7 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 builder.AddDependencies();
+builder.Services.AddRouting(opt => opt.LowercaseUrls = true);
 
 var app = builder.Build();
 

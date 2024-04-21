@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Litres.Data.Models;
 
-[Table("Author")]
 public class Author
 {
     /// <summary>

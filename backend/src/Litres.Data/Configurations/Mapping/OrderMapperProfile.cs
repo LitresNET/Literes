@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Litres.Data.Dto.Requests;
 using Litres.Data.Dto.Responses;
 using Litres.Data.Models;
@@ -9,6 +9,8 @@ public class OrderMapperProfile : Profile
 {
     public OrderMapperProfile()
     {
+        CreateMap<OrderRequestDto, Order>();
+        
         CreateMap<OrderProcessDto, Order>()
             .ForMember(
                 "OrderedBooks", 

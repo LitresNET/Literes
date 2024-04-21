@@ -1,1 +1,69 @@
-/* стили UserSettingsPage */
+.user-settings-container {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 90px;
+}
+
+.user-settings-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-settings-info-button {
+    margin-top: 25px;
+}
+
+.user-settings-info-container {
+    display: flex;
+    gap: 30px;
+}
+
+.user-settings-info h1 {
+    margin-bottom: 20px;
+}
+
+.user-settings-info-title h1 {
+    text-wrap: nowrap;
+}
+
+.user-settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+}
+
+.user-settings-form-delete-button {
+    color: var(--orange-500);
+    text-align: end;
+    cursor: pointer;
+}
+
+.user-settings-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-settings-form-group:nth-of-type(3) {
+    margin-bottom: 20px;
+}
+
+.user-settings-form-group label {
+    margin-bottom: 5px;
+}
+
+@media (max-width: 900px) {
+.user-settings-info-button {
+    display: none;
+}
+  }
+  
+  @media (max-width: 680px) {
+    .user-settings-container {
+        flex-direction: column;
+        gap: 40px
+    }
+  }

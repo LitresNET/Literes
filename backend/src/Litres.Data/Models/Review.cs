@@ -19,8 +19,9 @@ public class Review
     public string Content { get; set; }
     
     /// <summary>
-    /// Оценка книги от 0 до 5
+    /// Оценка книги от 1 до 5
     /// </summary>
+    [Range(1, 5)]
     public int Rating { get; set; }
     
     /// <summary>

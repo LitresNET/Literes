@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using AutoMapper;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Dto.Requests;

@@ -1,0 +1,10 @@
+.account-book-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: min-content;
+}
+
+.account-book-card-button button:first-of-type {
+  margin-bottom: 20px;
+}

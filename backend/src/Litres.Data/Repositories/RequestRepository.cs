@@ -17,7 +17,6 @@ public class RequestRepository(ApplicationDbContext appDbContext) : IRequestRepo
     {
         return await appDbContext.Request
             .Include(request => request.Book)
-                .ThenInclude(b => b!.Id)
             .FirstOrDefaultAsync(request => request.Id == requestId);
     }
 
@@ -41,6 +40,6 @@ public class RequestRepository(ApplicationDbContext appDbContext) : IRequestRepo
 
     public Request Update(Request request)
     {
-        return appDbContext.Request.Remove(request).Entity;
+        return appDbContext.Update(request).Entity;
     }
 }

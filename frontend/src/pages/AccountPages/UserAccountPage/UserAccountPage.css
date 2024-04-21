@@ -1,1 +1,75 @@
-/* стили UserAccountPage */
+.account-container {
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  gap: 90px;
+  margin-bottom: 130px;
+}
+
+.account-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.account-info-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+}
+
+.account-info-title h1 {
+  text-wrap: nowrap;
+}
+
+.account-setting-button {
+  width: 25px;
+}
+.account-banner-text {
+  font-size: 25px;
+}
+
+.account-balance {
+  display: flex;
+  gap: 15px;
+  font-size: 30px;
+  align-items: center;
+}
+
+.account-balance span:last-child {
+  color: var(--orange-500);
+}
+
+.books-title {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+@media (max-width: 900px) {
+  .account-container {
+    gap: 20px;
+  }
+  .account-setting-button {
+   display: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .account-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .account-balance-container {
+    flex-direction: row;
+    gap: 20px;
+    justify-content: space-between;
+  }
+
+  .account-info-title {
+    justify-content: center !important;
+  }
+}

@@ -1,1 +1,27 @@
-/* стили ModeratorPage */
+.moderator-page-title-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.moderator-page-info-container span:nth-child(2) {
+  font-weight: bold;
+}
+
+.dropdown-wrapper {
+  width: 180px;
+}
+
+.moderator-page-table {
+  margin: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    text-align: left;
+    padding: 8px;
+}

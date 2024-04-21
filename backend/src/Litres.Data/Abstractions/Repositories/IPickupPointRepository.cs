@@ -1,4 +1,4 @@
-﻿using Litres.Data.Models;
+using Litres.Data.Models;
 
 namespace Litres.Data.Abstractions.Repositories;
 
