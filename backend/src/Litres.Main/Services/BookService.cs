@@ -14,6 +14,7 @@ public class BookService(IUnitOfWork unitOfWork) : IBookService
         var context = new ValidationContext(book);
         var results = new List<ValidationResult>();
 
+        //TODO: валидация входящих данных должна быть ещё на уровне контроллера (добавить атрибуты к Dto)
         if (!Validator.TryValidateObject(book, context, results))
             throw new EntityValidationFailedException(typeof(Book), results);
         
@@ -24,7 +25,7 @@ public class BookService(IUnitOfWork unitOfWork) : IBookService
             throw new EntityNotFoundException(typeof(Series), book.SeriesId.ToString());
         
         if (book.PublisherId is not null && await unitOfWork.GetRepository<Publisher>().GetByIdAsync((long)book.PublisherId) is null)
-            throw new EntityNotFoundException(typeof(Publisher), book.SeriesId.ToString());
+            throw new EntityNotFoundException(typeof(Publisher), book.PublisherId.ToString());
 
         book.IsApproved = false;
         

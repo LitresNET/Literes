@@ -71,4 +71,36 @@ public class ReviewService(IUnitOfWork unitOfWork) : IReviewService
 
         await unitOfWork.SaveChangesAsync();
     }
+
+    public async Task UpdateReview(Review review)
+    {
+        var reviewRepository = unitOfWork.GetRepository<Review>();
+
+        reviewRepository.Update(review);
+        await unitOfWork.SaveChangesAsync();
+    }
+    
+    public async Task<Review> GetReviewInfo(long reviewId)
+    {
+        var reviewRepository = unitOfWork.GetRepository<Review>();
+
+        return await reviewRepository.GetByIdAsync(reviewId) ??
+               throw new EntityNotFoundException(typeof(Review), reviewId.ToString());
+    }
+    
+    public async Task DeleteReview(long reviewId)
+    {
+        var reviewRepository = unitOfWork.GetRepository<Review>();
+
+        var review = await reviewRepository.GetByIdAsync(reviewId) ??
+               throw new EntityNotFoundException(typeof(Review), reviewId.ToString());
+        await DeleteReview(review);
+    }
+    
+    public async Task DeleteReview(Review review)
+    {
+        var reviewRepository = unitOfWork.GetRepository<Review>();
+        reviewRepository.Delete(review);
+        await unitOfWork.SaveChangesAsync();
+    }
 }
