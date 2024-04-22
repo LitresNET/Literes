@@ -22,6 +22,9 @@ public class BookService(IUnitOfWork unitOfWork) : IBookService
 
         if (book.SeriesId is not null && await unitOfWork.GetRepository<Series>().GetByIdAsync((long)book.SeriesId) is null)
             throw new EntityNotFoundException(typeof(Series), book.SeriesId.ToString());
+        
+        if (book.PublisherId is not null && await unitOfWork.GetRepository<Publisher>().GetByIdAsync((long)book.PublisherId) is null)
+            throw new EntityNotFoundException(typeof(Publisher), book.SeriesId.ToString());
 
         book.IsApproved = false;
         
