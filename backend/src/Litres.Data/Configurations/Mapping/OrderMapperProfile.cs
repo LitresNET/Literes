@@ -9,8 +9,6 @@ public class OrderMapperProfile : Profile
 {
     public OrderMapperProfile()
     {
-        CreateMap<OrderRequestDto, Order>();
-        
         CreateMap<OrderProcessDto, Order>()
             .ForMember(
                 "OrderedBooks", 

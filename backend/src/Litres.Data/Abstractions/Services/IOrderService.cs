@@ -7,4 +7,5 @@ public interface IOrderService
     public Task<Order> CreateOrderAsync(Order order);
     public Task<Order> GetOrderInfo(long orderId);
     public Task<Order> ConfirmOrderAsync(long orderId, bool isSuccess);
+    public Task<double> AddToWalletAsync(long userId, int amount);
 }

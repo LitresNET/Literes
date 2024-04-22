@@ -42,6 +42,19 @@
   color: var(--orange-500);
 }
 
+.account-refill {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: center;
+
+  gap: 40px;
+}
+
+.account-refill > :last-child {
+  width: 50%;
+}
+
 .books-title {
   display: flex;
   gap: 20px;

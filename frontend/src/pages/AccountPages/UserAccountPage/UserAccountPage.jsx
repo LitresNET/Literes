@@ -10,9 +10,18 @@ import { AccountBookCard } from '../../../components/AccountBookCard/AccountBook
 
 import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
+import {Input} from "../../../components/UI/Input/Input";
 
 export default function UserAccountPage() {
+
+    async function refillRequest() {
+        let refillField = document.getElementById("refill-input");
+        let amount = refillField.value;
+
+        window.open(`http://localhost:5032/api/order/refill?amount=${amount}`);
+    }
+
     return (
         <>
             <div className="wrapper">
@@ -33,15 +42,19 @@ export default function UserAccountPage() {
                         <Tag status="failure" actiondescription="Deactivated" />
 
                         <div className="account-balance">
-                            <span>BALANCE: </span>
+                            <span>Current balance: </span>
                             <span>$30,00</span>
                         </div>
-                        <Button
-                            text={'Adventure'}
-                            round={'true'}
-                            color={'yellow'}
-                            iconpath={ICONS.money}
-                        />
+                        <div className="account-refill">
+                            <Input type={"number"} id={"refill-input"}/>
+                            <Button
+                                text={'Refill'}
+                                round={'true'}
+                                color={'yellow'}
+                                iconpath={ICONS.money}
+                                onClick={refillRequest}
+                            />
+                        </div>
                     </div>
                 </div>
                 <div className="books">

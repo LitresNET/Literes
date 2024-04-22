@@ -4,15 +4,12 @@ import {
   Get,
   Post,
   Query,
-  Redirect,
   Render,
-  Req,
   Res,
 } from '@nestjs/common';
 import { PaymentService } from '../Services/PaymentService';
 import { GetDataService } from 'src/Services/GetDataService';
 import { Response } from 'express';
-import * as bodyParser from 'body-parser';
 
 @Controller('pay')
 export class PaymentController {
@@ -21,24 +18,36 @@ export class PaymentController {
   @Get()
   @Render('paymentPage')
   async getPaymentPage(@Query() query) {
+    let userId = query.userId;
+    let totalPrice = query.amount;
+    if (userId !== null)
+      return { userId, totalPrice }
+
     let goods = await this.getDataService.getOrderData(query.orderId);
-    let totalPrice: number = 0;
-    let orderId:number = goods.orderId
+    let orderId = query.orderId;
 
     goods.products.forEach(function (good) {
       totalPrice += good.price * good.amount;
     });
 
-    return { totalPrice, orderId};
+    return { totalPrice, orderId };
   }
 
   @Post()
   async pay(@Body() body: any, @Res() res: Response) {
-    const orderId = body.orderId;
-    if (await this.paymentService.tryPay()) {
+    let userId = body.userId;
+    let amount = body.totalPrice;
+    fetch(`http://localhost:5032/api/order/refill?userId=${userId}&amount=${amount}`, {
+      method: "PATCH"
+    })
+      .then(r => r.ok ? window.close() : window.alert("Что-то пошло не так!"))
+      .catch(e => console.log(e));
+    return;
+
+   /* if (await this.paymentService.tryPay()) {
       return res.redirect(`http://localhost:5032/api/order/${orderId}/finish?isSuccess=true`);
     } else {
       return res.redirect(`http://localhost:5032/api/order/${orderId}/finish?isSuccess=false`);
-    }
+    }*/
   }
 }

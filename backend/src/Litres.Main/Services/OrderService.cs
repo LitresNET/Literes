@@ -72,4 +72,19 @@ public class OrderService(IUnitOfWork unitOfWork) : IOrderService
 
         return order;
     }
+
+    public async Task<double> AddToWalletAsync(long userId, int amount)
+    {
+        var userRepository = unitOfWork.GetRepository<User>();
+        var user = await userRepository.GetByIdAsync(userId);
+
+        if (user is null)
+            throw new EntityNotFoundException(typeof(User), userId.ToString());
+        
+        user.Wallet += amount;
+
+        await unitOfWork.SaveChangesAsync();
+
+        return (double) user.Wallet;
+    }
 }
