@@ -7,6 +7,7 @@ using Litres.Main.Exceptions;
 
 namespace Litres.Main.Services;
 
+// TODO: по кол-ву репозиториев можно с уверенностью сказать что этот сервис явно выполняет больше работы чем должен
 public class BookService(IUnitOfWork unitOfWork) : IBookService
 {
     public async Task<Request> PublishNewBookAsync(Book book)
