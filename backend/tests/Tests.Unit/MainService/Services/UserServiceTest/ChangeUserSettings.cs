@@ -1,7 +1,6 @@
 using AutoFixture;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Models;
-using Litres.Main.Exceptions;
 using Litres.Main.Services;
 using Moq;
 using Tests.Config;

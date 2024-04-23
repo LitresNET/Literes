@@ -6,7 +6,6 @@ using Litres.Data.Models;
 using Litres.Main.Exceptions;
 using Litres.Main.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using Moq;
 using Tests.Config;
 

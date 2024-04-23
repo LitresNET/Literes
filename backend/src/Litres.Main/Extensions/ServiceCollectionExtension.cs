@@ -43,7 +43,18 @@ public static class ServiceCollectionExtension
     
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
+        services.AddScoped<IAuthorRepository, AuthorRepository>();
+        services.AddScoped<IBookRepository, BookRepository>();
+        services.AddScoped<IContractRepository, ContractRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IPickupPointRepository, PickupPointRepository>();
+        services.AddScoped<IPublisherRepository, PublisherRepository>();
+        services.AddScoped<IRequestRepository, RequestRepository>();
+        services.AddScoped<IReviewRepository, ReviewRepository>();
+        services.AddScoped<ISeriesRepository, SeriesRepository>();
+        services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }
