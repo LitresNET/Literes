@@ -71,7 +71,7 @@ public class UserController(
     [HttpGet("user/get-data/{userId:long}")]
     public async Task<IActionResult> GetSafeUserData(long userId)
     {
-        var user = await userService.GetSafeUserDataAsync(userId);
+        var user = await userService.GetSafeUserInfoAsync(userId);
         var result = mapper.Map<UserSafeDataDto>(user);
         return Ok(result);
     }
@@ -83,7 +83,7 @@ public class UserController(
         if (!long.TryParse(User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.UserId)?.Value, 
                 out var userId))
             return Unauthorized();
-        var user = await userService.GetUserDataAsync(userId);
+        var user = await userService.GetUserInfoAsync(userId);
         var result = mapper.Map<UserDataDto>(user);
         return Ok(result);
     }
@@ -91,7 +91,7 @@ public class UserController(
     [HttpGet("publisher/get-data/{publisherId:long}")]
     public async Task<IActionResult> GetPublisherData(long publisherId)
     {
-        var publisher = await userService.GetPublisherAsync(publisherId);
+        var publisher = await userService.GetPublisherInfoAsync(publisherId);
         var result = mapper.Map<PublisherStatisticsDto>(publisher);
         return Ok(result);
     }
