@@ -26,6 +26,7 @@ public static class WebApplicationExtension
         builder.Services.AddScoped<IRegistrationService, RegistrationService>();
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+        builder.Services.AddScoped<IPaymentService, PaymentService>();
         #endregion
         
         #region Repositories
