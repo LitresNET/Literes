@@ -157,6 +157,7 @@ public static class ServiceCollectionExtension
     {
         services.AddSerilog((servs, loggerConfiguration) => 
             loggerConfiguration
+                .MinimumLevel.Override("Microsoft.AspNetCore.Cors.Infrastructure", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Warning)

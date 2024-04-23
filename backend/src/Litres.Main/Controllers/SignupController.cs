@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Litres.Main.Controllers;
 
+[ApiController]
 [Route("api/signup")]
 public class SignupController(IRegistrationService registrationService, IMapper mapper) : ControllerBase
 {
