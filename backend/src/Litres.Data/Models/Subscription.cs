@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using Litres.Data.Abstractions;
 
 namespace Litres.Data.Models;
 
-public class Subscription
+public class Subscription : IEntity
 {
     /// <summary>
     /// Уникальный идентификатор подписки

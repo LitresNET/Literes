@@ -16,11 +16,11 @@ const SignInPage = () => {
                     <form className={'sign-in-form'}>
                         <div className={'label-input-sign-in'}>
                             <label htmlFor={'email'}>Enter your email</label>
-                            <Input class="input-sign-in" id="email" placeholder="example@example.com" type="text"/>
+                            <Input className="input-sign-in" id="email" placeholder="example@example.com" type="text"/>
                         </div>
                         <div className={'label-input-sign-in'}>
                             <label htmlFor={'password'}>Enter your password</label>
-                            <Input class="input-sign-in" id="password" placeholder="********" type="text"/>
+                            <Input className="input-sign-in" id="password" placeholder="********" type="text"/>
                         </div>
                         <a className={'forgot-sign-in'}>Forgot password?</a>
                         <div className={'button-sign-in'}>

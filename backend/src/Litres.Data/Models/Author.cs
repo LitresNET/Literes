@@ -1,10 +1,9 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using Litres.Data.Abstractions;
 
 namespace Litres.Data.Models;
 
-[Table("Author")]
-public class Author
+public class Author : IEntity
 {
     /// <summary>
     /// Уникальный идентификатор автора

@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Litres.Data.Models;
 
 /// <summary>

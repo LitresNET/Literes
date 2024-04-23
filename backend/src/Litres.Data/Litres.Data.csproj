@@ -19,4 +19,14 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Litres.Main">
+        <HintPath>..\..\tests\Tests.Unit\bin\Debug\net8.0\Litres.Main.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

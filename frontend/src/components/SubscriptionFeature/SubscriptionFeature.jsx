@@ -4,8 +4,8 @@ import { Banner } from '../UI/Banner/Banner'
 import { Icon } from '../UI/Icon/Icon.jsx'
 import ICONS from '../../assets/icons.jsx'
 import { useState } from 'react'
-import { Checkbox } from '../UI/Checkbox/Checkbox.jsx'
 import PropTypes from 'prop-types'
+import {Input} from "../UI/Input/Input.jsx";
 
 export function SubscriptionFeature(props) {
     SubscriptionFeature.propTypes = {
@@ -19,8 +19,7 @@ export function SubscriptionFeature(props) {
         <>
             <div className='subscription'>
                 <div className="subscription-title">
-                    {/* TODO: чекбокс никак не помечается, когда он выбран */}
-                    <Checkbox>{props.name}</Checkbox>
+                    <Input type={"checkbox"}>{props.name}</Input>
                     <div className="subscription-open-button">
                         <Icon
                             path={ICONS.caret_down}

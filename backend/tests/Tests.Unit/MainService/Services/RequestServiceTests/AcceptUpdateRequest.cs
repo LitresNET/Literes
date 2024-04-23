@@ -15,7 +15,9 @@ public class AcceptUpdateRequest
     private readonly Mock<IBookRepository> _bookRepositoryMock = new();
     private readonly Mock<IRequestRepository> _requestRepositoryMock = new();
     
-    private RequestService RequestService => new RequestService(
+    private RequestService RequestService => new(
+        _requestRepositoryMock.Object,
+        _bookRepositoryMock.Object,
         _unitOfWorkMock.Object
     );
 
@@ -37,13 +39,7 @@ public class AcceptUpdateRequest
             .With(request => request.UpdatedBook, expectedBook)
             .With(request => request.RequestType, RequestType.Update)
             .Create();
-
-        _unitOfWorkMock
-            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
-            .Returns(_bookRepositoryMock.Object);
-        _unitOfWorkMock
-            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
-            .Returns(_requestRepositoryMock.Object);
+        
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithOldAndUpdatedBooksByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedRequest);
@@ -51,10 +47,8 @@ public class AcceptUpdateRequest
             .Setup(repository => repository.Update(It.IsAny<Book>()))
             .Returns(expectedBook);
 
-        var service = RequestService;
-
         // Act
-        var result = await service.AcceptUpdateRequestAsync(expectedRequest.Id, requestAccepted);
+        var result = await RequestService.AcceptUpdateRequestAsync(expectedRequest.Id, requestAccepted);
 
         // Assert
         Assert.Equal(expectedBook, result);
@@ -73,19 +67,15 @@ public class AcceptUpdateRequest
             .With(request => request.Book, expectedBook)
             .Create();
         
-        _unitOfWorkMock
-            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
-            .Returns(_requestRepositoryMock.Object);
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync((Request)null);
+            .ReturnsAsync((Request?) null);
 
-        var service = RequestService;
         var expected = new EntityNotFoundException(typeof(Request), expectedRequest.Id.ToString());
 
         // Act
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
-            async () => await service.AcceptUpdateRequestAsync(expectedRequest.Id)
+            async () => await RequestService.AcceptUpdateRequestAsync(expectedRequest.Id)
         );
         
         // Assert
@@ -104,12 +94,6 @@ public class AcceptUpdateRequest
             .With(r => r.RequestType, RequestType.Update)
             .Create();
         
-        _unitOfWorkMock
-            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
-            .Returns(_bookRepositoryMock.Object);
-        _unitOfWorkMock
-            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
-            .Returns(_requestRepositoryMock.Object);
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithOldAndUpdatedBooksByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedRequest);
@@ -120,13 +104,11 @@ public class AcceptUpdateRequest
             .Setup(repository => repository.SaveChangesAsync())
             .ThrowsAsync(new DbUpdateException());
 
-        var service = RequestService;
-
         // Act
 
         // Assert
         await Assert.ThrowsAsync<DbUpdateException>(
-            async () => await service.AcceptUpdateRequestAsync(expectedRequest.Id)
+            async () => await RequestService.AcceptUpdateRequestAsync(expectedRequest.Id)
         );
     }
 }

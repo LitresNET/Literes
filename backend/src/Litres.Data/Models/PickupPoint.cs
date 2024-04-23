@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using Litres.Data.Abstractions;
 
 namespace Litres.Data.Models;
 
-public class PickupPoint
+public class PickupPoint : IEntity
 {
     /// <summary>
     /// Уникальный идентификатор пункта выдачи

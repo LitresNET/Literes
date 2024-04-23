@@ -12,7 +12,6 @@ function mainPage() {
 
     return (
         <>
-            <div className="adaptive">
                 <div className="main-page">
                     <div className="head">
                         <div className="head-content">
@@ -97,7 +96,6 @@ function mainPage() {
                         </div>
                     </div>
                 </div>
-            </div>
         </>
     )
 }

@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using Litres.Data.Abstractions;
 
 namespace Litres.Data.Models;
 
-public class Contract
+public class Contract : IEntity
 {
     /// <summary>
     /// Уникальный идентификатор договора

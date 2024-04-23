@@ -16,23 +16,23 @@ export default function UserAccountPage() {
     return (
         <>
             <div className="wrapper">
-                <div className="accaunt-container">
+                <div className="account-container">
                     <Cover imgPath={IMAGES.default_cover} size="big" />
-                    <div className="accaunt-info">
-                        <div className="accaunt-info-title">
+                    <div className="account-info">
+                        <div className="account-info-title">
                             <h1>Selected subscription</h1>
                             <Link to="/account/settings" style={{textDecoration: 'none'}}>
-                                <div className="accaunt-setting-button">
+                                <div className="account-setting-button">
                                     <Icon path={ICONS.settings} />
                                 </div>
                             </Link>
                         </div>
                         <Banner>
-                            <span className="accaunt-banner-text">Premium</span>
+                            <span className="account-banner-text">Premium</span>
                         </Banner>
                         <Tag status="failure" actiondescription="Deactivated" />
 
-                        <div className="accaunt-balance">
+                        <div className="account-balance">
                             <span>BALANCE: </span>
                             <span>$30,00</span>
                         </div>

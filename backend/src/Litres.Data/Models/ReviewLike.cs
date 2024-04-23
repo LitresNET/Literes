@@ -1,11 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+using Litres.Data.Abstractions;
 
 namespace Litres.Data.Models;
 
 [Table("ReviewLike")]
-public class ReviewLike
+public class ReviewLike : IEntity
 {
     /// <summary>
     /// Уникальный идентификатор лайка

@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Litres.Data.Abstractions;
 
 namespace Litres.Data.Models;
 
 [Table("Book")]
-public class Book
+public class Book : IEntity
 {
     /// <summary>
     /// Уникальный идентификатор книги
@@ -108,7 +109,7 @@ public class Book
     /// <summary>
     /// Пользователи, добавившие книгу в избранное
     /// </summary>
-    public virtual List<User>? Favourites { get; set; } = null;
+    public virtual List<User>? Favourites { get; set; }
     
     /// <summary>
     /// Отзывы пользователей на книгу
@@ -119,4 +120,10 @@ public class Book
     /// Пользователи, приобретшие бумажный экземпляр книги
     /// </summary>
     public virtual List<User>? Purchased { get; set; }
+    
+    /// <summary>
+    /// Промежуточная таблица для хранения сведений о заказах по книге, для логики расчета сервиса оплаты 
+    /// </summary>
+    public virtual List<BookOrder> BookOrders { get; set; }
+    public virtual List<Order> Orders { get; set; }
 }

@@ -9,6 +9,7 @@
 <body>
 <div class="container">
     <form method="post" action="/pay">
+        <input type="hidden" name="orderId" value={{ orderId }}>
         <label for="cardholder-name">Имя держателя:</label>
         <input type="text" id="cardholder-name" name="cardholder-name" minlength="1" maxlength="20" required>
         <label for="card-number">Номер карты:</label>
