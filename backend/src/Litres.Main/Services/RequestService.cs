@@ -23,7 +23,6 @@ public class RequestService(IUnitOfWork unitOfWork) : IRequestService
 
         var bookResult = unitOfWork.GetRepository<Book>().Update(request.Book);
         // requestRepository.Delete(request);
-
         await unitOfWork.SaveChangesAsync();
         return bookResult;
     }

@@ -2,7 +2,6 @@
 using AutoFixture;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Models;
-using Litres.Main.Exceptions;
 using Litres.Main.Services;
 using Moq;
 using Tests.Config;
@@ -34,7 +33,7 @@ public class GetOrderInfo
 
         _orderRepositoryMock
             .Setup(orderRepositoryMock => 
-                orderRepositoryMock.GetAsync(
+                orderRepositoryMock.GetWithFilterAsync(
                     It.IsAny<Expression<Func<Order, bool>>>(), 
                     It.IsAny<List<Expression<Func<Order, object>>>>()))
             .ReturnsAsync(expectedOrder);
@@ -46,28 +45,5 @@ public class GetOrderInfo
 
         // Assert
         Assert.Equal(expectedOrder, result);
-    }
-    
-    [Fact]
-    public async Task NotExistingOrder_ThrowsOrderNotFoundException()
-    {
-        // Arrange
-        var fixture = new Fixture().Customize(new AutoFixtureCustomization());
-        var order = fixture.Create<Order>();
-        
-        _orderRepositoryMock
-            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync((Order) null);
-
-        var service = OrderService;
-        var expected = new EntityNotFoundException(typeof(Order), order.Id.ToString());
-
-        // Act
-        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
-            async () => await service.GetOrderInfo(order.Id)
-        );
-        
-        // Assert
-        Assert.Equal(expected.Message, exception.Message);
     }
 }

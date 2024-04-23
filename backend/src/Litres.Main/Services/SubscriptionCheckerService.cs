@@ -1,11 +1,11 @@
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Abstractions.Services;
-using Litres.Data.Models;
 
 namespace Litres.Main.Services;
 
 public class SubscriptionCheckerService(
     ISubscriptionService subscriptionService,
+    IUserRepository userRepository,
     IUnitOfWork unitOfWork) : ISubscriptionCheckerService
 {
     /// <summary>
@@ -13,8 +13,6 @@ public class SubscriptionCheckerService(
     /// </summary>
     public async Task CheckUsersSubscriptionExpirationDate()
     {
-        var userRepository = (IUserRepository) unitOfWork.GetRepository<User>();
-        
         var users = await userRepository.GetAllAsync();
         foreach(var u in users)
             await subscriptionService.RenewAsync(u.Id);

@@ -1,21 +1,13 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Litres.Data.Abstractions.Repositories;
+﻿using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Models;
-using Litres.Main.Exceptions;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Litres.Main.Services;
 
 public class RegistrationService(
     IUnitOfWork unitOfWork,
-    UserManager<User> userManager,
-    SignInManager<User> signInManager,
-    RoleManager<IdentityRole<long>> roleManager,
-    IJwtTokenService jwtTokenService) : IRegistrationService
+    UserManager<User> userManager) : IRegistrationService
 {
     public async Task<IdentityResult> RegisterUserAsync(User user)
     {
@@ -40,7 +32,7 @@ public class RegistrationService(
         var publisherRepository = (IPublisherRepository)unitOfWork.GetRepository<Publisher>();
         var contract = await contractRepository.GetBySerialNumberAsync(contractNumber);
         if (contract is null)
-            return IdentityResult.Failed(new IdentityError()
+            return IdentityResult.Failed(new IdentityError
             {
                 Code = "SerialNumberNotFound",
                 Description = "Contract serial number not found"
@@ -68,70 +60,5 @@ public class RegistrationService(
         await unitOfWork.SaveChangesAsync();
         await transaction.CommitAsync();
         return createResult;
-    }
-    
-    public async Task<string> LoginUserAsync(string email, string password)
-    {
-        var user = await userManager.FindByEmailAsync(email);
-
-        if (user is null)
-            throw new EntityNotFoundException(typeof(User), email);
-    
-        var result = await signInManager.CheckPasswordSignInAsync(user, password, false);
-        
-        if (result == SignInResult.Failed)
-            throw new PasswordNotMatchException();
-        
-        var claims = new List<Claim>
-        {
-            new(CustomClaimTypes.UserId, user.Id.ToString())
-        };
-        foreach (var role in await userManager.GetRolesAsync(user))
-        {
-            var identityRole = await roleManager.FindByNameAsync(role);
-            claims.AddRange(await roleManager.GetClaimsAsync(identityRole!));
-        }
-        
-        claims.Add(new Claim(CustomClaimTypes.SubscriptionTypeId, user.SubscriptionId.ToString()!));
-        claims.Add(new Claim(CustomClaimTypes.SubscriptionActiveUntil, user.SubscriptionActiveUntil.ToShortDateString()));
-
-        return jwtTokenService.CreateJwtToken(claims);
-    }
-    
-    public async Task<string> LoginUserFromExternalServiceAsync(string email, IEnumerable<Claim> externalClaims = null)
-    {
-        var user = await userManager.FindByEmailAsync(email);
-        
-        //TODO: реализовать логику дорегистрации
-        if (user == null)
-        {
-            /*
-            user = new User 
-                { 
-                    Email = email, 
-                    Name = email.Split('@')[0], 
-                    UserName = email,
-                    PasswordHash = "123destroyMe!"
-                };
-            await userManager.CreateAsync(user);
-            */
-            throw new EntityNotFoundException(typeof(User), email);
-        }
-        
-        var claims = new List<Claim>
-        {
-            new(CustomClaimTypes.UserId, user.Id.ToString()),
-        };
-        foreach (var role in await userManager.GetRolesAsync(user))
-        {
-            var identityRole = await roleManager.FindByNameAsync(role);
-            claims.AddRange(await roleManager.GetClaimsAsync(identityRole!));
-        }
-        
-        claims.Add(new Claim(CustomClaimTypes.SubscriptionTypeId, user.SubscriptionId.ToString()!));
-        claims.Add(new Claim(CustomClaimTypes.SubscriptionActiveUntil, user.SubscriptionActiveUntil.ToShortDateString()));
-        claims.AddRange(externalClaims);
-
-        return jwtTokenService.CreateJwtToken(claims);
     }
 }

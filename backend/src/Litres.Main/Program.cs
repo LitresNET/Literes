@@ -7,6 +7,13 @@ using Litres.Main.Extensions;
 using Litres.Main.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+
+// Логирование на уровне приложения
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +27,7 @@ builder.Services.AddIdentity<User, IdentityRole<long>>(options =>
     .AddDefaultTokenProviders();
 
 builder.Services
+    .AddConfiguredSerilog(builder.Configuration)
     .AddRouting(opt => opt.LowercaseUrls = true)
     .AddRepositories()
     .AddServices()
@@ -33,16 +41,17 @@ builder.Services
 
 builder.Services.AddControllers();
 
-var app = builder.Build();
+var application = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (application.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    application
+        .UseSwagger()
+        .UseSwaggerUI();
 }
 
 // For create roles
-using (var scope = app.Services.CreateScope())
+using (var scope = application.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<long>>>();
     var roles = new[] { "Admin", "Publisher", "Member" };
@@ -58,15 +67,15 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-app.UseMiddleware<ExceptionMiddleware>();
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseHttpsRedirection();
-app.UseHangfireDashboard();
+application
+    .UseMiddleware<ExceptionMiddleware>()
+    .UseAuthentication()
+    .UseAuthorization()
+    .UseHttpsRedirection()
+    .UseHangfireDashboard();
+
 RecurringJob.AddOrUpdate<ISubscriptionCheckerService>("checkSubscriptions", service => service.CheckUsersSubscriptionExpirationDate(), "0 6 * * *");
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+application.MapControllers();
 
-app.Run();
+application.Run();

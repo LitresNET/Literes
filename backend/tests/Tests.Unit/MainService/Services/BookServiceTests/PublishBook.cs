@@ -18,6 +18,7 @@ public class PublishBook
     private readonly Mock<IRequestRepository> _requestRepositoryMock = new();
     private readonly Mock<IAuthorRepository> _authorRepositoryMock = new();
     private readonly Mock<ISeriesRepository> _seriesRepositoryMock = new();
+    private readonly Mock<IPublisherRepository> _publisherRepositoryMock = new();
     
     private BookService BookService => new(
         _unitOfWorkMock.Object
@@ -37,12 +38,18 @@ public class PublishBook
         _unitOfWorkMock
             .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Series>())
             .Returns(_seriesRepositoryMock.Object);
+        _unitOfWorkMock
+            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Publisher>())
+            .Returns(_publisherRepositoryMock.Object);
         _authorRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(new Author());
         _seriesRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(new Series());
+        _publisherRepositoryMock
+            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
+            .ReturnsAsync(new Publisher());
     }
 
     [Fact]

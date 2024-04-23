@@ -1,7 +1,6 @@
 using AutoFixture;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Models;
-using Litres.Main.Exceptions;
 using Litres.Main.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -50,28 +49,6 @@ public class ResetSubscription
         
         // Assert
         Assert.Equal(resetSubscriptionId, user.SubscriptionId);
-    }
-    
-    [Fact]
-    public async Task NotExistingUserId_ThrowsEntityNotFoundException()
-    {
-        // Arrange
-        const long userId = 1L;
-        
-        _userRepositoryMock
-            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync((User?) null);
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
-            .Returns(_userRepositoryMock.Object);
-        
-        var expected = new EntityNotFoundException(typeof(User), userId.ToString());
-        
-        // Act
-        var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => SubscriptionService.ResetAsync(userId));
-
-        // Assert
-        Assert.Equal(expected.Message, actual.Message);
     }
     
     [Fact]

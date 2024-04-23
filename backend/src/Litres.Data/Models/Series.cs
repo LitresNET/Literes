@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using Litres.Data.Abstractions;
 
 namespace Litres.Data.Models;
 
-public class Series
+public class Series : IEntity
 {
     /// <summary>
     /// Уникальный идентификатор серии книг

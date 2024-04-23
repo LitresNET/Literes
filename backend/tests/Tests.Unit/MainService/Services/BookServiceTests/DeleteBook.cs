@@ -1,7 +1,6 @@
 ﻿using AutoFixture;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Models;
-using Litres.Data.Repositories;
 using Litres.Main.Exceptions;
 using Litres.Main.Services;
 using Microsoft.EntityFrameworkCore;

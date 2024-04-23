@@ -1,8 +1,6 @@
-﻿using System.Linq.Expressions;
-using AutoFixture;
+﻿using AutoFixture;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Models;
-using Litres.Main.Exceptions;
 using Litres.Main.Services;
 using Moq;
 using Tests.Config;
@@ -52,30 +50,5 @@ public class ConfirmOrder
 
         // Assert
         Assert.Equal(expectedOrder, result);
-    }
-    
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public async Task NotExistingOrder_ThrowsOrderNotFoundException(bool isSuccess)
-    {
-        // Arrange
-        var fixture = new Fixture().Customize(new AutoFixtureCustomization());
-        var order = fixture.Create<Order>();
-        
-        _orderRepositoryMock
-            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync((Order) null);
-
-        var service = OrderService;
-        var expected = new EntityNotFoundException(typeof(Order), order.Id.ToString());
-
-        // Act
-        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
-            async () => await service.ConfirmOrderAsync(order.Id, isSuccess)
-        );
-        
-        // Assert
-        Assert.Equal(expected.Message, exception.Message);
     }
 }

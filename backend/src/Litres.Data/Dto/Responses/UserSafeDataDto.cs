@@ -1,6 +1,4 @@
-﻿using Litres.Data.Models;
-
-namespace Litres.Data.Dto.Responses;
+﻿namespace Litres.Data.Dto.Responses;
 
 public class UserSafeDataDto
 {

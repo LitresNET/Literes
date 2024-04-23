@@ -10,6 +10,8 @@ using Litres.Main.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
 
 namespace Litres.Main.Extensions;
 
@@ -32,6 +34,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<ISubscriptionCheckerService, SubscriptionCheckerService>();
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IRegistrationService, RegistrationService>();
+        services.AddScoped<ILoginService, LoginService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
 
@@ -136,6 +139,22 @@ public static class ServiceCollectionExtension
                 options.CallbackPath = configuration["Authentication:Google:RedirectUri"]!;
             });
 
+        return services;
+    }
+
+    public static IServiceCollection AddConfiguredSerilog(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddSerilog((servs, loggerConfiguration) => 
+            loggerConfiguration
+                .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Warning)
+                .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Warning)
+                .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Warning)
+                .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+                .ReadFrom.Configuration(configuration)
+                .ReadFrom.Services(servs)
+                .Enrich.FromLogContext()
+        );
+        
         return services;
     }
 }

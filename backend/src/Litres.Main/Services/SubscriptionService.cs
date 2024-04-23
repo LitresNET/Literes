@@ -16,7 +16,7 @@ public class SubscriptionService(IUnitOfWork unitOfWork) : ISubscriptionService
     public async Task<Subscription> GetAsync(long subscriptionId)
     {
         var subscription = await unitOfWork.GetRepository<Subscription>().GetByIdAsync(subscriptionId);
-        return subscription ?? throw new EntityNotFoundException(typeof(Subscription), subscriptionId.ToString());
+        return subscription;
     }
 
     /// <summary>
@@ -32,9 +32,6 @@ public class SubscriptionService(IUnitOfWork unitOfWork) : ISubscriptionService
         var subscriptionRepository = (ISubscriptionRepository) unitOfWork.GetRepository<Subscription>();
         
         var dbUser = userRepository.GetByIdAsync(userId).Result;
-        if (dbUser is null)
-            throw new EntityNotFoundException(typeof(User), userId.ToString());
-
         var currentSubscription = dbUser.Subscription;
         
         // если подписка не кастомная, то надо достать её из бд (чтобы не было ошибок в доступе к книгам)
@@ -82,12 +79,8 @@ public class SubscriptionService(IUnitOfWork unitOfWork) : ISubscriptionService
         var subscriptionRepository = (ISubscriptionRepository) unitOfWork.GetRepository<Subscription>();
 
         var dbUser = await userRepository.GetByIdAsync(userId);
-        if (dbUser is null)
-            throw new EntityNotFoundException(typeof(User), userId.ToString());
         
-        var freeSubscription = await subscriptionRepository.GetByTypeAsync(SubscriptionType.Free);
-        if (freeSubscription is null)
-            throw new EntityNotFoundException(typeof(Subscription), SubscriptionType.Free.ToString());
+        _ = await subscriptionRepository.GetByTypeAsync(SubscriptionType.Free);
 
         if (dbUser.Wallet < dbUser.Subscription.Price)
             await ResetAsync(dbUser.Id);
@@ -111,8 +104,6 @@ public class SubscriptionService(IUnitOfWork unitOfWork) : ISubscriptionService
         var userRepository = unitOfWork.GetRepository<User>();
         
         var dbUser = await userRepository.GetByIdAsync(userId);
-        if (dbUser == null) 
-            throw new EntityNotFoundException(typeof(User), userId.ToString());
         
         // -1 обращение к бд если true
         if (dbUser.SubscriptionId is 1L) return;

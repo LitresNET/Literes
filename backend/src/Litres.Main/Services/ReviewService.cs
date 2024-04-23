@@ -12,19 +12,15 @@ public class ReviewService(IUnitOfWork unitOfWork) : IReviewService
         // у отзыва либо отсутствует ссылка на родительский отзыв, либо на книгу, иначе - ошибка
         if (review.BookId is null && review.ParentReviewId is null ||
             review.BookId is not null && review.ParentReviewId is not null)
-        {
-            // TODO: выбрасывать ошибки необрабатываемой сущности (нет ни родителя, ни книги)
-            return;
-        }
+            throw new EntityUnprocessableException(typeof(Review), review.Id.ToString(),
+                "no parent review and book that it belongs to.");
 
         if (review.ParentReviewId is not null)
         {
             var parentReview = await unitOfWork.GetRepository<Review>().GetByIdAsync((long)review.ParentReviewId!);
             if (parentReview is null)
-            {
-                // TODO: выбрасывать ошибки необрабатываемой сущности (родитель или книга несуществующие)
-                return;
-            }
+                throw new EntityUnprocessableException(typeof(Review), review.Id.ToString(),
+                    "nonexistent parent review.");
         }
         
         if (review.BookId is not null)
@@ -32,8 +28,8 @@ public class ReviewService(IUnitOfWork unitOfWork) : IReviewService
             var book = await unitOfWork.GetRepository<Book>().GetByIdAsync((long)review.BookId!);
             if (book is null)
             {
-                // TODO: выбрасывать ошибки необрабатываемой сущности (родитель или книга несуществующие)
-                return;
+                throw new EntityUnprocessableException(typeof(Review), review.Id.ToString(),
+                    "nonexistent book that it belongs to.");
             }
         }
         
@@ -41,17 +37,10 @@ public class ReviewService(IUnitOfWork unitOfWork) : IReviewService
         await unitOfWork.SaveChangesAsync();
     }
 
-    public async Task LikeReview(long reviewId, long userId)
-    {
-        await Like(reviewId, userId, true);
-    }
+    public async Task LikeReview(long reviewId, long userId) => await RateReview(reviewId, userId, true);
+    public async Task DislikeReview(long reviewId, long userId) => await RateReview(reviewId, userId, false);
 
-    public async Task DislikeReview(long reviewId, long userId)
-    {
-        await Like(reviewId, userId, false);
-    }
-
-    private async Task Like(long reviewId, long userId, bool isLike)
+    private async Task RateReview(long reviewId, long userId, bool isLike)
     {
         var review = await unitOfWork.GetRepository<Review>().GetByIdAsync(reviewId);
         if (review is null)

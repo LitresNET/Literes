@@ -5,39 +5,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Litres.Data.Repositories;
 
-public class UserRepository(ApplicationDbContext appDbContext) : IUserRepository
+public class UserRepository(ApplicationDbContext appDbContext) 
+    : Repository<User>(appDbContext), IUserRepository
 {
     [Obsolete("Используем UserManager")]
-    public async Task<User> AddAsync(User user)
-    {
-        var result = await appDbContext.User.AddAsync(user);
-        return result.Entity;
-    }
+    public override async Task<User> AddAsync(User user) => await base.AddAsync(user);
     
     [Obsolete("Используем UserManager")]
-    public User Delete(User user)
-    {
-        var result = appDbContext.User.Remove(user);
-        return result.Entity;
-    }
-
-    public async Task<User?> GetByIdAsync(long userId)
-    {
-        return await appDbContext.User.FirstOrDefaultAsync(u => u.Id == userId);
-    }
-
+    public override User Delete(User user) => base.Delete(user);
+    
     public async Task<User?> GetSafeDataById(long userId)
     {
         return await appDbContext.User.Where(u => u.Id == userId)
             .Select(u => new User 
                 {Name = u.Name, AvatarUrl = u.AvatarUrl, Favourites = u.Favourites, Reviews = u.Reviews})
             .FirstOrDefaultAsync();
-    }
-    
-    public User Update(User user)
-    {
-        var result = appDbContext.User.Update(user);
-        return result.Entity;
     }
 
     public async Task<List<User>> GetAllAsync()

@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Litres.Data.Abstractions;
 
 namespace Litres.Data.Models;
 
 [Table("Review")]
-public class Review
+public class Review : IEntity
 {
     /// <summary>
     /// Уникальный идентификатор отзыва
