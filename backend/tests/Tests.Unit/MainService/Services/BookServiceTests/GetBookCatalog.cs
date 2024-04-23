@@ -9,11 +9,21 @@ namespace Tests.MainService.Services.BookServiceTests;
 
 public class GetBookCatalog
 {
-    private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
+    private readonly Mock<IAuthorRepository> _authorRepositoryMock = new();
     private readonly Mock<IBookRepository> _bookRepositoryMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
+    private readonly Mock<ISeriesRepository> _seriesRepositoryMock = new();
+    private readonly Mock<IPublisherRepository> _publisherRepositoryMock = new();
+    private readonly Mock<IRequestRepository> _requestRepositoryMock = new();
 
-    private BookService BookService => new(_unitOfWorkMock.Object);
+    private BookService BookService => new(
+        _authorRepositoryMock.Object,
+        _userRepositoryMock.Object,
+        _bookRepositoryMock.Object,
+        _seriesRepositoryMock.Object,
+        _publisherRepositoryMock.Object,
+        _requestRepositoryMock.Object
+        );
     
     public static IEnumerable<object[]> TestData =>
         new List<object[]>
@@ -60,17 +70,6 @@ public class GetBookCatalog
                 10
             }
         };
-
-    public GetBookCatalog()
-    {
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
-            .Returns(_userRepositoryMock.Object);
-        
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<Book>())
-            .Returns(_bookRepositoryMock.Object);
-    }
 
     [Theory]
     [MemberData(nameof(TestData))]

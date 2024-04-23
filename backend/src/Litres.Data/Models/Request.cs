@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Litres.Data.Abstractions;
 
 namespace Litres.Data.Models;
 
 [Table("Request")]
-public class Request
+public class Request : IEntity
 {
     /// <summary>
     /// Уникальный идентификатор запроса

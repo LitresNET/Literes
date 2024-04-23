@@ -1,7 +1,6 @@
 using AutoFixture;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Models;
-using Litres.Main.Exceptions;
 using Litres.Main.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -15,18 +14,11 @@ public class ChangeSubscription
     private readonly Mock<ISubscriptionRepository> _subscriptionRepositoryMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
 
-    private SubscriptionService SubscriptionService => new(_unitOfWorkMock.Object);
-
-    public ChangeSubscription()
-    {
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
-            .Returns(_userRepositoryMock.Object);
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<Subscription>())
-            .Returns(_subscriptionRepositoryMock.Object);
-
-    }
+    private SubscriptionService SubscriptionService => new(
+        _userRepositoryMock.Object,
+        _subscriptionRepositoryMock.Object,
+        _unitOfWorkMock.Object
+        );
     
     [Theory]
     [InlineData(100, 30, 90)]
@@ -177,38 +169,20 @@ public class ChangeSubscription
     }
 
     [Fact]
-    public async Task NotExistentUserId_ThrowsEntityNotFoundException()
-    {
-        // Arrange
-        const long userId = 42;
-
-        _userRepositoryMock
-            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync((User?) null);
-
-        var expected = new EntityNotFoundException(typeof(User), userId.ToString());
-        
-        // Act
-        var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => SubscriptionService.ChangeAsync(userId, new Subscription()));
-        
-        // Assert
-        Assert.Equal(expected.Message, actual.Message);
-    }
-
-    [Fact]
     public async Task DatabaseShut_ThrowsDbUpdateException()
     {
         // Arrange
         const long userId = 42;
+        
+        var expected = new DbUpdateException();
 
         _userRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .Throws(new DbUpdateException());
-
-        var expected = new DbUpdateException();
+            .ThrowsAsync(expected);
         
         // Act
-        var actual = await Assert.ThrowsAsync<DbUpdateException>(() => SubscriptionService.ChangeAsync(userId, new Subscription()));
+        var actual = await Assert.ThrowsAsync<DbUpdateException>(() => 
+            SubscriptionService.ChangeAsync(userId, new Subscription()));
         
         // Assert
         Assert.Equal(expected.GetType(), actual.GetType());

@@ -7,7 +7,14 @@ using Litres.Main.Exceptions;
 
 namespace Litres.Main.Services;
 
-public class BookService(IUnitOfWork unitOfWork) : IBookService
+// TODO: по кол-ву репозиториев можно с уверенностью сказать что этот сервис явно выполняет больше работы чем должен
+public class BookService(
+    IAuthorRepository authorRepository,
+    IUserRepository userRepository,
+    IBookRepository bookRepository,
+    ISeriesRepository seriesRepository,
+    IPublisherRepository publisherRepository,
+    IRequestRepository requestRepository) : IBookService
 {
     public async Task<Request> PublishNewBookAsync(Book book)
     {
@@ -16,15 +23,14 @@ public class BookService(IUnitOfWork unitOfWork) : IBookService
 
         if (!Validator.TryValidateObject(book, context, results))
             throw new EntityValidationFailedException(typeof(Book), results);
-        
-        if (await unitOfWork.GetRepository<Author>().GetByIdAsync(book.AuthorId) is null)
-            throw new EntityNotFoundException(typeof(Author), book.AuthorId.ToString());
 
-        if (book.SeriesId is not null && await unitOfWork.GetRepository<Series>().GetByIdAsync((long)book.SeriesId) is null)
-            throw new EntityNotFoundException(typeof(Series), book.SeriesId.ToString());
-        
-        if (book.PublisherId is not null && await unitOfWork.GetRepository<Publisher>().GetByIdAsync((long)book.PublisherId) is null)
-            throw new EntityNotFoundException(typeof(Publisher), book.SeriesId.ToString());
+        await authorRepository.GetByIdAsync(book.AuthorId);
+
+        if (book.SeriesId is not null)
+            await seriesRepository.GetByIdAsync((long) book.SeriesId);
+
+        if (book.PublisherId is not null)
+            await publisherRepository.GetByIdAsync((long) book.PublisherId);
 
         book.IsApproved = false;
         
@@ -35,18 +41,15 @@ public class BookService(IUnitOfWork unitOfWork) : IBookService
             Book = book
         };
 
-        var requestResult = await unitOfWork.GetRepository<Request>().AddAsync(request);
-        await unitOfWork.SaveChangesAsync();
+        var requestResult = await requestRepository.AddAsync(request);
+        await requestRepository.SaveChangesAsync();
 
         return requestResult;
     }
     
     public async Task<Request> DeleteBookAsync(long bookId, long publisherId)
     {
-        var bookRepository = (IBookRepository)unitOfWork.GetRepository<Book>();
         var book = await bookRepository.GetByIdAsync(bookId);
-        if (book is null)
-            throw new EntityNotFoundException(typeof(Book), bookId.ToString());
         if (book.PublisherId != publisherId)
             throw new PermissionDeniedException($"Delete book {book.Id}");
 
@@ -61,8 +64,8 @@ public class BookService(IUnitOfWork unitOfWork) : IBookService
             Book = book
         };
 
-        var result = await unitOfWork.GetRepository<Request>().AddAsync(request);
-        await unitOfWork.SaveChangesAsync();
+        var result = await requestRepository.AddAsync(request);
+        await requestRepository.SaveChangesAsync();
         
         return result;
     }
@@ -75,10 +78,7 @@ public class BookService(IUnitOfWork unitOfWork) : IBookService
         if (!Validator.TryValidateObject(updatedBook, context, results))
             throw new EntityValidationFailedException(typeof(Book), results);
         
-        var bookRepository = (IBookRepository)unitOfWork.GetRepository<Book>();
         var book = await bookRepository.GetByIdAsync(updatedBook.Id);
-        if (book is null)
-            throw new EntityNotFoundException(typeof(Book), updatedBook.Id.ToString());
         if (book.PublisherId != publisherId)
             throw new PermissionDeniedException($"Update book {book.Id}");
 
@@ -98,24 +98,16 @@ public class BookService(IUnitOfWork unitOfWork) : IBookService
             UpdatedBook = updatedBook
         };
 
-        var result = await unitOfWork.GetRepository<Request>().AddAsync(request);
-        await unitOfWork.SaveChangesAsync();
+        var result = await requestRepository.AddAsync(request);
+        await requestRepository.SaveChangesAsync();
         
         return result;
     }
 
     public async Task<Book> GetBookWithAccessCheckAsync(long userId, long bookId)
     {
-        var bookRepository = unitOfWork.GetRepository<Book>();
-        var userRepository = unitOfWork.GetRepository<User>();
-        
         var user = await userRepository.GetByIdAsync(userId);
         var book = await bookRepository.GetByIdAsync(bookId);
-        
-        if (user == null)
-            throw new EntityNotFoundException(typeof(User), userId.ToString());
-        if (book == null)
-            throw new EntityNotFoundException(typeof(Book), userId.ToString());
 
         var allowedGenres = user.Subscription!.BooksAllowed;
         if (allowedGenres.Count != 0 
@@ -140,7 +132,6 @@ public class BookService(IUnitOfWork unitOfWork) : IBookService
         var predicate = builder.Compile();
         
         // Получение данных
-        var bookRepository = (IBookRepository) unitOfWork.GetRepository<Book>();
         var books = await bookRepository.GetBooksByFilterAsync(predicate);
 
         // Сортировка

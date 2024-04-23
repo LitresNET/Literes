@@ -1,7 +1,6 @@
 using AutoFixture;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Models;
-using Litres.Main.Exceptions;
 using Litres.Main.Services;
 using Moq;
 using Tests.Config;
@@ -14,17 +13,11 @@ public class RenewSubscription
     private readonly Mock<ISubscriptionRepository> _subscriptionRepositoryMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
 
-    private SubscriptionService SubscriptionService => new(_unitOfWorkMock.Object);
-
-    public RenewSubscription()
-    {
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<Subscription>())
-            .Returns(_subscriptionRepositoryMock.Object);
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
-            .Returns(_userRepositoryMock.Object);
-    }
+    private SubscriptionService SubscriptionService => new(
+        _userRepositoryMock.Object,
+        _subscriptionRepositoryMock.Object,
+        _unitOfWorkMock.Object
+    );
 
     [Fact]
     public async Task DefaultUserIdWithEnoughMoney_ReturnsCurrentSubscription()
@@ -69,47 +62,5 @@ public class RenewSubscription
         // Arrange
         Assert.Equal(expected, actual);
         Assert.Equal(expectedWallet, actualWallet);
-    }
-
-    [Fact]
-    public async Task NotExistingUserId_ThrowsEntityNotFoundException()
-    {
-        // Arrange
-        const long userId = 42L;
-        
-        _userRepositoryMock
-            .Setup(r => r.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync((User?) null);
-
-        var expected = new EntityNotFoundException(typeof(User), userId.ToString());
-        
-        // Act
-        var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => SubscriptionService.RenewAsync(userId));
-        
-        // Assert
-        Assert.Equal(expected.Message, actual.Message);
-    }
-    
-    [Fact]
-    public async Task NotExistingSubscriptionId_ThrowsEntityNotFoundException()
-    {
-        // Arrange
-        const long userId = 42L;
-        const string subscriptionType = "Free";
-        
-        _userRepositoryMock
-            .Setup(r => r.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync(new User());
-        _subscriptionRepositoryMock
-            .Setup(r => r.GetByTypeAsync(It.IsAny<SubscriptionType>()))
-            .ReturnsAsync((Subscription?) null);
-
-        var expected = new EntityNotFoundException(typeof(Subscription), subscriptionType);
-        
-        // Act
-        var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => SubscriptionService.RenewAsync(userId));
-        
-        // Assert
-        Assert.Equal(expected.Message, actual.Message);
     }
 }

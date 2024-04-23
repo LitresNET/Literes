@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Litres.Data.Models;
+﻿using Litres.Data.Models;
 
 namespace Litres.Data.Dto.Responses;
 
