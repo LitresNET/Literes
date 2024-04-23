@@ -2,8 +2,8 @@
 using AutoFixture;
 using AutoFixture.DataAnnotations;
 using Litres.Data.Abstractions.Repositories;
+using Litres.Data.Exceptions;
 using Litres.Data.Models;
-using Litres.Main.Exceptions;
 using Litres.Main.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;

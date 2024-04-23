@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using Litres.Data.Abstractions.Services;
+using Litres.Data.Exceptions;
 using Litres.Data.Models;
-using Litres.Main.Exceptions;
 using Microsoft.AspNetCore.Identity;
 
 namespace Litres.Main.Services;

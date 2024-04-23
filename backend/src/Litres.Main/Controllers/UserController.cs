@@ -11,7 +11,6 @@ namespace Litres.Main.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class UserController(
-    IRegistrationService registrationService, 
     IUserService userService,
     IMapper mapper) : ControllerBase
 {

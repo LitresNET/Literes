@@ -2,8 +2,8 @@ using System.ComponentModel.DataAnnotations;
 using LinqKit;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Abstractions.Services;
+using Litres.Data.Exceptions;
 using Litres.Data.Models;
-using Litres.Main.Exceptions;
 
 namespace Litres.Main.Services;
 

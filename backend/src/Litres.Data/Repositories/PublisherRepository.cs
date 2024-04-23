@@ -1,7 +1,7 @@
 ﻿using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Configurations;
+using Litres.Data.Exceptions;
 using Litres.Data.Models;
-using Litres.Main.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Litres.Data.Repositories;

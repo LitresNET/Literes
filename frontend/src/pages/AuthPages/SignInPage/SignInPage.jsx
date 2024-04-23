@@ -1,18 +1,19 @@
-import './SignInPage.css';
+import ICONS from "../../../assets/icons.jsx";
+import COLORS from '../../../assets/colors.jsx';
 import {Button} from "../../../components/UI/Button/Button.jsx";
 import {Input} from "../../../components/UI/Input/Input.jsx";
-import ICONS from "../../../assets/icons.jsx";
 import {Banner} from "../../../components/UI/Banner/Banner.jsx";
+
 import { Link, useNavigate } from 'react-router-dom';
-import COLORS from '../../../assets/colors.jsx';
-import { useState } from 'react';
 import useAuth from '../../../hooks/useAuth.js';
+import { useState } from 'react';
+import './SignInPage.css';
 
 const SignInPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [validationError, setError] = useState('');
-    const { loading, error, login } = useAuth();
+    const { loading, login } = useAuth();
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
@@ -23,11 +24,11 @@ const SignInPage = () => {
             password: password,
         };
 
-        const result = await login(userData);
-        if (error) {
-            setError(error);
+        const response = await login(userData);
+        if (response.error) {
+            setError(response.error);
         } else {
-            localStorage.setItem("token", result);
+            localStorage.setItem("token", response.result);
             navigate("/home")
         }
     };
@@ -56,12 +57,18 @@ const SignInPage = () => {
                                 id="password"
                                 placeholder="********"
                                 type="password"
-                                onChange={(e) => setPassword(e.target.value)}/>
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
                         </div>
                         <a className={'forgot-sign-in'}>Forgot password?</a>
                         <div className={'button-sign-in'}>
-                        <Button text={loading ? "Wait..." : "Sign in"} onClick={handleLogin} round={"true"} color={"yellow"}
-                                iconpath={ICONS.sign_in}/>
+                            <Button
+                                text={loading ? "Wait..." : "Sign in"}
+                                onClick={handleLogin}
+                                round={"true"}
+                                color={"yellow"}
+                                iconpath={ICONS.sign_in}
+                            />
                         </div>
                         {validationError &&
                             <p className="sign-up-error">{validationError}</p>
