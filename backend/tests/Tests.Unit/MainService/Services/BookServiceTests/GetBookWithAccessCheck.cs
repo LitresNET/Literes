@@ -10,22 +10,21 @@ namespace Tests.MainService.Services.BookServiceTests;
 
 public class GetBookWithAccessCheck
 {
-    private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
+    private readonly Mock<IAuthorRepository> _authorRepositoryMock = new();
     private readonly Mock<IBookRepository> _bookRepositoryMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
+    private readonly Mock<ISeriesRepository> _seriesRepositoryMock = new();
+    private readonly Mock<IPublisherRepository> _publisherRepositoryMock = new();
+    private readonly Mock<IRequestRepository> _requestRepositoryMock = new();
 
-    private BookService BookService => new(_unitOfWorkMock.Object);
-
-    public GetBookWithAccessCheck()
-    {
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
-            .Returns(_userRepositoryMock.Object);
-        
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<Book>())
-            .Returns(_bookRepositoryMock.Object);
-    }
+    private BookService BookService => new(
+        _authorRepositoryMock.Object,
+        _userRepositoryMock.Object,
+        _bookRepositoryMock.Object,
+        _seriesRepositoryMock.Object,
+        _publisherRepositoryMock.Object,
+        _requestRepositoryMock.Object
+    );
 
     [Theory]
     [InlineData(1, 1, Genre.Action)]
@@ -126,11 +125,11 @@ public class GetBookWithAccessCheck
         // Arrange
         const long userId = 42;
 
+        var expected = new EntityNotFoundException(typeof(User), userId.ToString());
+        
         _userRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync((User?) null);
-
-        var expected = new EntityNotFoundException(typeof(User), userId.ToString());
+            .ThrowsAsync(expected);
 
         // Act
         var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => BookService.GetBookWithAccessCheckAsync(userId, 0));
@@ -157,12 +156,12 @@ public class GetBookWithAccessCheck
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(user);
 
+        var expected = new EntityNotFoundException(typeof(Book), bookId.ToString());
+        
         _bookRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync((Book?)null);
-
-        var expected = new EntityNotFoundException(typeof(Book), bookId.ToString());
-
+            .ThrowsAsync(expected);
+        
         // Act
         var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => BookService.GetBookWithAccessCheckAsync(userId, bookId));
 

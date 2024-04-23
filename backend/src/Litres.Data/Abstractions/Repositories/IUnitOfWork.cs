@@ -12,7 +12,6 @@ namespace Litres.Data.Abstractions.Repositories;
 
 public interface IUnitOfWork : IDisposable
 {
-    public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class;
     public Task SaveChangesAsync();
     public Task<IDbContextTransaction> BeginTransactionAsync();
 }

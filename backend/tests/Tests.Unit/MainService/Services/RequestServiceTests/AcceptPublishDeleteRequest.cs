@@ -16,18 +16,10 @@ public class AcceptPublishDeleteRequest
     private readonly Mock<IRequestRepository> _requestRepositoryMock = new();
     
     private RequestService RequestService => new(
+        _requestRepositoryMock.Object,
+        _bookRepositoryMock.Object,
         _unitOfWorkMock.Object
     );
-
-    public AcceptPublishDeleteRequest()
-    {
-        _unitOfWorkMock
-            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Book>())
-            .Returns(_bookRepositoryMock.Object);
-        _unitOfWorkMock
-            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Request>())
-            .Returns(_requestRepositoryMock.Object);
-    }
 
     [Theory]
     [InlineData(RequestType.Create, true, true, true)]
@@ -81,14 +73,13 @@ public class AcceptPublishDeleteRequest
 
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync((Request)null);
-
-        var service = RequestService;
+            .ReturnsAsync((Request?) null);
+        
         var expected = new EntityNotFoundException(typeof(Request), expectedRequest.Id.ToString());
         
         // Act
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
-            async () => await service.AcceptPublishDeleteRequestAsync(expectedRequest.Id)
+            async () => await RequestService.AcceptPublishDeleteRequestAsync(expectedRequest.Id)
         );
         
         // Assert
@@ -99,28 +90,16 @@ public class AcceptPublishDeleteRequest
     public async Task DatabaseShut_ThrowsDbUpdateException()
     {
         // Arrange
-        var fixture = new Fixture().Customize(new AutoFixtureCustomization());
-        
-        var expectedBook = fixture.Create<Book>();
-        var expectedRequest = fixture.Create<Request>();
+        var expected = new DbUpdateException();
         
         _requestRepositoryMock
             .Setup(repository => repository.GetRequestWithBookByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync(expectedRequest);
-        _bookRepositoryMock
-            .Setup(repository => repository.Update(It.IsAny<Book>()))
-            .Returns(expectedBook);
-        _unitOfWorkMock
-            .Setup(repository => repository.SaveChangesAsync())
-            .ThrowsAsync(new DbUpdateException());
-
-        var service = RequestService;
-
+            .ThrowsAsync(expected);
         // Act
 
         // Assert
         await Assert.ThrowsAsync<DbUpdateException>(
-            async () => await service.AcceptPublishDeleteRequestAsync(expectedRequest.Id)
+            async () => await RequestService.AcceptPublishDeleteRequestAsync(42)
         );
     }
 }

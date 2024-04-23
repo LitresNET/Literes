@@ -52,24 +52,22 @@ function subscriptionPage() {
     }
 
     return (
-        <div className="adaptive">
-            <div className="subscription-page">
-                <h1 className="title">Create A Subscription Plan</h1>
-                <div ref={carousel} className="subscriptions-carousel">
-                    <div className="small-subscriptions-block">
-                        {singleSubscriptionBlocks[currentBlock[0]]}
-                    </div>
-                    <div className="medium-subscriptions-block">
-                        {duoSubscriptionBlocks[currentBlock[1]]}
-                    </div>
-                    <div className="big-subscriptions-block">
-                        {tripleSubscriptionBlocks[currentBlock[2]]}
-                    </div>
+        <div className="subscription-page">
+            <h1 className="title">Create A Subscription Plan</h1>
+            <div ref={carousel} className="subscriptions-carousel">
+                <div className="small-subscriptions-block">
+                    {singleSubscriptionBlocks[currentBlock[0]]}
                 </div>
-                <div className="subscription-navigation">
-                    <Icon onClick={()=> setOtherBlock(-1)} path={ICONS.caret_left} size={"custom"} width={50} />
-                    <Icon onClick={()=> setOtherBlock(1)} path={ICONS.caret_right} size={"custom"} width={50}/>
+                <div className="medium-subscriptions-block">
+                    {duoSubscriptionBlocks[currentBlock[1]]}
                 </div>
+                <div className="big-subscriptions-block">
+                    {tripleSubscriptionBlocks[currentBlock[2]]}
+                </div>
+            </div>
+            <div className="subscription-navigation">
+                <Icon onClick={()=> setOtherBlock(-1)} path={ICONS.caret_left} size={"custom"} width={50} />
+                <Icon onClick={()=> setOtherBlock(1)} path={ICONS.caret_right} size={"custom"} width={50}/>
             </div>
         </div>
     );

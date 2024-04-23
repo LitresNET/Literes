@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using Litres.Data.Abstractions;
 using Microsoft.AspNetCore.Identity;
 
 namespace Litres.Data.Models;
@@ -7,7 +8,7 @@ namespace Litres.Data.Models;
 using System.ComponentModel.DataAnnotations;
 
 [Table("User")]
-public class User : IdentityUser<long>
+public class User : IdentityUser<long>, IEntity
 {
     /// <summary>
     /// Уникальный идентификатор пользователя

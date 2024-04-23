@@ -1,9 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using Litres.Data.Abstractions;
 
 namespace Litres.Data.Models;
 
-public class Publisher
+public class Publisher : IEntity
 {
+    public long Id { get; set; }
+    
     /// <summary>
     /// Ссылка на договор, заключенный Литрес с издателем
     /// </summary>

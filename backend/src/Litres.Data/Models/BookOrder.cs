@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Litres.Data.Abstractions;
 
 namespace Litres.Data.Models;
 
-public class BookOrder
+public class BookOrder : IEntity
 {
     [Key]
     public long Id { get; set; }
