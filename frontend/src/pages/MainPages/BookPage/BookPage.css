@@ -1,9 +1,12 @@
+.book-page {
+    margin: 40px 0;
+}
+
 .book-container {
-    max-width: 900px;
-    margin: 0 auto;
+    max-width: 100%;
     display: flex;
     gap: 90px;
-    margin-bottom: 130px;
+    margin-bottom: 100px;
 }
 
 .book-info {
@@ -92,7 +95,6 @@
     background-color: transparent;
     border: none;
     cursor: pointer;
-    font-family: inherit;
     font-size: 14px;
     color: blue;
     outline: none;
@@ -100,19 +102,25 @@
 
 .dropdown-link select:hover {
     text-decoration: underline;
+    max-height: 16px;
 }
 
 .sort-container {
     display: flex;
-    align-items: center;
+    align-items: end;
+    justify-content: center;
+    gap: 5px;
+}
+
+.review-cards-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
 }
 
 @media (max-width: 900px) {
     .book-container {
         gap: 20px;
-    }
-    .book-favorite {
-        display: none;
     }
 }
 
@@ -130,5 +138,6 @@
 
     .book-info-title {
         justify-content: center !important;
+        gap: 20px;
     }
 }

@@ -1,8 +1,6 @@
 using AutoMapper;
-using Azure.Core;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Dto.Responses;
-using Litres.Main.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Litres.Main.Controllers;

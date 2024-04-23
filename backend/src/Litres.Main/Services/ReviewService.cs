@@ -5,65 +5,37 @@ using Litres.Main.Exceptions;
 
 namespace Litres.Main.Services;
 
-public class ReviewService(IUnitOfWork unitOfWork) : IReviewService
+public class ReviewService(
+    IUserRepository userRepository,
+    IReviewRepository reviewRepository,
+    IBookRepository bookRepository,
+    IUnitOfWork unitOfWork) : IReviewService
 {
     public async Task AddReview(Review review)
     {
         // у отзыва либо отсутствует ссылка на родительский отзыв, либо на книгу, иначе - ошибка
         if (review.BookId is null && review.ParentReviewId is null ||
             review.BookId is not null && review.ParentReviewId is not null)
-        {
-            // TODO: выбрасывать ошибки необрабатываемой сущности (нет ни родителя, ни книги)
-            return;
-        }
+            throw new EntityUnprocessableException(typeof(Review), review.Id.ToString(),
+                "no parent review and book that it belongs to.");
 
         if (review.ParentReviewId is not null)
-        {
-            var parentReview = await unitOfWork.GetRepository<Review>().GetByIdAsync((long)review.ParentReviewId!);
-            if (parentReview is null)
-            {
-                // TODO: выбрасывать ошибки необрабатываемой сущности (родитель или книга несуществующие)
-                return;
-            }
-        }
+            await reviewRepository.GetByIdAsync((long)review.ParentReviewId!);
         
         if (review.BookId is not null)
-        {
-            var book = await unitOfWork.GetRepository<Book>().GetByIdAsync((long)review.BookId!);
-            if (book is null)
-            {
-                // TODO: выбрасывать ошибки необрабатываемой сущности (родитель или книга несуществующие)
-                return;
-            }
-        }
+            await bookRepository.GetByIdAsync((long)review.BookId!);
         
-        await unitOfWork.GetRepository<Review>().AddAsync(review);
-        await unitOfWork.SaveChangesAsync();
+        await reviewRepository.AddAsync(review);
+        await reviewRepository.SaveChangesAsync();
     }
 
-    public async Task LikeReview(long reviewId, long userId)
-    {
-        await Like(reviewId, userId, true);
-    }
+    public async Task LikeReview(long reviewId, long userId) => await RateReview(reviewId, userId, true);
+    public async Task DislikeReview(long reviewId, long userId) => await RateReview(reviewId, userId, false);
 
-    public async Task DislikeReview(long reviewId, long userId)
+    private async Task RateReview(long reviewId, long userId, bool isLike)
     {
-        await Like(reviewId, userId, false);
-    }
-
-    private async Task Like(long reviewId, long userId, bool isLike)
-    {
-        var review = await unitOfWork.GetRepository<Review>().GetByIdAsync(reviewId);
-        if (review is null)
-        {
-            throw new EntityNotFoundException(typeof(Review), reviewId.ToString());
-        }
-        
-        var user = await unitOfWork.GetRepository<User>().GetByIdAsync(userId);
-        if (user is null)
-        {
-            throw new EntityNotFoundException(typeof(Review), userId.ToString());
-        }
+        var review = await reviewRepository.GetByIdAsync(reviewId);
+        var user = await userRepository.GetByIdAsync(userId);
 
         var rl = new ReviewLike { UserId = userId, ReviewId = reviewId, IsLike = isLike };
         review.ReviewLikes.Add(rl);

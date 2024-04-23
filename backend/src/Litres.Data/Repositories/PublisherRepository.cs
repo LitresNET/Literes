@@ -1,33 +1,20 @@
 ﻿using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Configurations;
 using Litres.Data.Models;
+using Litres.Main.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Litres.Data.Repositories;
 
-public class PublisherRepository(ApplicationDbContext appDbContext) : IPublisherRepository
+public class PublisherRepository(ApplicationDbContext appDbContext) 
+    : Repository<Publisher>(appDbContext), IPublisherRepository
 {
-    public async Task<Publisher> AddAsync(Publisher publisher)
+    public override async Task<Publisher> GetByIdAsync(long publisherId)
     {
-        var result = await appDbContext.Publisher.AddAsync(publisher);
-        return result.Entity;
-    }
+        var result = await appDbContext.Publisher.FirstOrDefaultAsync(p => p.UserId == publisherId);
+        if (result is null)
+            throw new EntityNotFoundException(typeof(Publisher), publisherId.ToString());
 
-    public Publisher Delete(Publisher publisher)
-    { 
-        var result = appDbContext.Publisher.Remove(publisher);
-
-        return result.Entity;
-    }
-
-    public async Task<Publisher?> GetByIdAsync(long publisherId)
-    {
-        return await appDbContext.Publisher.FirstOrDefaultAsync(p => p.UserId == publisherId);
-    }
-
-    public Publisher Update(Publisher publisher)
-    { 
-        var result = appDbContext.Publisher.Update(publisher);
-        return result.Entity;
+        return result;
     }
 }

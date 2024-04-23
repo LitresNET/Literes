@@ -24,8 +24,9 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
             ))
             return BadRequest();
         
-        var book = await bookService.GetBookWithAccessCheckAsync(userId, bookId);
-        return Ok(mapper.Map<BookResponseDto>(book));
+        var result = await bookService.GetBookWithAccessCheckAsync(userId, bookId);
+        var response = mapper.Map<BookResponseDto>(result);
+        return Ok(response);
     }
     
     [HttpGet("catalog/page/{pageNumber:int}/take/{amount:int}")]
@@ -35,7 +36,8 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
         [FromRoute] int amount)
     {
         var result = await bookService.GetBookCatalogAsync(searchParameters, pageNumber, amount);
-        return Ok(mapper.Map<List<BookResponseDto>>(result));
+        var response = mapper.Map<List<BookResponseDto>>(result);
+        return Ok(response);
     }
     
     [HttpPost("publish")]

@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Litres.Data.Abstractions;
 
 namespace Litres.Data.Models;
 
 [Table("Book")]
-public class Book
+public class Book : IEntity
 {
     /// <summary>
     /// Уникальный идентификатор книги

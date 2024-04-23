@@ -5,7 +5,7 @@ namespace Litres.Data.Abstractions.Repositories;
 
 public interface IOrderRepository : IRepository<Order>
 {
-    public Task<Order?> GetAsync(
+    public Task<Order> GetWithFilterAsync(
         Expression<Func<Order, bool>> filter,
-        List<Expression<Func<Order, object>>> includeProperties);
+        IEnumerable<Expression<Func<Order, object>>> includeProperties);
 }

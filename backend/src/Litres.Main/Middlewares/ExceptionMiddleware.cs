@@ -19,12 +19,14 @@ public class ExceptionMiddleware(IWebHostEnvironment webHostEnvironment) : IMidd
 
             var statusCode = e switch
             {
-                EntityNotFoundException => 404,
-                EntityValidationFailedException => 422,
-                PasswordNotMatchException or InvalidOperationException => 400,
-                DbUpdateException => 503,
-                PermissionDeniedException => 403,
-                _ => 500
+                PasswordNotMatchException 
+                    or InvalidOperationException    => 400,
+                PermissionDeniedException           => 403,
+                EntityNotFoundException             => 404,
+                EntityValidationFailedException 
+                    or EntityUnprocessableException => 422,
+                DbUpdateException                   => 503,
+                _                                   => 500
             };
 
             context.Response.Clear();

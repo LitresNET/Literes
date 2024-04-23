@@ -1,7 +1,6 @@
 using AutoFixture;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Models;
-using Litres.Main.Exceptions;
 using Litres.Main.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -13,15 +12,13 @@ public class GetSubscription
 {
     private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
     private readonly Mock<ISubscriptionRepository> _subscriptionRepositoryMock = new();
-    
-    private SubscriptionService SubscriptionService => new(_unitOfWorkMock.Object);
+    private readonly Mock<IUserRepository> _userRepositoryMock = new();
 
-    public GetSubscription()
-    {
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<Subscription>())
-            .Returns(_subscriptionRepositoryMock.Object);
-    }
+    private SubscriptionService SubscriptionService => new(
+        _userRepositoryMock.Object,
+        _subscriptionRepositoryMock.Object,
+        _unitOfWorkMock.Object
+    );
     
     [Theory]
     [InlineData(1)]
@@ -49,23 +46,6 @@ public class GetSubscription
     }
 
     [Fact]
-    public async Task NotExistingSubscriptionId_ThrowsEntityNotFoundException()
-    {
-        // Arrange
-        var expected = new EntityNotFoundException(typeof(Subscription), (-1L).ToString());
-        
-        _subscriptionRepositoryMock
-            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync(It.IsAny<Subscription>());
-        
-        // Act
-        var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => SubscriptionService.GetAsync(-1L));
-
-        // Assert
-        Assert.Equal(expected.Message, actual.Message);
-    }
-
-    [Fact]
     public async Task DatabaseShut_ThrowsDbUpdateException()
     {
         // Arrange
@@ -73,7 +53,7 @@ public class GetSubscription
 
         _subscriptionRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .Throws(new DbUpdateException());
+            .ThrowsAsync(expected);
         
         // Act
         var actual = await Assert.ThrowsAsync<DbUpdateException>(() => SubscriptionService.GetAsync(100));
