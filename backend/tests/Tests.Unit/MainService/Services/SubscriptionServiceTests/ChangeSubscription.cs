@@ -14,18 +14,11 @@ public class ChangeSubscription
     private readonly Mock<ISubscriptionRepository> _subscriptionRepositoryMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
 
-    private SubscriptionService SubscriptionService => new(_unitOfWorkMock.Object);
-
-    public ChangeSubscription()
-    {
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
-            .Returns(_userRepositoryMock.Object);
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<Subscription>())
-            .Returns(_subscriptionRepositoryMock.Object);
-
-    }
+    private SubscriptionService SubscriptionService => new(
+        _userRepositoryMock.Object,
+        _subscriptionRepositoryMock.Object,
+        _unitOfWorkMock.Object
+        );
     
     [Theory]
     [InlineData(100, 30, 90)]
@@ -180,15 +173,16 @@ public class ChangeSubscription
     {
         // Arrange
         const long userId = 42;
+        
+        var expected = new DbUpdateException();
 
         _userRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .Throws(new DbUpdateException());
-
-        var expected = new DbUpdateException();
+            .ThrowsAsync(expected);
         
         // Act
-        var actual = await Assert.ThrowsAsync<DbUpdateException>(() => SubscriptionService.ChangeAsync(userId, new Subscription()));
+        var actual = await Assert.ThrowsAsync<DbUpdateException>(() => 
+            SubscriptionService.ChangeAsync(userId, new Subscription()));
         
         // Assert
         Assert.Equal(expected.GetType(), actual.GetType());

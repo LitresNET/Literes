@@ -5,7 +5,10 @@ using Litres.Main.Exceptions;
 
 namespace Litres.Main.Services;
 
-public class SubscriptionService(IUnitOfWork unitOfWork) : ISubscriptionService
+public class SubscriptionService(
+    IUserRepository userRepository,
+    ISubscriptionRepository subscriptionRepository,
+    IUnitOfWork unitOfWork) : ISubscriptionService
 {
     /// <summary>
     /// Получает информацию по подписке
@@ -15,7 +18,7 @@ public class SubscriptionService(IUnitOfWork unitOfWork) : ISubscriptionService
     /// <exception cref="EntityNotFoundException">Если подписка не была найдена</exception>
     public async Task<Subscription> GetAsync(long subscriptionId)
     {
-        var subscription = await unitOfWork.GetRepository<Subscription>().GetByIdAsync(subscriptionId);
+        var subscription = await subscriptionRepository.GetByIdAsync(subscriptionId);
         return subscription;
     }
 
@@ -28,10 +31,7 @@ public class SubscriptionService(IUnitOfWork unitOfWork) : ISubscriptionService
     /// <exception cref="EntityNotFoundException">Если пользователь не был найден</exception>
     public async Task<Subscription> ChangeAsync(long userId, Subscription newSubscription)
     {
-        var userRepository = unitOfWork.GetRepository<User>();
-        var subscriptionRepository = (ISubscriptionRepository) unitOfWork.GetRepository<Subscription>();
-        
-        var dbUser = userRepository.GetByIdAsync(userId).Result;
+        var dbUser = await userRepository.GetByIdAsync(userId);
         var currentSubscription = dbUser.Subscription;
         
         // если подписка не кастомная, то надо достать её из бд (чтобы не было ошибок в доступе к книгам)
@@ -75,12 +75,7 @@ public class SubscriptionService(IUnitOfWork unitOfWork) : ISubscriptionService
     /// <exception cref="EntityNotFoundException">Не бал найден пользовать -ИЛИ- Не была найдена подписка</exception>
     public async Task<Subscription> RenewAsync(long userId)
     {
-        var userRepository = unitOfWork.GetRepository<User>();
-        var subscriptionRepository = (ISubscriptionRepository) unitOfWork.GetRepository<Subscription>();
-
         var dbUser = await userRepository.GetByIdAsync(userId);
-        
-        _ = await subscriptionRepository.GetByTypeAsync(SubscriptionType.Free);
 
         if (dbUser.Wallet < dbUser.Subscription.Price)
             await ResetAsync(dbUser.Id);
@@ -101,8 +96,6 @@ public class SubscriptionService(IUnitOfWork unitOfWork) : ISubscriptionService
     /// <exception cref="EntityNotFoundException">Если нет такого пользователя</exception>
     public async Task ResetAsync(long userId)
     {
-        var userRepository = unitOfWork.GetRepository<User>();
-        
         var dbUser = await userRepository.GetByIdAsync(userId);
         
         // -1 обращение к бд если true

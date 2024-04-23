@@ -13,17 +13,11 @@ public class RenewSubscription
     private readonly Mock<ISubscriptionRepository> _subscriptionRepositoryMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
 
-    private SubscriptionService SubscriptionService => new(_unitOfWorkMock.Object);
-
-    public RenewSubscription()
-    {
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<Subscription>())
-            .Returns(_subscriptionRepositoryMock.Object);
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
-            .Returns(_userRepositoryMock.Object);
-    }
+    private SubscriptionService SubscriptionService => new(
+        _userRepositoryMock.Object,
+        _subscriptionRepositoryMock.Object,
+        _unitOfWorkMock.Object
+    );
 
     [Fact]
     public async Task DefaultUserIdWithEnoughMoney_ReturnsCurrentSubscription()

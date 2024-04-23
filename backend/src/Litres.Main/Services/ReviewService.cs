@@ -5,7 +5,11 @@ using Litres.Main.Exceptions;
 
 namespace Litres.Main.Services;
 
-public class ReviewService(IUnitOfWork unitOfWork) : IReviewService
+public class ReviewService(
+    IUserRepository userRepository,
+    IReviewRepository reviewRepository,
+    IBookRepository bookRepository,
+    IUnitOfWork unitOfWork) : IReviewService
 {
     public async Task AddReview(Review review)
     {
@@ -16,25 +20,13 @@ public class ReviewService(IUnitOfWork unitOfWork) : IReviewService
                 "no parent review and book that it belongs to.");
 
         if (review.ParentReviewId is not null)
-        {
-            var parentReview = await unitOfWork.GetRepository<Review>().GetByIdAsync((long)review.ParentReviewId!);
-            if (parentReview is null)
-                throw new EntityUnprocessableException(typeof(Review), review.Id.ToString(),
-                    "nonexistent parent review.");
-        }
+            await reviewRepository.GetByIdAsync((long)review.ParentReviewId!);
         
         if (review.BookId is not null)
-        {
-            var book = await unitOfWork.GetRepository<Book>().GetByIdAsync((long)review.BookId!);
-            if (book is null)
-            {
-                throw new EntityUnprocessableException(typeof(Review), review.Id.ToString(),
-                    "nonexistent book that it belongs to.");
-            }
-        }
+            await bookRepository.GetByIdAsync((long)review.BookId!);
         
-        await unitOfWork.GetRepository<Review>().AddAsync(review);
-        await unitOfWork.SaveChangesAsync();
+        await reviewRepository.AddAsync(review);
+        await reviewRepository.SaveChangesAsync();
     }
 
     public async Task LikeReview(long reviewId, long userId) => await RateReview(reviewId, userId, true);
@@ -42,17 +34,8 @@ public class ReviewService(IUnitOfWork unitOfWork) : IReviewService
 
     private async Task RateReview(long reviewId, long userId, bool isLike)
     {
-        var review = await unitOfWork.GetRepository<Review>().GetByIdAsync(reviewId);
-        if (review is null)
-        {
-            throw new EntityNotFoundException(typeof(Review), reviewId.ToString());
-        }
-        
-        var user = await unitOfWork.GetRepository<User>().GetByIdAsync(userId);
-        if (user is null)
-        {
-            throw new EntityNotFoundException(typeof(Review), userId.ToString());
-        }
+        var review = await reviewRepository.GetByIdAsync(reviewId);
+        var user = await userRepository.GetByIdAsync(userId);
 
         var rl = new ReviewLike { UserId = userId, ReviewId = reviewId, IsLike = isLike };
         review.ReviewLikes.Add(rl);

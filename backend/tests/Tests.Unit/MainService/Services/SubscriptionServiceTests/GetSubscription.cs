@@ -12,15 +12,13 @@ public class GetSubscription
 {
     private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
     private readonly Mock<ISubscriptionRepository> _subscriptionRepositoryMock = new();
-    
-    private SubscriptionService SubscriptionService => new(_unitOfWorkMock.Object);
+    private readonly Mock<IUserRepository> _userRepositoryMock = new();
 
-    public GetSubscription()
-    {
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<Subscription>())
-            .Returns(_subscriptionRepositoryMock.Object);
-    }
+    private SubscriptionService SubscriptionService => new(
+        _userRepositoryMock.Object,
+        _subscriptionRepositoryMock.Object,
+        _unitOfWorkMock.Object
+    );
     
     [Theory]
     [InlineData(1)]
@@ -55,7 +53,7 @@ public class GetSubscription
 
         _subscriptionRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .Throws(new DbUpdateException());
+            .ThrowsAsync(expected);
         
         // Act
         var actual = await Assert.ThrowsAsync<DbUpdateException>(() => SubscriptionService.GetAsync(100));

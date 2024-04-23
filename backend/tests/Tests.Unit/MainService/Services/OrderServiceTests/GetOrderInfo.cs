@@ -10,19 +10,17 @@ namespace Tests.MainService.Services.OrderServiceTests;
 
 public class GetOrderInfo
 {
-    private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
+    private readonly Mock<IUserRepository> _userRepositoryMock = new();
+    private readonly Mock<IPickupPointRepository> _pickupPointRepositoryMock = new();
+    private readonly Mock<IBookRepository> _bookRepositoryMock = new();
     private readonly Mock<IOrderRepository> _orderRepositoryMock = new();
     
     private OrderService OrderService => new(
-        _unitOfWorkMock.Object
+        _userRepositoryMock.Object,
+        _pickupPointRepositoryMock.Object,
+        _bookRepositoryMock.Object,
+        _orderRepositoryMock.Object
     );
-
-    public GetOrderInfo()
-    {
-        _unitOfWorkMock
-            .Setup(unitOfWorkMock => unitOfWorkMock.GetRepository<Order>())
-            .Returns(_orderRepositoryMock.Object);
-    }
 
     [Fact]
     public async Task DefaultOrder_ReturnsDbOrder()

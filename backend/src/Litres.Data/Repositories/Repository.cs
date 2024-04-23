@@ -47,4 +47,6 @@ public abstract class Repository<TEntity>(ApplicationDbContext appDbContext)
         
         return result;
     }
+
+    public async Task SaveChangesAsync() => await appDbContext.SaveChangesAsync();
 }

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 namespace Litres.Main.Services;
 
 public class RegistrationService(
+    IContractRepository contractRepository,
+    IPublisherRepository publisherRepository,
     IUnitOfWork unitOfWork,
     UserManager<User> userManager) : IRegistrationService
 {
@@ -16,10 +18,8 @@ public class RegistrationService(
         if (createResult.Succeeded)
         {
             var roleResult = await userManager.AddToRoleAsync(user, "Member");
-            if (roleResult.Succeeded)
-                await transaction.CommitAsync();
-            else
-                await transaction.RollbackAsync();
+            if (roleResult.Succeeded) await transaction.CommitAsync();
+            else await transaction.RollbackAsync();
             return roleResult;
         }
         await transaction.RollbackAsync();
@@ -28,8 +28,6 @@ public class RegistrationService(
 
     public async Task<IdentityResult> RegisterPublisherAsync(User user, string contractNumber)
     {
-        var contractRepository = (IContractRepository)unitOfWork.GetRepository<Contract>();
-        var publisherRepository = (IPublisherRepository)unitOfWork.GetRepository<Publisher>();
         var contract = await contractRepository.GetBySerialNumberAsync(contractNumber);
         if (contract is null)
             return IdentityResult.Failed(new IdentityError
@@ -51,6 +49,7 @@ public class RegistrationService(
             UserId = user.Id,
             ContractId = contract.Id
         });
+        
         var roleResult = await userManager.AddToRoleAsync(user, "Publisher");
         if (!roleResult.Succeeded)
         {

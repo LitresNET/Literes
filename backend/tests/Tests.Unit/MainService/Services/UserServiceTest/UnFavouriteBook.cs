@@ -10,18 +10,14 @@ namespace Tests.MainService.Services.UserServiceTest;
 
 public class UnFavouriteBook
 {
-    private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
+    private readonly Mock<IPublisherRepository> _publisherRepositoryMock = new();
 
-    private UserService UserService => new(_unitOfWorkMock.Object);
-
-    public UnFavouriteBook()
-    {
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
-            .Returns(_userRepositoryMock.Object);
-    }
-
+    private UserService UserService => new(
+        _publisherRepositoryMock.Object,
+        _userRepositoryMock.Object
+        );
+    
     [Theory]
     [InlineData(52)]
     [InlineData(1)]
@@ -48,31 +44,10 @@ public class UnFavouriteBook
         var expected = books.Where(b => b.Id != bookIdToDelete).ToList();
         
         // Act 
-        _ = await UserService.UnFavouriteBookAsync(user.Id, bookIdToDelete);
+        await UserService.UnFavouriteBookAsync(user.Id, bookIdToDelete);
         
         // Assert
         Assert.Equal(expected, user.Favourites);
-    }
-
-    [Fact]
-    public async Task NotExistingUser_ThrowsEntityNotFoundException()
-    {
-        // Arrange
-        const long userId = 42L;
-        const long bookIdToDelete = 42L;
-
-        _userRepositoryMock
-            .Setup(r => r.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync((User?) null);
-
-        var expected = new EntityNotFoundException(typeof(User), userId.ToString());
-        
-        // Act
-        var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() =>
-            UserService.UnFavouriteBookAsync(userId, bookIdToDelete));
-        
-        // Arrange
-        Assert.Equal(expected.Message, actual.Message);
     }
     
     [Fact]

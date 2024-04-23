@@ -12,15 +12,13 @@ public class ResetSubscription
 {
     private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
+    private readonly Mock<ISubscriptionRepository> _subscriptionRepositoryMock = new();
 
-    private SubscriptionService SubscriptionService => new(_unitOfWorkMock.Object);
-
-    public ResetSubscription()
-    {
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
-            .Returns(_userRepositoryMock.Object);
-    }
+    private SubscriptionService SubscriptionService => new(
+        _userRepositoryMock.Object,
+        _subscriptionRepositoryMock.Object,
+        _unitOfWorkMock.Object
+    );
     
     [Fact]
     public async Task DefaultUserId_ResetsSubscription()
@@ -56,15 +54,11 @@ public class ResetSubscription
     {
         // Arrange
         const long userId = 42;
+        var expected = new DbUpdateException();
 
         _userRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .Throws(new DbUpdateException());
-        _unitOfWorkMock
-            .Setup(unitOfWork => unitOfWork.GetRepository<User>())
-            .Returns(_userRepositoryMock.Object);
-
-        var expected = new DbUpdateException();
+            .ThrowsAsync(expected);
         
         // Act
         var actual = await Assert.ThrowsAsync<DbUpdateException>(() => SubscriptionService.ResetAsync(userId));
