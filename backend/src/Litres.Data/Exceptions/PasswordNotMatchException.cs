@@ -1,3 +1,3 @@
-﻿namespace Litres.Main.Exceptions;
+﻿namespace Litres.Data.Exceptions;
 
 public class PasswordNotMatchException() : Exception("Wrong password");

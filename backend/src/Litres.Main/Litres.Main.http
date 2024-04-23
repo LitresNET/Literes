@@ -1,6 +1,0 @@
-@Litres.Main_HostAddress = http://localhost:5228
-
-GET {{Litres.Main_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
