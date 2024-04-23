@@ -41,6 +41,13 @@ builder.Services
 
 builder.Services.AddControllers();
 
+builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder => 
+    policyBuilder
+        .WithOrigins(builder.Configuration["CorsPolicy:Origin"]!)
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()));
+
 var application = builder.Build();
 
 if (application.Environment.IsDevelopment())
@@ -68,6 +75,7 @@ using (var scope = application.Services.CreateScope())
 }
 
 application
+    .UseCors()
     .UseMiddleware<ExceptionMiddleware>()
     .UseAuthentication()
     .UseAuthorization()
