@@ -1,9 +1,10 @@
-﻿using AutoFixture;
+﻿using System.ComponentModel.DataAnnotations;
+using AutoFixture;
 using AutoFixture.DataAnnotations;
-using backend.Abstractions;
-using backend.Exceptions;
-using backend.Models;
-using backend.Services;
+using Litres.Data.Abstractions.Repositories;
+using Litres.Data.Exceptions;
+using Litres.Data.Models;
+using Litres.Main.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Tests.Config;
@@ -17,22 +18,25 @@ public class UpdateBook
     private readonly Mock<IRequestRepository> _requestRepositoryMock = new();
     private readonly Mock<IAuthorRepository> _authorRepositoryMock = new();
     private readonly Mock<ISeriesRepository> _seriesRepositoryMock = new();
+    private readonly Mock<IUserRepository> _userRepositoryMock = new();
+    private readonly Mock<IPublisherRepository> _publisherRepositoryMock = new();
 
-    private BookService BookService => new BookService(
-        _bookRepositoryMock.Object,
-        _requestRepositoryMock.Object,
+    private BookService BookService => new(
         _authorRepositoryMock.Object,
+        _userRepositoryMock.Object,
+        _bookRepositoryMock.Object,
         _seriesRepositoryMock.Object,
-        _unitOfWorkMock.Object
+        _publisherRepositoryMock.Object,
+        _requestRepositoryMock.Object
     );
 
     public UpdateBook()
     {
         _authorRepositoryMock
-            .Setup(repository => repository.GetAuthorByIdAsync(It.IsAny<long>()))
+            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(new Author());
         _seriesRepositoryMock
-            .Setup(repository => repository.GetSeriesByIdAsync(It.IsAny<long>()))
+            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(new Series());
     }
 
@@ -70,17 +74,15 @@ public class UpdateBook
             .Setup(repository => repository.AddAsync(It.IsAny<Request>()))
             .ReturnsAsync(expectedRequest);
 
-        var service = BookService;
-
         // Act
-        var result = await service.UpdateBookAsync(expectedBook, (long) expectedBook.PublisherId!);
+        var result = await BookService.UpdateBookAsync(expectedBook, (long) expectedBook.PublisherId!);
 
         // Assert
         Assert.Equal(expectedRequest, result);
     }
 
     [Fact]
-    public async Task EmptyBook_ThrowsBookValidationFailedException()
+    public async Task EmptyBook_ThrowsEntityValidationFailedException()
     {
         // Arrange
         var fixture = new Fixture()
@@ -91,40 +93,46 @@ public class UpdateBook
             .Build<Book>()
             .Without(b => b.ContentUrl)
             .Create();
-        var service = BookService;
+
+        // TODO: I guess that's not quite right, because test seems to know internals
+        var expectedValidationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(book, new ValidationContext(book), expectedValidationResults);
+        var expected = new EntityValidationFailedException(typeof(Book), expectedValidationResults);
 
         // Act
-
-        // Assert
-        await Assert.ThrowsAsync<BookValidationFailedException>(
-            async () => await service.UpdateBookAsync(book, (long) book.PublisherId!)
+        var exception = await Assert.ThrowsAsync<EntityValidationFailedException>(
+            async () => await BookService.UpdateBookAsync(book, (long) book.PublisherId!)
         );
+        
+        // Assert
+        Assert.Equal(expected.Message, exception.Message);
     }
     
     [Fact]
-    public async Task NotExistingBook_ThrowsBookNotFoundException()
+    public async Task NotExistingBook_ThrowsEntityNotFoundException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
 
         var book = fixture.Create<Book>();
+        
+        var expected = new EntityNotFoundException(typeof(Book), book.Id.ToString());
 
         _bookRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync((Book)null);
-
-        var service = BookService;
-
+            .ThrowsAsync(expected);
+            
         // Act
-
-        // Assert
-        await Assert.ThrowsAsync<BookNotFoundException>(
-            async () => await service.UpdateBookAsync(book, (long) book.PublisherId!)
+        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
+            async () => await BookService.UpdateBookAsync(book, (long) book.PublisherId!)
         );
+        
+        // Assert
+        Assert.Equal(expected.Message, exception.Message);
     }
     
     [Fact]
-    public async Task NotMatchingPublishers_ThrowsUserPermissionDeniedException()
+    public async Task NotMatchingPublishers_ThrowsPermissionDeniedException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
@@ -142,18 +150,16 @@ public class UpdateBook
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedBook);
 
-        var service = BookService;
-
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<UserPermissionDeniedException>(
-            async () => await service.UpdateBookAsync(book, (long) book.PublisherId!)
+        await Assert.ThrowsAsync<PermissionDeniedException>(
+            async () => await BookService.UpdateBookAsync(book, (long) book.PublisherId!)
         );
     }
 
     [Fact]
-    public async Task DatabaseShut_ThrowsStorageUnavailableException()
+    public async Task DatabaseShut_ThrowsDbUpdateException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
@@ -164,13 +170,11 @@ public class UpdateBook
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ThrowsAsync(new DbUpdateException());
 
-        var service = BookService;
-
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<StorageUnavailableException>(
-            async () => await service.UpdateBookAsync(book, (long) book.PublisherId!)
+        await Assert.ThrowsAsync<DbUpdateException>(
+            async () => await BookService.UpdateBookAsync(book, (long) book.PublisherId!)
         );
     }
 }

@@ -1,7 +1,6 @@
 .container-sign-in {
     margin: 0;
     padding: 0;
-    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -11,46 +10,85 @@
 .title-sign-in {
     display: flex;
     justify-content: center;
-}
-
-.form-container-sign-in {
-    margin-top: 77px;
-    height: 330px;
-    width: 520px;
-    border-style: dashed;
-    border-width: 2px;
-    border-radius: 20px;
+    margin-bottom: 77px;
 }
 
 .sign-in-form {
-    margin-top: 15px;
-    height: 315px;
+    width: 470px;
+    gap:20px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .label-input-sign-in {
-    margin-top: 17px;
     width: 420px;
     height: 78px;
 }
 
 .input-sign-in {
+    margin-top: 5px;
     width: 420px;
 }
 
 .forgot-sign-in {
-    margin-top: 8px;
+    margin-top: -12px;
     color: #2196F3;
 }
 
 .button-sign-in {
-    margin-top: 11px;
+    margin-top: -9px;
     width: 420px;
     height: 50px;
 }
 
 .dont-sign-in {
-    margin-top: 42px;
+    margin-top: 40px;
+}
+
+.dont-sign-in > a{
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+}
+
+@media (max-width: 768px) {
+    .title-sign-in {
+        margin-bottom: 23px;
+    }
+
+    .sign-in-form {
+        height: 280px;
+        width: 219px;
+    }
+
+    .label-input-sign-in {
+        width: 230px;
+    }
+
+    .input-sign-in {
+        width: 230px;
+    }
+
+    .forgot-sign-in {
+
+    }
+
+    .button-sign-in {
+        width: 230px;
+    }
+
+    .dont-sign-in {
+        text-align: center;
+    }
+
+    .dont-sign-in > a{
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+.sign-up-error{
+    color: red;
 }

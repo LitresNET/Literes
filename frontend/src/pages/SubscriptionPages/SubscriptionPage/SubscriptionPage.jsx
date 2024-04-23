@@ -2,6 +2,7 @@ import {SubscriptionCard} from "../../../components/SubscriptionCard/Subscriptio
 import {useRef, useState} from "react";
 import {Icon} from "../../../components/UI/Icon/Icon";
 import ICONS from "../../../assets/icons.jsx";
+import './SubscriptionPage.css';
 
 function subscriptionPage() {
     const subscriptionCards = [
@@ -51,7 +52,7 @@ function subscriptionPage() {
     }
 
     return (
-        <div className={"adaptive"}>
+        <div className="subscription-page">
             <h1 className="title">Create A Subscription Plan</h1>
             <div ref={carousel} className="subscriptions-carousel">
                 <div className="small-subscriptions-block">
