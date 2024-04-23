@@ -1,48 +1,44 @@
-import axios from "axios";
 import { useState } from "react";
-import configData from "./../../config.json";
+import { axiosToLitres } from "./useAxios.js";
 
 const useAuth = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-    const register = async (userData) => {
-      setLoading(true);
-      setError(null);
+  async function register(userData) {
+    setLoading(true);
 
-      try {
-        const response = await axios.post(`${configData.BASE_URL}/user/signup`, userData);
-        setLoading(false);
-        if (response.status === 200) {
-            return response.data
-        } else {
-            setError(response.data)
-        }
-      } catch (e) {
-        setError(`Connection error: ${e}`);
-        setLoading(false);
+    try {
+      const response = await axiosToLitres.post(`/signup/user`, userData);
+      setLoading(false);
+      if (response.status === 200) {
+        return { result: response.data, error: null };
+      } else {
+        return { result: null, error: response.data };
       }
-    };
+    } catch (e) {
+      setLoading(false);
+      return { result: null, error: e.response.data.errors[0].description };
+    }
+  }
 
-    const login = async (userData) => {
-      setLoading(true);
-      setError(null);
+  async function login(userData) {
+    setLoading(true);
 
-      try {
-        const response = await axios.post(`${configData.BASE_URL}/user/signin`, userData);
-        setLoading(false);
-        if (response.status === 200) {
-            return response.data
-        } else {
-            setError(response.data)
-        }
-      } catch (e) {
-        setError(`Connection error: ${e}`);
-        setLoading(false);
+    try {
+      const response = await axiosToLitres.post(`/signin`, userData);
+      setLoading(false);
+      if (response.status === 200) {
+        return { result: response.data, error: null };
+      } else {
+        return { result: null, error: response.data };
       }
-    };
+    } catch (e) {
+      setLoading(false);
+      return { result: null, error: e.response.data.Message };
+    }
+  }
 
-    return { loading, error, register, login };
-  };
+  return { loading, register, login };
+};
 
   export default useAuth;

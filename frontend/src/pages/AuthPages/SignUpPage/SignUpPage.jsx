@@ -14,7 +14,7 @@ const SignUpPage = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [validationError, setError] = useState('');
-    const { loading, error, register } = useAuth();
+    const { loading, register } = useAuth();
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
@@ -36,11 +36,10 @@ const SignUpPage = () => {
             password: password,
         };
 
-        const result = await register(userData);
-        if (error) {
-            setError(error);
-        }
-        if (result.succeeded) {
+        const response = await register(userData);
+        if (response.error) {
+            setError(response.error);
+        } else {
             navigate("/signin")
         }
     };
@@ -90,8 +89,12 @@ const SignUpPage = () => {
                                 onChange={(e) => setConfirmPassword(e.target.value)}/>
                         </div>
                         <div className={'button-sign-up'}>
-                            <Button text={loading ? "Wait..." : "Continue"} onClick={handleRegister} round={"true"} color={"yellow"}
-                                    iconpath={ICONS.next}/>
+                            <Button
+                              text={loading ? "Wait..." : "Continue"}
+                              onClick={handleRegister}
+                              round={"true"}
+                              color={"yellow"}
+                              iconpath={ICONS.next}/>
                         </div>
                         {validationError &&
                             <p className="sign-up-error">{validationError}</p>

@@ -1,4 +1,4 @@
-﻿namespace Tests.MainService.Controllers.BookControllerTests;
+﻿namespace IntegrationTests.MainService.Controllers.BookControllerTests;
 
 public class DeleteBook
 {
