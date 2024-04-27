@@ -152,6 +152,14 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<long>, 
         
         #endregion
         
+        #region Constraints
+        /* Перенёс непосредственно в класс
+        modelBuilder.Entity<ReviewLike>()
+            .HasIndex(p => new { p.UserId, p.ReviewId })
+            .IsUnique();
+        */
+        #endregion
+        
         SeedData(modelBuilder);
     }
 

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Litres.Data.Models;
 
 [Table("ReviewLike")]
+[Index(nameof(UserId), nameof(ReviewId), IsUnique = true)]
 public class ReviewLike
 {
     /// <summary>
