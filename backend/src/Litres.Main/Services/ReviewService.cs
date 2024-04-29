@@ -81,7 +81,9 @@ public class ReviewService(IUnitOfWork unitOfWork) : IReviewService
     public async Task UpdateReview(Review review)
     {
         var reviewRepository = unitOfWork.GetRepository<Review>();
-
+        
+        _ = await reviewRepository.GetByIdAsync(review.Id) ??
+               throw new EntityNotFoundException(typeof(Review), review.Id.ToString()); //For custom exception throw
         reviewRepository.Update(review);
         await unitOfWork.SaveChangesAsync();
     }
