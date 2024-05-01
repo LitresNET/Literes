@@ -2,6 +2,7 @@
 using AutoMapper;
 using Litres.Data.Abstractions.Services;
 using Litres.Data.Dto.Requests;
+using Litres.Data.Dto.Responses;
 using Litres.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -59,5 +60,21 @@ public class ReviewController(IReviewService reviewService, IMapper mapper) : Co
         
         await reviewService.DislikeReview(reviewId, userId);
         return Ok();
+    }
+
+    [HttpGet("{bookId:long}/getbybook")]
+    public async Task<IActionResult> GetByBookId([FromRoute] long bookId)
+    {
+        var reviewList = await reviewService.GetByBookAsync(bookId);
+        var result = mapper.Map<List<ReviewResponseDto>>(reviewList);
+        return Ok(result);
+    }
+    
+    [HttpGet("{parentReviewId:long}/getbybook")]
+    public async Task<IActionResult> GetByParentReview([FromRoute] long parentReviewId)
+    {
+        var reviewList =  await reviewService.GetByParentReviewAsync(parentReviewId);
+        var result = mapper.Map<List<ReviewResponseDto>>(reviewList);
+        return Ok(result);
     }
 }

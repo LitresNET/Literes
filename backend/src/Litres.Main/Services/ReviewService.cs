@@ -71,4 +71,18 @@ public class ReviewService(IUnitOfWork unitOfWork) : IReviewService
 
         await unitOfWork.SaveChangesAsync();
     }
+
+    public async Task<List<Review>> GetByBookAsync(long bookId)
+    {
+        var reviewRepository = (IReviewRepository)unitOfWork.GetRepository<Review>();
+        return await reviewRepository.GetByBookAsync(bookId) ?? 
+               throw new EntityNotFoundException(typeof(User), bookId.ToString());
+    }
+    
+    public async Task<List<Review>> GetByParentReviewAsync(long parentReviewId)
+    {
+        var reviewRepository = (IReviewRepository)unitOfWork.GetRepository<Review>();
+        return await reviewRepository.GetByParentReviewAsync(parentReviewId) ?? 
+               throw new EntityNotFoundException(typeof(User), parentReviewId.ToString());
+    }
 }

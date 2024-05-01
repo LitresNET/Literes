@@ -27,4 +27,18 @@ public class ReviewRepository(ApplicationDbContext appDbContext) : IReviewReposi
     {
         return await appDbContext.Review.Include(review => review.ReviewLikes).FirstOrDefaultAsync(review => review.Id == entityId);
     }
+
+    public async Task<List<Review>> GetByBookAsync(long bookId)
+    {
+        return await appDbContext.Review
+            .Where(review => review.BookId == bookId)
+            .ToListAsync();
+    }
+    
+    public async Task<List<Review>> GetByParentReviewAsync(long parentReviewId)
+    {
+        return await appDbContext.Review
+            .Where(review => review.ParentReviewId == parentReviewId)
+            .ToListAsync();
+    }
 }
