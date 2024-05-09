@@ -23,7 +23,7 @@ public class PickupPoint : IEntity
     /// </summary>
     [Required]
     [MaxLength(128)]
-    public string FiasAdress { get; set; }
+    public string FiasAddress { get; set; }
     
     /// <summary>
     /// Часы работы пункта выдачи

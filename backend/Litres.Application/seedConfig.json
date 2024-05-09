@@ -279,61 +279,61 @@
     {
       "Id": 1,
       "Address": "ул. Саид-Галеева, д.27",
-      "FiasAdress": "0ccc56fa-3cb7-4fc9-9627-8417383806bd",
+      "FiasAddress": "0ccc56fa-3cb7-4fc9-9627-8417383806bd",
       "WorkingHours": "10:00-22:00"
     },
     {
       "Id": 2,
       "Address": "ул. Сабан, д.7А",
-      "FiasAdress": "9797a9b6-607d-40ed-83c6-2d473be17224",
+      "FiasAddress": "9797a9b6-607d-40ed-83c6-2d473be17224",
       "WorkingHours": "09:00-21:00"
     },
     {
       "Id": 3,
       "Address": "ул. Ленинградская, д.32",
-      "FiasAdress": "620d672a-17a7-4db2-821c-46dca70b5817",
+      "FiasAddress": "620d672a-17a7-4db2-821c-46dca70b5817",
       "WorkingHours": "09:00-23:00"
     },
     {
       "Id": 4,
       "Address": "ул. Проспет Победы, д.46",
-      "FiasAdress": "cc72fb9d-4468-449a-a1fe-0d61effb2a5a",
+      "FiasAddress": "cc72fb9d-4468-449a-a1fe-0d61effb2a5a",
       "WorkingHours": "10:00-22:00"
     },
     {
       "Id": 5,
       "Address": "ул. Бондаренко, д.34",
-      "FiasAdress": "a049a83e-8775-43df-adb4-d1c0f7d9b7a6",
+      "FiasAddress": "a049a83e-8775-43df-adb4-d1c0f7d9b7a6",
       "WorkingHours": "10:00-22:00"
     },
     {
       "Id": 6,
       "Address": "ул. Минская, д.46",
-      "FiasAdress": "1166b9da-0d95-4179-a1d1-6fafb8250bc6",
+      "FiasAddress": "1166b9da-0d95-4179-a1d1-6fafb8250bc6",
       "WorkingHours": "09:00-23:00"
     },
     {
       "Id": 7,
       "Address": "ул. Фатыха Амирхана, д.21",
-      "FiasAdress": "f18d8663-31c9-42ba-819b-6274b1202980",
+      "FiasAddress": "f18d8663-31c9-42ba-819b-6274b1202980",
       "WorkingHours": "10:00-22:00"
     },
     {
       "Id": 8,
       "Address": "ул. Щапова, д.2",
-      "FiasAdress": "2a3a1e2f-f50b-4781-ab9a-450131086bc0",
+      "FiasAddress": "2a3a1e2f-f50b-4781-ab9a-450131086bc0",
       "WorkingHours": "00:00-23:59"
     },
     {
       "Id": 9,
       "Address": "ул. Нурсултана Назарбаева, д.45А",
-      "FiasAdress": "383e0f18-63b5-400d-8abb-cacd9f7f1854",
+      "FiasAddress": "383e0f18-63b5-400d-8abb-cacd9f7f1854",
       "WorkingHours": "09:00-23:00"
     },
     {
       "Id": 10,
       "Address": "ул. Петра Полушкина, д.6",
-      "FiasAdress": "f717cf33-87d3-474a-93b3-0d4e804a5462",
+      "FiasAddress": "f717cf33-87d3-474a-93b3-0d4e804a5462",
       "WorkingHours": "08:00-21:00"
     }
   ],

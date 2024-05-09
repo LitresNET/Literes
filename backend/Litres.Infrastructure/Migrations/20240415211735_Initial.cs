@@ -61,7 +61,7 @@ namespace Litres.Data.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Address = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    FiasAdress = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    FiasAddress = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     WorkingHours = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false)
                 },
                 constraints: table =>
@@ -605,7 +605,7 @@ namespace Litres.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "PickupPoint",
-                columns: new[] { "Id", "Address", "FiasAdress", "WorkingHours" },
+                columns: new[] { "Id", "Address", "FiasAddress", "WorkingHours" },
                 values: new object[,]
                 {
                     { 1L, "ул. Саид-Галеева, д.27", "0ccc56fa-3cb7-4fc9-9627-8417383806bd", "10:00-22:00" },
