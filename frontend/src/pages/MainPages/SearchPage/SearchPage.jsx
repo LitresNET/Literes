@@ -8,10 +8,10 @@ import ICONS from "../../../assets/icons.jsx";
 
 function searchPage() {
     const categoryFilters = [1, 2, 3, 4].map((n) =>
-        <option key={n} value={n}>n</option>
+        <option key={n} value={n}>{n}</option>
     );
     const timeFilters = [1, 2, 3, 4].map(n =>
-        <option key={n} value={n}>n</option>
+        <option key={n} value={n}>{n}</option>
     );
 
     const searchBarTitleDiv = useRef(null);
@@ -20,6 +20,17 @@ function searchPage() {
     const [searchString, setSearchString] = useState("");
     const [searchedValue, setSearchedValue] = useState(searchString);
     const [results, setResults] = useState(undefined);
+
+    const [filter, setFilter] = useState();
+    const [category, setCategory] = useState();
+
+    const changeFilter = (selectedFilter) => {
+        setFilter(selectedFilter)
+    }
+
+    const changeCategory = (selectedCategory) => {
+        setCategory(selectedCategory)
+    }
 
     function computeResults(e) {
         e.preventDefault();
@@ -51,34 +62,40 @@ function searchPage() {
     }
 
     return (
-        <div className="adaptive">
-            <div className="search-page" >
-                <form onSubmit={e => computeResults(e)}>
-                    <DropDownInputSearch value={searchedValue} onChange={e => setSearchedValue(e.target.value)}/>
-                </form>
-                <div className="search">
-                    <div className="search-bar">
-                        <div className="search-bar-title" ref={searchBarTitleDiv}>
-                            <h3>Results for: </h3>
-                            <span className="search-string">{searchString}</span>
-                        </div>
-                        <div className="filters">
-                            <DropdownSelect selectgroupname={"Category"}>
-                                {categoryFilters}
-                            </DropdownSelect>
-                            <DropdownSelect selectgroupname={"Filter by"}>
-                                {timeFilters}
-                            </DropdownSelect>
-                        </div>
+        <div className="search-page" >
+            <form onSubmit={e => computeResults(e)}>
+                <DropDownInputSearch value={searchedValue} onChange={e => setSearchedValue(e.target.value)}/>
+            </form>
+            <div className="search">
+                <div className="search-bar">
+                    <div className="search-bar-title" ref={searchBarTitleDiv}>
+                        <h3>Results for: </h3>
+                        <span className="search-string">{searchString}</span>
                     </div>
-                    <div className="search-results-wrapper">
-                        <div className="search-nothing-found" ref={nothingFoundDiv}>
-                            <Icon path={ICONS.book_open} size={"custom"} width={"150"}/>
-                            <p>Nothing was found :\</p>
-                        </div>
-                        <div className="search-results" ref={searchResultsDiv}>
-                            {results}
-                        </div>
+                    <div className="filters">
+                        <DropdownSelect
+                            selectgroupname={"Category"}
+                            value={category}
+                            onChange={changeCategory}
+                        >
+                            {categoryFilters}
+                        </DropdownSelect>
+                        <DropdownSelect
+                            selectgroupname={"Filter by"}
+                            value={filter}
+                            onChange={changeFilter}
+                        >
+                            {timeFilters}
+                        </DropdownSelect>
+                    </div>
+                </div>
+                <div className="search-results-wrapper">
+                    <div className="search-nothing-found" ref={nothingFoundDiv}>
+                        <Icon path={ICONS.book_open} size={"custom"} width={"150"}/>
+                        <p>Nothing was found :\</p>
+                    </div>
+                    <div className="search-results" ref={searchResultsDiv}>
+                        {results}
                     </div>
                 </div>
             </div>

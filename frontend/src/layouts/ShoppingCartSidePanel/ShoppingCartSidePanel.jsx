@@ -4,15 +4,25 @@ import {CartItemCard} from "../../components/CartItemCard/CartItemCard.jsx";
 import ICONS from "../../assets/icons.jsx";
 import {IconButton} from "../../components/UI/Icon/IconButton/IconButton.jsx";
 import "./ShoppingCartSidePanel.css";
+import { Link } from "react-router-dom";
 
-const ShoppingCartSidePanel = () => {
+const ShoppingCartSidePanel = ({isOpen, handleClose}) => {
+    if (!isOpen) return null;
+
+    const handleOutsideClick = (event) => {
+        if (event.target.classList.contains('shopping-cart-side-panel-darker')) {
+            handleClose();
+        }
+    };
 
     return (
         <>
-            <div className={'shopping-cart-side-panel-darker'}>
+            <div className={'shopping-cart-side-panel-darker'} onClick={handleOutsideClick}>
                 <div className={'shopping-cart-side-panel-container'}>
                     <div className={'container-top-shopping-cart-side-panel'}>
-                        <IconButton path={ICONS.caret_left} size="custom" width="32px"/>
+                        <div onClick={handleClose} style={{ cursor: 'pointer' }}>
+                            <IconButton path={ICONS.caret_left} size="custom" width="32px"/>
+                        </div>
                         <p>Your Cart<span>(02 items)</span></p>
                     </div>
 
@@ -32,7 +42,9 @@ const ShoppingCartSidePanel = () => {
                             </div>
                         </div>
                         <div className={'pay-button-shopping-cart-side-panel'}>
-                            <Button color="orange" round={"true"} text={"Pay with stripe"}></Button>
+                            <Link to="/checkout" style={{textDecoration: 'none'}}>
+                                <Button color="orange" round={"true"} text={"Pay with stripe"}></Button>
+                            </Link>
                         </div>
                     </div>
                 </div>

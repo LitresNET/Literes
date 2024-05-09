@@ -11,7 +11,7 @@ public class RequestService(IUnitOfWork unitOfWork) : IRequestService
         long requestId,
         bool requestAccepted = true
     )
-{
+    {
         var requestRepository = (IRequestRepository)unitOfWork.GetRepository<Request>();
         var request = await requestRepository.GetRequestWithBookByIdAsync(requestId);
         if (request is null || request.RequestType == RequestType.Update)
@@ -22,7 +22,7 @@ public class RequestService(IUnitOfWork unitOfWork) : IRequestService
             request.RequestType == RequestType.Create ? requestAccepted : !requestAccepted;
 
         var bookResult = unitOfWork.GetRepository<Book>().Update(request.Book);
-        requestRepository.Delete(request);
+        // requestRepository.Delete(request);
 
         await unitOfWork.SaveChangesAsync();
         return bookResult;

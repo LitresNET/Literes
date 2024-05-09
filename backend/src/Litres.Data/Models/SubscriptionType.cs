@@ -2,9 +2,9 @@
 
 public enum SubscriptionType
 {
-    Free,
-    Student,
-    Scientific,
-    Premium,
-    Personal
+    Free = 1,
+    Student = 2,
+    Scientific = 3,
+    Premium = 4,
+    Custom = 5
 }
