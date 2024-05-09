@@ -6,7 +6,7 @@ using Litres.Main.Services;
 using Moq;
 using Tests.Config;
 
-namespace Tests.MainService.Services.UserServiceTest;
+namespace Tests.MainService.Services.UserServiceTests;
 
 public class UnFavouriteBook
 {

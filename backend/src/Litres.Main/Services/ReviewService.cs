@@ -13,8 +13,7 @@ public class ReviewService(IUnitOfWork unitOfWork) : IReviewService
         if (review.BookId is null && review.ParentReviewId is null ||
             review.BookId is not null && review.ParentReviewId is not null)
         {
-            // TODO: выбрасывать ошибки необрабатываемой сущности (нет ни родителя, ни книги)
-            return;
+            throw new BusinessException("A review cannot refer to both a book and a review at the same time.");
         }
 
         if (review.ParentReviewId is not null)
@@ -22,8 +21,7 @@ public class ReviewService(IUnitOfWork unitOfWork) : IReviewService
             var parentReview = await unitOfWork.GetRepository<Review>().GetByIdAsync((long)review.ParentReviewId!);
             if (parentReview is null)
             {
-                // TODO: выбрасывать ошибки необрабатываемой сущности (родитель или книга несуществующие)
-                return;
+                throw new EntityNotFoundException(typeof(Review), review.ParentReviewId.ToString());
             }
         }
         
@@ -32,8 +30,7 @@ public class ReviewService(IUnitOfWork unitOfWork) : IReviewService
             var book = await unitOfWork.GetRepository<Book>().GetByIdAsync((long)review.BookId!);
             if (book is null)
             {
-                // TODO: выбрасывать ошибки необрабатываемой сущности (родитель или книга несуществующие)
-                return;
+                throw new EntityNotFoundException(typeof(Book), review.BookId.ToString());         
             }
         }
         
@@ -58,17 +55,60 @@ public class ReviewService(IUnitOfWork unitOfWork) : IReviewService
         {
             throw new EntityNotFoundException(typeof(Review), reviewId.ToString());
         }
+
+        var existingLike = review.ReviewLikes.FirstOrDefault(like => like.UserId == userId);
+        if (existingLike is not null)
+        {
+            existingLike.IsLike = isLike;
+            await unitOfWork.SaveChangesAsync();
+            return;
+        }
         
+        //TODO: не будет ли оптимальней не брать сущность юзера из бд, а просто проверять наличие id в таблице?
         var user = await unitOfWork.GetRepository<User>().GetByIdAsync(userId);
         if (user is null)
         {
-            throw new EntityNotFoundException(typeof(Review), userId.ToString());
+            throw new EntityNotFoundException(typeof(User), userId.ToString());
         }
 
         var rl = new ReviewLike { UserId = userId, ReviewId = reviewId, IsLike = isLike };
         review.ReviewLikes.Add(rl);
-        user.ReviewLikes.Add(rl);
+        user.ReviewLikes.Add(rl); //А зачем его вообще добавлять сюда?
 
+        await unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task UpdateReview(Review review)
+    {
+        var reviewRepository = unitOfWork.GetRepository<Review>();
+        
+        _ = await reviewRepository.GetByIdAsync(review.Id) ??
+               throw new EntityNotFoundException(typeof(Review), review.Id.ToString()); //For custom exception throw
+        reviewRepository.Update(review);
+        await unitOfWork.SaveChangesAsync();
+    }
+    
+    public async Task<Review> GetReviewInfo(long reviewId)
+    {
+        var reviewRepository = unitOfWork.GetRepository<Review>();
+
+        return await reviewRepository.GetByIdAsync(reviewId) ??
+               throw new EntityNotFoundException(typeof(Review), reviewId.ToString());
+    }
+    
+    public async Task DeleteReview(long reviewId)
+    {
+        var reviewRepository = unitOfWork.GetRepository<Review>();
+
+        var review = await reviewRepository.GetByIdAsync(reviewId) ??
+               throw new EntityNotFoundException(typeof(Review), reviewId.ToString());
+        await DeleteReview(review);
+    }
+    
+    public async Task DeleteReview(Review review)
+    {
+        var reviewRepository = unitOfWork.GetRepository<Review>();
+        reviewRepository.Delete(review);
         await unitOfWork.SaveChangesAsync();
     }
 

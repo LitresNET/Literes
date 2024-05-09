@@ -15,6 +15,7 @@ public class User : IdentityUser<long>
     [Key] 
     public override long Id { get; set; }
     
+    //TODO: убрать
     /// <summary>
     /// Роль пользователя в системе
     /// </summary>

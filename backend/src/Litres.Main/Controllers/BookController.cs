@@ -49,6 +49,7 @@ public class BookController(IBookService bookService, IMapper mapper) : Controll
 
     [Authorize]
     [HttpDelete("delete/{bookId:long}")]
+    //TODO: зачем при удалении книги publisherId?
     public async Task<IActionResult> Delete([FromRoute] long bookId, [FromQuery] long publisherId)
     {
         await bookService.DeleteBookAsync(bookId, publisherId);

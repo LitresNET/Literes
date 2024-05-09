@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Litres.Data.Models;
 
 [Table("Review")]
+[Index(nameof(UserId), nameof(BookId), IsUnique = true)]
 public class Review
 {
     /// <summary>
