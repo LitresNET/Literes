@@ -12,7 +12,7 @@ namespace Litres.Application.Controllers;
 public class SignInController(ILoginService loginService) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> SignInUserAsync([FromBody] UserLoginDto loginDto)
+    public async Task<IActionResult> SignInUser([FromBody] UserLoginDto loginDto)
     {
         var token = await loginService.LoginUserAsync(loginDto.Email, loginDto.Password);
         return Ok(token);
@@ -25,8 +25,8 @@ public class SignInController(ILoginService loginService) : ControllerBase
         return Challenge(authenticationProperties, GoogleDefaults.AuthenticationScheme);
     }
     
-    [HttpGet("callback/google")]
-    public async Task<IActionResult> GoogleResponseAsync()
+    [HttpGet("callback-google")]
+    public async Task<IActionResult> GoogleResponse()
     {
         var authenticateResult = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
 
@@ -35,6 +35,6 @@ public class SignInController(ILoginService loginService) : ControllerBase
         
         var email = authenticateResult.Principal.FindFirstValue(ClaimTypes.Email);
         var token = await loginService.LoginUserFromExternalServiceAsync(email!, authenticateResult.Principal.Claims);
-        return Ok(token);
+        return token is "" ? BadRequest() : Ok();
     }
 }

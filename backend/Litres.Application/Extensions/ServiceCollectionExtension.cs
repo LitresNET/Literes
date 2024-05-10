@@ -130,7 +130,8 @@ public static class ServiceCollectionExtension
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
+            })
+            .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -147,7 +148,6 @@ public static class ServiceCollectionExtension
             {
                 options.ClientId = configuration["Authentication:Google:ClientId"]!;
                 options.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
-                options.CallbackPath = configuration["Authentication:Google:RedirectUri"]!;
             });
 
         return services;
@@ -157,11 +157,12 @@ public static class ServiceCollectionExtension
     {
         services.AddSerilog((servs, loggerConfiguration) => 
             loggerConfiguration
+                .MinimumLevel.Verbose()
                 .MinimumLevel.Override("Microsoft.AspNetCore.Cors.Infrastructure", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Warning)
-                .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+                // .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
                 .ReadFrom.Configuration(configuration)
                 .ReadFrom.Services(servs)
                 .Enrich.FromLogContext()

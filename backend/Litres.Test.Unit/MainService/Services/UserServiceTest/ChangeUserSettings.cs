@@ -30,14 +30,14 @@ public class ChangeUserSettings
             .Setup(r => r.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(user);
 
-        var expected = new User {Id = user.Id, Name = newName, AvatarUrl = newAvatarUrl};
+        var expected = new User {Id = user.Id, Email = user.Email, UserName = newName, AvatarUrl = newAvatarUrl};
         
         // Act
         var actual = await UserService.ChangeUserSettingsAsync(expected);
         
         // Assert
         Assert.Equal(expected.Id, actual.Id);
-        Assert.Equal(expected.Name, actual.Name);
+        Assert.Equal(expected.UserName, actual.UserName);
         Assert.Equal(expected.AvatarUrl, actual.AvatarUrl);
     }
 }

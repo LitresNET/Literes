@@ -1,8 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Litres.Domain.Abstractions.Entities;
 
 namespace Litres.Domain.Entities;
 
+[Table("Publisher")]
 public class Publisher : IEntity
 {
     public long Id { get; set; }

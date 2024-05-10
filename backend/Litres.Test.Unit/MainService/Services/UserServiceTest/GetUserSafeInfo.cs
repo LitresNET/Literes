@@ -87,7 +87,7 @@ public class GetUserSafeInfo
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
         var expectedUser = fixture.Build<User>()
-            .With(u => u.Name, userName)
+            .With(u => u.UserName, userName)
             .With(u => u.AvatarUrl, avatarUrl)
             .With(u => u.Favourites, userFavourites)
             .With(u => u.Reviews, userReviews)

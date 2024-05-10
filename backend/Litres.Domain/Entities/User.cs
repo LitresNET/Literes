@@ -19,7 +19,7 @@ public class User : IdentityUser<long>, IEntity
     /// Роль пользователя в системе
     /// </summary>
     [DefaultValue(0)]
-    public string? RoleName { get; set; } = "Regular";
+    public string? RoleName { get; set; } = "Member";
     
     /// <summary>
     /// Имя пользователя
@@ -34,18 +34,23 @@ public class User : IdentityUser<long>, IEntity
     [Required] 
     [MaxLength(256)]
     [EmailAddress(ErrorMessage = "Incorrect email")] //Если захотите поменять отправку ошибок в ответе
-    public override string Email { get; set; }
+    public override required string Email { get; set; }
     
     /// <summary>
     /// Хэшированный пароль пользователя
     /// </summary>
-    public override string PasswordHash { get; set; }
+    public override string? PasswordHash { get; set; }
+    
+    /// <summary>
+    /// Нужна ли пользователю дополнительная процедура регистрации. 
+    /// </summary>
+    public bool IsAdditionalRegistrationRequired { get; set; }
     
     /// <summary>
     /// Ссылка на аватар пользователя
     /// </summary>
     [MaxLength(256)]
-    public string AvatarUrl { get; set; }
+    public string? AvatarUrl { get; set; }
     
     /// <summary>
     /// До какого числа активна текущая подписка

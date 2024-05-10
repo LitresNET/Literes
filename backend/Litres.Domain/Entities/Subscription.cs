@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Litres.Domain.Abstractions.Entities;
 using Litres.Domain.Enums;
 
 namespace Litres.Domain.Entities;
 
+[Table("Subscription")]
 public class Subscription : IEntity
 {
     /// <summary>

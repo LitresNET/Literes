@@ -1,8 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Litres.Domain.Abstractions.Entities;
 
 namespace Litres.Domain.Entities;
 
+[Table("Contract")]
 public class Contract : IEntity
 {
     /// <summary>

@@ -9,7 +9,8 @@ public class RegistrationService(
     IContractRepository contractRepository,
     IPublisherRepository publisherRepository,
     IUnitOfWork unitOfWork,
-    UserManager<User> userManager) : IRegistrationService
+    UserManager<User> userManager)
+    : IRegistrationService
 {
     public async Task<IdentityResult> RegisterUserAsync(User user)
     {
@@ -59,5 +60,14 @@ public class RegistrationService(
         await unitOfWork.SaveChangesAsync();
         await transaction.CommitAsync();
         return createResult;
+    }
+
+    public async Task<IdentityResult> FinalizeUserAsync(User user)
+    {
+        var result = await userManager.SetUserNameAsync(user, user.Name);
+        if (!result.Succeeded) return result;
+
+        result = await userManager.AddPasswordAsync(user, user.PasswordHash);
+        return result;
     }
 }

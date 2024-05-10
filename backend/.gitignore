@@ -348,9 +348,13 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Rider
 .idea/
 
+# Configurations
+*/appsettings.Development.json
+
 # node.js
-#
 npm-debug.log
 yarn-error.log

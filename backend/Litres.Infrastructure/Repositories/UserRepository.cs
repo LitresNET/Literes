@@ -19,7 +19,8 @@ public class UserRepository(ApplicationDbContext appDbContext)
             .Where(u => u.Id == userId)
             .Select(u => new User
                 {
-                    Name = u.Name, 
+                    UserName = u.UserName,
+                    Email = u.Email,
                     AvatarUrl = u.AvatarUrl, 
                     Favourites = u.Favourites, 
                     Reviews = u.Reviews

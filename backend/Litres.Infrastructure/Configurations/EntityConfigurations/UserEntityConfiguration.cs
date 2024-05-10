@@ -17,9 +17,6 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
             .WithMany(s => s.Users);
         
         builder
-            .Property(u => u.AvatarUrl)
-            .HasDefaultValue("/");
-        builder
             .Property(u => u.SubscriptionId)
             .HasDefaultValue(1L);
         
