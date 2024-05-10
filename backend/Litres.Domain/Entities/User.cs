@@ -14,12 +14,12 @@ public class User : IdentityUser<long>, IEntity
     /// </summary>
     [Key] 
     public override long Id { get; set; }
-    
+
     /// <summary>
     /// Роль пользователя в системе
     /// </summary>
     [DefaultValue(0)]
-    public IdentityRole<long> Role { get; set; }
+    public string? RoleName { get; set; } = "Regular";
     
     /// <summary>
     /// Имя пользователя

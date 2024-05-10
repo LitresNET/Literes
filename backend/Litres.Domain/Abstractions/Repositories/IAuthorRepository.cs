@@ -2,6 +2,4 @@
 
 namespace Litres.Domain.Abstractions.Repositories;
 
-public interface IAuthorRepository : IRepository<Author>
-{
-}
+public interface IAuthorRepository : IRepository<Author>;

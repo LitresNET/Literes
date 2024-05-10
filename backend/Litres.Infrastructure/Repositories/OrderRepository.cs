@@ -1,8 +1,7 @@
 using System.Linq.Expressions;
-using Litres.Data.Exceptions;
 using Litres.Domain.Abstractions.Repositories;
 using Litres.Domain.Entities;
-using Litres.Infrastructure.Configurations;
+using Litres.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Litres.Infrastructure.Repositories;
@@ -12,7 +11,7 @@ public class OrderRepository(ApplicationDbContext appDbContext)
 {
     public async Task<Order> GetWithFilterAsync(Expression<Func<Order, bool>> filter, IEnumerable<Expression<Func<Order, object>>> includeProperties)
     {
-        var query = appDbContext.Order.AsQueryable();
+        var query = appDbContext.Order.AsNoTracking();
         query = query.Where(filter);
         query = includeProperties.Aggregate(query, 
             (current, includeProperty) => current.Include(includeProperty));

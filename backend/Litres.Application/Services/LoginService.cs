@@ -1,8 +1,8 @@
 using System.Security.Claims;
 using Litres.Application.Models;
-using Litres.Data.Exceptions;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
+using Litres.Domain.Exceptions;
 using Microsoft.AspNetCore.Identity;
 
 namespace Litres.Application.Services;
@@ -47,17 +47,6 @@ public class LoginService(
 
         if (user is null)
             throw new EntityNotFoundException(typeof(User), email);
-        
-        /* TODO: реализовать логику дорегистрации
-        user = new User 
-            { 
-                Email = email, 
-                Name = email.Split('@')[0], 
-                UserName = email,
-                PasswordHash = "123destroyMe!"
-            };
-        await userManager.CreateAsync(user);
-        */
         
         var claims = new List<Claim>
         {

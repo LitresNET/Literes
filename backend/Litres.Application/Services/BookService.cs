@@ -1,21 +1,21 @@
 using System.ComponentModel.DataAnnotations;
 using LinqKit;
-using Litres.Data.Exceptions;
 using Litres.Domain.Abstractions.Repositories;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Litres.Domain.Enums;
+using Litres.Domain.Exceptions;
 
 namespace Litres.Application.Services;
 
-// TODO: по кол-ву репозиториев можно с уверенностью сказать что этот сервис явно выполняет больше работы чем должен
 public class BookService(
     IAuthorRepository authorRepository,
     IUserRepository userRepository,
     IBookRepository bookRepository,
     ISeriesRepository seriesRepository,
     IPublisherRepository publisherRepository,
-    IRequestRepository requestRepository) : IBookService
+    IRequestRepository requestRepository) 
+    : IBookService
 {
     public async Task<Request> PublishNewBookAsync(Book book)
     {
@@ -133,10 +133,10 @@ public class BookService(
         var predicate = builder.Compile();
         
         // Получение данных
-        var books = await bookRepository.GetBooksByFilterAsync(predicate);
+        var books = (await bookRepository.GetBooksByFilterAsync(predicate)).ToList();
 
         // Сортировка
-        var ordered = (IOrderedQueryable<Book>) books;
+        var ordered = books.OrderBy(b => b.Id);
         if (searchParameters?.TryGetValue(SearchParameterType.New, out value) == true
             && bool.TryParse(value, out var isNew))
             ordered = isNew

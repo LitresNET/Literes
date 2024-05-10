@@ -1,6 +1,3 @@
 ﻿namespace Tests.MainService.Controllers.UserControllerTests;
 
-public class RegisterUser
-{
-    
-}
+public class RegisterUser;

@@ -2,6 +2,4 @@
 
 namespace Litres.Domain.Abstractions.Repositories;
 
-public interface ISeriesRepository : IRepository<Series>
-{
-}
+public interface ISeriesRepository : IRepository<Series>;

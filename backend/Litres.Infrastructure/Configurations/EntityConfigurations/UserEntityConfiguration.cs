@@ -18,7 +18,7 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
         
         builder
             .Property(u => u.AvatarUrl)
-            .HasDefaultValue("/"); //TODO: ссылка на дефолтную аватарку
+            .HasDefaultValue("/");
         builder
             .Property(u => u.SubscriptionId)
             .HasDefaultValue(1L);

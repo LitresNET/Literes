@@ -8,18 +8,18 @@ using Microsoft.AspNetCore.Mvc;
 namespace Litres.Application.Controllers;
 
 [ApiController]
-[Route("api/signin")]
+[Route("api/[controller]")]
 public class SignInController(ILoginService loginService) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> SigninUserAsync([FromBody] UserLoginDto loginDto)
+    public async Task<IActionResult> SignInUserAsync([FromBody] UserLoginDto loginDto)
     {
         var token = await loginService.LoginUserAsync(loginDto.Email, loginDto.Password);
         return Ok(token);
     }
     
     [HttpGet("google")]
-    public async Task<IActionResult> SigninWithGoogle()
+    public async Task<IActionResult> SignInWithGoogle()
     { 
         var authenticationProperties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
         return Challenge(authenticationProperties, GoogleDefaults.AuthenticationScheme);
@@ -34,7 +34,6 @@ public class SignInController(ILoginService loginService) : ControllerBase
             return BadRequest();
         
         var email = authenticateResult.Principal.FindFirstValue(ClaimTypes.Email);
-        
         var token = await loginService.LoginUserFromExternalServiceAsync(email!, authenticateResult.Principal.Claims);
         return Ok(token);
     }

@@ -1,8 +1,8 @@
-﻿using Litres.Data.Exceptions;
-using Litres.Domain.Abstractions.Repositories;
+﻿using Litres.Domain.Abstractions.Repositories;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Litres.Domain.Enums;
+using Litres.Domain.Exceptions;
 
 namespace Litres.Application.Services;
 

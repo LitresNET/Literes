@@ -1,10 +1,8 @@
 ﻿using Litres.Domain.Abstractions.Repositories;
-using Litres.Infrastructure.Configurations;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Litres.Infrastructure.Repositories;
 
-//TODO: спросить у препода как вообще это реализовывать правильным образом
 public sealed class UnitOfWork(ApplicationDbContext appDbContext) : IUnitOfWork
 {
     private bool _disposed;

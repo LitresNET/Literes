@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
-using Litres.Data.Exceptions;
 using Litres.Domain.Abstractions.Repositories;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
+using Litres.Domain.Exceptions;
 
 namespace Litres.Application.Services;
 
@@ -14,9 +14,7 @@ public class OrderService(
 {
     public async Task<Order> CreateOrderAsync(Order order)
     {
-        // TODO: из-за переноса выброса исключений при не найдённых сущностях в абстрактный класс Repository<T>...
-        // ...и отсутствии валидации в контроллере появились вот такие непонятные вызовы.
-        // Чтобы от них избавиться надо валидацию делать в контроллере.
+        
         _ = await userRepository.GetByIdAsync(order.UserId);
         _ = await pickupPointRepository.GetByIdAsync(order.PickupPointId);
         

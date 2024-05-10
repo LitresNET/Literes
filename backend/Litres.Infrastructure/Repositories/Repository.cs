@@ -1,7 +1,6 @@
-using Litres.Data.Exceptions;
 using Litres.Domain.Abstractions.Entities;
 using Litres.Domain.Abstractions.Repositories;
-using Litres.Infrastructure.Configurations;
+using Litres.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Litres.Infrastructure.Repositories;
@@ -19,7 +18,7 @@ public abstract class Repository<TEntity>(ApplicationDbContext appDbContext)
     public virtual TEntity Update(TEntity entity)
     {
         var set = appDbContext.Set<TEntity>();
-        var found = set.FirstOrDefault(e => e.Id == entity.Id);
+        var found = set.AsNoTracking().FirstOrDefault(e => e.Id == entity.Id);
         if (found is null)
             throw new EntityNotFoundException(typeof(TEntity), entity.Id.ToString());
         
@@ -30,7 +29,7 @@ public abstract class Repository<TEntity>(ApplicationDbContext appDbContext)
     public virtual TEntity Delete(TEntity entity)
     {
         var set = appDbContext.Set<TEntity>();
-        var found = set.FirstOrDefault(e => e.Id == entity.Id);
+        var found = set.AsNoTracking().FirstOrDefault(e => e.Id == entity.Id);
         if (found is null)
             throw new EntityNotFoundException(typeof(TEntity), entity.Id.ToString());
         
@@ -42,6 +41,16 @@ public abstract class Repository<TEntity>(ApplicationDbContext appDbContext)
     {
         var set = appDbContext.Set<TEntity>();
         var result = await set.FirstOrDefaultAsync(e => e.Id == entityId);
+        if (result is null)
+            throw new EntityNotFoundException(typeof(TEntity), entityId.ToString());
+        
+        return result;
+    }
+    
+    public virtual async Task<TEntity> GetByIdAsNoTrackingAsync(long entityId)
+    {
+        var set = appDbContext.Set<TEntity>();
+        var result = await set.AsNoTracking().FirstOrDefaultAsync(e => e.Id == entityId);
         if (result is null)
             throw new EntityNotFoundException(typeof(TEntity), entityId.ToString());
         

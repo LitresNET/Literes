@@ -1,9 +1,9 @@
 ﻿using AutoFixture;
 using Litres.Application.Services;
-using Litres.Data.Exceptions;
 using Litres.Domain.Abstractions.Repositories;
 using Litres.Domain.Entities;
 using Litres.Domain.Enums;
+using Litres.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Tests.Config;

@@ -2,6 +2,4 @@
 
 namespace Litres.Domain.Abstractions.Repositories;
 
-public interface IReviewRepository : IRepository<Review>
-{
-}
+public interface IReviewRepository : IRepository<Review>;

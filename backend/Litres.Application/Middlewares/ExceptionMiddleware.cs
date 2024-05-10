@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using Litres.Data.Exceptions;
+using Litres.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Litres.Application.Middlewares;

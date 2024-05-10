@@ -2,10 +2,10 @@
 using AutoFixture;
 using AutoFixture.DataAnnotations;
 using Litres.Application.Services;
-using Litres.Data.Exceptions;
 using Litres.Domain.Abstractions.Repositories;
 using Litres.Domain.Entities;
 using Litres.Domain.Enums;
+using Litres.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Tests.Config;
@@ -95,7 +95,6 @@ public class UpdateBook
             .Without(b => b.ContentUrl)
             .Create();
 
-        // TODO: I guess that's not quite right, because test seems to know internals
         var expectedValidationResults = new List<ValidationResult>();
         Validator.TryValidateObject(book, new ValidationContext(book), expectedValidationResults);
         var expected = new EntityValidationFailedException(typeof(Book), expectedValidationResults);

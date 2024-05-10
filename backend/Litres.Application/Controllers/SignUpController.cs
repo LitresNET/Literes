@@ -8,10 +8,10 @@ namespace Litres.Application.Controllers;
 
 [ApiController]
 [Route("api/signup")]
-public class SignupController(IRegistrationService registrationService, IMapper mapper) : ControllerBase
+public class SignUpController(IRegistrationService registrationService, IMapper mapper) : ControllerBase
 {
     [HttpPost("user")]
-    public async Task<IActionResult> SignupUserAsync([FromBody] UserRegistrationDto registrationDto)
+    public async Task<IActionResult> SignUpUserAsync([FromBody] UserRegistrationDto registrationDto)
     {
         var user = mapper.Map<User>(registrationDto);
         var result = await registrationService.RegisterUserAsync(user);
@@ -19,7 +19,7 @@ public class SignupController(IRegistrationService registrationService, IMapper 
     }
     
     [HttpPost("publisher")]
-    public async Task<IActionResult> SignupPublisherAsync([FromBody] PublisherRegistrationDto registrationDto)
+    public async Task<IActionResult> SignUpPublisherAsync([FromBody] PublisherRegistrationDto registrationDto)
     {
         var user = mapper.Map<User>(registrationDto);
         var result = await registrationService.RegisterPublisherAsync(user, registrationDto.ContractNumber);

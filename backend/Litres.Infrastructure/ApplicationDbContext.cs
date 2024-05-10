@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json;
 using Litres.Domain.Entities;
 using Litres.Infrastructure.Configurations.EntityConfigurations;
@@ -40,6 +41,7 @@ public class ApplicationDbContext(
 
     private void SeedData(ModelBuilder modelBuilder)
     {
+        var assembly = Assembly.Load("Litres.Domain");
         var rootPath = configuration.GetValue<string>(WebHostDefaults.ContentRootKey) ?? "";
         var path = Path.Combine(rootPath, "seedConfig.json");
         var jsonString = File.ReadAllText(path);
@@ -48,7 +50,8 @@ public class ApplicationDbContext(
         
         foreach (var c in classes)
         {
-            var type = Type.GetType($"Litres.Data.Models.{c.Key}");
+            var typeName = $"Litres.Domain.Entities.{c.Key}";
+            var type = assembly.GetType(typeName);
             var objects = c.Value.Select(element => element.Deserialize(type)).ToList();
             
             modelBuilder.Entity(type).HasData(objects);

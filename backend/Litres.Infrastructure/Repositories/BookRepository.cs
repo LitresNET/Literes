@@ -1,23 +1,24 @@
 using Litres.Domain.Abstractions.Repositories;
 using Litres.Domain.Entities;
-using Litres.Infrastructure.Configurations;
-using Microsoft.EntityFrameworkCore;
+using LinqKit.Core;
 
 namespace Litres.Infrastructure.Repositories;
 
 public class BookRepository(ApplicationDbContext appDbContext) 
     : Repository<Book>(appDbContext), IBookRepository
 {
-    public async Task<IQueryable<Book>> GetBooksByFilterAsync(Func<Book, bool>? predicate)
+    public Task<IEnumerable<Book>> GetBooksByFilterAsync(Func<Book, bool>? predicate)
     {
-        return predicate is not null 
-            ? appDbContext.Book.Where(b => predicate(b)) 
+        var list = predicate is not null 
+            ? appDbContext.Book.AsExpandable().AsEnumerable().Where(predicate) 
             : appDbContext.Book;
+        
+        return Task.FromResult(list);
     }
 
     public async Task<Book> DeleteByIdAsync(long bookId)
     {
-        var book = await appDbContext.Book.SingleAsync(b => b.Id == bookId);
+        var book = await GetByIdAsNoTrackingAsync(bookId);
         var result = appDbContext.Book.Remove(book);
         return result.Entity;
     }
