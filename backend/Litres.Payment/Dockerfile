@@ -14,7 +14,7 @@ RUN npm --verbose install
 COPY . .
 
 # Собираем Nest.js приложение
-RUN npm run build
+RUN npm run build --verbose
 
 # Создаем образ Node.js для запуска приложения
 FROM node:20-alpine AS runtime-node
