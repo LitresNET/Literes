@@ -19,7 +19,10 @@ public class LoginService(
 
         if (user is null)
             throw new EntityNotFoundException(typeof(User), email);
-    
+
+        if (user.IsAdditionalRegistrationRequired)
+            throw new AdditionalRegistrationRequiredException("Only OAuth is permitted.");
+        
         var result = await signInManager.CheckPasswordSignInAsync(user, password, false);
         
         if (result == SignInResult.Failed)
@@ -43,13 +46,11 @@ public class LoginService(
         {
             user = new User
             {
-                RoleName = "Regular",
+                RoleName = "Member",
                 Email = email,
-                Name = GetNormalizedUserName(externalClaims),
+                Name = externalClaims?.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? "",
                 IsAdditionalRegistrationRequired = true,
-                UserName = Guid.NewGuid().ToString().Replace("-", "").ToLower(),
-                PhoneNumber = "",
-                PasswordHash = ""
+                UserName = Guid.NewGuid().ToString().Replace("-", "").ToLower()
             };
             var result = await userManager.CreateAsync(user);
             if (!result.Succeeded)
@@ -69,16 +70,7 @@ public class LoginService(
         
         return token;
     }
-
-    private string GetNormalizedUserName(IEnumerable<Claim>? externalClaims)
-    {
-        var userName = externalClaims?.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? "";
-        var normalizedUserName = string.Join("", userName.Select(c => char.IsLetterOrDigit(c) ? c.ToString() : ""));
-        return normalizedUserName is null or "" 
-            ? "user123123" 
-            : normalizedUserName;
-    }
-
+    
     private static List<Claim> CreateClaimsByUser(User user)
     {
         var claims = new List<Claim>

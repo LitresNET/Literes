@@ -20,7 +20,6 @@ public class GetBookWithAccessCheck
 
     private BookService BookService => new(
         _authorRepositoryMock.Object,
-        _userRepositoryMock.Object,
         _bookRepositoryMock.Object,
         _seriesRepositoryMock.Object,
         _publisherRepositoryMock.Object,
@@ -67,7 +66,7 @@ public class GetBookWithAccessCheck
 
         // Act
 
-        var actual = await BookService.GetBookWithAccessCheckAsync(userId, bookId);
+        var actual = await BookService.GetBookInfoAsync(bookId);
 
         // Assert
         Assert.Equal(expected.Id, actual.Id);
@@ -113,7 +112,7 @@ public class GetBookWithAccessCheck
         var expected = book;
         
         // Act
-        var actual = await BookService.GetBookWithAccessCheckAsync(userId, bookId);
+        var actual = await BookService.GetBookInfoAsync(bookId);
 
         // Assert
         Assert.Equal(expected.Id, actual.Id);
@@ -133,7 +132,7 @@ public class GetBookWithAccessCheck
             .ThrowsAsync(expected);
 
         // Act
-        var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => BookService.GetBookWithAccessCheckAsync(userId, 0));
+        var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => BookService.GetBookInfoAsync(0));
 
         // Assert
         Assert.Equal(expected.Message, actual.Message);
@@ -164,7 +163,7 @@ public class GetBookWithAccessCheck
             .ThrowsAsync(expected);
         
         // Act
-        var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => BookService.GetBookWithAccessCheckAsync(userId, bookId));
+        var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => BookService.GetBookInfoAsync(bookId));
 
         // Assert
         Assert.Equal(expected.Message, actual.Message);

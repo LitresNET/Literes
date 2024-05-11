@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Security.Claims;
 using AutoMapper;
 using Litres.Application.Dto.Requests;
 using Litres.Application.Dto.Responses;
@@ -13,49 +14,43 @@ namespace Litres.Application.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class SubscriptionController(
-    ISubscriptionService subscriptionService,
-    IMapper mapper
-    ) : ControllerBase
+        ISubscriptionService subscriptionService,
+        IMapper mapper)
+    : ControllerBase
 {
-    [HttpGet("{subscriptionId:long}")]
+    [HttpGet("{subscriptionId:long}")] // api/subscription/{subscriptionId}
     public async Task<IActionResult> GetSubscription(long subscriptionId)
     {
         var subscription = await subscriptionService.GetAsync(subscriptionId);
-        var dto = mapper.Map<SubscriptionResponseDto>(subscription);
-        return Ok(dto);
+        var response = mapper.Map<SubscriptionResponseDto>(subscription);
+        return Ok(response);
     }
 
     [Authorize]
-    [HttpPatch("update/{name}")]
+    [HttpPatch] // api/subscription?subscriptionName={subscriptionName}
     public async Task<IActionResult> UpdateSubscription(
-        [FromQuery] string name,
+        [FromQuery] string subscriptionName,
         [FromBody] SubscriptionRequestDto customSubscription)
     {
-        if (!long.TryParse(
-                User.FindFirst(CustomClaimTypes.UserId)?.Value,
-                NumberStyles.Any,
-                CultureInfo.InvariantCulture, out var userId
-            ))
-            return BadRequest();
-        
-        customSubscription.Name = name;
+        var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
+            NumberStyles.Any, CultureInfo.InvariantCulture);
+
         var subscription = mapper.Map<Subscription>(customSubscription);
-            
+        subscription.Name = subscriptionName;
+
         var result = await subscriptionService.ChangeAsync(userId, subscription);
-        return result.Id == subscription.Id ? Ok() : BadRequest("The account lacks the necessary funds");
+        return result.Id == subscription.Id
+            ? Ok()
+            : BadRequest("The account lacks the necessary funds");
     }
 
     [Authorize]
-    [HttpPatch("reset")]
+    [HttpPatch("reset")] // api/subscription/reset
     public async Task<IActionResult> ResetSubscription()
     {
-        if (!long.TryParse(
-                User.FindFirst(CustomClaimTypes.UserId)?.Value,
-                NumberStyles.Any,
-                CultureInfo.InvariantCulture, out var userId
-            ))
-            return BadRequest();
-        
+        var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
+            NumberStyles.Any, CultureInfo.InvariantCulture);
+
         await subscriptionService.ResetAsync(userId);
         return Ok();
     }

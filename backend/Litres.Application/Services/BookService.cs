@@ -10,14 +10,13 @@ namespace Litres.Application.Services;
 
 public class BookService(
     IAuthorRepository authorRepository,
-    IUserRepository userRepository,
     IBookRepository bookRepository,
     ISeriesRepository seriesRepository,
     IPublisherRepository publisherRepository,
     IRequestRepository requestRepository) 
     : IBookService
 {
-    public async Task<Request> PublishNewBookAsync(Book book)
+    public async Task<Request> CreateBookAsync(Book book)
     {
         var context = new ValidationContext(book);
         var results = new List<ValidationResult>();
@@ -105,16 +104,10 @@ public class BookService(
         return result;
     }
 
-    public async Task<Book> GetBookWithAccessCheckAsync(long userId, long bookId)
+    public async Task<Book> GetBookInfoAsync(long bookId)
     {
-        var user = await userRepository.GetByIdAsync(userId);
-        var book = await bookRepository.GetByIdAsync(bookId);
-
-        var allowedGenres = user.Subscription!.BooksAllowed;
-        if (allowedGenres.Count != 0 
-            && !allowedGenres.Any(genre => book.BookGenres.Contains(genre)))
-            book.ContentUrl = "";
-
+        var book = await bookRepository.GetByIdAsNoTrackingAsync(bookId);
+        book.ContentUrl = "";
         return book;
     }
     

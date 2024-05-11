@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
+using System.Security.Claims;
 using AutoMapper;
-using Litres.Application.Dto.Requests;
+using Litres.Application.Dto;
 using Litres.Application.Models;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
@@ -11,54 +12,35 @@ namespace Litres.Application.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ReviewController(IReviewService reviewService, IMapper mapper) : ControllerBase
+public class ReviewController(
+        IReviewService service,
+        IMapper mapper)
+    : ControllerBase
 {
-    [Authorize]
-    [HttpPost("post")]
-    public async Task<IActionResult> PostReview([FromBody] ReviewCreateRequestDto dto)
+    [Authorize(Roles = "Member")]
+    [HttpPost] // api/review
+    public async Task<IActionResult> CreateReview([FromBody] ReviewDto dto)
     {
-        if (!long.TryParse(
-                User.FindFirst(CustomClaimTypes.UserId)?.Value,
-                NumberStyles.Any,
-                CultureInfo.InvariantCulture, out var userId
-            ))
-            return BadRequest();
-        
+        var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
+            NumberStyles.Any, CultureInfo.InvariantCulture);
+
         var review = mapper.Map<Review>(dto);
         review.UserId = userId;
         review.CreatedAt = DateTime.Now;
 
-        await reviewService.AddReview(review);
-        return Ok();
+        var result = await service.AddReview(review);
+        var response = mapper.Map<ReviewDto>(result);
+        return Ok(response);
     }
-    
-    [Authorize]
-    [HttpPost("{reviewId:long}/like")]
-    public async Task<IActionResult> LikeReview([FromRoute] long reviewId)
+
+    [Authorize(Roles = "Member")]
+    [HttpPost("{reviewId:long}")] // api/review/{reviewId}?isLike={isLike}
+    public async Task<IActionResult> LikeReview([FromRoute] long reviewId, [FromQuery] bool isLike)
     {
-        if (!long.TryParse(
-                User.FindFirst(CustomClaimTypes.UserId)?.Value,
-                NumberStyles.Any,
-                CultureInfo.InvariantCulture, out var userId
-            ))
-            return BadRequest();
-        
-        await reviewService.LikeReview(reviewId, userId);
-        return Ok();
-    }
-    
-    [Authorize]
-    [HttpPost("{reviewId:long}/dislike")]
-    public async Task<IActionResult> DislikeReview([FromRoute] long reviewId)
-    {
-        if (!long.TryParse(
-                User.FindFirst(CustomClaimTypes.UserId)?.Value,
-                NumberStyles.Any,
-                CultureInfo.InvariantCulture, out var userId
-            ))
-            return BadRequest();
-        
-        await reviewService.DislikeReview(reviewId, userId);
-        return Ok();
+        var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
+            NumberStyles.Any, CultureInfo.InvariantCulture);
+
+        await service.RateReview(reviewId, userId, isLike);
+        return Ok(isLike);
     }
 }

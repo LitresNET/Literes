@@ -28,7 +28,6 @@ public class Review : IEntity
     /// <summary>
     /// Дата публикации отзыва
     /// </summary>
-    [Required]
     public DateTime CreatedAt { get; set; }
     
     /// <summary>

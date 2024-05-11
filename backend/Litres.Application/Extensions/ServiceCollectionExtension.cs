@@ -2,6 +2,7 @@
 using AutoMapper;
 using Hangfire;
 using Litres.Application.Configuration.Mapper;
+using Litres.Application.Controllers.Options;
 using Litres.Application.Middlewares;
 using Litres.Application.Services;
 using Litres.Domain.Abstractions.Repositories;
@@ -139,7 +140,7 @@ public static class ServiceCollectionExtension
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(configuration["JwtSecurityKey"]!)
+                        Encoding.UTF8.GetBytes(configuration["Authentication:Jwt:SecurityKey"]!)
                     ),
                     ValidateIssuerSigningKey = true,
                 };
@@ -149,10 +150,10 @@ public static class ServiceCollectionExtension
                 options.ClientId = configuration["Authentication:Google:ClientId"]!;
                 options.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
             });
-
+        
         return services;
     }
-
+    
     public static IServiceCollection AddConfiguredSerilog(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSerilog((servs, loggerConfiguration) => 
@@ -162,12 +163,20 @@ public static class ServiceCollectionExtension
                 .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Warning)
-                // .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+                .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
                 .ReadFrom.Configuration(configuration)
                 .ReadFrom.Services(servs)
                 .Enrich.FromLogContext()
         );
         
+        return services;
+    }
+
+    public static IServiceCollection ConfigureServices(this IServiceCollection services, IHostEnvironment environment,
+        IConfiguration configuration)
+    {
+        services.Configure<OrderControllerOptions>(configuration.GetSection("ExternalServices"));
+
         return services;
     }
 }

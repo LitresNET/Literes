@@ -13,7 +13,6 @@
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
-*.sync/
 
 # Mono auto generated files
 mono_crash.*
@@ -350,9 +349,13 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Rider
 .idea/
 
+# Configurations
+/backend/*/appsettings.Development.json
+
 # node.js
-#
 npm-debug.log
 yarn-error.log

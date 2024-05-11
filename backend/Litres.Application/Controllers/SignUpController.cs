@@ -10,27 +10,33 @@ namespace Litres.Application.Controllers;
 [Route("api/[controller]")]
 public class SignUpController(IRegistrationService registrationService, IMapper mapper) : ControllerBase
 {
-    [HttpPost("user")]
+    [HttpPost("user")] // api/signup/user
     public async Task<IActionResult> SignUpUser([FromBody] UserRegistrationDto registrationDto)
     {
         var user = mapper.Map<User>(registrationDto);
         var result = await registrationService.RegisterUserAsync(user);
-        return result.Succeeded ? Ok() : BadRequest(result.Errors.Select(e => e.Description));
+        return result.Succeeded 
+            ? Ok() 
+            : BadRequest(result.Errors.Select(e => e.Description));
     }
     
-    [HttpPost("publisher")]
+    [HttpPost("publisher")] // api/signup/publisher
     public async Task<IActionResult> SignUpPublisher([FromBody] PublisherRegistrationDto registrationDto)
     {
         var user = mapper.Map<User>(registrationDto);
         var result = await registrationService.RegisterPublisherAsync(user, registrationDto.ContractNumber);
-        return result.Succeeded ? Ok() : BadRequest(result.Errors.Select(e => e.Description));
+        return result.Succeeded 
+            ? Ok() 
+            : BadRequest(result.Errors.Select(e => e.Description));
     }
     
-    [HttpPost("user/final")]
+    [HttpPost("user/final")] // api/signup/user/final
     public async Task<IActionResult> FinalizeUser([FromBody] UserRegistrationDto dto)
     {
-        var tenant = mapper.Map<User>(dto);
-        var result = await registrationService.FinalizeUserAsync(tenant);
-        return result.Succeeded ? Ok() : BadRequest(result.Errors.Select(e => e.Description));
+        var user = mapper.Map<User>(dto);
+        var result = await registrationService.FinalizeUserAsync(user);
+        return result.Succeeded 
+            ? Ok() 
+            : BadRequest(result.Errors.Select(e => e.Description));
     }
 }

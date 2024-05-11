@@ -26,4 +26,8 @@
     <ItemGroup>
         <Using Include="Xunit"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Litres.Application\Litres.Application.csproj" />
+    </ItemGroup>
 </Project>

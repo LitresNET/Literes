@@ -6,12 +6,11 @@ using Litres.Domain.Exceptions;
 namespace Litres.Application.Services;
 
 public class ReviewService(
-    IUserRepository userRepository,
     IReviewRepository reviewRepository,
-    IBookRepository bookRepository,
-    IUnitOfWork unitOfWork) : IReviewService
+    IBookRepository bookRepository) 
+    : IReviewService
 {
-    public async Task AddReview(Review review)
+    public async Task<Review> AddReview(Review review)
     {
         // у отзыва либо отсутствует ссылка на родительский отзыв, либо на книгу, иначе - ошибка
         if (review.BookId is null && review.ParentReviewId is null ||
@@ -20,27 +19,24 @@ public class ReviewService(
                 "no parent review and book that it belongs to.");
 
         if (review.ParentReviewId is not null)
-            await reviewRepository.GetByIdAsync((long)review.ParentReviewId!);
+            await reviewRepository.GetByIdAsNoTrackingAsync((long) review.ParentReviewId!);
         
         if (review.BookId is not null)
-            await bookRepository.GetByIdAsync((long)review.BookId!);
+            await bookRepository.GetByIdAsNoTrackingAsync((long) review.BookId!);
         
-        await reviewRepository.AddAsync(review);
+        var dbReview = await reviewRepository.AddAsync(review);
         await reviewRepository.SaveChangesAsync();
+        
+        return dbReview;
     }
 
-    public async Task LikeReview(long reviewId, long userId) => await RateReview(reviewId, userId, true);
-    public async Task DislikeReview(long reviewId, long userId) => await RateReview(reviewId, userId, false);
-
-    private async Task RateReview(long reviewId, long userId, bool isLike)
+    public async Task RateReview(long reviewId, long userId, bool isLike)
     {
-        var review = await reviewRepository.GetByIdAsync(reviewId);
-        var user = await userRepository.GetByIdAsync(userId);
+        var dbReview = await reviewRepository.GetByIdAsync(reviewId);
 
         var rl = new ReviewLike { UserId = userId, ReviewId = reviewId, IsLike = isLike };
-        review.ReviewLikes.Add(rl);
-        user.ReviewLikes.Add(rl);
+        dbReview.ReviewLikes.Add(rl);
 
-        await unitOfWork.SaveChangesAsync();
+        await reviewRepository.SaveChangesAsync();
     }
 }

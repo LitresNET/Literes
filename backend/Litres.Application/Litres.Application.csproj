@@ -70,10 +70,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Configuration\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Litres.Domain\Litres.Domain.csproj" />
       <ProjectReference Include="..\Litres.Infrastructure\Litres.Infrastructure.csproj" />
     </ItemGroup>

@@ -21,7 +21,6 @@ public class DeleteBook
     
     private BookService BookService => new(
         _authorRepositoryMock.Object,
-        _userRepositoryMock.Object,
         _bookRepositoryMock.Object,
         _seriesRepositoryMock.Object,
         _publisherRepositoryMock.Object,

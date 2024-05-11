@@ -23,7 +23,6 @@ public class PublishBook
     
     private BookService BookService => new(
         _authorRepositoryMock.Object,
-        _userRepositoryMock.Object,
         _bookRepositoryMock.Object,
         _seriesRepositoryMock.Object,
         _publisherRepositoryMock.Object,
@@ -70,7 +69,7 @@ public class PublishBook
         var service = BookService;
 
         // Act
-        var result = await service.PublishNewBookAsync(expectedBook);
+        var result = await service.CreateBookAsync(expectedBook);
 
         // Assert
         Assert.Equal(expectedRequest, result);
@@ -97,7 +96,7 @@ public class PublishBook
 
         // Act
         var exception = await Assert.ThrowsAsync<EntityValidationFailedException>(
-            async () => await service.PublishNewBookAsync(book)
+            async () => await service.CreateBookAsync(book)
         );
         
         // Assert
@@ -122,7 +121,7 @@ public class PublishBook
 
         // Assert
         await Assert.ThrowsAsync<DbUpdateException>(
-            async () => await BookService.PublishNewBookAsync(book)
+            async () => await BookService.CreateBookAsync(book)
         );
     }
 }

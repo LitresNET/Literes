@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Security.Claims;
 using AutoMapper;
 using Litres.Application.Dto.Requests;
 using Litres.Application.Dto.Responses;
@@ -12,60 +13,83 @@ using Microsoft.AspNetCore.Mvc;
 namespace Litres.Application.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-public class BookController(IBookService bookService, IMapper mapper) : ControllerBase
+[Route("api/[controller]")] // api/book
+public class BookController(
+    IBookService service, 
+    IMapper mapper) 
+    : ControllerBase
 {
-    [Authorize]
-    [HttpGet("read/{bookId:long}")]
-    public async Task<IActionResult> Get(long bookId)
+    [AllowAnonymous]
+    [HttpGet("{bookId:long}")] // api/book/{bookId}
+    public async Task<IActionResult> GetBook(long bookId)
     {
-        if (!long.TryParse(
-                User.FindFirst(CustomClaimTypes.UserId)?.Value,
-                NumberStyles.Any,
-                CultureInfo.InvariantCulture, out var userId
-            ))
-            return BadRequest();
-        
-        var result = await bookService.GetBookWithAccessCheckAsync(userId, bookId);
+        long.TryParse(User.FindFirstValue(CustomClaimTypes.UserId),
+            NumberStyles.Any, CultureInfo.InvariantCulture, out var userId);
+
+        var result = await service.GetBookInfoAsync(bookId);
         var response = mapper.Map<BookResponseDto>(result);
         return Ok(response);
     }
-    
-    [HttpGet("catalog/page/{pageNumber:int}/take/{amount:int}")]
-    public async Task<IActionResult> GetCatalog(
-        [FromQuery] Dictionary<SearchParameterType, string> searchParameters,
+
+    [AllowAnonymous]
+    [HttpGet("catalog/{pageNumber:int}/{amount:int}")] // api/book/catalog/{pageNumber}/{amount}
+    public async Task<IActionResult> GetBookCatalog(
         [FromRoute] int pageNumber,
-        [FromRoute] int amount)
+        [FromRoute] int amount,
+        [FromQuery] Dictionary<SearchParameterType, string> searchParameters)
     {
-        var result = await bookService.GetBookCatalogAsync(searchParameters, pageNumber, amount);
+        var result = await service.GetBookCatalogAsync(searchParameters, pageNumber, amount);
         var response = mapper.Map<List<BookResponseDto>>(result);
         return Ok(response);
     }
-    
-    [HttpPost("publish")]
-    public async Task<IActionResult> Publish([FromBody] BookCreateRequestDto bookDto)
+
+    [Authorize(Roles = "Publisher")]
+    [HttpPost] // api/book
+    public async Task<IActionResult> CreateBook([FromBody] BookCreateRequestDto bookDto)
     {
+        var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
+            NumberStyles.Any, CultureInfo.InvariantCulture);
+        
+        bookDto.AuthorId = userId;
         var book = mapper.Map<Book>(bookDto);
-        var request = await bookService.PublishNewBookAsync(book);
+        var request = await service.CreateBookAsync(book);
+        var result = mapper.Map<RequestResponseDto>(request);
+        return Ok(result);
+    }
+    
+    [Authorize(Roles = "Publisher")]
+    [HttpPatch("{bookId:long}")]
+    public async Task<IActionResult> UpdateBook(
+        [FromRoute] long bookId,
+        [FromQuery] long publisherId,
+        [FromBody] BookUpdateRequestDto bookDto)
+    {
+        var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
+            NumberStyles.Any, CultureInfo.InvariantCulture);
+        
+        var dbBook = await service.GetBookInfoAsync(bookId);
+        if (dbBook.AuthorId != userId)
+            return Forbid();
+        
+        var book = mapper.Map<Book>(bookDto);
+        book.Id = bookId;
+        var request = await service.UpdateBookAsync(book, publisherId);
         var result = mapper.Map<RequestResponseDto>(request);
         return Ok(result);
     }
 
-    [Authorize]
-    [HttpDelete("delete/{bookId:long}")]
-    public async Task<IActionResult> Delete([FromRoute] long bookId, [FromQuery] long publisherId)
+    [Authorize(Roles = "Publisher")]
+    [HttpDelete("{bookId:long}")] // api/book/{bookId}
+    public async Task<IActionResult> DeleteBook([FromRoute] long bookId, [FromQuery] long publisherId)
     {
-        await bookService.DeleteBookAsync(bookId, publisherId);
+        var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
+            NumberStyles.Any, CultureInfo.InvariantCulture);
+        
+        var book = await service.GetBookInfoAsync(bookId);
+        if (book.AuthorId != userId)
+            return Forbid();
+        
+        await service.DeleteBookAsync(bookId, publisherId);
         return Ok();
-    }
-    
-    [HttpPatch("update/{bookId:long}")]
-    public async Task<IActionResult> Update([FromRoute] long bookId, [FromBody] BookUpdateRequestDto bookDto, [FromQuery] long publisherId)
-    {
-        var book = mapper.Map<Book>(bookDto);
-        book.Id = bookId;
-        var request = await bookService.UpdateBookAsync(book, publisherId);
-        var result = mapper.Map<RequestResponseDto>(request);
-        return Ok(result);
     }
 }

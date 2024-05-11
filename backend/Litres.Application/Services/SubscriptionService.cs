@@ -14,7 +14,7 @@ public class SubscriptionService(
     /// <summary>
     /// Получает информацию по подписке
     /// </summary>
-    /// <param name="subscriptionId">Идентификатор подписки</param>
+    /// <param subscriptionName="subscriptionId">Идентификатор подписки</param>
     /// <returns>Подписка</returns>
     /// <exception cref="EntityNotFoundException">Если подписка не была найдена</exception>
     public async Task<Subscription> GetAsync(long subscriptionId)
@@ -26,8 +26,8 @@ public class SubscriptionService(
     /// <summary>
     /// Пытается поменять подписку пользователю на новую
     /// </summary>
-    /// <param name="userId">Идентификатор пользователя</param>
-    /// <param name="newSubscription">Новая подписка</param>
+    /// <param subscriptionName="userId">Идентификатор пользователя</param>
+    /// <param subscriptionName="newSubscription">Новая подписка</param>
     /// <returns>Подписка, которая была установлена</returns>
     /// <exception cref="EntityNotFoundException">Если пользователь не был найден</exception>
     public async Task<Subscription> ChangeAsync(long userId, Subscription newSubscription)
@@ -71,7 +71,7 @@ public class SubscriptionService(
     /// <summary>
     /// Пытается продлить пользователю подписку.
     /// </summary>
-    /// <param name="userId">Идентификатор пользователя</param>
+    /// <param subscriptionName="userId">Идентификатор пользователя</param>
     /// <returns>Установленная подписка</returns>
     /// <exception cref="EntityNotFoundException">Не бал найден пользовать -ИЛИ- Не была найдена подписка</exception>
     public async Task<Subscription> RenewAsync(long userId)
@@ -93,7 +93,7 @@ public class SubscriptionService(
     /// <summary>
     /// Сбрасывает подписку пользователю на бесплатную.
     /// </summary>
-    /// <param name="userId">Идентификатор пользователя</param>
+    /// <param subscriptionName="userId">Идентификатор пользователя</param>
     /// <exception cref="EntityNotFoundException">Если нет такого пользователя</exception>
     public async Task ResetAsync(long userId)
     {

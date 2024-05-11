@@ -64,10 +64,9 @@ public class RegistrationService(
 
     public async Task<IdentityResult> FinalizeUserAsync(User user)
     {
-        var result = await userManager.SetUserNameAsync(user, user.Name);
-        if (!result.Succeeded) return result;
-
-        result = await userManager.AddPasswordAsync(user, user.PasswordHash);
+        var dbUser = await userManager.FindByEmailAsync(user.Email);
+        if (dbUser is null) return IdentityResult.Failed(new IdentityError {Description = "No such user found"});
+        var result = await userManager.AddPasswordAsync(dbUser, user.PasswordHash);
         return result;
     }
 }

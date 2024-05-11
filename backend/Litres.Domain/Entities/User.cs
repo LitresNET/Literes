@@ -34,7 +34,7 @@ public class User : IdentityUser<long>, IEntity
     [Required] 
     [MaxLength(256)]
     [EmailAddress(ErrorMessage = "Incorrect email")] //Если захотите поменять отправку ошибок в ответе
-    public override required string Email { get; set; }
+    public override string Email { get; set; }
     
     /// <summary>
     /// Хэшированный пароль пользователя
