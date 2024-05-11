@@ -2,7 +2,6 @@
 using AutoMapper;
 using Hangfire;
 using Litres.Application.Abstractions.Repositories;
-using Litres.Application.Configuration.Mapper;
 using Litres.Application.Services;
 using Litres.Domain.Abstractions.Services;
 using Litres.Infrastructure.Repositories;

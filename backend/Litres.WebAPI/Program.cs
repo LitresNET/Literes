@@ -1,9 +1,9 @@
 using Hangfire;
-using Litres.Application.Hubs;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Litres.Infrastructure;
 using Litres.WebAPI.Extensions;
+using Litres.WebAPI.Hubs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -88,7 +88,7 @@ application.Run();
 // DONE: везде проставить доступ через атрибуты - Решено: проставлен доступ к методам по ролям на своё усмотрение. Обнаружена нехватка методов в некоторых контроллерах, добавлено в задачи
 // DONE: найти все IConfigurations в сервисах и заменить их на IOptions - Решено: в extension методах замены не было, потому что мы всё это делаем всё равно на этапе запуска, там прирост скорости будет незначитальный
 
-// TODO: финансовые операции должны списывать деньги с внутреннего счета, если не хватает, редирект на сервис оплаты
+// TODO: [IN PROGRESS] финансовые операции должны списывать деньги с внутреннего счета, если не хватает, редирект на сервис оплаты
 // TODO: добавить метод получения списка отзывов по книге (с пагинацией желательно)
 // TODO: Signal R 
 // TODO: Защита от мошенников ([ValidateAntiForgeryToken]) - это какой-то пиздец, там надо и мидлварю и фильтр походу, потому что дефолтная реализация работает только для Razor паджес(

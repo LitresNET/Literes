@@ -5,8 +5,8 @@ namespace Litres.Domain.Abstractions.Services;
 
 public interface IOrderService
 {
+    public Task<Order> GetOrderByIdAsNoTrackingAsync(long orderId);
     public Task<Order> CreateOrderAsync(Order order);
-    public Task<Order> GetOrderByIdWithIncludes(long orderId);
-    public Task<Order> ConfirmOrderAsync(long orderId, bool isSuccess);
-    public Task<Order> ChangeOrderStatusAsync(long orderId, OrderStatus status);
+    public Task<Order> UpdateOrderStatusAsync(long orderId, OrderStatus status);
+    public Task<Order> UpdateOrderAsync(Order order);
 }

@@ -1,37 +1,35 @@
 using AutoMapper;
+using Litres.Application.Dto;
 using Litres.Application.Dto.Requests;
 using Litres.Application.Dto.Responses;
 using Litres.Domain.Entities;
+using Litres.Domain.Enums;
 
-namespace Litres.Application.Configuration.Mapper;
+namespace Litres.WebAPI.Configuration.Mapper;
 
 public class OrderMapperProfile : Profile
 {
     public OrderMapperProfile()
     {
-        CreateMap<OrderRequestDto, Order>();
-        
-        CreateMap<OrderProcessDto, Order>()
-            .ForMember(
-                "OrderedBooks", 
-                opt => 
-                    opt.MapFrom(src => 
-                        src.BooksAmount.Select(kv => 
-                            new BookOrder
-                            {
-                                BookId = kv.Key, 
-                                Quantity = kv.Value
-                            }).ToList()));
+        CreateMap<OrderDto, Order>()
+            .ForMember(o => o.Status, opt => opt.MapFrom(src => Enum.Parse<OrderStatus>(src.Status)))
+            .ForMember(o => o.OrderedBooks, opt => 
+                opt.MapFrom(src => 
+                    src.Books.Select(b => 
+                        new BookOrder
+                        {
+                            BookId = b.BookId, 
+                            Quantity = b.Amount
+                        }).ToList()));
 
-        CreateMap<Order, OrderResponseDto>()
-            .ForMember("OrderId", opt => 
-                opt.MapFrom(src => src.Id))
-            .ForMember("Products", opt => 
+        CreateMap<Order, OrderDto>()
+            .ForMember(dto => dto.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+            .ForMember(dto => dto.Books, opt => 
                 opt.MapFrom(src => 
                     src.OrderedBooks.Select(orderBook => 
                         new ProductResponseDto
                         {
-                            Name = orderBook.Book.Name,
+                            BookName = orderBook.Book.Name,
                             Amount = orderBook.Quantity,
                             Price = orderBook.Book.Price
                         })));

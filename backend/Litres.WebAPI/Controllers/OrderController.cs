@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Security.Claims;
 using AutoMapper;
+using Litres.Application.Dto;
 using Litres.Application.Dto.Requests;
 using Litres.Application.Dto.Responses;
 using Litres.Application.Models;
@@ -29,38 +30,55 @@ public class OrderController(
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
         
-        var order = await service.GetOrderByIdWithIncludes(orderId);
+        var order = await service.GetOrderByIdAsNoTrackingAsync(orderId);
         if (order.UserId != userId)
             return Forbid();
         
-        var response = mapper.Map<OrderResponseDto>(order);
+        var response = mapper.Map<OrderDto>(order);
         return Ok(response);
     }
     
     [HttpPost] // api/order
-    public async Task<IActionResult> CreateOrder([FromBody] OrderProcessDto dto)
+    public async Task<IActionResult> CreateOrder([FromBody] OrderDto dto)
     {
-        
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
                     NumberStyles.Any, CultureInfo.InvariantCulture);
 
         var order = mapper.Map<Order>(dto);
         order.UserId = userId;
-        var createdOrder = await service.CreateOrderAsync(order);
-
-        return Redirect($"{options.Value.PaymentServiceUrl}/pay?orderId={createdOrder.Id}");
+        var dbOrder = await service.CreateOrderAsync(order);
+        var response = mapper.Map<OrderDto>(dbOrder);
+        return Ok(response);
     }
 
+    [HttpPatch("{orderId:long}")]
+    public async Task<IActionResult> UpdateOrder([FromRoute] long orderId, [FromBody] OrderDto dto)
+    {
+        var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
+            NumberStyles.Any, CultureInfo.InvariantCulture);
+        
+        var dbOrder = await service.GetOrderByIdAsNoTrackingAsync(orderId);
+        if (dbOrder.UserId != userId)
+            return Forbid();
+
+        var order = mapper.Map<Order>(dto);
+        order.UserId = userId;
+        var result = await service.UpdateOrderAsync(order);
+        var response = mapper.Map<OrderDto>(result);
+        return Ok(response);
+    }
+    
     [Authorize(Roles = "Admin")]
     [HttpPatch("{orderId:long}/status")]
     public async Task<IActionResult> ChangeOrderStatus([FromRoute] long orderId, [FromQuery] OrderStatus status)
     {
-        var result = await service.ChangeOrderStatusAsync(orderId, status);
+        var result = await service.UpdateOrderStatusAsync(orderId, status);
         return Ok(status);
     }
     
+    
     [HttpPost("{orderId:long}")] // api/order/{orderId}
-    public async Task<IActionResult> CreateOrder([FromRoute] long orderId, [FromQuery] bool isSuccess)
+    public async Task<IActionResult> CreateOrderOld([FromRoute] long orderId, [FromQuery] bool isSuccess)
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);

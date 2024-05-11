@@ -4,7 +4,7 @@ using Litres.Application.Dto.Responses;
 using Litres.Domain.Entities;
 using Litres.Domain.Enums;
 
-namespace Litres.Application.Configuration.Mapper;
+namespace Litres.WebAPI.Configuration.Mapper;
 
 public class SubscriptionMapperProfile : Profile
 {

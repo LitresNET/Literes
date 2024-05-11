@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 
-namespace Litres.Application.Hubs;
+namespace Litres.WebAPI.Hubs;
 
 public class NotificationHub : Hub
 {

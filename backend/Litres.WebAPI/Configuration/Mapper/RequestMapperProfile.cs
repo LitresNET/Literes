@@ -2,7 +2,7 @@
 using Litres.Application.Dto.Responses;
 using Litres.Domain.Entities;
 
-namespace Litres.Application.Configuration.Mapper;
+namespace Litres.WebAPI.Configuration.Mapper;
 
 public class RequestMapperProfile : Profile
 {

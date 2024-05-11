@@ -8,15 +8,18 @@ using Litres.Domain.Exceptions;
 namespace Litres.Application.Services;
 
 public class OrderService(
-    IUserRepository userRepository,
     IPickupPointRepository pickupPointRepository,
     IBookRepository bookRepository,
     IOrderRepository orderRepository) : IOrderService
 {
+    public async Task<Order> GetOrderByIdAsNoTrackingAsync(long orderId)
+    {
+        return await orderRepository.GetByIdAsNoTrackingAsync(orderId);
+    }
+
     public async Task<Order> CreateOrderAsync(Order order)
     {
-        _ = await userRepository.GetByIdAsync(order.UserId);
-        _ = await pickupPointRepository.GetByIdAsync(order.PickupPointId);
+        await pickupPointRepository.GetByIdAsNoTrackingAsync(order.PickupPointId);
         
         order.Books = new List<Book>();
         foreach (var orderBook in order.OrderedBooks)
@@ -34,31 +37,7 @@ public class OrderService(
         return order;
     }
 
-    public async Task<Order> GetOrderByIdAsNoTrackingAsync(long orderId)
-    {
-        return await orderRepository.GetByIdAsNoTrackingAsync(orderId);
-    }
-
-    public async Task<Order> GetOrderByIdWithIncludes(long orderId)
-    {
-        var order = await orderRepository.GetWithFilterAsync(
-            x => x.Id == orderId,
-            new List<Expression<Func<Order, object>>> {y => y.OrderedBooks});
-        
-        return order;
-    }
-
-    public async Task<Order> ConfirmOrderAsync(long orderId, bool isSuccess)
-    {
-        var order = await orderRepository.GetByIdAsync(orderId);
-        order.IsPaid = isSuccess;
-        order = orderRepository.Update(order);
-        await orderRepository.SaveChangesAsync();
-
-        return order;
-    }
-
-    public async Task<Order> ChangeOrderStatusAsync(long orderId, OrderStatus status)
+    public async Task<Order> UpdateOrderStatusAsync(long orderId, OrderStatus status)
     {
         var dbOrder = await orderRepository.GetByIdAsync(orderId);
         dbOrder.Status = status;
@@ -66,5 +45,14 @@ public class OrderService(
         await orderRepository.SaveChangesAsync();
         
         return dbOrder;
+    }
+
+    public async Task<Order> UpdateOrderAsync(Order order)
+    {
+        var dbOrder = await orderRepository.GetByIdAsync(order.Id);
+        if (dbOrder.Status >= OrderStatus.Assembly)
+            throw new InvalidOperationException("Order already in immutable state!");
+        
+        dbOrder.
     }
 }
