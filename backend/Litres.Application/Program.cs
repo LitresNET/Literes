@@ -1,5 +1,6 @@
 using Hangfire;
 using Litres.Application.Extensions;
+using Litres.Application.Hubs;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Litres.Infrastructure;
@@ -42,6 +43,7 @@ builder.Services
     .AddConfiguredSwaggerGen();
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder => 
     policyBuilder
@@ -74,6 +76,7 @@ application
 RecurringJob.AddOrUpdate<ISubscriptionCheckerService>("checkSubscriptions", service => service.CheckUsersSubscriptionExpirationDate(), "0 6 * * *");
 
 application.MapControllers();
+application.MapHub<ExampleHub>("api/hubs/example");
 
 application.Run();
 
@@ -83,13 +86,14 @@ application.Run();
 // DONE: починить метод фильтрации книг, EF Core не умеет в сложные предикаты - Решено: добавлена библеотека LinqKit и теперь соответствующий репозиторий возвращает сразу список, а не IQueryable как было раньше
 // DONE: починить добавление ролей (которое я удалил из Program.cs) гайды есть в группе - Решено: вынесено в extension для WebApplication
 // DONE: везде проставить доступ через атрибуты - Решено: проставлен доступ к методам по ролям на своё усмотрение. Обнаружена нехватка методов в некоторых контроллерах, добавлено в задачи
-// TODO: Signal R
-// TODO: Защита от мошенников ([ValidateAntiForgeryToken])
+// DONE: найти все IConfigurations в сервисах и заменить их на IOptions - Решено: в extension методах замены не было, потому что мы всё это делаем всё равно на этапе запуска, там прирост скорости будет незначитальный
+
 // TODO: финансовые операции должны списывать деньги с внутреннего счета, если не хватает, редирект на сервис оплаты
 // TODO: добавить метод получения списка отзывов по книге (с пагинацией желательно)
+// TODO: Signal R 
+// TODO: Защита от мошенников ([ValidateAntiForgeryToken]) - это какой-то пиздец, там надо и мидлварю и фильтр походу, потому что дефолтная реализация работает только для Razor паджес(
 
 // TODO: настроить ссылку на дефолтную аватарку (UserEntityConfiguration)
-// TODO: найти все IConfigurations и заменить их на IOptions
 // TODO: В PublisherRepository используется override на метод, хотя логика подразумевает немного другое - заменить
 // TODO: В UserRepository есть несколько устаревших методов. Нужно их удалить
 // TODO: проблема с производительностью. Из-за того что ApplicationDbContext создаётся при каждом запросе, то как оказалось и сиды прогоняются каждый раз.

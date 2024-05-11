@@ -1,12 +1,14 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Litres.Application.Services.Options;
 using Litres.Domain.Abstractions.Services;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Litres.Application.Services;
 
-public class JwtTokenService(IConfiguration configuration) : IJwtTokenService
+public class JwtTokenService(IOptions<JwtAuthenticationOptions> options) : IJwtTokenService
 {
     public string CreateJwtToken(IEnumerable<Claim> claims)
     {
@@ -14,7 +16,7 @@ public class JwtTokenService(IConfiguration configuration) : IJwtTokenService
             claims: claims,
             expires: DateTime.UtcNow.Add(TimeSpan.FromDays(1)),
             signingCredentials: new SigningCredentials(
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSecurityKey"]!)),
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Value.SecurityKey)),
                 SecurityAlgorithms.HmacSha256
             )
         );
