@@ -31,7 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Litres.Application\Litres.Application.csproj" />
+      <ProjectReference Include="..\Litres.WebAPI\Litres.WebAPI.csproj" />
     </ItemGroup>
 
 </Project>

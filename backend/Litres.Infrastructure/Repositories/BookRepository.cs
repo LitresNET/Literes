@@ -1,6 +1,6 @@
-using Litres.Domain.Abstractions.Repositories;
 using Litres.Domain.Entities;
 using LinqKit.Core;
+using Litres.Application.Abstractions.Repositories;
 
 namespace Litres.Infrastructure.Repositories;
 

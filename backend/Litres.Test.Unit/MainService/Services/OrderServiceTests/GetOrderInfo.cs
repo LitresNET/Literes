@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using AutoFixture;
+using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Services;
-using Litres.Domain.Abstractions.Repositories;
 using Litres.Domain.Entities;
 using Moq;
 using Tests.Config;
@@ -39,7 +39,7 @@ public class GetOrderInfo
         var service = OrderService;
 
         // Act
-        var result = await service.GetOrderInfo(expectedOrder.Id);
+        var result = await service.GetOrderByIdWithIncludes(expectedOrder.Id);
 
         // Assert
         Assert.Equal(expectedOrder, result);

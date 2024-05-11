@@ -15,17 +15,18 @@ public class ApplicationDbContext(
 {
     public DbSet<Author> Author { get; set; }
     public DbSet<Book> Book { get; set; }
-    public DbSet<ReviewLike> ReviewLike { get; set; }
     public DbSet<Contract> Contract { get; set; }
     public DbSet<ExternalService> ExternalService { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
     public DbSet<Order> Order { get; set; }
     public DbSet<PickupPoint> PickupPoint { get; set; }
     public DbSet<Publisher> Publisher { get; set; }
+    public DbSet<Request> Request { get; set; }
     public DbSet<Review> Review { get; set; }
+    public DbSet<ReviewLike> ReviewLike { get; set; }
     public DbSet<Series> Series { get; set; }
     public DbSet<Subscription> Subscription { get; set; }
     public DbSet<User> User { get; set; }
-    public DbSet<Request> Request { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

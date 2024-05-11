@@ -1,7 +1,8 @@
 using System.Linq.Expressions;
-using Litres.Domain.Abstractions.Repositories;
+using Litres.Application.Abstractions.Repositories;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
+using Litres.Domain.Enums;
 using Litres.Domain.Exceptions;
 
 namespace Litres.Application.Services;
@@ -14,7 +15,6 @@ public class OrderService(
 {
     public async Task<Order> CreateOrderAsync(Order order)
     {
-        
         _ = await userRepository.GetByIdAsync(order.UserId);
         _ = await pickupPointRepository.GetByIdAsync(order.PickupPointId);
         
@@ -34,7 +34,12 @@ public class OrderService(
         return order;
     }
 
-    public async Task<Order> GetOrderInfo(long orderId)
+    public async Task<Order> GetOrderByIdAsNoTrackingAsync(long orderId)
+    {
+        return await orderRepository.GetByIdAsNoTrackingAsync(orderId);
+    }
+
+    public async Task<Order> GetOrderByIdWithIncludes(long orderId)
     {
         var order = await orderRepository.GetWithFilterAsync(
             x => x.Id == orderId,
@@ -51,5 +56,15 @@ public class OrderService(
         await orderRepository.SaveChangesAsync();
 
         return order;
+    }
+
+    public async Task<Order> ChangeOrderStatusAsync(long orderId, OrderStatus status)
+    {
+        var dbOrder = await orderRepository.GetByIdAsync(orderId);
+        dbOrder.Status = status;
+        dbOrder = orderRepository.Update(dbOrder);
+        await orderRepository.SaveChangesAsync();
+        
+        return dbOrder;
     }
 }

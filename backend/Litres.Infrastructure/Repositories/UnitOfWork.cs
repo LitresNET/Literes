@@ -1,4 +1,4 @@
-﻿using Litres.Domain.Abstractions.Repositories;
+﻿using Litres.Application.Abstractions.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Litres.Infrastructure.Repositories;

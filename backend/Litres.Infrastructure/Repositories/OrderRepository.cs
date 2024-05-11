@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using Litres.Domain.Abstractions.Repositories;
+using Litres.Application.Abstractions.Repositories;
 using Litres.Domain.Entities;
 using Litres.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;

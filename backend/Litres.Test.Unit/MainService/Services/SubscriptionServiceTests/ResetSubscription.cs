@@ -1,6 +1,6 @@
 using AutoFixture;
+using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Services;
-using Litres.Domain.Abstractions.Repositories;
 using Litres.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Moq;

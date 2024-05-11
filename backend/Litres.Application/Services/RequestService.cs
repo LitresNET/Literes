@@ -1,4 +1,4 @@
-﻿using Litres.Domain.Abstractions.Repositories;
+﻿using Litres.Application.Abstractions.Repositories;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Litres.Domain.Enums;
