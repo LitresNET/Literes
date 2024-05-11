@@ -1,5 +1,5 @@
 # Указываем базовый образ SQL Server
-FROM mcr.microsoft.com/mssql/server
+FROM mcr.microsoft.com/mssql/server:2022-latest
 
 # Меняем текущего пользователя на пользователя с корневыми правами доступа
 USER root
