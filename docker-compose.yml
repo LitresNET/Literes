@@ -1,0 +1,47 @@
+networks:
+  myAppNetwork:
+
+services:
+  database:
+    container_name: litres_database
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=_BEZ_Par0lya_007_
+    volumes:
+      - ./database/init-db.sh:/usr/src/app/init-db.sh
+      - ./database/create-databases.sql:/usr/src/app/create-databases.sql
+
+  payment:
+    container_name: litres_payment
+    build:
+      context: ./backend/src/PaymentService
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+
+  backend:
+    container_name: litres_server
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5271:8080"
+    depends_on:
+      - payment
+
+  frontend:
+    container_name: litres_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:8081"
+    depends_on:
+      - backend

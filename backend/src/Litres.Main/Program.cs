@@ -50,7 +50,8 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder =>
 
 var application = builder.Build();
 
-if (application.Environment.IsDevelopment())
+// TODO: убрать потом
+if (!application.Environment.IsDevelopment())
 {
     application
         .UseSwagger()
@@ -83,7 +84,7 @@ application
     .UseHangfireDashboard();
 
 RecurringJob.AddOrUpdate<ISubscriptionCheckerService>("checkSubscriptions", service => service.CheckUsersSubscriptionExpirationDate(), "0 6 * * *");
-
+application.AddMigrations();
 application.MapControllers();
 
 application.Run();

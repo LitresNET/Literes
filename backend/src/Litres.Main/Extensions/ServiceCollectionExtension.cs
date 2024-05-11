@@ -3,11 +3,13 @@ using AutoMapper;
 using Hangfire;
 using Litres.Data.Abstractions.Repositories;
 using Litres.Data.Abstractions.Services;
+using Litres.Data.Configurations;
 using Litres.Data.Configurations.Mapping;
 using Litres.Data.Repositories;
 using Litres.Main.Middlewares;
 using Litres.Main.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -168,5 +170,14 @@ public static class ServiceCollectionExtension
         );
         
         return services;
+    }
+    
+    public static WebApplication AddMigrations(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
+        db!.Database.Migrate();
+        
+        return app;
     }
 }
