@@ -5,9 +5,6 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 # ENV PATH $PATH:/root/.dotnet/tools
 # RUN dotnet tool install --global dotnet-ef --version 8.*
 
-# Устанавливаем утилиту wait-for-it
-RUN apt-get update && apt-get install -y wait-for-it
-
 # Устанавливаем рабочую директорию в контейнере
 WORKDIR /app
 
