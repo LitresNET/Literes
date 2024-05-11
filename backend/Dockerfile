@@ -1,5 +1,6 @@
 # Используем официальный образ .Net8 как базовый для сборки
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ENV DOTNET_EnableWriteXorExecute=0
 
 # # Устанавливаем инструменты EF Core
 # ENV PATH $PATH:/root/.dotnet/tools
