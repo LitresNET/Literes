@@ -23,7 +23,7 @@ services:
     depends_on:
       - database
 
-  backend:
+  server:
     container_name: litres_server
     build:
       context: ./backend
