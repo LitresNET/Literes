@@ -1,6 +1,4 @@
-networks:
-  myAppNetwork:
-
+version: '3.8'
 services:
   database:
     container_name: litres_database
