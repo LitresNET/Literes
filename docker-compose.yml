@@ -1,3 +1,4 @@
+version: '3.3'
 services:
   database:
     container_name: litres_database
@@ -41,4 +42,4 @@ services:
     ports:
       - "5173:8081"
     depends_on:
-      - backend
+      - server
