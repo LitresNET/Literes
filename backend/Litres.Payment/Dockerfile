@@ -8,7 +8,7 @@ WORKDIR /app
 COPY ./package*.json ./
 
 # Устанавливаем зависимости для Nest.js приложения
-RUN npm install
+RUN npm --verbose install
 
 # Копируем оставшиеся файлы Nest.js проекта
 COPY . .
