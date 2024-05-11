@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Устанавливаем зависимости проекта
-RUN npm i --no-optional
+RUN npm i --omit=optional
 
 # Копируем оставшиеся файлы проекта в рабочую директорию
 COPY . .
