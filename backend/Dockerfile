@@ -19,7 +19,7 @@ COPY tests/Tests.Integration/*.csproj ./tests/Tests.Integration/
 COPY . .
 
 # Устанавливаем зависимости проекта
-RUN dotnet restore
+RUN dotnet restore --verbosity normal
 
 # Копируем оставшиеся файлы проекта и собираем приложение
 RUN dotnet build -c release --verbosity normal --no-restore
