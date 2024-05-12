@@ -22,7 +22,7 @@ COPY . .
 RUN dotnet restore --verbosity normal
 
 # Копируем оставшиеся файлы проекта и собираем приложение
-RUN dotnet build -c release --verbosity normal --no-restore
+# RUN dotnet build -c release --verbosity normal --no-restore
 
 # # Ожидаем, пока база данных запустится
 # CMD ["wait-for-it", "database:1433", "--", "dotnet", "ef", "database", "update", "-s", "Litres.Main/Litres.Main.csproj", "-p", "Litres.Data/Litres.Data.csproj"]
@@ -33,7 +33,7 @@ RUN dotnet build -c release --verbosity normal --no-restore
 
 # Публикуем приложение
 WORKDIR /app/src/Litres.Main
-RUN dotnet publish -c release -o /app
+RUN dotnet publish -c release -o /app --no-restore
 
 # Создаем образ ASP.NET для запуска приложения
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine
