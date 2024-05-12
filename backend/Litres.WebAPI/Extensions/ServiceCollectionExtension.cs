@@ -2,6 +2,7 @@
 using AutoMapper;
 using Hangfire;
 using Litres.Application.Abstractions.Repositories;
+using Litres.Application.Hubs;
 using Litres.Application.Services;
 using Litres.Domain.Abstractions.Services;
 using Litres.Infrastructure.Repositories;
@@ -29,6 +30,7 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddSingleton<IMemoryCache, MemoryCache>();
+        services.AddScoped<NotificationHub>();
 
         services.AddScoped<IBookService, BookService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
@@ -50,6 +52,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IContractRepository, ContractRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IPickupPointRepository, PickupPointRepository>();
         services.AddScoped<IPublisherRepository, PublisherRepository>();

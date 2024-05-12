@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Security.Claims;
+using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Models;
-using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +11,10 @@ using Microsoft.Extensions.Caching.Memory;
 namespace Litres.Application.Hubs;
 
 [Authorize]
-public class NotificationHub(IMemoryCache cache, INotificationService service) : Hub
+public class NotificationHub(
+    IMemoryCache cache, 
+    INotificationRepository notificationRepository,
+    IUserRepository userRepository) : Hub
 {
     public override async Task OnConnectedAsync()
     {
@@ -24,9 +27,10 @@ public class NotificationHub(IMemoryCache cache, INotificationService service) :
         var connectionId = Context.ConnectionId;
         cache.Set(userId, connectionId);
         
-        var notifications = await service.GetNotificationListByUserIdAsNoTrackingAsync(userId);
+        var user = await userRepository.GetByIdAsNoTrackingAsync(userId);
+        var notifications = user.Notifications;
         await Clients.Caller.SendAsync("ReceiveNotificationList", notifications);
-        await service.UpdateStatusOnNotificationsAsync(notifications.ToArray());
+        await UpdateStatusOnNotificationsAsync(notifications.ToArray());
         
         await base.OnConnectedAsync();
     }
@@ -36,11 +40,11 @@ public class NotificationHub(IMemoryCache cache, INotificationService service) :
         var userId = long.Parse(Context.User!.FindFirstValue(CustomClaimTypes.UserId)!, 
             NumberStyles.Any, CultureInfo.InvariantCulture);
 
-        var dbNotification = await service.GetNotificationByIdAsync(notificationId);
+        var dbNotification = await notificationRepository.GetByIdAsync(notificationId);
         if (dbNotification.ReceiverId != userId)
             return 403; // forbidden
         
-        await service.DeleteNotificationByIdAsync(notificationId);
+        notificationRepository.Delete(dbNotification);
         return 200; // ok
     }
 
@@ -62,5 +66,17 @@ public class NotificationHub(IMemoryCache cache, INotificationService service) :
         
         await Clients.Client(connectionId).SendAsync("ReceiveNotification", notification);
         return true;
+    }
+
+    private async Task UpdateStatusOnNotificationsAsync(params Notification[] notifications)
+    {
+        foreach (var notification in notifications)
+        {
+            var dbNotification = await notificationRepository.GetByIdAsync(notification.Id);
+            dbNotification.Pending = false;
+            notificationRepository.Update(dbNotification);
+        }
+
+        await notificationRepository.SaveChangesAsync();
     }
 }

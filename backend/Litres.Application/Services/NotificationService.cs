@@ -6,23 +6,10 @@ using Litres.Domain.Entities;
 namespace Litres.Application.Services;
 
 public class NotificationService(
-    IUserRepository userRepository,
     INotificationRepository notificationRepository,
     NotificationHub hub) 
     : INotificationService
 {
-    public async Task<Notification> GetNotificationByIdAsync(long notificationId)
-    {
-        var notification = await notificationRepository.GetByIdAsNoTrackingAsync(notificationId);
-        return notification;
-    }
-
-    public async Task<List<Notification>> GetNotificationListByUserIdAsNoTrackingAsync(long userId)
-    {
-        var dbUser = await userRepository.GetByIdAsNoTrackingAsync(userId);
-        return dbUser.Notifications;
-    }
-
     public async Task NotifyOrderStatusChange(Order dbOrder)
     {
         var notification = new Notification
@@ -42,14 +29,7 @@ public class NotificationService(
         var dbNotification = await notificationRepository.AddAsync(notification);
         return dbNotification;
     }
-
-    public async Task<Notification> DeleteNotificationByIdAsync(long notificationId)
-    {
-        var dbNotification = await notificationRepository.GetByIdAsync(notificationId);
-        notificationRepository.Delete(dbNotification);
-        return dbNotification;
-    }
-
+    
     public async Task UpdateStatusOnNotificationsAsync(params Notification[] notifications)
     {
         foreach (var notification in notifications)

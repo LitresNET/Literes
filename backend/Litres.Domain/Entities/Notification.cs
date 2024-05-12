@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Litres.Domain.Abstractions.Entities;
 
 namespace Litres.Domain.Entities;
 
 [Table("Notification")]
-public class Notification
+public class Notification : IEntity
 {
     /// <summary>
     /// Идентификатор уведомления
