@@ -16,12 +16,13 @@ COPY src/Litres.Main/*csproj ./src/Litres.Main/
 COPY tests/Tests.Unit/*.csproj ./tests/Tests.Unit/
 COPY tests/Tests.Integration/*.csproj ./tests/Tests.Integration/
 
+COPY . .
+
 # Устанавливаем зависимости проекта
 RUN dotnet restore
 
 # Копируем оставшиеся файлы проекта и собираем приложение
-COPY . .
-RUN dotnet build -c release -v diag
+RUN dotnet build -c release --verbosity normal --no-restore
 
 # # Ожидаем, пока база данных запустится
 # CMD ["wait-for-it", "database:1433", "--", "dotnet", "ef", "database", "update", "-s", "Litres.Main/Litres.Main.csproj", "-p", "Litres.Data/Litres.Data.csproj"]
