@@ -54,7 +54,7 @@ public class UserController(
     [HttpGet("publisher/{publisherId:long}")] // api/user/publisher/{publisherId}
     public async Task<IActionResult> GetPublisherData(long publisherId)
     {
-        var publisher = await service.GetPublisherInfoAsync(publisherId);
+        var publisher = await service.GetPublisherByLinkedUserIdAsync(publisherId);
         var result = mapper.Map<PublisherStatisticsDto>(publisher);
         return Ok(result);
     }

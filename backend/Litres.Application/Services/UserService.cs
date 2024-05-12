@@ -45,9 +45,9 @@ public class UserService(
         return await userRepository.GetByIdAsync(userId);
     }
 
-    public async Task<Publisher> GetPublisherInfoAsync(long publisherId)
+    public async Task<Publisher> GetPublisherByLinkedUserIdAsync(long publisherId)
     {
-        return await publisherRepository.GetByIdAsync(publisherId);
+        return await publisherRepository.GetByLinkedUserIdAsync(publisherId);
     }
 
     public async Task<List<Order>> GetOrderListAsync(long userId)

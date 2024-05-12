@@ -8,11 +8,11 @@ namespace Litres.Infrastructure.Repositories;
 public class PublisherRepository(ApplicationDbContext appDbContext) 
     : Repository<Publisher>(appDbContext), IPublisherRepository
 {
-    public override async Task<Publisher> GetByIdAsync(long publisherId)
+    public async Task<Publisher> GetByLinkedUserIdAsync(long userId)
     {
-        var result = await appDbContext.Publisher.FirstOrDefaultAsync(p => p.UserId == publisherId);
+        var result = await appDbContext.Publisher.FirstOrDefaultAsync(p => p.UserId == userId);
         if (result is null)
-            throw new EntityNotFoundException(typeof(Publisher), publisherId.ToString());
+            throw new EntityNotFoundException(typeof(Publisher), userId.ToString());
 
         return result;
     }

@@ -13,5 +13,4 @@ public class PublisherMapperProfile : Profile
             .ForMember("PublishedBookCount", opt => opt.MapFrom(publisher => publisher.Books.Count))
             .ForMember("OwnedBookCount", opt => opt.MapFrom(publisher => publisher.Books.Select(b => b.Count).Sum()));
     }
-   
 }

@@ -30,7 +30,7 @@ public class BookService(
             await seriesRepository.GetByIdAsync((long) book.SeriesId);
 
         if (book.PublisherId is not null)
-            await publisherRepository.GetByIdAsync((long) book.PublisherId);
+            await publisherRepository.GetByLinkedUserIdAsync((long) book.PublisherId);
 
         book.IsApproved = false;
         

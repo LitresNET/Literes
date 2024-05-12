@@ -7,12 +7,6 @@ namespace Litres.Infrastructure.Repositories;
 public class UserRepository(ApplicationDbContext appDbContext) 
     : Repository<User>(appDbContext), IUserRepository
 {
-    [Obsolete("Используем UserManager")]
-    public override async Task<User> AddAsync(User user) => await base.AddAsync(user);
-    
-    [Obsolete("Используем UserManager")]
-    public override User Delete(User user) => base.Delete(user);
-    
     public async Task<User?> GetSafeDataById(long userId)
     {
         var safeData = await appDbContext.User.AsNoTracking()

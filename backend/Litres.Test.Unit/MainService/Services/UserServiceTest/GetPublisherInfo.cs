@@ -32,7 +32,7 @@ public class GetPublisherInfo
         var service = UserService;
 
         // Act
-        var result = await service.GetPublisherInfoAsync(expectedPublisher.UserId);
+        var result = await service.GetPublisherByLinkedUserIdAsync(expectedPublisher.UserId);
 
         // Assert
         Assert.Equal(expectedPublisher, result);
@@ -53,7 +53,7 @@ public class GetPublisherInfo
         
         // Act
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
-            async () => await UserService.GetPublisherInfoAsync(publisher.UserId)
+            async () => await UserService.GetPublisherByLinkedUserIdAsync(publisher.UserId)
         );
         
         // Assert
