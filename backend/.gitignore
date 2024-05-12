@@ -9,7 +9,6 @@
 *.user
 *.userosscache
 *.sln.docstates
-*.sync/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -354,7 +353,7 @@ MigrationBackup/
 .idea/
 
 # Configurations
-/backend/*/appsettings.Development.json
+*/appsettings.Development.json
 
 # node.js
 npm-debug.log
