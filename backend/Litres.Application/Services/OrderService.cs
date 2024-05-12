@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Litres.Application.Abstractions.Repositories;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
@@ -36,6 +35,20 @@ public class OrderService(
         
         return order;
     }
+    
+    public async Task<Order> UpdateOrderAsync(Order order)
+    {
+        var dbOrder = await orderRepository.GetByIdAsync(order.Id);
+        if (dbOrder.Status >= OrderStatus.Assembly)
+            throw new InvalidOperationException("Order already in immutable state!");
+
+        dbOrder.OrderedBooks = order.OrderedBooks;
+        dbOrder.PickupPointId = order.PickupPointId;
+        order = orderRepository.Update(dbOrder);
+        
+        await orderRepository.SaveChangesAsync();
+        return order;
+    }
 
     public async Task<Order> UpdateOrderStatusAsync(long orderId, OrderStatus status)
     {
@@ -43,16 +56,36 @@ public class OrderService(
         dbOrder.Status = status;
         dbOrder = orderRepository.Update(dbOrder);
         await orderRepository.SaveChangesAsync();
-        
+
         return dbOrder;
     }
 
-    public async Task<Order> UpdateOrderAsync(Order order)
+    public async Task<Order> DeleteOrderByIdAsync(long orderId)
     {
-        var dbOrder = await orderRepository.GetByIdAsync(order.Id);
-        if (dbOrder.Status >= OrderStatus.Assembly)
-            throw new InvalidOperationException("Order already in immutable state!");
+        var dbOrder = await orderRepository.GetByIdAsync(orderId);
+        orderRepository.Delete(dbOrder);
+        await orderRepository.SaveChangesAsync();
+        return dbOrder;
+    }
+
+    public async Task<decimal> TryPayOrderAsync(long orderId)
+    {
+        var dbOrder = await orderRepository.GetByIdAsync(orderId);
+        if (dbOrder.Status > OrderStatus.Paid)
+            throw new BusinessException("Order already paid!");
         
-        dbOrder.
+        // достаём пользователя из заказа -> если денег не хватает возвращаем разницу,
+        // иначе списываем деньги и возвращаем 0.
+        var user = dbOrder.User;
+        var totalOrderPrice = dbOrder.OrderedBooks.Sum(b => b.Quantity * b.Book.Price);
+        if (user.Wallet < totalOrderPrice)
+            return totalOrderPrice - user.Wallet;
+
+        user.Wallet -= totalOrderPrice;
+        dbOrder.Status = OrderStatus.Paid;
+        orderRepository.Update(dbOrder);
+        
+        await orderRepository.SaveChangesAsync();
+        return 0M;
     }
 }

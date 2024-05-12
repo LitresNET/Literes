@@ -176,6 +176,7 @@ public static class ServiceCollectionExtension
         IConfiguration configuration)
     {
         services.Configure<OrderControllerOptions>(configuration.GetSection("ExternalServices"));
+        services.Configure<SubscriptionControllerOptions>(configuration.GetSection("ExternalServices"));
 
         return services;
     }

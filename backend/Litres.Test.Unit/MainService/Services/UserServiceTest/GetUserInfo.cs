@@ -32,7 +32,7 @@ public class GetUserInfo
         var service = UserService;
 
         // Act
-        var result = await service.GetUserInfoAsync(expectedUser.Id);
+        var result = await service.GetUserByIdAsync(expectedUser.Id);
 
         // Assert
         Assert.Equal(expectedUser, result);
@@ -53,7 +53,7 @@ public class GetUserInfo
         
         // Act
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
-            async () => await UserService.GetUserInfoAsync(user.Id)
+            async () => await UserService.GetUserByIdAsync(user.Id)
         );
         
         // Assert

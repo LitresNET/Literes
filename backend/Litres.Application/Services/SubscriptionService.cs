@@ -30,7 +30,7 @@ public class SubscriptionService(
     /// <param subscriptionName="newSubscription">Новая подписка</param>
     /// <returns>Подписка, которая была установлена</returns>
     /// <exception cref="EntityNotFoundException">Если пользователь не был найден</exception>
-    public async Task<Subscription> ChangeAsync(long userId, Subscription newSubscription)
+    public async Task<decimal> TryUpdateAsync(long userId, Subscription newSubscription)
     {
         var dbUser = await userRepository.GetByIdAsync(userId);
         var currentSubscription = dbUser.Subscription;
@@ -52,7 +52,7 @@ public class SubscriptionService(
         else
         {
             if (dbUser.Wallet < newSubscription.Price)
-                return dbUser.Subscription;
+                return newSubscription.Price - dbUser.Wallet;
             
             dbUser.Wallet -= newSubscription.Price;
             dbUser.Subscription = newSubscription;
@@ -65,7 +65,7 @@ public class SubscriptionService(
             subscriptionRepository.Delete(newSubscription);
 
         await unitOfWork.SaveChangesAsync();
-        return newSubscription;
+        return 0M;
     }
 
     /// <summary>

@@ -2,8 +2,6 @@ using System.Globalization;
 using System.Security.Claims;
 using AutoMapper;
 using Litres.Application.Dto;
-using Litres.Application.Dto.Requests;
-using Litres.Application.Dto.Responses;
 using Litres.Application.Models;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
@@ -46,12 +44,13 @@ public class OrderController(
 
         var order = mapper.Map<Order>(dto);
         order.UserId = userId;
+        order.ExpectedDeliveryTime = DateTime.Now.AddDays(14); // заказ доставят через 2 недели
         var dbOrder = await service.CreateOrderAsync(order);
         var response = mapper.Map<OrderDto>(dbOrder);
         return Ok(response);
     }
 
-    [HttpPatch("{orderId:long}")]
+    [HttpPatch("{orderId:long}")] // api/order/{orderId}
     public async Task<IActionResult> UpdateOrder([FromRoute] long orderId, [FromBody] OrderDto dto)
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
@@ -69,28 +68,41 @@ public class OrderController(
     }
     
     [Authorize(Roles = "Admin")]
-    [HttpPatch("{orderId:long}/status")]
-    public async Task<IActionResult> ChangeOrderStatus([FromRoute] long orderId, [FromQuery] OrderStatus status)
+    [HttpPatch("{orderId:long}/status")] // api/order/{orderId}/status?s={status}
+    public async Task<IActionResult> UpdateOrderStatus([FromRoute] long orderId, [FromQuery] OrderStatus s)
     {
-        var result = await service.UpdateOrderStatusAsync(orderId, status);
-        return Ok(status);
+        await service.UpdateOrderStatusAsync(orderId, s);
+        return Ok(s);
     }
-    
-    
-    [HttpPost("{orderId:long}")] // api/order/{orderId}
-    public async Task<IActionResult> CreateOrderOld([FromRoute] long orderId, [FromQuery] bool isSuccess)
+
+    [HttpDelete("{orderId:long}")] // api/order/{orderId}
+    public async Task<IActionResult> DeleteOrder([FromRoute] long orderId)
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
         
-        var order = await service.GetOrderByIdWithIncludes(orderId);
-        if (order.UserId != userId)
+        var dbOrder = await service.GetOrderByIdAsNoTrackingAsync(orderId);
+        if (dbOrder.UserId != userId)
             return Forbid();
+
+        var result = await service.DeleteOrderByIdAsync(orderId);
+        var response = mapper.Map<OrderDto>(result);
+        return Ok(response);
+    }
+
+    [HttpPost("{orderId:long}/pay")] // api/order/{orderId}/pay
+    public async Task<IActionResult> PayOrder([FromRoute] long orderId)
+    {
+        var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
+            NumberStyles.Any, CultureInfo.InvariantCulture);
         
-        var result = await service.ConfirmOrderAsync(orderId, isSuccess);
-        return Ok(result.IsPaid 
-            ? "Transaction committed\nNew order created" 
-            : "Transaction rollback\nCouldn't create order"
-        );
+        var dbOrder = await service.GetOrderByIdAsNoTrackingAsync(orderId);
+        if (dbOrder.UserId != userId)
+            return Forbid();
+
+        var lacking = await service.TryPayOrderAsync(orderId);
+        return lacking > 0M 
+            ? Redirect($"{options.Value.PaymentServiceUrl}/pay?userId={userId}&amount={lacking}") 
+            : Ok();
     }
 }

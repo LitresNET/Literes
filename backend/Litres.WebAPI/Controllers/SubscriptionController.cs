@@ -6,16 +6,19 @@ using Litres.Application.Dto.Responses;
 using Litres.Application.Models;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
+using Litres.WebAPI.Controllers.Options;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Litres.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class SubscriptionController(
-        ISubscriptionService subscriptionService,
-        IMapper mapper)
+        IOptions<SubscriptionControllerOptions> options,
+        IMapper mapper,
+        ISubscriptionService subscriptionService)
     : ControllerBase
 {
     [HttpGet("{subscriptionId:long}")] // api/subscription/{subscriptionId}
@@ -38,10 +41,10 @@ public class SubscriptionController(
         var subscription = mapper.Map<Subscription>(customSubscription);
         subscription.Name = subscriptionName;
 
-        var result = await subscriptionService.ChangeAsync(userId, subscription);
-        return result.Id == subscription.Id
+        var lacking = await subscriptionService.TryUpdateAsync(userId, subscription);
+        return lacking > 0M
             ? Ok()
-            : BadRequest("The account lacks the necessary funds");
+            : Redirect($"{options.Value.PaymentServiceUrl}/pay?userId={userId}&amount={lacking}");
     }
 
     [Authorize]

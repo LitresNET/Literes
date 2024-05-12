@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Litres.WebAPI.Controllers;
 
+[Authorize(Roles = "Member")]
 [ApiController]
 [Route("api/[controller]")]
 public class ReviewController(
@@ -17,7 +18,16 @@ public class ReviewController(
         IMapper mapper)
     : ControllerBase
 {
-    [Authorize(Roles = "Member")]
+
+    [AllowAnonymous]
+    [HttpGet("list")] // api/review/list?bookId={bookId}&n={page}
+    public async Task<IActionResult> GetReviewList([FromQuery] long bookId, [FromQuery] int page)
+    {
+        var list = await service.GetReviewListByBookIdAsync(bookId, page);
+        var response = list.Select(mapper.Map<ReviewDto>);
+        return Ok(response);
+    }
+    
     [HttpPost] // api/review
     public async Task<IActionResult> CreateReview([FromBody] ReviewDto dto)
     {
@@ -33,7 +43,6 @@ public class ReviewController(
         return Ok(response);
     }
 
-    [Authorize(Roles = "Member")]
     [HttpPost("{reviewId:long}")] // api/review/{reviewId}?isLike={isLike}
     public async Task<IActionResult> LikeReview([FromRoute] long reviewId, [FromQuery] bool isLike)
     {

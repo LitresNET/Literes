@@ -10,7 +10,9 @@ public interface IUserService
 
     public Task<User> GetSafeUserInfoAsync(long userId);
 
-    public Task<User> GetUserInfoAsync(long userId);
+    public Task<User> GetUserByIdAsync(long userId);
 
     public Task<Publisher> GetPublisherInfoAsync(long publisherId);
+    public Task<List<Order>> GetOrderListAsync(long userId);
+    public Task DepositToUserByIdAsync(long userId, decimal amount);
 }

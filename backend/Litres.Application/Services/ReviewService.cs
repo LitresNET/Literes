@@ -39,4 +39,11 @@ public class ReviewService(
 
         await reviewRepository.SaveChangesAsync();
     }
+
+    public async Task<List<Review>> GetReviewListByBookIdAsync(long bookId, int page)
+    {
+        var book = await bookRepository.GetByIdAsync(bookId);
+        var paginated = book.Reviews?.Skip((page - 1) * 15).Take(15).ToList() ?? new List<Review>();
+        return paginated;
+    }
 }

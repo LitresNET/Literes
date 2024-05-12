@@ -62,7 +62,7 @@ public class ChangeSubscription
         var expectedWallet = wallet - newSubscriptionPrice;
 
         // Act
-        var actual = await SubscriptionService.ChangeAsync(userId, newSubscription);
+        var actual = await SubscriptionService.TryUpdateAsync(userId, newSubscription);
         var actualWallet = user.Wallet;
         
         // Assert
@@ -111,7 +111,7 @@ public class ChangeSubscription
         var expectedWallet = wallet;
         
         // Act
-        var actual = await SubscriptionService.ChangeAsync(userId, newSubscription);
+        var actual = await SubscriptionService.TryUpdateAsync(userId, newSubscription);
         var actualWallet = user.Wallet;
         
         // Assert
@@ -161,7 +161,7 @@ public class ChangeSubscription
         var expectedWallet = wallet;
 
         // Act
-        var actual = await SubscriptionService.ChangeAsync(userId, newSubscription);
+        var actual = await SubscriptionService.TryUpdateAsync(userId, newSubscription);
         var actualWallet = user.Wallet;
         
         // Assert
@@ -183,7 +183,7 @@ public class ChangeSubscription
         
         // Act
         var actual = await Assert.ThrowsAsync<DbUpdateException>(() => 
-            SubscriptionService.ChangeAsync(userId, new Subscription()));
+            SubscriptionService.TryUpdateAsync(userId, new Subscription()));
         
         // Assert
         Assert.Equal(expected.GetType(), actual.GetType());

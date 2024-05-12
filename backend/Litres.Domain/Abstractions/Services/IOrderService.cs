@@ -9,4 +9,6 @@ public interface IOrderService
     public Task<Order> CreateOrderAsync(Order order);
     public Task<Order> UpdateOrderStatusAsync(long orderId, OrderStatus status);
     public Task<Order> UpdateOrderAsync(Order order);
+    public Task<Order> DeleteOrderByIdAsync(long orderId);
+    public Task<decimal> TryPayOrderAsync(long orderId);
 }

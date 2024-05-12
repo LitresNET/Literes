@@ -40,7 +40,7 @@ public class UserService(
                throw new EntityNotFoundException(typeof(User), userId.ToString());
     }
     
-    public async Task<User> GetUserInfoAsync(long userId)
+    public async Task<User> GetUserByIdAsync(long userId)
     {
         return await userRepository.GetByIdAsync(userId);
     }
@@ -48,5 +48,19 @@ public class UserService(
     public async Task<Publisher> GetPublisherInfoAsync(long publisherId)
     {
         return await publisherRepository.GetByIdAsync(publisherId);
+    }
+
+    public async Task<List<Order>> GetOrderListAsync(long userId)
+    {
+        var dbUser = await userRepository.GetByIdAsync(userId);
+        return dbUser.Orders;
+    }
+
+    public async Task DepositToUserByIdAsync(long userId, decimal amount)
+    {
+        var dbUser = await userRepository.GetByIdAsync(userId);
+        dbUser.Wallet += amount;
+        userRepository.Update(dbUser);
+        await userRepository.SaveChangesAsync();
     }
 }
