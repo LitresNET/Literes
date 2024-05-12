@@ -28,8 +28,8 @@ RUN dotnet restore --verbosity normal
 # CMD ["wait-for-it", "database:1433", "--", "dotnet", "ef", "database", "update", "-s", "Litres.Main/Litres.Main.csproj", "-p", "Litres.Data/Litres.Data.csproj"]
 
 # Тестируем приложение
-# WORKDIR /app/tests/Tests.Unit
-# RUN dotnet test --verbosity normal
+WORKDIR /app/tests/Tests.Unit
+RUN dotnet test --verbosity normal
 
 # Публикуем приложение
 WORKDIR /app/src/Litres.Main
