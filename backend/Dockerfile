@@ -1,5 +1,5 @@
 # Используем официальный образ .Net8 как базовый для сборки
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
 ENV DOTNET_EnableWriteXorExecute=0
 
 # # Устанавливаем инструменты EF Core
@@ -36,7 +36,7 @@ WORKDIR /app/src/Litres.Main
 RUN dotnet publish -c release -o /app
 
 # Создаем образ ASP.NET для запуска приложения
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine
 WORKDIR /app
 COPY --from=build /app ./
 
