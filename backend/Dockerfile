@@ -33,7 +33,7 @@ RUN dotnet restore --verbosity normal
 
 # Публикуем приложение
 WORKDIR /app/src/Litres.Main
-RUN dotnet publish -c release -o /app --no-restore
+RUN dotnet publish -c release -o /app --no-restore --verbosity normal
 
 # Создаем образ ASP.NET для запуска приложения
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine
