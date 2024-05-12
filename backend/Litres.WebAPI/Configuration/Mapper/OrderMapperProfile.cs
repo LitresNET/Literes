@@ -11,7 +11,9 @@ public class OrderMapperProfile : Profile
     public OrderMapperProfile()
     {
         CreateMap<OrderDto, Order>()
-            .ForMember(o => o.Status, opt => opt.MapFrom(src => Enum.Parse<OrderStatus>(src.Status)))
+            .ForMember(o => o.Status, opt => opt.MapFrom(src => Enum.IsDefined(typeof(OrderStatus), src.Status ?? "Created") 
+                ? Enum.Parse<OrderStatus>(src.Status!) 
+                : OrderStatus.Created))
             .ForMember(o => o.OrderedBooks, opt => 
                 opt.MapFrom(src => 
                     src.Books.Select(b => 
@@ -28,9 +30,8 @@ public class OrderMapperProfile : Profile
                     src.OrderedBooks.Select(orderBook => 
                         new ProductResponseDto
                         {
-                            BookName = orderBook.Book.Name,
-                            Amount = orderBook.Quantity,
-                            Price = orderBook.Book.Price
+                            BookId = orderBook.BookId,
+                            Amount = orderBook.Quantity
                         })));
     }
 }

@@ -37,14 +37,14 @@ public class SubscriptionController(
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
-
+        
         var subscription = mapper.Map<Subscription>(customSubscription);
         subscription.Name = subscriptionName;
 
         var lacking = await subscriptionService.TryUpdateAsync(userId, subscription);
         return lacking > 0M
-            ? Ok()
-            : Redirect($"{options.Value.PaymentServiceUrl}/pay?userId={userId}&amount={lacking}");
+            ? Redirect($"{options.Value.PaymentServiceUrl}/pay?userId={userId}&amount={lacking}")
+            : Ok();
     }
 
     [Authorize]

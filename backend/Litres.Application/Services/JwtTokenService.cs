@@ -12,11 +12,12 @@ public class JwtTokenService(IOptions<JwtAuthenticationOptions> options) : IJwtT
 {
     public string CreateJwtToken(IEnumerable<Claim> claims)
     {
+        var securityKey = options.Value.SecurityKey;
         var jwt = new JwtSecurityToken(
             claims: claims,
             expires: DateTime.UtcNow.Add(TimeSpan.FromDays(1)),
             signingCredentials: new SigningCredentials(
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Value.SecurityKey)),
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey)),
                 SecurityAlgorithms.HmacSha256
             )
         );

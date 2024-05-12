@@ -27,7 +27,7 @@ public class ReviewController(
         var response = list.Select(mapper.Map<ReviewDto>);
         return Ok(response);
     }
-    
+
     [HttpPost] // api/review
     public async Task<IActionResult> CreateReview([FromBody] ReviewDto dto)
     {
@@ -43,8 +43,8 @@ public class ReviewController(
         return Ok(response);
     }
 
-    [HttpPost("{reviewId:long}")] // api/review/{reviewId}?isLike={isLike}
-    public async Task<IActionResult> LikeReview([FromRoute] long reviewId, [FromQuery] bool isLike)
+    [HttpPost("{reviewId:long}/rate")] // api/review/{reviewId}/rate?isLike={isLike}
+    public async Task<IActionResult> RateReview([FromRoute] long reviewId, [FromQuery] bool isLike)
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
@@ -52,4 +52,16 @@ public class ReviewController(
         await service.RateReview(reviewId, userId, isLike);
         return Ok(isLike);
     }
+
+    [NonAction] // не работает по причине того, что нужно разорвать связь m-t-m, я пока не разобрался как это делать
+    [HttpPost("{reviewId:long}/rate/remove")]
+    public async Task<IActionResult> RemoveReviewRate([FromRoute] long reviewId)
+    {
+        var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
+            NumberStyles.Any, CultureInfo.InvariantCulture);
+
+        await service.RemoveReviewRate(reviewId, userId);
+        return Ok();
+    }
+
 }

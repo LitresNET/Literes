@@ -23,6 +23,11 @@ public class ReviewService(
         
         if (review.BookId is not null)
             await bookRepository.GetByIdAsNoTrackingAsync((long) review.BookId!);
+
+        var dbBook = await bookRepository.GetByIdAsNoTrackingAsync((long) review.BookId!);
+        if (dbBook.Reviews!.Any(r => r.UserId == review.UserId && r.BookId is not null))
+            throw new EntityUnprocessableException(typeof(Review), review.Id.ToString(),
+                "user already left review on that book");
         
         var dbReview = await reviewRepository.AddAsync(review);
         await reviewRepository.SaveChangesAsync();
@@ -34,9 +39,20 @@ public class ReviewService(
     {
         var dbReview = await reviewRepository.GetByIdAsync(reviewId);
 
+        if (dbReview.ReviewLikes.Any(rl => rl.UserId == userId))
+            throw new EntityUnprocessableException(typeof(Review), reviewId.ToString(),
+                "user already rated this review.");
+        
         var rl = new ReviewLike { UserId = userId, ReviewId = reviewId, IsLike = isLike };
         dbReview.ReviewLikes.Add(rl);
 
+        await reviewRepository.SaveChangesAsync();
+    }
+
+    public async Task RemoveReviewRate(long reviewId, long userId)
+    {
+        var dbReview = await reviewRepository.GetByIdAsync(reviewId);
+        dbReview.ReviewLikes.RemoveAll(rl => rl.UserId == userId);
         await reviewRepository.SaveChangesAsync();
     }
 

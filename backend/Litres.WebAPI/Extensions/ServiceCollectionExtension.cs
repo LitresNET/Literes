@@ -4,6 +4,7 @@ using Hangfire;
 using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Hubs;
 using Litres.Application.Services;
+using Litres.Application.Services.Options;
 using Litres.Domain.Abstractions.Services;
 using Litres.Infrastructure.Repositories;
 using Litres.WebAPI.Configuration.Mapper;
@@ -183,6 +184,8 @@ public static class ServiceCollectionExtension
     {
         services.Configure<OrderControllerOptions>(configuration.GetSection("ExternalServices"));
         services.Configure<SubscriptionControllerOptions>(configuration.GetSection("ExternalServices"));
+        services.Configure<JwtAuthenticationOptions>(configuration.GetSection("Authentication:Jwt"));
+        services.Configure<GoogleAuthenticationOptions>(configuration.GetSection("Authentication:Google"));
 
         return services;
     }

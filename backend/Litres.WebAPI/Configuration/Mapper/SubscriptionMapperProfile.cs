@@ -12,8 +12,10 @@ public class SubscriptionMapperProfile : Profile
     {
         CreateMap<SubscriptionRequestDto, Subscription>()
             .ForMember(s => s.BooksAllowed, 
-                opt => opt.MapFrom(dto => dto.GenresAllowed.Select(s => (GenreType) Enum.Parse(typeof(GenreType), s)))
-            );
+                opt => opt.MapFrom(dto => dto.GenresAllowed == null 
+                    ? dto.GenresAllowed!.Select(Enum.Parse<GenreType>).ToList()
+                    : new List<GenreType>()));
+        
         CreateMap<Subscription, SubscriptionResponseDto>()
             .ForMember(dto => dto.BooksAllowed, opt => opt.MapFrom(s => s.BooksAllowed.Select(b => b.ToString())));
     }

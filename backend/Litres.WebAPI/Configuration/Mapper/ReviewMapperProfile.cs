@@ -9,6 +9,11 @@ public class ReviewMapperProfile : Profile
     public ReviewMapperProfile()
     {
         CreateMap<ReviewDto, Review>();
-        CreateMap<Review, ReviewDto>();
+        
+        CreateMap<Review, ReviewDto>()
+            .ForMember(dto => dto.Likes, opt =>
+                opt.MapFrom(src => src.ReviewLikes.Count(rl => rl.IsLike)))
+            .ForMember(dto => dto.Dislikes, opt =>
+                opt.MapFrom(src => src.ReviewLikes.Count(rl => !rl.IsLike)));
     }
 }

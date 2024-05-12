@@ -117,7 +117,7 @@ public class BookService(
         int booksAmount = 30)
     {
         // Сборка предиката
-        var builder = PredicateBuilder.New<Book>();
+        var builder = PredicateBuilder.New<Book>(true);
 
         if (searchParameters?.TryGetValue(SearchParameterType.Category, out var value) == true
             && Enum.TryParse<GenreType>(value, out var genre))
