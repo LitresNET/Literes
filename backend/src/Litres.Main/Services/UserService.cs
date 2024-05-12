@@ -34,18 +34,18 @@ public class UserService(
         return book;
     }
 
-    public async Task<User> GetSafeUserDataAsync(long userId)
+    public async Task<User> GetSafeUserInfoAsync(long userId)
     {
         return await userRepository.GetSafeDataById(userId) ??
                throw new EntityNotFoundException(typeof(User), userId.ToString());
     }
     
-    public async Task<User> GetUserDataAsync(long userId)
+    public async Task<User> GetUserInfoAsync(long userId)
     {
         return await userRepository.GetByIdAsync(userId);
     }
 
-    public async Task<Publisher> GetPublisherAsync(long publisherId)
+    public async Task<Publisher> GetPublisherInfoAsync(long publisherId)
     {
         return await publisherRepository.GetByIdAsync(publisherId);
     }

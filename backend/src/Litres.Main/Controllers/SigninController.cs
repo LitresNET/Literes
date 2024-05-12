@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Litres.Main.Controllers;
 
+[ApiController]
 [Route("api/signin")]
 public class SigninController(ILoginService loginService) : ControllerBase
 {
