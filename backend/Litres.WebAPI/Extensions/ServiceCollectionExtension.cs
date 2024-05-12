@@ -27,7 +27,7 @@ public static class ServiceCollectionExtension
 
         return services;
     }
-    
+
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddSingleton<IMemoryCache, MemoryCache>();
@@ -47,7 +47,7 @@ public static class ServiceCollectionExtension
 
         return services;
     }
-    
+
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IAuthorRepository, AuthorRepository>();
@@ -127,7 +127,7 @@ public static class ServiceCollectionExtension
                 }
             );
         });
-        
+
         return services;
     }
 
@@ -157,13 +157,13 @@ public static class ServiceCollectionExtension
                 options.ClientId = configuration["Authentication:Google:ClientId"]!;
                 options.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
             });
-        
+
         return services;
     }
-    
+
     public static IServiceCollection AddConfiguredSerilog(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSerilog((servs, loggerConfiguration) => 
+        services.AddSerilog((servs, loggerConfiguration) =>
             loggerConfiguration
                 .MinimumLevel.Verbose()
                 .MinimumLevel.Override("Microsoft.AspNetCore.Cors.Infrastructure", LogEventLevel.Warning)
@@ -175,7 +175,7 @@ public static class ServiceCollectionExtension
                 .ReadFrom.Services(servs)
                 .Enrich.FromLogContext()
         );
-        
+
         return services;
     }
 

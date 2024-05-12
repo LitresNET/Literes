@@ -14,7 +14,7 @@ public class GetPublisherInfo
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
 
     private UserService UserService => new(
-            _publisherRepositoryMock.Object, 
+            _publisherRepositoryMock.Object,
             _userRepositoryMock.Object
         );
 
@@ -28,7 +28,7 @@ public class GetPublisherInfo
         _publisherRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedPublisher);
-        
+
         var service = UserService;
 
         // Act
@@ -37,25 +37,25 @@ public class GetPublisherInfo
         // Assert
         Assert.Equal(expectedPublisher, result);
     }
-    
+
     [Fact]
     public async Task NotExistingUser_ThrowsOrderNotFoundException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
         var publisher = fixture.Create<Publisher>();
-        
+
         var expected = new EntityNotFoundException(typeof(Publisher), publisher.UserId.ToString());
 
         _publisherRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ThrowsAsync(expected);
-        
+
         // Act
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
             async () => await UserService.GetPublisherByLinkedUserIdAsync(publisher.UserId)
         );
-        
+
         // Assert
         Assert.Equal(expected.Message, exception.Message);
     }

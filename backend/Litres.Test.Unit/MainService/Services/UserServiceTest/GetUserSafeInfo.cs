@@ -14,7 +14,7 @@ public class GetUserSafeInfo
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
 
     private UserService UserService => new(
-        _publisherRepositoryMock.Object, 
+        _publisherRepositoryMock.Object,
         _userRepositoryMock.Object
     );
 
@@ -67,12 +67,12 @@ public class GetUserSafeInfo
                 }
             }
         };
-        
+
         yield return new object[]
         {
             "Dead", "dead", null, null
         };
-        
+
         yield return new object[]
         {
             "Dead", null, null, null
@@ -81,7 +81,7 @@ public class GetUserSafeInfo
 
     [Theory]
     [MemberData(nameof(GetData))]
-    public async Task DefaultUser_ReturnsUser(string userName, string? avatarUrl, 
+    public async Task DefaultUser_ReturnsUser(string userName, string? avatarUrl,
         List<Book>? userFavourites, List<Review>? userReviews)
     {
         // Arrange
@@ -96,7 +96,7 @@ public class GetUserSafeInfo
         _userRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedUser);
-        
+
         var service = UserService;
 
         // Act
@@ -105,14 +105,14 @@ public class GetUserSafeInfo
         // Assert
         Assert.Equal(expectedUser, result);
     }
-    
+
     [Fact]
     public async Task NotExistingUser_ThrowsOrderNotFoundException()
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
         var user = fixture.Create<User>();
-        
+
         var expected = new EntityNotFoundException(typeof(User), user.Id.ToString());
 
         _userRepositoryMock
@@ -123,7 +123,7 @@ public class GetUserSafeInfo
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
             async () => await UserService.GetUserByIdAsync(user.Id)
         );
-        
+
         // Assert
         Assert.Equal(expected.Message, exception.Message);
     }
