@@ -9,6 +9,7 @@ using Litres.WebAPI.Configuration.Mapper;
 using Litres.WebAPI.Controllers.Options;
 using Litres.WebAPI.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -27,17 +28,19 @@ public static class ServiceCollectionExtension
     
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddScoped<IRequestService, RequestService>();
+        services.AddSingleton<IMemoryCache, MemoryCache>();
+
         services.AddScoped<IBookService, BookService>();
-        services.AddScoped<IOrderService, OrderService>();
-        services.AddScoped<IReviewService, ReviewService>();
-        services.AddScoped<ISubscriptionService, SubscriptionService>();
-        services.AddScoped<ISubscriptionCheckerService, SubscriptionCheckerService>();
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<ILoginService, LoginService>();
+        services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IRegistrationService, RegistrationService>();
-        services.AddScoped<ILoginService, LoginService>();
+        services.AddScoped<IRequestService, RequestService>();
+        services.AddScoped<IReviewService, ReviewService>();
+        services.AddScoped<ISubscriptionCheckerService, SubscriptionCheckerService>();
+        services.AddScoped<ISubscriptionService, SubscriptionService>();
         services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         return services;
     }

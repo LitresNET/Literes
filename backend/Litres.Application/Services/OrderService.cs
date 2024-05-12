@@ -7,6 +7,7 @@ using Litres.Domain.Exceptions;
 namespace Litres.Application.Services;
 
 public class OrderService(
+    INotificationService notificationService,
     IPickupPointRepository pickupPointRepository,
     IBookRepository bookRepository,
     IOrderRepository orderRepository) : IOrderService
@@ -30,10 +31,12 @@ public class OrderService(
             order.Books.Add(book);
         }
 
-        order = await orderRepository.AddAsync(order);
+        var dbOrder = await orderRepository.AddAsync(order);
         await orderRepository.SaveChangesAsync();
         
-        return order;
+        await notificationService.NotifyOrderStatusChange(dbOrder);
+        
+        return dbOrder;
     }
     
     public async Task<Order> UpdateOrderAsync(Order order)
@@ -44,9 +47,12 @@ public class OrderService(
 
         dbOrder.OrderedBooks = order.OrderedBooks;
         dbOrder.PickupPointId = order.PickupPointId;
-        order = orderRepository.Update(dbOrder);
+        var updatedOrder = orderRepository.Update(dbOrder);
+
+        await notificationService.NotifyOrderStatusChange(updatedOrder);
         
         await orderRepository.SaveChangesAsync();
+        
         return order;
     }
 
@@ -57,6 +63,8 @@ public class OrderService(
         dbOrder = orderRepository.Update(dbOrder);
         await orderRepository.SaveChangesAsync();
 
+        await notificationService.NotifyOrderStatusChange(dbOrder);
+        
         return dbOrder;
     }
 
@@ -84,8 +92,10 @@ public class OrderService(
         user.Wallet -= totalOrderPrice;
         dbOrder.Status = OrderStatus.Paid;
         orderRepository.Update(dbOrder);
-        
         await orderRepository.SaveChangesAsync();
+        
+        await notificationService.NotifyOrderStatusChange(dbOrder);
+
         return 0M;
     }
 }

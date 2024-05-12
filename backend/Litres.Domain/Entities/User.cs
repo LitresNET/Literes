@@ -108,6 +108,11 @@ public class User : IdentityUser<long>, IEntity
     public virtual List<Order> Orders { get; set; }
     
     /// <summary>
+    /// Все уведомления пользователя
+    /// </summary>
+    public virtual List<Notification> Notifications { get; set; }
+    
+    /// <summary>
     /// Все claims пользователя
     /// </summary>
     public virtual List<IdentityUserClaim<long>> Claims { get; set; }
