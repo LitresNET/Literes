@@ -22,7 +22,7 @@ public class GetPublisherInfo
         var expectedPublisher = fixture.Create<Publisher>();
 
         _publisherRepositoryMock
-            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
+            .Setup(repository => repository.GetByLinkedUserIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedPublisher);
 
         var service = UserService;

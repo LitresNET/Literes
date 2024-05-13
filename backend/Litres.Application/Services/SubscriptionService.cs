@@ -52,7 +52,7 @@ public class SubscriptionService(
         else
         {
             if (dbUser.Wallet < newSubscription.Price)
-                return newSubscription.Price - dbUser.Wallet;
+                return currentSubscription.Price;
             
             dbUser.Wallet -= newSubscription.Price;
             dbUser.Subscription = newSubscription;
@@ -65,7 +65,7 @@ public class SubscriptionService(
             subscriptionRepository.Delete(newSubscription);
 
         await unitOfWork.SaveChangesAsync();
-        return 0M;
+        return dbUser.Subscription.Price;
     }
 
     /// <summary>

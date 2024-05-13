@@ -55,11 +55,11 @@ public class GetBookWithAccessCheck
             .Create();
         
         _userRepositoryMock
-            .Setup(repository => repository.GetByIdAsync(userId))
+            .Setup(repository => repository.GetByIdAsNoTrackingAsync(userId))
             .ReturnsAsync(user);
 
         _bookRepositoryMock
-            .Setup(repository => repository.GetByIdAsync(bookId))
+            .Setup(repository => repository.GetByIdAsNoTrackingAsync(bookId))
             .ReturnsAsync(book);
 
         var expected = book;
@@ -102,11 +102,11 @@ public class GetBookWithAccessCheck
             .Create();
         
         _userRepositoryMock
-            .Setup(repository => repository.GetByIdAsync(userId))
+            .Setup(repository => repository.GetByIdAsNoTrackingAsync(userId))
             .ReturnsAsync(user);
 
         _bookRepositoryMock
-            .Setup(repository => repository.GetByIdAsync(bookId))
+            .Setup(repository => repository.GetByIdAsNoTrackingAsync(bookId))
             .ReturnsAsync(book);
         
         var expected = book;
@@ -120,46 +120,14 @@ public class GetBookWithAccessCheck
     }
 
     [Fact]
-    public async Task NotExistingUserId_ThrowsEntityNotFoundException() 
-    {
-        // Arrange
-        const long userId = 42;
-
-        var expected = new EntityNotFoundException(typeof(User), userId.ToString());
-        
-        _userRepositoryMock
-            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .ThrowsAsync(expected);
-
-        // Act
-        var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() => BookService.GetBookInfoAsync(0));
-
-        // Assert
-        Assert.Equal(expected.Message, actual.Message);
-    }
-
-    [Fact]
     public async Task NotExistingBookId_ThrowsEntityNotFoundException() 
     {
         // Arrange
-        const long userId = 42;
         const long bookId = 42;
-        
-        var fixture = new Fixture().Customize(new AutoFixtureCustomization());
-
-        var user = fixture
-            .Build<User>()
-            .With(u => u.Id, userId)
-            .Create();
-
-        _userRepositoryMock
-            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync(user);
-
         var expected = new EntityNotFoundException(typeof(Book), bookId.ToString());
         
         _bookRepositoryMock
-            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
+            .Setup(repository => repository.GetByIdAsNoTrackingAsync(It.IsAny<long>()))
             .ThrowsAsync(expected);
         
         // Act

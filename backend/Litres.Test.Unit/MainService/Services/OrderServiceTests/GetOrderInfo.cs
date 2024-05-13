@@ -32,9 +32,7 @@ public class GetOrderInfo
 
         _orderRepositoryMock
             .Setup(orderRepositoryMock => 
-                orderRepositoryMock.GetWithFilterAsync(
-                    It.IsAny<Expression<Func<Order, bool>>>(), 
-                    It.IsAny<List<Expression<Func<Order, object>>>>()))
+                orderRepositoryMock.GetByIdAsNoTrackingAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedOrder);
         
         var service = OrderService;
