@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using AutoMapper;
 using Hangfire;
+<<<<<<< HEAD:backend/Litres.WebAPI/Extensions/ServiceCollectionExtension.cs
 using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Hubs;
 using Litres.Application.Services;
@@ -12,6 +13,17 @@ using Litres.WebAPI.Controllers.Options;
 using Litres.WebAPI.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Caching.Memory;
+=======
+using Litres.Data.Abstractions.Repositories;
+using Litres.Data.Abstractions.Services;
+using Litres.Data.Configurations;
+using Litres.Data.Configurations.Mapping;
+using Litres.Data.Repositories;
+using Litres.Main.Middlewares;
+using Litres.Main.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+>>>>>>> 3474ecb80a9bdcc0a2e6e7bf046fdf23c2a7f1e3:backend/src/Litres.Main/Extensions/ServiceCollectionExtension.cs
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -188,5 +200,14 @@ public static class ServiceCollectionExtension
         services.Configure<GoogleAuthenticationOptions>(configuration.GetSection("Authentication:Google"));
 
         return services;
+    }
+    
+    public static WebApplication AddMigrations(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
+        db!.Database.Migrate();
+        
+        return app;
     }
 }
