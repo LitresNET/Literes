@@ -11,8 +11,11 @@ import { AccountBookCard } from '../../../components/AccountBookCard/AccountBook
 import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Link } from 'react-router-dom'
+import {useState} from "react";
+import {axiosToLitres} from "../../../hooks/useAxios.js";
 
 export default function UserAccountPage() {
+
     return (
         <>
             <div className="wrapper">
@@ -36,12 +39,14 @@ export default function UserAccountPage() {
                             <span>BALANCE: </span>
                             <span>$30,00</span>
                         </div>
-                        <Button
-                            text={'Adventure'}
-                            round={'true'}
-                            color={'yellow'}
-                            iconpath={ICONS.money}
-                        />
+                        <Link to={'/subscription'} style={{textDecoration: 'none'}}>
+                            <Button
+                                text={'Adventure'}
+                                round={'true'}
+                                color={'yellow'}
+                                iconpath={ICONS.money}
+                            />
+                        </Link>
                     </div>
                 </div>
                 <div className="books">
