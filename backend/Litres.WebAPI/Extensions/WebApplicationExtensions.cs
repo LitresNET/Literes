@@ -25,11 +25,11 @@ public static class WebApplicationExtensions
     }
     
     public static async Task AddMigrations(this WebApplication application)
-        {
-            using var scope = application.Services.CreateScope();
+    {
+        using var scope = application.Services.CreateScope();
 
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            
-            await context.Database.MigrateAsync();
-        }
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        
+        await context.Database.MigrateAsync();
+    }
 }
