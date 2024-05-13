@@ -1,4 +1,3 @@
-version: '3.3'
 services:
   database:
     container_name: litres_database
@@ -17,7 +16,7 @@ services:
   payment:
     container_name: litres_payment
     build:
-      context: ./backend/src/PaymentService
+      context: ./backend/Litres.Payment
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
@@ -32,7 +31,8 @@ services:
     ports:
       - "5271:8080"
     depends_on:
-      - payment
+      - database
+    entrypoint: ["./wait-for-db.sh", "database:1433", "--", "dotnet", "Litres.WebAPI.dll"]
 
   frontend:
     container_name: litres_frontend

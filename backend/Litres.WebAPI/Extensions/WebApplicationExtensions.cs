@@ -1,5 +1,7 @@
 using System.Security.Claims;
+using Litres.Infrastructure;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Litres.WebAPI.Extensions;
 
@@ -21,4 +23,13 @@ public static class WebApplicationExtensions
             await roleManager.AddClaimAsync(identityRole, new Claim(ClaimsIdentity.DefaultRoleClaimType, role));
         }
     }
+    
+    public static async Task AddMigrations(this WebApplication application)
+        {
+            using var scope = application.Services.CreateScope();
+
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            
+            await context.Database.MigrateAsync();
+        }
 }

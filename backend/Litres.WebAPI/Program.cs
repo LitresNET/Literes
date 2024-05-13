@@ -56,6 +56,7 @@ builder.Services.ConfigureServices(builder.Environment, builder.Configuration);
 
 var application = builder.Build();
 
+await application.AddMigrations();
 await application.AddIdentityRoles();
 
 if (application.Environment.IsDevelopment())
