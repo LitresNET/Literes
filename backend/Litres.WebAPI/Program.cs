@@ -46,12 +46,15 @@ builder.Services
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
 
-builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder => 
-    policyBuilder
-        .WithOrigins(builder.Configuration["CorsPolicy:Origin"]!)
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials()));
+builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder =>
+{
+        var origins = builder.Configuration.GetSection("CorsPolicy:Origins").Get<string[]>()!;
+        policyBuilder
+                .WithOrigins(origins)
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+}));
 
 builder.Services.ConfigureServices(builder.Environment, builder.Configuration);
 
