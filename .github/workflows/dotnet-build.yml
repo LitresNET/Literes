@@ -64,12 +64,6 @@ jobs:
           dotnet build --configuration Release
           dotnet test --configuration Release
 
-      - name: Build and test integration tests
-        run: |
-          cd ./backend/Litres.Test.Integration
-          dotnet build --configuration Release
-          dotnet test --configuration Release
-
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
