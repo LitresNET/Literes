@@ -28,7 +28,7 @@ public class UserController(
         return Ok(result);
     }
     
-    [HttpGet("order/list")]
+    [HttpGet("order/list")] // api/user/order/list
     public async Task<IActionResult> GetOrderList()
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,

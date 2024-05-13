@@ -175,7 +175,8 @@ public static class ServiceCollectionExtension
                 .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
                 .ReadFrom.Configuration(configuration)
                 .ReadFrom.Services(servs)
-                .Enrich.FromLogContext()
+                .Enrich.FromLogContext(), 
+            preserveStaticLogger: true
         );
 
         return services;

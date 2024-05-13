@@ -4,6 +4,7 @@ using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Litres.Infrastructure;
 using Litres.WebAPI.Extensions;
+using Litres.WebAPI.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -68,7 +69,7 @@ if (application.Environment.IsDevelopment())
 
 application
     .UseCors()
-    // .UseMiddleware<ExceptionMiddleware>()
+    .UseMiddleware<ExceptionMiddleware>()
     .UseAuthentication()
     .UseAuthorization()
     .UseHttpsRedirection()
@@ -80,6 +81,9 @@ application.MapControllers();
 application.MapHub<NotificationHub>("api/hubs/notification");
 
 application.Run();
+
+// с настройками по умолчанию интеграционные тесты не видят namespace нашего Progrnam.cs - делаем публичным
+public partial class Program { }
     
 /*
 DONE:   разбить на clean архитектуру (рефактор сомнительных штук которые на глаза попадутся)
