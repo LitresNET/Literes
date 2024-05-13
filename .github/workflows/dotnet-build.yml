@@ -60,13 +60,13 @@ jobs:
 
       - name: Build and test unit tests
         run: |
-          cd ./backend/Litres.Tests.Unit
+          cd ./backend/Litres.Test.Unit
           dotnet build --configuration Release
           dotnet test --configuration Release
 
       - name: Build and test integration tests
         run: |
-          cd ./backend/Litres.Tests.Integration
+          cd ./backend/Litres.Test.Integration
           dotnet build --configuration Release
           dotnet test --configuration Release
 
