@@ -11,11 +11,65 @@ import { Input } from "../../../components/UI/Input/Input.jsx";
 import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import {ReviewCard} from "../../../components/ReviewCard/ReviewCard.jsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {useGetBookByCategory} from "../../../hooks/useGetBookByCategory.js";
+import {toast} from "react-toastify";
+import {axiosToLitres} from "../../../hooks/useAxios.js";
+import {useParams} from "react-router-dom";
 
-export default function BookPage(props) {
+export default function BookPage() {
 
     const [value, setValue] = useState('');
+    const [bookData, setBookData] = useState(null);
+    const [sameGenreBooks, setSameGenreBooks] = useState([])
+    const [reviews, setReviews] = useState([])
+    const { id } = useParams();
+
+    const [setErrorToast] = useState(null);
+
+    useEffect(() => {
+        const fetchBookData = async () => {
+            try {
+                const response = await axiosToLitres.get(`/book/${id}`);
+                setBookData(response.data);
+            } catch (error) {
+                setErrorToast( () => toast.error('Book Information: '+error.message,
+                    {toastId: "BookDataError"}));
+            }
+        };
+        //TODO: Починить, он работает как говно
+        const fetchSameGenreBooksData = async () => {
+            try {
+                const response = await useGetBookByCategory(0, 10, {Category:
+                        bookData?.bookGenres[Math.floor(Math.random() * bookData?.bookGenres?.length)]}); //рандомный жанр
+                setSameGenreBooks(response.result);
+            } catch (error) {
+                setErrorToast( () => toast.error('Same Genre Books: '+error.message,
+                    {toastId: "SameGenreBooksError"}));
+            }
+        };
+        //TODO: с бэка приходит по 15 комментариев. Реализовать подгрузку следующих через параметр n
+        const fetchReviews = async (n) => {
+            try {
+                const response = await axiosToLitres.get(`/review/list?bookId=${id}&n=${n ?? 0}`);
+                setReviews(response.data);
+            } catch (error) {
+                setErrorToast( () => toast.error('Reviews: '+error.message,
+                    {toastId: "ReviewsError"}));
+            }
+
+        }
+        const fetchBookPageData = async () => {
+            await fetchBookData();
+            await fetchSameGenreBooksData();
+            await fetchReviews();
+        }
+        toast.promise(
+            fetchBookPageData,
+            {
+                pending: 'Loading'
+            }, {toastId: "BookPageLoading"});
+    }, [id]);
 
     const handleChange = (event) => {
         setValue(event.target.value);
@@ -28,16 +82,16 @@ export default function BookPage(props) {
     return (
         <div className="book-page">
             <div className="book-container">
-                <Cover imgPath={IMAGES.default_cover} size="big" />
+                <Cover imgPath={bookData?.coverUrl === undefined || bookData?.coverUrl === null || bookData?.coverUrl === "" ?
+                    IMAGES.default_cover : bookData.coverUrl} size="big" />
                 <div className="book-info">
                     <div className="book-info-title">
-                        <h1>Book Name
+                        <h1>{bookData?.name}
                             <div className="review-stars">
-                                <Icon path={ICONS.filled_star}/>
-                                <Icon path={ICONS.filled_star}/>
-                                <Icon path={ICONS.filled_star}/>
-                                <Icon path={ICONS.empty_star}/>
-                                <Icon path={ICONS.empty_star}/>
+                                {Array.from({ length: Math.round(bookData?.rating) }).map(_ =>
+                                    <Icon path={ICONS.filled_star} />)}
+                                {Array.from({ length: 5 - Math.round(bookData?.rating) }).map(_ =>
+                                    <Icon path={ICONS.empty_star} />)}
                             </div>
                         </h1>
 
@@ -48,14 +102,14 @@ export default function BookPage(props) {
                     </div>
 
                     <Banner withshadow="true">
-                    <span className="book-banner-name">Author: {"Author name"}</span>
+                    <span className="book-banner-name">Author: {bookData?.author}</span>
                     </Banner>
                     <Banner withshadow="true">
-                        <span className="book-banner-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus elit sed risus. Maecenas eget condimentum velit, sit amet feugiat lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</span>
+                        <span className="book-banner-description">{bookData?.description}</span>
                     </Banner>
 
                     <div className="book-price">
-                        <span>$30,00</span>
+                        <span>{bookData?.price}$</span>
                         <Input type="number"></Input>
                     </div>
                     <div className="book-buttons">
@@ -82,18 +136,16 @@ export default function BookPage(props) {
                     spaceBetween={20}
                     slidesPerView={'auto'}
                     freeMode={true}
+
                 >
-                    {Array.from({ length: 10 }).map((_, index) => (
-                        <SwiperSlide key={index} style={{ width: 'auto', minWidth: '100px' }}>
+                    {sameGenreBooks?.map(book => (
+                        <SwiperSlide style={{ width: 'auto', minWidth: '100px' }}>
                             {/* Здесь задаём минимальную ширину слайда */}
-                            <BookCard
-                                role={'user'}
-                                imgPath={IMAGES.default_cover}
-                                description={'maecenas nulla nibh amet non fringilla'}
-                            />
+                            <BookCard bookId={book.id}/>
                         </SwiperSlide>
                     ))}
                 </Swiper>
+
             </div>
             <div className="reviews">
                 <div className="container-title">
@@ -117,10 +169,16 @@ export default function BookPage(props) {
                     <h5 className="font-syne">+ add review</h5>
                 </div>
                 <div className="review-cards-wrapper">
-                    {Array.from({length: 5}).map((_, index) => (
-                        <ReviewCard key={index}>
-                            reviewId={'0'}
-                        </ReviewCard>
+                    {reviews?.map(review => (
+                        <ReviewCard
+                            content={review.content}
+                            rating={review.rating}
+                            createdAt={review.createdAt}
+                            userId={review.userId}
+                            likes={review.likes}
+                            dislikes={review.dislikes}
+                            //reviewId={review.id}
+                        />
                     ))}
                 </div>
             </div>
