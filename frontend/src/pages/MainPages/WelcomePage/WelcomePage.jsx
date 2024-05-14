@@ -7,8 +7,62 @@ import {Icon} from "../../../components/UI/Icon/Icon.jsx";
 import {Banner} from "../../../components/UI/Banner/Banner";
 import {Cover} from "../../../components/Cover/Cover.jsx";
 import {BookCard} from "../../../components/BookCard/BookCard";
+import {toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import {useEffect, useState} from "react";
+import {useGetBookByCategory} from "../../../hooks/useGetBookByCategory.js";
+
 
 function mainPage() {
+
+    const [popularBooks, setPopularBooks] = useState([]);
+    const [romanceBooks, setRomanceBooks] = useState([]);
+    const [adventuresBooks, setAdventuresBooks] = useState([]);
+
+    const [setErrorToast] = useState(null);
+    useEffect(() => {
+        const fetchPopularBooksData = async () => {
+            try {
+                const response = await useGetBookByCategory(0, 10, {New: `true`});
+                setPopularBooks(response.result);
+
+            } catch (error) {
+                setErrorToast( () => toast.error('Popular Books: '+error.message,
+                    {toastId: "PopularBooksError"}));
+            }
+        };
+
+        const fetchRomanceBooksData = async () => {
+            try {
+                const response = await useGetBookByCategory(0, 10, {Category: `RomanceNovel`});
+                setRomanceBooks(response.result);
+            } catch (error) {
+                setErrorToast( () => toast.error('Romance Books: '+error.message,
+                    {toastId: "RomanceBooksError"}));
+            }
+        };
+        const fetchAdventureBooksData = async () => {
+            try {
+                const response = await useGetBookByCategory(0, 10, {Category: `Adventure`});
+                setAdventuresBooks(response.result);
+            } catch (error) {
+                setErrorToast( () => toast.error('Adventure Books: '+error.message,
+                    {toastId: "AdventureBooksError"}));
+            }
+        };
+
+        const fetchWelcomePageData = async () => {
+            await fetchPopularBooksData();
+            await fetchAdventureBooksData();
+            await fetchRomanceBooksData();
+        }
+
+        toast.promise(
+            fetchWelcomePageData,
+            {
+                pending: 'Loading'
+            }, {toastId: "WelcomePageLoading"});
+    }, []);
 
     return (
         <>
@@ -19,7 +73,7 @@ function mainPage() {
                             <p>Explore our catalog and find your next read.</p>
                             <DropDownInputSearch />
                             <div className="head-button">
-                                <Button text={"Explore"} iconpath={ICONS.binoculars} color={"yellow"} />
+                                <Button text={"Explore"} iconpath={ICONS.binoculars} color={"yellow"}/>
                                 <div className={"separator"} />
                             </div>
                         </div>
@@ -37,14 +91,11 @@ function mainPage() {
                         </div>
                         <div className="trending-books">
                             <Banner>
-                                <Cover imgPath={IMAGES.avatar_none}/>
-                                <Cover imgPath={IMAGES.avatar_none}/>
-                                <Cover imgPath={IMAGES.avatar_none}/>
-                                <Cover imgPath={IMAGES.avatar_none}/>
-                                <Cover imgPath={IMAGES.avatar_none}/>
-                                <Cover imgPath={IMAGES.avatar_none}/>
-                                <Cover imgPath={IMAGES.avatar_none}/>
-                                <Cover imgPath={IMAGES.avatar_none}/>
+                                {
+                                    popularBooks?.map(book => <Cover imgPath={book.coverUrl === null ||
+                                        book.coverUrl === undefined || book.coverUrl === "" ? IMAGES.default_cover :
+                                        book.coverUrl} link={`book/${book.id}`}/>)
+                                }
                             </Banner>
                         </div>
 
@@ -69,14 +120,9 @@ function mainPage() {
                             <h1>Romance</h1>
                         </div>
                         <div className="category-content">
-                            <BookCard />
-                            <BookCard />
-                            <BookCard />
-                            <BookCard />
-                            <BookCard />
-                            <BookCard />
-                            <BookCard />
-                            <BookCard />
+                            {
+                                romanceBooks?.map(book =>   <BookCard bookId={book.id}/>)
+                            }
                         </div>
                     </div>
                     <div className="fraction-concrete-category">
@@ -85,14 +131,9 @@ function mainPage() {
                             <h1>Adventure</h1>
                         </div>
                         <div className="category-content">
-                            <BookCard />
-                            <BookCard />
-                            <BookCard />
-                            <BookCard />
-                            <BookCard />
-                            <BookCard />
-                            <BookCard />
-                            <BookCard />
+                            {
+                                adventuresBooks?.map(book =>   <BookCard bookId={book.id}/>)
+                            }
                         </div>
                     </div>
                 </div>

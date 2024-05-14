@@ -8,7 +8,9 @@
     gap: 90px;
     margin-bottom: 100px;
 }
-
+.swiper >:first-child {
+    overflow-x: scroll;
+}
 .book-info {
     flex: 1;
     display: flex;
