@@ -1,4 +1,5 @@
 import './Cover.css';
+import {Link} from "react-router-dom";
 
 /// Принимает: <br/>
 /// imgPath : string - путь к обложке книги
@@ -6,7 +7,7 @@ import './Cover.css';
 /// multiplier : number - число (только при size = "custom")
 /// width : number - число (только при size = "custom");
 export function Cover(props) {
-    const { imgPath, size, multiplier, width } = props;
+    const { imgPath, size, multiplier, width, link } = props;
 
     let w = 200;
     let h;
@@ -33,9 +34,11 @@ export function Cover(props) {
 
     return (
         <>
-            <div className="cover" style={{minWidth : w, height : h}}>
-                <img src={imgPath} alt=""/>
-            </div>
+            <Link to={link}>
+                <div className="cover" style={{minWidth: w, height: h}}>
+                    <img src={imgPath} alt=""/>
+                </div>
+            </Link>
         </>
     );
 }

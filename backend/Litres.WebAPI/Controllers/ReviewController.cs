@@ -18,7 +18,15 @@ public class ReviewController(
         IMapper mapper)
     : ControllerBase
 {
-
+    [AllowAnonymous]
+    [HttpGet("{reviewId:long}")] // api/review/{reviewId}
+    public async Task<IActionResult> GetReview([FromRoute] long reviewId)
+    {
+        var review = await service.GetReviewAsync(reviewId);
+        var response = mapper.Map<ReviewDto>(review);
+        return Ok(response);
+    }
+    
     [AllowAnonymous]
     [HttpGet("list")] // api/review/list?bookId={bookId}&n={page}
     public async Task<IActionResult> GetReviewList([FromQuery] long bookId, [FromQuery] int page)
@@ -63,5 +71,4 @@ public class ReviewController(
         await service.RemoveReviewRate(reviewId, userId);
         return Ok();
     }
-
 }

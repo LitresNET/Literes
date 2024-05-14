@@ -20,15 +20,16 @@ public class UserController(
     IMapper mapper) 
     : ControllerBase
 {
+    [AllowAnonymous]
     [HttpGet("{userId:long}")] // api/user/{userId}
-    public async Task<IActionResult> GetUserData(long userId)
+    public async Task<IActionResult> GetPublicUserData(long userId)
     {
-        var user = await service.GetSafeUserInfoAsync(userId);
+        var user = await service.GetPublicUserInfoAsync(userId);
         var result = mapper.Map<UserSafeDataDto>(user);
         return Ok(result);
     }
     
-    [HttpGet("order/list")]
+    [HttpGet("order/list")] // api/user/order/list
     public async Task<IActionResult> GetOrderList()
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,

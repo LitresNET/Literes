@@ -1,4 +1,4 @@
 {
-    "LITRES_URL": "http://localhost:5032/api",
-    "PAYMENT_URL": "http://localhost:3000/"
+    "LITRES_URL": "http://94.180.174.211:5271/api",
+    "PAYMENT_URL": "http://94.180.174.211:3000/"
 }

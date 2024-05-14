@@ -9,11 +9,11 @@
 <body>
 <div class="container">
     <form method="post" action="/pay">
-        <input type="hidden" name="orderId" value={{ orderId }}>
+        <input type="hidden" name="userId" value={{ userId }}>
         <label for="cardholder-name">Имя держателя:</label>
-        <input type="text" id="cardholder-name" name="cardholder-name" minlength="1" maxlength="20" required>
+        <input type="text" id="cardholder-name" name="cardholder-name" placeholder="name" minlength="1" maxlength="20" required>
         <label for="card-number">Номер карты:</label>
-        <input type="tel" id="card-number" name="card-number" pattern="[0-9]+" minlength="16" maxlength="16"
+        <input type="tel" id="card-number" name="card-number" placeholder="card number" pattern="[0-9]+" minlength="16" maxlength="16"
                required>
         <div class="flex-container">
             <div>
@@ -28,12 +28,22 @@
             </div>
             <div>
                 <label for="cvv">CVV:</label>
-                <input type="tel" id="cvv" name="cvv" pattern="[0-9]+" minlength="3" maxlength="3" required>
+                <input type="tel" id="cvv" name="cvv" placeholder="000" pattern="[0-9]+" minlength="3" maxlength="3" required>
             </div>
         </div>
-        <p id="total-price">{{totalPrice}} рублей</p>
+        <label for="amount">Сумма</label>
+        <input type="tel" id="amount" name="amount" placeholder="amount" pattern="[0-9]+" minlength="1" required>
         <button type="submit" class="yellow-button">Оплатить</button>
+        <p id="lacking">Не хватает для оплаты на сайте: {{lacking}}</p>
     </form>
 </div>
+
+<script>
+    const lacking = document.getElementById("lacking");
+
+    if ({{lacking}} == 0) {
+        lacking.style.display = "none";
+    }
+</script>
 </body>
 </html>
