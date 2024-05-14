@@ -67,6 +67,7 @@ export function AccountBookCard(props) {
                                 round={'true'}
                                 color={'orange'}
                                 iconpath={ICONS.trash}
+                                onClick={() => requestToDeleteBook(props.id)}
                             />
                         </div>
                     )

@@ -30,6 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Litres.Infrastructure\Litres.Infrastructure.csproj" />
       <ProjectReference Include="..\Litres.WebAPI\Litres.WebAPI.csproj" />
     </ItemGroup>
 </Project>

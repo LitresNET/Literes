@@ -82,12 +82,14 @@ export default function UserAccountPage() {
                             <span>BALANCE: </span>
                             <span>${userData?.wallet}</span>
                         </div>
-                        <Button
-                            text={'Adventure'}
-                            round={'true'}
-                            color={'yellow'}
-                            iconpath={ICONS.money}
-                        />
+                        <Link to={'/subscription'} style={{textDecoration: 'none'}}>
+                            <Button
+                                text={'Adventure'}
+                                round={'true'}
+                                color={'yellow'}
+                                iconpath={ICONS.money}
+                            />
+                        </Link>
                     </div>
                 </div>
                 <div className="books">

@@ -55,6 +55,11 @@
     margin-bottom: 5px;
 }
 
+.user-settings-error{
+    margin-top: -25px;
+    color: red;
+}
+
 @media (max-width: 900px) {
 .user-settings-info-button {
     display: none;
