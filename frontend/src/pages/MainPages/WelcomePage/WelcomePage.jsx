@@ -66,77 +66,77 @@ function mainPage() {
 
     return (
         <>
-                <div className="main-page">
-                    <div className="head">
-                        <div className="head-content">
-                            <h1 className={"font-syne"}>What book you looking for?</h1>
-                            <p>Explore our catalog and find your next read.</p>
-                            <DropDownInputSearch />
-                            <div className="head-button">
-                                <Button text={"Explore"} iconpath={ICONS.binoculars} color={"yellow"}/>
-                                <div className={"separator"} />
-                            </div>
-                        </div>
-                        <div className="head-image">
-                            <img src={IMAGES.library} alt={"library-banner"}/>
+            <div className="main-page">
+                <div className="head">
+                    <div className="head-content">
+                        <h1 className={"font-syne"}>What book you looking for?</h1>
+                        <p>Explore our catalog and find your next read.</p>
+                        <DropDownInputSearch />
+                        <div className="head-button">
+                            <Button text={"Explore"} iconpath={ICONS.binoculars} color={"yellow"}/>
+                            <div className={"separator"} />
                         </div>
                     </div>
-                    <div className="fraction-trending-books">
-                        <div className="fraction-title">
-                            <h1>Trending Books</h1>
-                            <div className="fraction-subtitle">
-                                <Icon path={ICONS.sparkle} size={"mini"}/>
-                                <p>Drag to explore</p>
-                            </div>
-                        </div>
-                        <div className="trending-books">
-                            <Banner>
-                                {
-                                    popularBooks?.map(book => <Cover imgPath={book.coverUrl === null ||
-                                        book.coverUrl === undefined || book.coverUrl === "" ? IMAGES.default_cover :
-                                        book.coverUrl} link={`book/${book.id}`}/>)
-                                }
-                            </Banner>
-                        </div>
-
-                    </div>
-                    <div className="fraction-categories">
-                        <div className="category-title">
-                            <Icon path={ICONS.folder_notch_open}/>
-                            <h1>Categories</h1>
-                        </div>
-                        <div className="categories">
-                            <Button text={"Adventure"} big={"true"} shadow={"true"}/>
-                            <Button text={"Adventure"} big={"true"} shadow={"true"}/>
-                            <Button text={"Adventure"} big={"true"} shadow={"true"}/>
-                            <Button text={"Adventure"} big={"true"} shadow={"true"}/>
-                            <Button text={"Adventure"} big={"true"} shadow={"true"}/>
-                            <Button text={"Adventure"} big={"true"} shadow={"true"}/>
-                        </div>
-                    </div>
-                    <div className="fraction-concrete-category">
-                        <div className="category-title">
-                            <Icon path={ICONS.path}/>
-                            <h1>Romance</h1>
-                        </div>
-                        <div className="category-content">
-                            {
-                                romanceBooks?.map(book =>   <BookCard bookId={book.id}/>)
-                            }
-                        </div>
-                    </div>
-                    <div className="fraction-concrete-category">
-                        <div className="category-title">
-                            <Icon path={ICONS.path}/>
-                            <h1>Adventure</h1>
-                        </div>
-                        <div className="category-content">
-                            {
-                                adventuresBooks?.map(book =>   <BookCard bookId={book.id}/>)
-                            }
-                        </div>
+                    <div className="head-image">
+                        <img src={IMAGES.library} alt={"library-banner"}/>
                     </div>
                 </div>
+                <div className="fraction-trending-books">
+                    <div className="fraction-title">
+                        <h1>Trending Books</h1>
+                        <div className="fraction-subtitle">
+                            <Icon path={ICONS.sparkle} size={"mini"}/>
+                            <p>Drag to explore</p>
+                        </div>
+                    </div>
+                    <div className="trending-books">
+                        <Banner>
+                            {
+                                popularBooks?.map(book => <Cover imgPath={book.coverUrl === null ||
+                                    book.coverUrl === undefined || book.coverUrl === "" ? IMAGES.default_cover :
+                                    book.coverUrl} link={`book/${book.id}`}/>)
+                            }
+                        </Banner>
+                    </div>
+
+                </div>
+                <div className="fraction-categories">
+                    <div className="category-title">
+                        <Icon path={ICONS.folder_notch_open}/>
+                        <h1>Categories</h1>
+                    </div>
+                    <div className="categories">
+                        <Button text={"Adventure"} big={"true"} shadow={"true"}/>
+                        <Button text={"Adventure"} big={"true"} shadow={"true"}/>
+                        <Button text={"Adventure"} big={"true"} shadow={"true"}/>
+                        <Button text={"Adventure"} big={"true"} shadow={"true"}/>
+                        <Button text={"Adventure"} big={"true"} shadow={"true"}/>
+                        <Button text={"Adventure"} big={"true"} shadow={"true"}/>
+                    </div>
+                </div>
+                <div className="fraction-concrete-category">
+                    <div className="category-title">
+                        <Icon path={ICONS.path}/>
+                        <h1>Romance</h1>
+                    </div>
+                    <div className="category-content">
+                        {
+                            romanceBooks?.map(book =>   <BookCard bookId={book.id}/>)
+                        }
+                    </div>
+                </div>
+                <div className="fraction-concrete-category">
+                    <div className="category-title">
+                        <Icon path={ICONS.path}/>
+                        <h1>Adventure</h1>
+                    </div>
+                    <div className="category-content">
+                        {
+                            adventuresBooks?.map(book =>   <BookCard bookId={book.id}/>)
+                        }
+                    </div>
+                </div>
+            </div>
         </>
     )
 }
