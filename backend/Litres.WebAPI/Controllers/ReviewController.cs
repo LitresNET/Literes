@@ -63,5 +63,4 @@ public class ReviewController(
         await service.RemoveReviewRate(reviewId, userId);
         return Ok();
     }
-
 }

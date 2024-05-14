@@ -6,11 +6,13 @@ using Litres.Application.Hubs;
 using Litres.Application.Services;
 using Litres.Application.Services.Options;
 using Litres.Domain.Abstractions.Services;
+using Litres.Infrastructure;
 using Litres.Infrastructure.Repositories;
 using Litres.WebAPI.Configuration.Mapper;
 using Litres.WebAPI.Controllers.Options;
 using Litres.WebAPI.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -27,7 +29,7 @@ public static class ServiceCollectionExtension
 
         return services;
     }
-    
+
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddSingleton<IMemoryCache, MemoryCache>();
@@ -47,7 +49,7 @@ public static class ServiceCollectionExtension
 
         return services;
     }
-    
+
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IAuthorRepository, AuthorRepository>();
@@ -127,7 +129,7 @@ public static class ServiceCollectionExtension
                 }
             );
         });
-        
+
         return services;
     }
 
@@ -157,13 +159,13 @@ public static class ServiceCollectionExtension
                 options.ClientId = configuration["Authentication:Google:ClientId"]!;
                 options.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
             });
-        
+
         return services;
     }
-    
+
     public static IServiceCollection AddConfiguredSerilog(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSerilog((servs, loggerConfiguration) => 
+        services.AddSerilog((servs, loggerConfiguration) =>
             loggerConfiguration
                 .MinimumLevel.Verbose()
                 .MinimumLevel.Override("Microsoft.AspNetCore.Cors.Infrastructure", LogEventLevel.Warning)
@@ -173,9 +175,10 @@ public static class ServiceCollectionExtension
                 .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
                 .ReadFrom.Configuration(configuration)
                 .ReadFrom.Services(servs)
-                .Enrich.FromLogContext()
+                .Enrich.FromLogContext(), 
+            preserveStaticLogger: true
         );
-        
+
         return services;
     }
 

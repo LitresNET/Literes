@@ -1,7 +1,9 @@
 ﻿using AutoFixture;
 using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Services;
+using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
+using Litres.Domain.Enums;
 using Moq;
 using Tests.Config;
 
@@ -9,29 +11,29 @@ namespace Tests.MainService.Services.OrderServiceTests;
 
 public class ConfirmOrder
 {
-    private readonly Mock<IUserRepository> _userRepositoryMock = new();
+    private readonly Mock<INotificationService> _notificationServiceMock = new();
     private readonly Mock<IPickupPointRepository> _pickupPointRepositoryMock = new();
     private readonly Mock<IBookRepository> _bookRepositoryMock = new();
     private readonly Mock<IOrderRepository> _orderRepositoryMock = new();
     
     private OrderService OrderService => new(
-        _userRepositoryMock.Object,
+        _notificationServiceMock.Object,
         _pickupPointRepositoryMock.Object,
         _bookRepositoryMock.Object,
         _orderRepositoryMock.Object
         );
 
     [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public async Task DefaultOrder_ReturnsDbOrder(bool isSuccess)
+    [InlineData(OrderStatus.Created)]
+    [InlineData(OrderStatus.Rejected)]
+    public async Task DefaultOrder_ReturnsDbOrder(OrderStatus orderStatus)
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
         
         var expectedOrder = fixture
             .Build<Order>()
-            .With(o => o.IsPaid, isSuccess)
+            .With(o => o.Status, orderStatus)
             .Create();
 
         _orderRepositoryMock
@@ -44,7 +46,7 @@ public class ConfirmOrder
         var service = OrderService;
 
         // Act
-        var result = await service.ConfirmOrderAsync(expectedOrder.Id, isSuccess);
+        var result = await service.UpdateOrderStatusAsync(expectedOrder.Id, orderStatus);
 
         // Assert
         Assert.Equal(expectedOrder, result);

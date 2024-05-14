@@ -24,13 +24,15 @@ public class ChangeUserSettings
         const string newAvatarUrl = "/forty/two";
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
-        var user = fixture.Create<User>();
+        var expected = fixture
+            .Build<User>()
+            .With(u => u.UserName, newName)
+            .With(u => u.AvatarUrl, newAvatarUrl)
+            .Create();
 
         _userRepositoryMock
             .Setup(r => r.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync(user);
-
-        var expected = new User {Id = user.Id, Email = user.Email, UserName = newName, AvatarUrl = newAvatarUrl};
+            .ReturnsAsync(expected);
         
         // Act
         var actual = await UserService.ChangeUserSettingsAsync(expected);

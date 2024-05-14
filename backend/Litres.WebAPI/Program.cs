@@ -4,6 +4,7 @@ using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Litres.Infrastructure;
 using Litres.WebAPI.Extensions;
+using Litres.WebAPI.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -45,17 +46,21 @@ builder.Services
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
 
-builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder => 
-    policyBuilder
-        .WithOrigins(builder.Configuration["CorsPolicy:Origin"]!)
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials()));
+builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder =>
+{
+        var origins = builder.Configuration.GetSection("CorsPolicy:Origins").Get<string[]>()!;
+        policyBuilder
+                .WithOrigins(origins)
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+}));
 
 builder.Services.ConfigureServices(builder.Environment, builder.Configuration);
 
 var application = builder.Build();
 
+await application.AddMigrations();
 await application.AddIdentityRoles();
 
 if (application.Environment.IsDevelopment())
@@ -67,7 +72,7 @@ if (application.Environment.IsDevelopment())
 
 application
     .UseCors()
-    // .UseMiddleware<ExceptionMiddleware>()
+    .UseMiddleware<ExceptionMiddleware>()
     .UseAuthentication()
     .UseAuthorization()
     .UseHttpsRedirection()
@@ -79,6 +84,9 @@ application.MapControllers();
 application.MapHub<NotificationHub>("api/hubs/notification");
 
 application.Run();
+
+// с настройками по умолчанию интеграционные тесты не видят namespace нашего Progrnam.cs - делаем публичным
+public partial class Program { }
     
 /*
 DONE:   разбить на clean архитектуру (рефактор сомнительных штук которые на глаза попадутся)
