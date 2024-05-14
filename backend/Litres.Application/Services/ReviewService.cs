@@ -10,6 +10,18 @@ public class ReviewService(
     IBookRepository bookRepository) 
     : IReviewService
 {
+    public async Task<Review> GetReviewAsync(long reviewId)
+    {
+        return await reviewRepository.GetByIdAsync(reviewId);
+    }
+    
+    public async Task<List<Review>> GetReviewListByBookIdAsync(long bookId, int page)
+    {
+        var book = await bookRepository.GetByIdAsync(bookId);
+        var paginated = book.Reviews?.Skip((page - 1) * 15).Take(15).ToList() ?? new List<Review>();
+        return paginated;
+    }
+    
     public async Task<Review> AddReview(Review review)
     {
         // у отзыва либо отсутствует ссылка на родительский отзыв, либо на книгу, иначе - ошибка
@@ -54,12 +66,5 @@ public class ReviewService(
         var dbReview = await reviewRepository.GetByIdAsync(reviewId);
         dbReview.ReviewLikes.RemoveAll(rl => rl.UserId == userId);
         await reviewRepository.SaveChangesAsync();
-    }
-
-    public async Task<List<Review>> GetReviewListByBookIdAsync(long bookId, int page)
-    {
-        var book = await bookRepository.GetByIdAsync(bookId);
-        var paginated = book.Reviews?.Skip((page - 1) * 15).Take(15).ToList() ?? new List<Review>();
-        return paginated;
     }
 }

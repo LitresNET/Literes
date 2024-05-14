@@ -50,6 +50,11 @@ public class Review : IEntity
     public virtual Review? ParentReview { get; set; }
     
     /// <summary>
+    /// Список дочерних отзывов
+    /// </summary>
+    public virtual List<Review>? ChildReviews { get; set; }
+    
+    /// <summary>
     /// Список всех лайков и дизлайков пользователей
     /// </summary>
     public virtual List<ReviewLike> ReviewLikes { get; set; }

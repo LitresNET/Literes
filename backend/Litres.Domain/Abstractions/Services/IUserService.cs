@@ -8,7 +8,7 @@ public interface IUserService
 
     public Task<Book> UnFavouriteBookAsync(long userId, long bookIdToDelete);
 
-    public Task<User> GetSafeUserInfoAsync(long userId);
+    public Task<User> GetPublicUserInfoAsync(long userId);
 
     public Task<User> GetUserByIdAsync(long userId);
 
