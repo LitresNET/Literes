@@ -1,0 +1,71 @@
+name: "dotnet-build"
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ./backend
+      - name: Build and test back-end projects
+        run: |
+          cd ./backend/Litres.Application
+          dotnet build --configuration Release
+          dotnet test --configuration Release
+
+          cd ./../Litres.Domain
+          dotnet build --configuration Release
+          dotnet test --configuration Release
+
+          cd ./../Litres.Infrastructure
+          dotnet build --configuration Release
+          dotnet test --configuration Release
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+
+      - name: Install dependencies and build front-end
+        run: |
+          cd ./frontend
+          npm install
+          npm run build
+
+      - name: Setup Nest.js
+        run: npm install -g @nestjs/cli
+
+      - name: Build and test PaymentService
+        run: |
+          cd ./backend/Litres.Payment
+          npm install
+          npm run build
+          npm run test
+
+      - name: Build and test unit tests
+        run: |
+          cd ./backend/Litres.Test.Unit
+          dotnet build --configuration Release
+          dotnet test --configuration Release
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: LitresNET/Literes
