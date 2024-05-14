@@ -1,6 +1,0 @@
-﻿services:
-  litres.webapi:
-    image: litres.webapi
-    build:
-      context: .
-      dockerfile: Litres.WebAPI/Dockerfile
