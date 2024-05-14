@@ -1,4 +1,4 @@
-name: "check"
+name: "dotnet-build"
 
 on:
   push:
@@ -25,11 +25,15 @@ jobs:
         working-directory: ./backend
       - name: Build and test back-end projects
         run: |
-          cd ./backend/src/Litres.Data
+          cd ./backend/Litres.Application
           dotnet build --configuration Release
           dotnet test --configuration Release
 
-          cd ./../Litres.Main
+          cd ./../Litres.Domain
+          dotnet build --configuration Release
+          dotnet test --configuration Release
+
+          cd ./../Litres.Infrastructure
           dotnet build --configuration Release
           dotnet test --configuration Release
 
@@ -49,14 +53,14 @@ jobs:
 
       - name: Build and test PaymentService
         run: |
-          cd ./backend/src/PaymentService
+          cd ./backend/Litres.Payment
           npm install
           npm run build
           npm run test
 
       - name: Build and test unit tests
         run: |
-          cd ./backend/tests/Tests.Unit
+          cd ./backend/Litres.Test.Unit
           dotnet build --configuration Release
           dotnet test --configuration Release
 

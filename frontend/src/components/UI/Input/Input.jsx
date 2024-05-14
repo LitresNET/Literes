@@ -23,42 +23,44 @@ export function Input({type, children, id, iconpath, ...rest}) {
     switch (type) {
         case 'text':
             return (
-                <>
-                    <div className="input-wrapper">
-                        <div className="input-text">
-                            <input type={type} id={id} {...rest}/>
-                        </div>
+                <div className="input-wrapper">
+                    <div className="input-text">
+                        <input type="text" id={id} {...rest}/>
                     </div>
-                </>
+                </div>
             )
         case 'number':
             return (
-                <>
-                    <div className="input-wrapper">
-                        <div className="input-number">
-                            <Icon path={ICONS.minus_circle} onClick={() => trySetAmount(amount - 1)}/>
-                            <input type="number" id={id} value={amount} onChange={(e) => trySetAmount(e.target.value)} {...rest}/>
-                            <Icon path={ICONS.plus_circle} onClick={() => trySetAmount(amount + 1)}/>
-                        </div>
+                <div className="input-wrapper">
+                    <div className="input-number">
+                        <Icon path={ICONS.minus_circle} onClick={() => trySetAmount(amount - 1)}/>
+                        <input type="number" id={id} value={amount} onChange={(e) => trySetAmount(e.target.value)} {...rest}/>
+                        <Icon path={ICONS.plus_circle} onClick={() => trySetAmount(amount + 1)}/>
                     </div>
-                </>
+                </div>
             )
         case 'checkbox':
             return (
-                <>
-                    <div className="input-wrapper">
-                        <label className="input-checkbox">
-                            <input type="checkbox" id={id} {...rest}/>
-                            <div className="custom-checkbox">
-                                {iconpath === null || iconpath === undefined
-                                    ? "" : <Icon className="custom-checkbox-icon" path={iconpath} size={"mini"}/>}
-                            </div>
-                            <div className="custom-checkbox-content">
-                                {children}
-                            </div>
-                        </label>
+                <div className="input-wrapper">
+                    <label className="input-checkbox">
+                        <input type="checkbox" id={id} {...rest}/>
+                        <div className="custom-checkbox">
+                            {iconpath === null || iconpath === undefined
+                                ? "" : <Icon className="custom-checkbox-icon" path={iconpath} size={"mini"}/>}
+                        </div>
+                        <div className="custom-checkbox-content">
+                            {children}
+                        </div>
+                    </label>
+                </div>
+            )
+        case 'password':
+            return (
+                <div className="input-wrapper">
+                    <div className="input-text">
+                        <input type="password" id={id} {...rest}/>
                     </div>
-                </>
+                </div>
             )
     }
 }
