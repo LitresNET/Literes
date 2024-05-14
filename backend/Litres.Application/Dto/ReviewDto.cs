@@ -15,4 +15,5 @@ public class ReviewDto
     public long? ParentReviewId { get; set; }
     public int Likes { get; set; }
     public int Dislikes { get; set; }
+    public List<ReviewDto>? ChildReviews { get; set; }
 }

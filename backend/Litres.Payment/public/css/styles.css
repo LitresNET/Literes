@@ -56,8 +56,12 @@ span {
     width: 40px;
 }
 
-#total-price {
-    font-weight: bold;
+#lacking {
+    margin-top: 1px;
+    background: #A9D0F8;
+    padding: 10px;
+    border-radius: 5px;
+    color: black;
 }
 
 button.yellow-button {

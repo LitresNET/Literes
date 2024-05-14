@@ -66,7 +66,7 @@ public class ChangeSubscription
         var actualWallet = user.Wallet;
         
         // Assert
-        Assert.Equal(expected, actual);
+        Assert.Equal(expected.Price, actual);
         Assert.Equal(expectedWallet, actualWallet);
     }
     
@@ -115,7 +115,7 @@ public class ChangeSubscription
         var actualWallet = user.Wallet;
         
         // Assert
-        Assert.Equal(expected, actual);
+        Assert.Equal(expected.Price, actual);
         Assert.Equal(expectedWallet, actualWallet);
     }
     
@@ -165,7 +165,7 @@ public class ChangeSubscription
         var actualWallet = user.Wallet;
         
         // Assert
-        Assert.Equal(expected, actual);
+        Assert.Equal(expected.Price, actual);
         Assert.Equal(expectedWallet, actualWallet);
     }
 

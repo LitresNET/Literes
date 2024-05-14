@@ -2,7 +2,6 @@
 using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Services;
 using Litres.Domain.Entities;
-using Litres.Domain.Exceptions;
 using Moq;
 using Tests.Config;
 
@@ -13,10 +12,7 @@ public class GetUserSafeInfo
     private readonly Mock<IPublisherRepository> _publisherRepositoryMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
 
-    private UserService UserService => new(
-        _publisherRepositoryMock.Object, 
-        _userRepositoryMock.Object
-    );
+    private UserService UserService => new(_publisherRepositoryMock.Object, _userRepositoryMock.Object);
 
     public static IEnumerable<object[]> GetData()
     {
@@ -67,12 +63,12 @@ public class GetUserSafeInfo
                 }
             }
         };
-        
+
         yield return new object[]
         {
             "Dead", "dead", null, null
         };
-        
+
         yield return new object[]
         {
             "Dead", null, null, null
@@ -81,7 +77,7 @@ public class GetUserSafeInfo
 
     [Theory]
     [MemberData(nameof(GetData))]
-    public async Task DefaultUser_ReturnsUser(string userName, string? avatarUrl, 
+    public async Task DefaultUser_ReturnsUser(string userName, string? avatarUrl,
         List<Book>? userFavourites, List<Review>? userReviews)
     {
         // Arrange
@@ -96,7 +92,7 @@ public class GetUserSafeInfo
         _userRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedUser);
-        
+
         var service = UserService;
 
         // Act
@@ -104,27 +100,5 @@ public class GetUserSafeInfo
 
         // Assert
         Assert.Equal(expectedUser, result);
-    }
-    
-    [Fact]
-    public async Task NotExistingUser_ThrowsOrderNotFoundException()
-    {
-        // Arrange
-        var fixture = new Fixture().Customize(new AutoFixtureCustomization());
-        var user = fixture.Create<User>();
-        
-        var expected = new EntityNotFoundException(typeof(User), user.Id.ToString());
-
-        _userRepositoryMock
-            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .ThrowsAsync(expected);
-
-        // Act
-        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
-            async () => await UserService.GetUserByIdAsync(user.Id)
-        );
-        
-        // Assert
-        Assert.Equal(expected.Message, exception.Message);
     }
 }

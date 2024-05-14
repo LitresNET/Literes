@@ -2,6 +2,7 @@
 using AutoFixture;
 using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Services;
+using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Moq;
 using Tests.Config;
@@ -10,13 +11,13 @@ namespace Tests.MainService.Services.OrderServiceTests;
 
 public class GetOrderInfo
 {
-    private readonly Mock<IUserRepository> _userRepositoryMock = new();
+    private readonly Mock<INotificationService> _notificationServiceMock = new();
     private readonly Mock<IPickupPointRepository> _pickupPointRepositoryMock = new();
     private readonly Mock<IBookRepository> _bookRepositoryMock = new();
     private readonly Mock<IOrderRepository> _orderRepositoryMock = new();
     
     private OrderService OrderService => new(
-        _userRepositoryMock.Object,
+        _notificationServiceMock.Object,
         _pickupPointRepositoryMock.Object,
         _bookRepositoryMock.Object,
         _orderRepositoryMock.Object
@@ -31,15 +32,13 @@ public class GetOrderInfo
 
         _orderRepositoryMock
             .Setup(orderRepositoryMock => 
-                orderRepositoryMock.GetWithFilterAsync(
-                    It.IsAny<Expression<Func<Order, bool>>>(), 
-                    It.IsAny<List<Expression<Func<Order, object>>>>()))
+                orderRepositoryMock.GetByIdAsNoTrackingAsync(It.IsAny<long>()))
             .ReturnsAsync(expectedOrder);
         
         var service = OrderService;
 
         // Act
-        var result = await service.GetOrderByIdWithIncludes(expectedOrder.Id);
+        var result = await service.GetOrderByIdAsNoTrackingAsync(expectedOrder.Id);
 
         // Assert
         Assert.Equal(expectedOrder, result);

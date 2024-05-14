@@ -1,0 +1,166 @@
+.wrapper-edit-container {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.book-edit-container {
+    display: flex;
+    flex-direction: row;
+    width: 870px;
+    justify-content: space-between;
+}
+
+.book-edit-container > h1{
+    display: none;
+}
+
+.book-edit-picture {
+    width: 280px;
+    height: 420px;
+    border-radius: 10px;
+    box-shadow: #d5d5d5 4px 6px 0;
+    position: relative;
+}
+
+.book-edit-picture > button {
+    width: 100%;
+    height: 45px;
+    position: absolute;
+}
+
+.book-edit-button-upload{
+    background: #3AB8EB;
+    opacity: 0.7;
+    bottom: 43px;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    z-index: 2;
+}
+
+.book-edit-button-upload > * {
+    transform: rotate(180deg);
+}
+
+.book-edit-button-delete {
+    background: #F9784B;
+    opacity: 0.7;
+    bottom: 0;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    z-index: 1;
+}
+
+.book-edit-form{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.book-edit-label-input {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    gap: 6px;
+}
+
+.book-edit-textarea {
+    border-radius: 20px;
+    border-color: var(--gray-800);
+    height: 150px;
+    resize: none;
+
+    padding: 12px 20px;
+    font-size: 14px;
+    width: 100%;
+
+    box-shadow: var(--yellow-500) 8px 12px 0;
+    transition: 0.2s linear;
+}
+
+.book-edit-textarea:focus {
+    box-shadow: var(--orange-500) 8px 12px 0;
+}
+
+.book-edit-label-input-price {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 80px;
+}
+
+.book-edit-save-delete-container {
+
+}
+
+.book-edit-delete {
+    text-align: right;
+    font-size: 15px;
+    color: #F9784B;
+}
+
+@media (max-width: 768px) {
+    .book-edit-container {
+        flex-direction: column;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        gap: 50px;
+    }
+
+    .book-edit-container > h1{
+        display: block;
+        text-align: center;
+    }
+
+    .book-edit-picture {
+
+    }
+
+    .book-edit-picture > button {
+
+    }
+
+    .book-edit-button-upload{
+
+    }
+
+    .book-edit-button-upload > * {
+
+    }
+
+    .book-edit-button-delete {
+
+    }
+
+    .book-edit-form{
+
+    }
+
+    .book-edit-form > h1{
+        display: none;
+    }
+
+    .book-edit-label-input {
+        width: 285px;
+    }
+
+    .book-edit-textarea {
+
+    }
+
+    .book-edit-label-input-price {
+        width: 75px;
+    }
+
+    .book-edit-save-delete-container {
+
+    }
+
+    .book-edit-delete {
+
+    }
+}

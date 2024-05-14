@@ -34,7 +34,7 @@ public class UserService(
         return book;
     }
 
-    public async Task<User> GetSafeUserInfoAsync(long userId)
+    public async Task<User> GetPublicUserInfoAsync(long userId)
     {
         return await userRepository.GetSafeDataById(userId) ??
                throw new EntityNotFoundException(typeof(User), userId.ToString());

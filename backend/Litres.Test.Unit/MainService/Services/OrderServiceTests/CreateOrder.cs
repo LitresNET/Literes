@@ -1,6 +1,7 @@
 using AutoFixture;
 using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Services;
+using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Litres.Domain.Exceptions;
 using Moq;
@@ -10,13 +11,13 @@ namespace Tests.MainService.Services.OrderServiceTests;
 
 public class CreateOrder
 {
-    private readonly Mock<IUserRepository> _userRepositoryMock = new();
+    private readonly Mock<INotificationService> _notificationServiceMock = new();
     private readonly Mock<IPickupPointRepository> _pickupPointRepositoryMock = new();
     private readonly Mock<IBookRepository> _bookRepositoryMock = new();
     private readonly Mock<IOrderRepository> _orderRepositoryMock = new();
     
     private OrderService OrderService => new(
-        _userRepositoryMock.Object,
+        _notificationServiceMock.Object,
         _pickupPointRepositoryMock.Object,
         _bookRepositoryMock.Object,
         _orderRepositoryMock.Object
@@ -38,9 +39,6 @@ public class CreateOrder
             .With(o => o.OrderedBooks, new List<BookOrder> {new () {Book = book, Quantity = 1}})
             .Create();
         
-        _userRepositoryMock
-            .Setup(userRepositoryMock => userRepositoryMock.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync(new User());
         _pickupPointRepositoryMock
             .Setup(pickupRepositoryMock => pickupRepositoryMock.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(new PickupPoint());
@@ -69,9 +67,6 @@ public class CreateOrder
             .Create();
         var order = fixture.Create<Order>();
         
-        _userRepositoryMock
-            .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync(order.User);
         _pickupPointRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<long>()))
             .ReturnsAsync(order.PickupPoint);
