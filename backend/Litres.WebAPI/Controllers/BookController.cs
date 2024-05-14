@@ -34,7 +34,7 @@ public class BookController(
     [AllowAnonymous]
     [HttpGet("catalog/{pageNumber:int}/{amount:int}")] // api/book/catalog/{pageNumber}/{amount}
     public async Task<IActionResult> GetBookCatalog(
-        [FromRoute] int pageNumber,
+        [FromRoute] int pageNumber,     
         [FromRoute] int amount,
         [FromQuery] Dictionary<SearchParameterType, string> searchParameters)
     {

@@ -119,6 +119,9 @@ public class BookService(
         // Сборка предиката
         var builder = PredicateBuilder.New<Book>(true);
 
+        if (searchParameters?.TryGetValue(SearchParameterType.Name, out var name) == true)
+            builder = builder.And(b => b.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase));
+        
         if (searchParameters?.TryGetValue(SearchParameterType.Category, out var value) == true
             && Enum.TryParse<GenreType>(value, out var genre))
             builder = builder.And(b => b.BookGenres.Contains(genre));
@@ -130,6 +133,7 @@ public class BookService(
 
         // Сортировка
         var ordered = books.OrderBy(b => b.Id);
+        
         if (searchParameters?.TryGetValue(SearchParameterType.New, out value) == true
             && bool.TryParse(value, out var isNew))
             ordered = isNew

@@ -11,10 +11,11 @@ import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {useEffect, useState} from "react";
 import {useGetBookByCategory} from "../../../hooks/useGetBookByCategory.js";
+import { Link } from 'react-router-dom'
 
 
 function mainPage() {
-
+    const [searchField, setSearchField] = useState(null);
     const [popularBooks, setPopularBooks] = useState([]);
     const [romanceBooks, setRomanceBooks] = useState([]);
     const [adventuresBooks, setAdventuresBooks] = useState([]);
@@ -71,9 +72,11 @@ function mainPage() {
                     <div className="head-content">
                         <h1 className={"font-syne"}>What book you looking for?</h1>
                         <p>Explore our catalog and find your next read.</p>
-                        <DropDownInputSearch />
+                        <DropDownInputSearch onChange={e => setSearchField(e.target.value)}/>
                         <div className="head-button">
-                            <Button text={"Explore"} iconpath={ICONS.binoculars} color={"yellow"}/>
+                            <Link to={`/search?name=${searchField}`}>
+                                <Button id="cool-button" text={"Explore"} iconpath={ICONS.binoculars} color={"yellow"}/>
+                            </Link>
                             <div className={"separator"} />
                         </div>
                     </div>

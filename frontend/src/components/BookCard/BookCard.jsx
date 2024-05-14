@@ -38,6 +38,9 @@ export function BookCard(props) {
                     IMAGES.default_cover : data.coverUrl} link={`/book/${bookId}`}/>
                 <div className="bookcard-buttons">
                     <div className="bookcard-button-row">
+                        <p style={{width: "100%"}}>{data?.name}</p>
+                    </div>
+                    <div className="bookcard-button-row">
                         <Button text={data?.price + '$'} onClick={() => (alert("Заглушка!"))} round={"true"}/>
                         <Button iconpath={ICONS.bookmark_simple} onClick={() => (alert("Заглушка!"))} round={"true"}/>
                     </div>
