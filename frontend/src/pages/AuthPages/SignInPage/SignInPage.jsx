@@ -8,6 +8,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth.js';
 import { useState } from 'react';
 import './SignInPage.css';
+import GoogleButton from "react-google-button";
+import configData from "../../../../config.json";
 
 const SignInPage = () => {
     const [email, setEmail] = useState('');
@@ -76,6 +78,8 @@ const SignInPage = () => {
                     </form>
                 </Banner>
                 <div className={'dont-sign-in'}>
+                    <GoogleButton
+                        onClick={() => window.location.href = (`${configData.LITRES_URL}/signin/google`)}/>
                     <p>Don’t registered yet?</p>
                     <p><Link to="/signup" style={{color: COLORS.blue}}>Create an account</Link> in a few steps -{'>'}</p>
                 </div>

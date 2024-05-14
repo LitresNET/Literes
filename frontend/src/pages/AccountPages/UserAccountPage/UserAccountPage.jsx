@@ -11,13 +11,57 @@ import { AccountBookCard } from '../../../components/AccountBookCard/AccountBook
 import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Link } from 'react-router-dom'
+import {useEffect, useState} from "react";
+import {toast} from "react-toastify";
+import {axiosToLitres} from "../../../hooks/useAxios.js";
 
 export default function UserAccountPage() {
+
+    const [userData, setUserData] = useState(null);
+
+    const [setErrorToast] = useState(null);
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await axiosToLitres.get(`/user/settings`);
+                setUserData(response.data);
+            } catch (error) {
+                setErrorToast( () => toast.error('User Information: '+error.message,
+                    {toastId: "UserDataError"}));
+            }
+        };
+
+        toast.promise(
+            fetchUserData,
+            {
+                pending: 'Loading'
+            }, {toastId: "UserPageLoading"});
+    }, []);
+
+    const subscriptionTag = <Tag status="failure" actiondescription="Deactivated" />;
+    //TODO: чет я вообще не понял че должно быть на этой страничке. Откладываю до завтра
+    /*
+    function renderSubscriptionTag() {
+        switch(userData.subscriptionId) {
+            case '1':  <Tag status="failure" actiondescription="Deactivated" />
+                break;
+            case '2':  <Tag status="failure" actiondescription="Deactivated" />
+                break;
+            case '3':  <Tag status="failure" actiondescription="Deactivated" />
+                break;
+            case '4':  <Tag status="failure" actiondescription="Deactivated" />
+                break;
+            case '5':  <Tag status="failure" actiondescription="Deactivated" />
+                break;
+        }
+    }
+*/
+
     return (
         <>
             <div className="wrapper">
                 <div className="account-container">
-                    <Cover imgPath={IMAGES.default_cover} size="big" />
+                    <Cover imgPath={userData?.avatarUrl ?? IMAGES.default_cover} size="big" />
                     <div className="account-info">
                         <div className="account-info-title">
                             <h1>Selected subscription</h1>
@@ -30,18 +74,22 @@ export default function UserAccountPage() {
                         <Banner>
                             <span className="account-banner-text">Premium</span>
                         </Banner>
-                        <Tag status="failure" actiondescription="Deactivated" />
+                        {
+                            subscriptionTag
+                        }
 
                         <div className="account-balance">
                             <span>BALANCE: </span>
-                            <span>$30,00</span>
+                            <span>${userData?.wallet}</span>
                         </div>
-                        <Button
-                            text={'Adventure'}
-                            round={'true'}
-                            color={'yellow'}
-                            iconpath={ICONS.money}
-                        />
+                        <Link to={'/subscription'} style={{textDecoration: 'none'}}>
+                            <Button
+                                text={'Adventure'}
+                                round={'true'}
+                                color={'yellow'}
+                                iconpath={ICONS.money}
+                            />
+                        </Link>
                     </div>
                 </div>
                 <div className="books">
@@ -54,13 +102,12 @@ export default function UserAccountPage() {
                         slidesPerView={'auto'}
                         freeMode={true}
                     >
-                        {Array.from({ length: 10 }).map((_, index) => (
-                            <SwiperSlide key={index} style={{ width: 'auto', minWidth: '100px' }}>
+                        {userData?.favourites.map(id => (
+                            <SwiperSlide style={{ width: 'auto', minWidth: '100px' }}>
                                 {/* Здесь задаём минимальную ширину слайда */}
                                 <AccountBookCard
                                     role={'user'}
-                                    imgPath={IMAGES.default_cover}
-                                    description={'maecenas nulla nibh amet non fringilla'}
+                                    id={id}
                                 />
                             </SwiperSlide>
                         ))}

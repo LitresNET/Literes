@@ -7,6 +7,8 @@ import useAuth from "../../../hooks/useAuth.js";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import COLORS from "../../../assets/colors.jsx";
+import GoogleButton from "react-google-button";
+import configData from "../../../../config.json";
 
 const SignUpPage = () => {
     const [name, setName] = useState('');
@@ -102,6 +104,8 @@ const SignUpPage = () => {
                     </form>
                 </Banner>
                 <div className={'have-sign-up'}>
+                    <GoogleButton
+                        onClick={() => window.location.href = (`${configData.LITRES_URL}/signin/google`)}/>
                     <p>Already have an account?</p>
                     <p><Link to="/signin" style={{color: COLORS.blue}}>Sign in -{'>'}</Link></p>
                 </div>

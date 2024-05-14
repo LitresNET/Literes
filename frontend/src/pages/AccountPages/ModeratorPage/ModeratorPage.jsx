@@ -2,6 +2,7 @@ import './ModeratorPage.css';
 import { useState } from 'react'
 import { DropdownSelect } from '../../../components/UI/DropDownSelect/DropdownSelect'
 import { Button } from '../../../components/UI/Button/Button'
+import {axiosToLitres} from "../../../hooks/useAxios.js";
 
 
 export default function ModeratorPage() {
@@ -70,6 +71,14 @@ export default function ModeratorPage() {
         }
     }
 
+    const sendSolution = async (requestId, isAccepted) => {
+        try {
+            const response = await axiosToLitres.post(`api/request/${requestId}?isAccepted=${isAccepted}`);
+        } catch (e) {
+            return {result: null, error: e.response.data.errors[0].description};
+        }
+    }
+
     return (
         <>
              <div className="moderator-page-title-container">
@@ -118,10 +127,12 @@ export default function ModeratorPage() {
                                     </a>
                                 </td>
                                 <td>
-                                    <Button text={'Accept'} round={'true'} color={'yellow'} />
+                                    <Button text={'Accept'} round={'true'} color={'yellow'}
+                                            onClick={() => sendSolution(item.id, true)} />
                                 </td>
                                 <td>
-                                    <Button text={'Decline'} round={'true'} color={'orange'} />
+                                    <Button text={'Decline'} round={'true'} color={'orange'}
+                                            onClick={() => sendSolution(item.id, false)}/>
                                 </td>
                             </tr>
                         ))}

@@ -6,7 +6,7 @@ import CustomSubscriptionPage from "../pages/SubscriptionPages/CustomSubscriptio
 import MainLayout from "../layouts/MainLayout/MainLayout";
 import UserSettingsPage from "../pages/AccountPages/UserSettingsPage/UserSettingsPage";
 import UserAccountPage from "../pages/AccountPages/UserAccountPage/UserAccountPage";
-import PublisherPage from "../pages/AccountPages/PublisherPage/PublisherPage";
+import PublisherPage from "../pages/AccountPages/PublisherPages/PublisherPage/PublisherPage.jsx";
 import ModeratorPage from "../pages/AccountPages/ModeratorPage/ModeratorPage";
 import BookSettingsPage from "../pages/MainPages/BookSettingsPage/BookSettingsPage";
 import WelcomePage from "../pages/MainPages/WelcomePage/WelcomePage";
