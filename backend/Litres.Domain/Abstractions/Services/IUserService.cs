@@ -6,7 +6,8 @@ public interface IUserService
 {
     public Task<User> ChangeUserSettingsAsync(User patchedUser);
 
-    public Task<Book> UnFavouriteBookAsync(long userId, long bookIdToDelete);
+    public Task<Book> DeleteBookFromFavouritesAsync(long userId, long bookId);
+    public Task<Book> AddOrRemoveBookFromFavouritesAsync(long userId, long bookId);
 
     public Task<User> GetPublicUserInfoAsync(long userId);
 

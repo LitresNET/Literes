@@ -3,19 +3,22 @@ using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Services;
 using Litres.Domain.Entities;
 using Litres.Domain.Exceptions;
+using Litres.Infrastructure.Repositories;
 using Moq;
 using Tests.Config;
 
 namespace Tests.MainService.Services.UserServiceTest;
 
-public class UnFavouriteBook
+public class DeleteBookFromFavourites
 {
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
     private readonly Mock<IPublisherRepository> _publisherRepositoryMock = new();
+    private readonly Mock<BookRepository> _bookRepositoryMock = new();
 
     private UserService UserService => new(
         _publisherRepositoryMock.Object,
-        _userRepositoryMock.Object
+        _userRepositoryMock.Object,
+        _bookRepositoryMock.Object
         );
     
     [Theory]
@@ -44,7 +47,7 @@ public class UnFavouriteBook
         var expected = books.Where(b => b.Id != bookIdToDelete).ToList();
         
         // Act 
-        await UserService.UnFavouriteBookAsync(user.Id, bookIdToDelete);
+        await UserService.DeleteBookFromFavouritesAsync(user.Id, bookIdToDelete);
         
         // Assert
         Assert.Equal(expected, user.Favourites);
@@ -77,7 +80,7 @@ public class UnFavouriteBook
         
         // Act
         var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() =>
-            UserService.UnFavouriteBookAsync(userId, bookIdToDelete));
+            UserService.DeleteBookFromFavouritesAsync(userId, bookIdToDelete));
         
         // Arrange
         Assert.Equal(expected.Message, actual.Message);
