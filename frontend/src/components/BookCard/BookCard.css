@@ -9,6 +9,19 @@
     margin-top: 15px;
 }
 
+.bookcard-name {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+}
+
+.bookcard-name p {
+    line-height: 1.5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .bookcard-button-row:first-child > :last-child {
     width: 70px;
     margin-left: 7px;

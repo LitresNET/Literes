@@ -20,7 +20,7 @@ const SignInPage = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-
+        //TODO: Добавить больше валидации
         if (!email || !password) {
             setError('Please fill in all fields');
             return;

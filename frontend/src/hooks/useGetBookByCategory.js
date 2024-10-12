@@ -13,6 +13,8 @@ export async function useGetBookByCategory(pageNumber, amount, props) {
             return { result: null, error: response.data };
         }
     } catch (e) {
-        return { result: null, error: e.response.data.errors[0].description };
+        //TODO: убрать логирование в консоль в prod версии
+        console.error(e);
+        return { result: null, error: 'Опаньки... Что-то пошло не так'};
     }
 }
