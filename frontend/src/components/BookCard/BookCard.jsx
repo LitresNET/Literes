@@ -42,7 +42,8 @@ export function BookCard(props) {
                     </div>
                     <div className="bookcard-button-row">
                         <Button text={data?.price + '$'} onClick={() => (alert("Заглушка!"))} round={"true"}/>
-                        <Button iconpath={ICONS.bookmark_simple} onClick={() => (alert("Заглушка!"))} round={"true"}/>
+                        <Button iconpath={ICONS.bookmark_simple} onClick={async () =>
+                            await addBookToFavourites(props.bookId)} round={"true"}/>
                     </div>
                     <div className="bookcard-button-row">
                         <Button color={"orange"} onClick={() => (alert("Заглушка!"))} iconpath={ICONS.shopping_cart}/>

@@ -95,9 +95,9 @@ export default function BookPage() {
                             </div>
                         </h1>
 
-                        <div className="book-favorite">
-                            <Button iconpath={ICONS.bookmark_simple} onClick={() => (alert("Заглушка!"))}
-                                    round={"true"}/>
+                        <div className="book-favourite">
+                            <Button iconpath={ICONS.bookmark_simple} onClick={async () =>
+                                await addBookToFavourites(id)} round={"true"}/>
                         </div>
                     </div>
 
