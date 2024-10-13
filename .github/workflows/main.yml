@@ -1,6 +1,10 @@
 name: CI Pipeline
 on:
-  workflow_dispatch
+  push:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    # Входные значения для ручного запуска
   
 jobs:
   # 1. Проект должен билдится
@@ -28,8 +32,16 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+
       - name: Install frontend dependencies
-        working-directory: ./frontend
+        working-directory: frontend
         run: npm install
 
       - name: Build frontend
@@ -52,6 +64,19 @@ jobs:
         run: dotnet build --configuration Release
 
       # 2.3. Анализ кода для фронтенда
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Restore node modules cache
+        uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules 
+
       - name: Run ESLint for frontend
         working-directory: ./frontend
         run: npm run lint
