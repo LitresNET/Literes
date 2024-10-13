@@ -2,10 +2,16 @@ import './Input.css';
 import React, { useState } from "react";
 import { Icon } from "../Icon/Icon";
 import ICONS from "../../../assets/icons.jsx";
+import PropTypes from "prop-types";
 
 /// Input, с настройкой стилей зависящей от поля type
 export function Input({type, children, id, iconpath, ...rest}) {
-
+    Input.propsTypes = {
+        type: PropTypes.oneOf(["text", "number", "checkbox", "password"]),
+        children: PropTypes.node,
+        id: PropTypes.number,
+        iconpath: PropTypes.string //TODO: изменить на iconPath
+    }
     const [amount, setAmount] = useState(1);
 
     const trySetAmount = (n) => {
@@ -33,9 +39,9 @@ export function Input({type, children, id, iconpath, ...rest}) {
             return (
                 <div className="input-wrapper">
                     <div className="input-number">
-                        <Icon path={ICONS.minus_circle} onClick={() => trySetAmount(amount - 1)}/>
+                        <Icon path={ICONS.minus_circle} alt={'icon-minus'} onClick={() => trySetAmount(amount - 1)}/>
                         <input type="number" id={id} value={amount} onChange={(e) => trySetAmount(e.target.value)} {...rest}/>
-                        <Icon path={ICONS.plus_circle} onClick={() => trySetAmount(amount + 1)}/>
+                        <Icon path={ICONS.plus_circle} alt={'icon-plus'} onClick={() => trySetAmount(amount + 1)}/>
                     </div>
                 </div>
             )
@@ -45,8 +51,7 @@ export function Input({type, children, id, iconpath, ...rest}) {
                     <label className="input-checkbox">
                         <input type="checkbox" id={id} {...rest}/>
                         <div className="custom-checkbox">
-                            {iconpath === null || iconpath === undefined
-                                ? "" : <Icon className="custom-checkbox-icon" path={iconpath} size={"mini"}/>}
+                            {iconpath ? <Icon className="custom-checkbox-icon" path={iconpath} size={"mini"} /> : ""}
                         </div>
                         <div className="custom-checkbox-content">
                             {children}

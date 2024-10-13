@@ -18,6 +18,7 @@ import {axiosToLitres} from "../../../hooks/useAxios.js";
 import {useParams} from "react-router-dom";
 import {addBookToFavourites} from "../../../features/addBookToFavourites.js";
 
+//TODO: Нужен рефактор (как в принципе и другим страницам)
 export default function BookPage() {
 
     const [value, setValue] = useState('');

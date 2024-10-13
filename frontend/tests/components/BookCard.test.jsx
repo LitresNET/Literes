@@ -90,4 +90,6 @@ vi.mock('react-toastify', () => ({
             expect(addBookToFavourites).toHaveBeenCalledWith(1);
         });
     });
+
+    //TODO: дописать тесты, когда будет добавлена реализация покупки и добавления в корзину
 });

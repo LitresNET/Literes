@@ -1,13 +1,16 @@
-// Button.test.js
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Button } from '../../../src/components/UI/Button/Button.jsx';
 import { Icon } from '../../../src/components/UI/Icon/Icon.jsx';
+import {expect, it} from "vitest";
 
+//TODO: у меня почему-то иногда сразу интеграционные тесты, а иногда unit тесты с моками вложенных компонентов,
+// надо бы разделить
 vi.mock('../../../src/components/UI/Icon/Icon.jsx', () => ({
     Icon: vi.fn(() => <div data-testid="icon-mock" />),
 }));
+
 
 describe('Button Component', () => {
     it('renders with text', () => {
@@ -62,10 +65,19 @@ describe('Button Component', () => {
         expect(container.querySelector('p')).not.toBeInTheDocument();
     });
 
-    it('does not render icon when iconpath is empty or null', () => {
+    it('does not render icon when iconpath is empty, null or undefined', () => {
         render(<Button iconpath="" />);
         expect(screen.queryByTestId('icon-mock')).not.toBeInTheDocument();
         render(<Button iconpath={null} />);
         expect(screen.queryByTestId('icon-mock')).not.toBeInTheDocument();
+        render(<Button iconpath={undefined} />);
+        expect(screen.queryByTestId('icon-mock')).not.toBeInTheDocument();
+    });
+
+    it('calls function when it was passed through onClick prop and button is clicked', () => {
+        const buttonFunction = vi.fn();
+        render(<Button onClick={buttonFunction} />);
+        fireEvent.click(screen.getByRole('button'));
+        expect(buttonFunction).toHaveBeenCalled();
     });
 });

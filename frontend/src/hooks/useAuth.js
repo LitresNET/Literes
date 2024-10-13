@@ -2,6 +2,8 @@ import { useState } from "react";
 import { axiosToLitres } from "./useAxios.js";
 import authStore from "../store/store.js";
 
+//TODO: Добавить автоматический выход при устаревании jwt токена
+// (нужен будет либо запрос-проверка либо отлов unauthorized ответов)
 const useAuth = () => {
   const [loading, setLoading] = useState(false);
 
