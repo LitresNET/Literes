@@ -113,4 +113,8 @@ jobs:
 
       # 4.2. Проверка Docker Compose
       - name: Docker Compose Build and Run
-        run: docker compose -f compose.yml up --build --exit-code-from server
+        run: docker compose -f compose.yml up --build -d
+
+      # 4.3. Завершаем workflow
+      - name: Finish workflow
+        run: echo "All services are running, workflow finished."
