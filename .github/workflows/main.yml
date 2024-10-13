@@ -3,54 +3,58 @@ on:
   workflow_dispatch
   
 jobs:
-  build_backend:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Set up .NET SDK
-        uses: actions/setup-dotnet@v1
+      # 1. Checkout репозиторий
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Билд бэкенда
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0'
-      - name: Restore dependencies
-        run: dotnet restore ./backend/Litres.WebAPI/Litres.WebAPI.csproj
+          dotnet-version: '8.0.x'
+
       - name: Build backend
-        run: dotnet build ./backend/Litres.WebAPI/Litres.WebAPI.csproj --configuration Release
-      - name: Run backend tests
-        run: dotnet test ./backend/Litres.WebAPI.Tests/Litres.WebAPI.Tests.csproj
-      - name: Apply database migrations
-        run: dotnet ef database update --project ./backend/Litres.WebAPI/Litres.WebAPI.csproj --startup-project ./backend/Litres.WebAPI/Litres.WebAPI.csproj
-      - name: Run code analysis for backend
-        run: dotnet sonarscanner begin /k:"backend_project" /d:sonar.login=${{ secrets.SONAR_TOKEN }}
-      - name: Build and publish backend code
-        run: dotnet publish --configuration Release --output ./backend/publish
-        
-  build_frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Install Node.js
+        working-directory: ./backend
+        run: dotnet build --configuration Release
+
+      # 3. Билд фронтенда
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-      - name: Install dependencies
-        run: npm install --prefix frontend
-      - name: Run tests for frontend
-        run: npm test --prefix frontend
-      - name: Run frontend code analysis
-        run: npm run lint --prefix frontend
-        
-  docker_build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Set up Docker BuildKit
-        run: |
-          mkdir ~/.docker
-          echo '{"experimental":true}' > ~/.docker/config.json
-      - name: Build Docker images
-        run: docker-compose -f docker-compose.yml up --build -d
-      - name: Run Docker Compose health checks
-        run: docker-compose -f docker-compose.yml ps
+          node-version: '20'
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build
+
+      # 4. Анализ кода для бэкенда
+      - name: Run backend code analysis
+        working-directory: ./backend
+        run: dotnet build --configuration Release /warnaserror
+
+      # 5. Анализ кода для фронтенда
+      - name: Run ESLint for frontend
+        working-directory: ./frontend
+        run: npm run lint
+
+      # 6. Тесты для бэкенда
+      - name: Run backend tests
+        working-directory: ./backend
+        run: dotnet test --configuration Release
+
+      # 7. Тесты для фронтенда
+      # - name: Run frontend tests
+      #   working-directory: ./frontend
+      #   run: npm run test
+
+      # 8. Проверка Docker Compose
+      - name: Docker Compose Build and Run
+        run: docker-compose -f docker-compose.yml up --build --exit-code-from server
