@@ -113,4 +113,4 @@ jobs:
 
       # 4.2. Проверка Docker Compose
       - name: Docker Compose Build and Run
-        run: docker-compose -f docker-compose.yml up --build --exit-code-from server
+        run: docker compose -f compose.yml up --build --exit-code-from server
