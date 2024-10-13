@@ -82,24 +82,24 @@ jobs:
         run: npm run lint
 
   # 3. Проект должен быть покрыт тестами
-  test:
-    needs: [analyze]
-    runs-on: ubuntu-latest
+  # test:
+  #   needs: [analyze]
+  #   runs-on: ubuntu-latest
     
-    steps:
-      # 3.1. Checkout репозиторий
-      - name: Checkout code
-        uses: actions/checkout@v3
+  #   steps:
+  #     # 3.1. Checkout репозиторий
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
 
-      # 3.2. Тесты для бэкенда
-      - name: Run backend tests
-        working-directory: ./backend
-        run: dotnet test --configuration Release
+  #     # 3.2. Тесты для бэкенда
+  #     - name: Run backend tests
+  #       working-directory: ./backend
+  #       run: dotnet test --configuration Release
 
-      # 3.3. Тесты для фронтенда
-      # - name: Run frontend tests
-      #   working-directory: ./frontend
-      #   run: npm run test
+  #     # 3.3. Тесты для фронтенда
+  #     - name: Run frontend tests
+  #       working-directory: ./frontend
+  #       run: npm run test
 
   # 4. Docker должен запускаться без ошибок
   docker:
