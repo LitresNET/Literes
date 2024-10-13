@@ -16,4 +16,9 @@ export default defineConfig({
   host: true,
   origin: "http://127.0.0.1:8081",
  },
+ test: {
+ globals: true,
+ environment: "jsdom",
+ setupFiles: './tests/setupTests.js'
+ },
 })

@@ -7,7 +7,7 @@ import {Link} from "react-router-dom";
 /// multiplier : number - число (только при size = "custom")
 /// width : number - число (только при size = "custom");
 export function Cover(props) {
-    const { imgPath, size, multiplier, width, link } = props;
+    const { imgPath, name, size, multiplier, width, link } = props;
 
     let w = 200;
     let h;
@@ -36,7 +36,7 @@ export function Cover(props) {
         <>
             <Link to={link}>
                 <div className="cover" style={{minWidth: w, height: h}}>
-                    <img src={imgPath} alt=""/>
+                    <img src={imgPath} alt={name}/>
                 </div>
             </Link>
         </>

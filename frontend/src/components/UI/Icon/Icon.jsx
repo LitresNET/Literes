@@ -24,8 +24,8 @@ export function Icon({width, path, size, className, ...rest}) {
 
     return (
         <>
-            <div className={"icon " + className}  {...rest}>
-                <img src={path} style={{width : w, height : h}} alt=""/>
+            <div className={"icon" + (className ? ` ${className}` : "")}  {...rest}>
+                <img src={path} style={{width : w, height : h}} alt="icon"/>
             </div>
         </>
     )

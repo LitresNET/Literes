@@ -11,17 +11,17 @@ import { Icon } from "../Icon/Icon.jsx";
 /// также передаёт все параметры тега в тег button, поэтому возможна личная настройка
 /// (при передаче своих классов - перезапишет все наложенные)
 export function Button(props) {
-    const {text, className, iconpath, color, round, shadow, big} = props
-    let classes = "border-solid " +
-        `button-${color} ` +
-        (shadow ? "button-shadow " : " ") +
-        (round ? "button-rounded " : " ") +
-        (big ? "button-big " : " ") + " " +
-        className;
+    const {text, name, className, iconpath, color, round, shadow, big} = props
+    let classes = "border-solid" +
+        (color ? ` button-${color}` : "" +
+        (shadow ? " button-shadow" : "") +
+        (round ? " button-rounded" : "") +
+        (big ? " button-big" : "") +
+            (className ? ` ${className}` : ""));
 
     return (
         <>
-            <button className={classes} {...props}>
+            <button className={classes} aria-label={name} {...props}>
                 {text === "" || text == null ? null : <p>{text}</p>}
                 {iconpath === "" || iconpath == null ? null : <Icon path={iconpath} size={"default"}/>}
             </button>
