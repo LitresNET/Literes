@@ -29,7 +29,27 @@ public static class WebApplicationExtensions
         using var scope = application.Services.CreateScope();
 
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<WebApplication>>();
         
-        await context.Database.MigrateAsync();
+        try
+        {
+            logger.LogInformation("Applying migrations...");
+            var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
+            if (pendingMigrations.Any())
+            {
+                logger.LogInformation("There are pending migrations. Applying them now...");
+                await context.Database.MigrateAsync();
+                logger.LogInformation("Migrations applied successfully.");
+            }
+            else
+            {
+                logger.LogInformation("No pending migrations found. Database is up to date.");
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred while applying migrations.");
+            throw;
+        }
     }
 }

@@ -1,0 +1,77 @@
+version: "3.8"
+
+services:
+  database:
+    container_name: litres_database
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    environment:
+      - ACCEPT_EULA=Y
+      - DB_SERVER=${DB_SERVER}
+      - DB_NAME=${DB_NAME}
+      - SA_USER=${SA_USER}
+      - SA_PASSWORD=${SA_PASSWORD}
+      - HANGFIRE_PASSWORD=${HANGFIRE_PASSWORD}
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./database/init-db.sh:/usr/src/app/init-db.sh
+      - ./database/create-databases.sql:/usr/src/app/create-databases.sql
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "${SA_USER}", "-P", "${SA_PASSWORD}", "-d", "${DB_NAME}", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  migrate:
+    container_name: litres_migrate
+    build:
+      context: ./backend
+      dockerfile: ./Litres.Infrastructure/Dockerfile
+    environment:
+      - DB_SERVER=${DB_SERVER}
+      - DB_NAME=${DB_NAME}
+      - SA_USER=${SA_USER}
+      - SA_PASSWORD=${SA_PASSWORD}
+      - HANGFIRE_PASSWORD=${HANGFIRE_PASSWORD}
+    depends_on:
+      database:
+        condition: service_healthy    
+
+  payment:
+    container_name: litres_payment
+    build:
+      context: ./backend/Litres.Payment
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+
+  server:
+    container_name: litres_server
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DB_SERVER=${DB_SERVER}
+      - DB_NAME=${DB_NAME}
+      - SA_USER=${SA_USER}
+      - SA_PASSWORD=${SA_PASSWORD}
+      - HANGFIRE_PASSWORD=${HANGFIRE_PASSWORD}
+    ports:
+      - "5271:8080"
+    depends_on:
+      - migrate
+
+  frontend:
+    container_name: litres_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:8081"
+    depends_on:
+      - server
