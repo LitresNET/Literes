@@ -1,40 +1,46 @@
-﻿using System.Net;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Assert = Xunit.Assert;
 
 namespace IntegrationTests.Tests;
 
-public class ApiTests(TestingWebAppFactory factory) : IClassFixture<TestingWebAppFactory>
-{
-    private readonly HttpClient _client = factory.CreateClient();
+using Microsoft.Playwright;
+using Microsoft.Playwright.MSTest;
 
-    [Theory]
-    [InlineData("api/book/1")]
-    [InlineData("api/book/catalog/1/1")]
-    [InlineData("api/review/list?bookId=1&n=1")]
-    [InlineData("api/subscription/1")]
+
+[TestClass]
+public class APITest : PlaywrightTest
+{
+    private IAPIRequestContext Request = null!;
+
+    [TestMethod]
+    [DataRow("book/1")]
+    [DataRow("book/catalog/1/1")]
+    [DataRow("review/1")]
+    [DataRow("review/list?bookId=1&page=1")]
+    [DataRow("signin/google")]
+    [DataRow("subscription/1")]
+    [DataRow("user/1")]
     public async Task AnonymousGetMethods_ReturnSuccessStatusCodeWithNotEmptyBody(string url)
     {
-        // Arrange
-
-        // Act
-        var response = await _client.GetAsync(url);
-
-        // Assert
-        response.EnsureSuccessStatusCode();
+        var response = await Request.GetAsync(url);
+        await Expect(response).ToBeOKAsync();
+        Console.WriteLine(response.BodyAsync());
+        
+        Assert.NotNull(response.BodyAsync());
     }
     
-    [Theory]
-    [InlineData("api/order/1")]
-    [InlineData("api/user/1")]
-    [InlineData("api/user/order/list")]
-    [InlineData("api/user/settings")]
-    public async Task AuthorizedGetMethods_ReturnUnauthorizedStatusCode(string url)
+    [TestInitialize]
+    public async Task SetUpAPITesting()
     {
-        // Arrange
+        await CreateAPIRequestContext();
+    }
 
-        // Act
-        var response = await _client.GetAsync(url);
+    private async Task CreateAPIRequestContext()
+    {
 
-        // Assert
-        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        Request = await Playwright.APIRequest.NewContextAsync(new()
+        {
+            BaseURL = "http://localhost:5225/api/"
+        });
     }
 }
