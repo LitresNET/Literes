@@ -103,7 +103,7 @@ jobs:
 
   # 4. Docker должен запускаться без ошибок
   docker:
-    needs: [test]
+    # needs: [test]
     runs-on: ubuntu-latest
     
     steps:
