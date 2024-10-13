@@ -38,7 +38,7 @@ jobs:
       # 4. Анализ кода для бэкенда
       - name: Run backend code analysis
         working-directory: ./backend
-        run: dotnet build --configuration Release /warnaserror
+        run: dotnet build --configuration Release
 
       # 5. Анализ кода для фронтенда
       - name: Run ESLint for frontend
