@@ -13,26 +13,28 @@ public class TestingWebAppFactory : WebApplicationFactory<Program>
     {
         builder.ConfigureServices(services =>
         {
-            var serviceProvider = services.BuildServiceProvider();
-            var configuration = serviceProvider.GetService<IConfiguration>();
+            var hangfireServiceDescriptor = services.SingleOrDefault(
+                d => d.ServiceType.Name.Contains("IBackgroundJobClient"));
+            if (hangfireServiceDescriptor != null)
+            {
+                services.Remove(hangfireServiceDescriptor);
+            }
 
             var descriptor = services.SingleOrDefault(
                 d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
-
             if (descriptor != null)
+            {
                 services.Remove(descriptor);
+            }
 
-            var connectionString = configuration["Database:TestDbConnectionString"];
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options
-                    .UseLazyLoadingProxies()
-                    .UseSqlServer(connectionString);
+                options.UseInMemoryDatabase("TestDb");
             });
 
             using var scope = services.BuildServiceProvider().CreateScope();
-            var appContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            appContext.Database.EnsureCreated();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            dbContext.Database.EnsureCreated();
         });
     }
 }
