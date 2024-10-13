@@ -3,15 +3,16 @@ on:
   workflow_dispatch
   
 jobs:
+  # 1. Проект должен билдится
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout репозиторий
+      # 1.1. Checkout репозиторий
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Билд бэкенда
+      # 1.2. Билд бэкенда
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
@@ -21,7 +22,7 @@ jobs:
         working-directory: ./backend
         run: dotnet build --configuration Release
 
-      # 3. Билд фронтенда
+      # 1.3. Билд фронтенда
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -35,26 +36,44 @@ jobs:
         working-directory: ./frontend
         run: npm run build
 
-      # 4. Анализ кода для бэкенда
+  # 2. Код в проекте должен быть хорошим
+  analyze:
+    needs: [build]
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 2.1. Анализ кода для бэкенда
       - name: Run backend code analysis
         working-directory: ./backend
         run: dotnet build --configuration Release
 
-      # 5. Анализ кода для фронтенда
+      # 2.2. Анализ кода для фронтенда
       - name: Run ESLint for frontend
         working-directory: ./frontend
         run: npm run lint
 
-      # 6. Тесты для бэкенда
+  # 3. Проект должен быть покрыт тестами
+  test:
+    needs: [analyze]
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 3.1. Тесты для бэкенда
       - name: Run backend tests
         working-directory: ./backend
         run: dotnet test --configuration Release
 
-      # 7. Тесты для фронтенда
+      # 3.2. Тесты для фронтенда
       # - name: Run frontend tests
       #   working-directory: ./frontend
       #   run: npm run test
 
-      # 8. Проверка Docker Compose
+  # 4. Docker должен запускаться без ошибок
+  docker:
+    needs: [test]
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 4.1. Проверка Docker Compose
       - name: Docker Compose Build and Run
         run: docker-compose -f docker-compose.yml up --build --exit-code-from server
