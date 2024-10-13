@@ -22,8 +22,8 @@ export function Button(props) {
     return (
         <>
             <button className={classes} aria-label={name} {...props}>
-                {text === "" || text == null ? null : <p>{text}</p>}
-                {iconpath === "" || iconpath == null ? null : <Icon path={iconpath} size={"default"}/>}
+                {text ? <p>{text}</p> : null }
+                {iconpath  ? <Icon path={iconpath} size={"default"} /> : null }
             </button>
         </>
     )
