@@ -1,0 +1,56 @@
+name: CI Pipeline
+on:
+  workflow_dispatch
+  
+jobs:
+  build_backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.0'
+      - name: Restore dependencies
+        run: dotnet restore ./backend/Litres.WebAPI/Litres.WebAPI.csproj
+      - name: Build backend
+        run: dotnet build ./backend/Litres.WebAPI/Litres.WebAPI.csproj --configuration Release
+      - name: Run backend tests
+        run: dotnet test ./backend/Litres.WebAPI.Tests/Litres.WebAPI.Tests.csproj
+      - name: Apply database migrations
+        run: dotnet ef database update --project ./backend/Litres.WebAPI/Litres.WebAPI.csproj --startup-project ./backend/Litres.WebAPI/Litres.WebAPI.csproj
+      - name: Run code analysis for backend
+        run: dotnet sonarscanner begin /k:"backend_project" /d:sonar.login=${{ secrets.SONAR_TOKEN }}
+      - name: Build and publish backend code
+        run: dotnet publish --configuration Release --output ./backend/publish
+        
+  build_frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install --prefix frontend
+      - name: Run tests for frontend
+        run: npm test --prefix frontend
+      - name: Run frontend code analysis
+        run: npm run lint --prefix frontend
+        
+  docker_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Set up Docker BuildKit
+        run: |
+          mkdir ~/.docker
+          echo '{"experimental":true}' > ~/.docker/config.json
+      - name: Build Docker images
+        run: docker-compose -f docker-compose.yml up --build -d
+      - name: Run Docker Compose health checks
+        run: docker-compose -f docker-compose.yml ps
