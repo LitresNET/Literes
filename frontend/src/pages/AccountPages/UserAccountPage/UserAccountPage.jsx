@@ -107,7 +107,7 @@ export default function UserAccountPage() {
                                 {/* Здесь задаём минимальную ширину слайда */}
                                 <AccountBookCard
                                     role={'user'}
-                                    id={id}
+                                    bookId={id}
                                 />
                             </SwiperSlide>
                         ))}

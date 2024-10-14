@@ -20,19 +20,24 @@ const SignInPage = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        //TODO: Добавить больше валидации
+        if (!email || !password) {
+            setError('Please fill in all fields');
+            return;
+        } else { setError('') }
 
         const userData = {
             email: email,
             password: password,
         };
 
-        const response = await login(userData);
-        if (response.error) {
-            setError(response.error);
-        } else {
-            localStorage.setItem("token", response.result);
-            navigate("/home")
-        }
+        await login(userData).then((result) => {
+            if (result.error) {
+                setError(result.error);
+            } else {
+                navigate("/home")
+            }
+        });
     };
 
     return (

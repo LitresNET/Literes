@@ -8,18 +8,19 @@ import { Link } from 'react-router-dom'
 import {useEffect, useState} from "react";
 import {axiosToLitres} from "../../hooks/useAxios.js";
 import {toast} from "react-toastify";
+import IMAGES from "../../assets/images.jsx";
 
 /// Принимает: <br/>
 /// bookId : number - id книги для отображения, остальные данные будут доставаться с сервера
 export function AccountBookCard(props) {
     //TODO: жесть а че пропсам можно required и даже типы указывать? надо это и с другими будет сделать
     AccountBookCard.propTypes = {
-        id: PropTypes.number.isRequired, //чзх нах три нижние required если мы получаем id и берём это через фронт?
+        bookId: PropTypes.number.isRequired,
         role: PropTypes.string.isRequired,
+        /*
         author: PropTypes.string,//.isRequired,
         title: PropTypes.string,//.isRequired,
-        imgPath: PropTypes.string//.isRequired не required, у user.favourites только id...
-            //хотя вроде один хуй эти required не вызывают никаких ошибок и прочего так что пох
+        imgPath: PropTypes.string//.isRequired */
     }
 
     const [data, setData] = useState(null);
@@ -28,25 +29,26 @@ export function AccountBookCard(props) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axiosToLitres.get(`/book/${props.id}`);
+                const response = await axiosToLitres.get(`/book/${props.bookId}`);
                 setData(response.data);
             } catch (error) {
                 setErrorToast( () => toast.error('Account Book Card: '+error.message,
                     {toastId: "AccountBookCardError"}));
             }
         };
-        if(props.id !== null && props.id !== undefined && props.id !== 0) {
-            fetchData();
-        }
+        fetchData();
+
     }, []);
-    //TODO: бля вообще наверное можно не быть тупым хуесосом не писать везде "props. ?? data." и просто все с data после fetch'a
-    // записывать в props, да? ой сучеька бля пох завтра доделаем какой же ад невыносимый
 
     return (
         <>
-            <div className="account-book-card-wrapper">
-                <Cover imgPath={props.imgPath ?? data?.coverUrl} />
-                <Banner>"{props.title ?? data?.coverUrl}" by {props.author ?? data?.author}</Banner>
+            <div className="account-book-card-wrapper" {...props}>
+                <Cover imgPath={!data?.coverUrl ? IMAGES.default_cover : data.coverUrl } link={`/book/${props.bookId}`} />
+                <div className="account-book-card-name">
+                    <Banner>
+                        <p>"{data?.name}" by {data?.author}</p>
+                    </Banner>
+                </div>
 
                 {props.role === 'user' ? (
                     <Button text={'Read'} round={'true'} color={'yellow'} iconpath={ICONS.pencil} />

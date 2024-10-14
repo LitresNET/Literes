@@ -5,6 +5,16 @@
   width: min-content;
 }
 
+
+.account-book-card-name .Banner{
+  display: flex;
+}
+
+.account-book-card-name p{
+  max-width: 148.8px;
+
+}
+
 .account-book-card-button button:first-of-type {
   margin-bottom: 20px;
 }
