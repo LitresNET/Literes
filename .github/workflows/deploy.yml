@@ -8,6 +8,8 @@ on:
     types:
       - closed
     branches: [ "main", "dev" ]
+  workflow_dispatch:
+    # Входные значения для ручного запуска
 
 jobs:
   build-and-deploy:
