@@ -4,6 +4,9 @@ on:
     workflows: ["CI Pipeline"]
     types:
       - completed
+  pull_request:
+    types:
+      - closed
     branches: [ "main", "dev" ]
 
 jobs:
