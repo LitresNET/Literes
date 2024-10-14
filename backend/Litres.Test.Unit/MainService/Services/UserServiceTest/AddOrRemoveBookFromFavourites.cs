@@ -1,4 +1,4 @@
-using AutoFixture;
+﻿using AutoFixture;
 using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Services;
 using Litres.Domain.Entities;
@@ -9,7 +9,7 @@ using Tests.Config;
 
 namespace Tests.MainService.Services.UserServiceTest;
 
-public class DeleteBookFromFavourites
+public class AddOrRemoveBookFromFavourites
 {
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
     private readonly Mock<IPublisherRepository> _publisherRepositoryMock = new();
@@ -25,64 +25,69 @@ public class DeleteBookFromFavourites
     [InlineData(52)]
     [InlineData(1)]
     [InlineData(100)]
-    public async Task DefaultUserWithExistingBook_ReturnsDeletedBook(long bookIdToDelete)
+    public async Task DefaultUserWithExistingBookInFavourites_ReturnsDeletedBook(long bookId)
     {
         // Arrange
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
 
         var rnd = new Random();
         var books = Enumerable.Range(1, 10)
-            .Select(_ => new Book {Id = rnd.Next(1, (int) bookIdToDelete * 2 + 5)})
+            .Select(_ => new Book {Id = rnd.Next(1, (int) bookId * 2 + 5)})
+            .Where(b => b.Id != bookId)
             .ToList();
 
         var user = fixture
             .Build<User>()
-            .With(u => u.Favourites, books.Append(new Book {Id = bookIdToDelete}).ToList())
+            .With(u => u.Favourites, books.Append(new Book {Id = bookId}).ToList())
             .Create();
 
         _userRepositoryMock
-            .Setup(r => r.GetByIdAsync(It.IsAny<long>()))
+            .Setup(r => r.GetByIdAsync(user.Id))
             .ReturnsAsync(user);
 
-        var expected = books.Where(b => b.Id != bookIdToDelete).ToList();
+        var expected = books.Where(b => b.Id != bookId).ToList();
         
         // Act 
-        await UserService.DeleteBookFromFavouritesAsync(user.Id, bookIdToDelete);
+        await UserService.AddOrRemoveBookFromFavouritesAsync(user.Id, bookId);
         
         // Assert
         Assert.Equal(expected, user.Favourites);
     }
     
-    [Fact]
-    public async Task DefaultUserWithNotExistingBookInList_ThrowsEntityNotFoundException()
+    [Theory]
+    [InlineData(52)]
+    [InlineData(1)]
+    [InlineData(100)]
+    public async Task DefaultUserWithNotExistingBookInFavourites_ReturnsAddedBook(long bookId)
     {
         // Arrange
-        const long userId = 42L;
-        const long bookIdToDelete = 42L;
-
         var fixture = new Fixture().Customize(new AutoFixtureCustomization());
-        
+
         var rnd = new Random();
         var books = Enumerable.Range(1, 10)
-            .Select(_ => new Book {Id = rnd.Next(1, (int) bookIdToDelete * 2 + 5)})
+            .Select(_ => new Book {Id = rnd.Next(1, (int) bookId * 2 + 5)})
+            .Where(b => b.Id != bookId)
             .ToList();
+        var addedBook = new Book { Id = bookId };
 
         var user = fixture
             .Build<User>()
-            .With(u => u.Favourites, books.Where(b => b.Id != bookIdToDelete).ToList())
+            .With(u => u.Favourites, books.ToList())
             .Create();
-        
-        _userRepositoryMock
-            .Setup(r => r.GetByIdAsync(It.IsAny<long>()))
-            .ReturnsAsync(user);
 
-        var expected = new EntityNotFoundException(typeof(Book), bookIdToDelete.ToString());
+        _userRepositoryMock
+            .Setup(r => r.GetByIdAsync(user.Id))
+            .ReturnsAsync(user);
+        _bookRepositoryMock
+            .Setup(r => r.GetByIdAsync(bookId))
+            .ReturnsAsync(addedBook);
+
+        var expected = books.Append(addedBook).ToList();
         
-        // Act
-        var actual = await Assert.ThrowsAsync<EntityNotFoundException>(() =>
-            UserService.DeleteBookFromFavouritesAsync(userId, bookIdToDelete));
+        // Act 
+        await UserService.AddOrRemoveBookFromFavouritesAsync(user.Id, bookId);
         
-        // Arrange
-        Assert.Equal(expected.Message, actual.Message);
+        // Assert
+        Assert.Equal(expected, user.Favourites);
     }
 }

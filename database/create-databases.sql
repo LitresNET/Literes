@@ -1,31 +1,63 @@
--- Используем контекст основной базы данных
 USE master;
 GO
 
--- Создаем базу данных litres, если не существует
+-- Create the litres database if it doesn't exist
 IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'litres')
-CREATE DATABASE litres;
+BEGIN
+    CREATE DATABASE litres;
+    PRINT 'Database "litres" has been created.';
+END
+ELSE
+BEGIN
+    PRINT 'Database "litres" already exists.';
+END
 GO
 
--- Используем контекст базы данных litres
 USE litres;
 GO
 
--- Создаем логин HangFire и назначаем ему пароль
-CREATE LOGIN HangFire WITH PASSWORD = '_BEZ_Par0lya_007_';
-
--- Создаем пользователя HangFire на основе логина HangFire
-CREATE USER [HangFire] FOR LOGIN HangFire;
+-- Create the HangFire login without specifying a password
+IF NOT EXISTS (SELECT name FROM sys.server_principals WHERE name = N'HangFire')
+BEGIN
+    CREATE LOGIN HangFire WITH PASSWORD = '$(HANGFIRE_PASSWORD)';
+    PRINT 'Login for HangFire user has been created.';
+END
+ELSE
+BEGIN
+    PRINT 'Login for HangFire user already exists.';
+END
 GO
 
--- Если схема HangFire не существует, создаем ее
-IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE [name] = 'HangFire') EXEC ('CREATE SCHEMA [HangFire]')
+-- Create the HangFire user for the HangFire login if it doesn't exist
+IF NOT EXISTS (SELECT name FROM sys.database_principals WHERE name = N'HangFire')
+BEGIN
+    CREATE USER [HangFire] FOR LOGIN HangFire;
+    PRINT 'HangFire user has been created.';
+END
+ELSE
+BEGIN
+    PRINT 'HangFire user already exists.';
+END
 GO
 
--- Назначаем владельца схемы HangFire пользователю HangFire
-ALTER AUTHORIZATION ON SCHEMA::[HangFire] TO [HangFire]
+-- Create the HangFire schema if it doesn't exist
+IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE [name] = 'HangFire')
+BEGIN
+    EXEC ('CREATE SCHEMA [HangFire]');
+    PRINT 'Schema "HangFire" has been created.';
+END
+ELSE
+BEGIN
+    PRINT 'Schema "HangFire" already exists.';
+END
 GO
 
--- Предоставляем права на создание таблиц пользователю HangFire
-GRANT CREATE TABLE TO [HangFire]
+-- Set the owner of the HangFire schema to the HangFire user
+ALTER AUTHORIZATION ON SCHEMA::[HangFire] TO [HangFire];
+PRINT 'Ownership of schema "HangFire" has been assigned to user "HangFire".';
+GO
+
+-- Grant table creation privileges to the HangFire user
+GRANT CREATE TABLE TO [HangFire];
+PRINT 'Table creation privileges have been granted to user "HangFire".';
 GO

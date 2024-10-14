@@ -1,0 +1,120 @@
+name: CI Pipeline
+on:
+  push:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    # Входные значения для ручного запуска
+  
+jobs:
+  # 1. Проект должен билдится
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1.1. Checkout репозиторий
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 1.2. Билд бэкенда
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build backend
+        working-directory: ./backend
+        run: dotnet build --configuration Release
+
+      # 1.3. Билд фронтенда
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build
+
+  # 2. Код в проекте должен быть хорошим
+  analyze:
+    needs: [build]
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 2.1. Checkout репозиторий
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2.2. Анализ кода для бэкенда
+      - name: Run backend code analysis
+        working-directory: ./backend
+        run: dotnet build --configuration Release
+
+      # 2.3. Анализ кода для фронтенда
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Restore node modules cache
+        uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules 
+
+      - name: Run ESLint for frontend
+        working-directory: ./frontend
+        run: npm run lint
+
+  # 3. Проект должен быть покрыт тестами
+  # test:
+  #   needs: [analyze]
+  #   runs-on: ubuntu-latest
+    
+  #   steps:
+  #     # 3.1. Checkout репозиторий
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+
+  #     # 3.2. Тесты для бэкенда
+  #     - name: Run backend tests
+  #       working-directory: ./backend
+  #       run: dotnet test --configuration Release
+
+  #     # 3.3. Тесты для фронтенда
+  #     - name: Run frontend tests
+  #       working-directory: ./frontend
+  #       run: npm run test
+
+  # 4. Docker должен запускаться без ошибок
+  docker:
+    # needs: [test]
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 4.1. Checkout репозиторий
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 4.2. Проверка Docker Compose
+      - name: Docker Compose Build and Run
+        run: docker compose -f compose.yml up --build -d
+
+      # 4.3. Завершаем workflow
+      - name: Finish workflow
+        run: echo "All services are running, workflow finished."

@@ -12,7 +12,7 @@ public class GetUserInfo
 {
     private readonly Mock<IPublisherRepository> _publisherRepositoryMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
-    private readonly Mock<BookRepository> _bookRepositoryMock = new();
+    private readonly Mock<IBookRepository> _bookRepositoryMock = new();
 
     private UserService UserService => new(
         _publisherRepositoryMock.Object, 

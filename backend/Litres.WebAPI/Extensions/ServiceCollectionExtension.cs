@@ -75,7 +75,7 @@ public static class ServiceCollectionExtension
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()
-            .UseSqlServerStorage(configuration["Database:HangfireConnectionString"]));
+            .UseSqlServerStorage(configuration["HANGFIRE_CONNECTION_STRING"]));
         services.AddHangfireServer();
 
         return services;
@@ -149,15 +149,15 @@ public static class ServiceCollectionExtension
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(configuration["Authentication:Jwt:SecurityKey"]!)
+                        Encoding.UTF8.GetBytes(configuration["JWT_SECURITY_KEY"]!)
                     ),
                     ValidateIssuerSigningKey = true,
                 };
             })
             .AddGoogle(options =>
             {
-                options.ClientId = configuration["Authentication:Google:ClientId"]!;
-                options.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
+                options.ClientId = configuration["GOOGLE_CLIENT_ID"]!;
+                options.ClientSecret = configuration["GOOGLE_CLIENT_SECRET"]!;
             });
 
         return services;
