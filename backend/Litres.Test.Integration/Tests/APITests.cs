@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Security.Cryptography.Xml;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Assert = Xunit.Assert;
 
 namespace IntegrationTests.Tests;
@@ -27,6 +28,37 @@ public class APITest : PlaywrightTest
         Console.WriteLine(response.BodyAsync());
         
         Assert.NotNull(response.BodyAsync());
+    }
+
+    [TestMethod]
+    [DataRow("signup/user")]
+    public async Task SignUpMethodOrSignInIfExist_ReturnSuccessStatusCode(string url)
+    {
+        var dataSignUp = new Dictionary<string, string>
+        {
+            { "name", "test" },
+            { "email", "test@example.com" },
+            { "password", "Test_1234" }
+        };
+        
+        var responseSignUp = await Request.PostAsync(url, new () {DataObject = dataSignUp});
+
+        if (responseSignUp.Ok)
+        {
+            await Expect(responseSignUp).ToBeOKAsync();
+        }
+        else
+        {
+            var dateSignIn = new Dictionary<string, string>
+            {
+                { "email", "test@example.com" },
+                { "password", "Test_1234" }
+            };
+            
+            var responseSignIn = await Request.PostAsync("signin", new() {DataObject = dateSignIn});
+
+            Expect(responseSignIn).ToBeOKAsync();
+        }
     }
     
     [TestInitialize]
