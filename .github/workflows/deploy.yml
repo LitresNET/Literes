@@ -1,5 +1,4 @@
 name: CD Pipeline
-
 on:
   workflow_run:
     workflows: ["CI Pipeline"]
@@ -12,39 +11,37 @@ jobs:
 
     steps:
       # 1. Checkout репозиторий
-        - name: Checkout code
-        - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       # 2. Установка SSH
-        - name: Install ssh keys
-          run: |
-            install -m 600 -D /dev/null ~/.ssh/id_rsa
-            echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-            ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+      - name: Install ssh keys
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
       # 3. Логинимся в GHCR
-        - name: Log in to GitHub Container Registry
-          run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       # 4. Копируем docker compose с новыми env variables
-        - name: Create docker compose config
-          run: |
-            cat compose.yml | envsubst > compose-secret.yml
+      - name: Create docker compose config
+        run: |
+          cat compose.yml | envsubst > compose-secret.yml
 
       # 5. Отправляем на удаленный хост
-        - name: Copy docker compose config
-          run: scp compose-secret.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:compose.yml
+      - name: Copy docker compose config
+        run: scp compose-secret.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:compose.yml
 
       # 6. На удаленном хосте стягиваем последние изменения
-        - name: Connect and pull
-          run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} && docker compose pull && docker compose up -d && exit"
+      - name: Connect and pull
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} && docker compose pull && docker compose up -d && exit"
 
       # 7. Удаляем чувствительные данные
-        - name: Cleanup config
-          if: always()
-          run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "rm compose.yml"
+      - name: Cleanup config
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "rm compose.yml"
 
       # 8. Удаляем SSH-ключи
-        - name: Cleanup keys
-          if: always()
-          run: rm -rf ~/.ssh compose-secret.yml
+      - name: Cleanup keys
+        run: rm -rf ~/.ssh compose-secret.yml
