@@ -20,7 +20,6 @@ function mainPage() {
     const [romanceBooks, setRomanceBooks] = useState([]);
     const [adventuresBooks, setAdventuresBooks] = useState([]);
 
-    const [setErrorToast] = useState(null);
     useEffect(() => {
         const fetchPopularBooksData = async () => {
             try {
@@ -28,8 +27,8 @@ function mainPage() {
                 setPopularBooks(response.result);
 
             } catch (error) {
-                setErrorToast( () => toast.error('Popular Books: '+error.message,
-                    {toastId: "PopularBooksError"}));
+                toast.error('Popular Books: '+error.message,
+                    {toastId: "PopularBooksError"});
             }
         };
 

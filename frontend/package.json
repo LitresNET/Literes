@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --config eslint.config.js",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest"
   },
   "dependencies": {
     "@pbe/react-yandex-maps": "^1.2.5",
@@ -24,6 +25,8 @@
     "vite-plugin-svgr": "^4.2.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
     "@vitejs/plugin-react-swc": "^3.5.0",
@@ -32,7 +35,9 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "globals": "^15.11.0",
-    "vite": "^5.1.6"
+    "jsdom": "^25.0.1",
+    "vite": "^5.1.6",
+    "vitest": "^2.1.2"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "4.9.2"

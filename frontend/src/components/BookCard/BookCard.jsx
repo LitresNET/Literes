@@ -17,15 +17,14 @@ export function BookCard(props) {
     }
     const [data, setData] = useState(null);
 
-    const [setErrorToast] = useState(null);
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axiosToLitres.get(`/book/${props.bookId}`);
                 setData(response.data);
             } catch (error) {
-                setErrorToast( () => toast.error('Book Card: '+error.message,
-                    {toastId: "BookCardError"}));
+                toast.error('Book Card: '+error.message,
+                    {toastId: "BookCardError"});
             }
         };
         fetchData();
@@ -33,15 +32,15 @@ export function BookCard(props) {
 
     return (
         <>
-            <div className="bookcard" {...props}>
-                <Cover imgPath={!data?.coverUrl ? IMAGES.default_cover : data.coverUrl} link={`/book/${props.bookId}`}/>
+            <div className="bookcard" data-book-id={props.bookId}>
+                <Cover imgPath={!data?.coverUrl ? IMAGES.default_cover : data.coverUrl} name={"book-cover"} link={`/book/${props.bookId}`}/>
                 <div className="bookcard-name">
                     <p style={{width: "100%"}}>{data?.name}</p>
                 </div>
                 <div className="bookcard-buttons">
                     <div className="bookcard-button-row">
-                        <Button text={data?.price + '$'} onClick={() => (alert("Заглушка!"))} round={"true"}/>
-                        <Button iconpath={ICONS.bookmark_simple} onClick={async () =>
+                        <Button text={data?.price + '$'} name={"book-price"} onClick={() => (alert("Заглушка!"))} round={"true"}/>
+                        <Button iconpath={ICONS.bookmark_simple} name={"book-favourite"} onClick={async () =>
                             await addBookToFavourites(props.bookId)} round={"true"}/>
                     </div>
                     <div className="bookcard-button-row">
