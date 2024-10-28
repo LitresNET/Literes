@@ -11,19 +11,17 @@ import PropTypes from "prop-types";
 /// big : bool - немного увеличивает кнопку <br/>
 /// также передаёт все параметры тега в тег button, поэтому возможна личная настройка
 /// (при передаче своих классов - перезапишет все наложенные)
-export function Button(props) {
+export function Button({text, name, className, iconPath, color, round, shadow, big, ...rest}) {
     Button.propsTypes = {
         text: PropTypes.string,
         name: PropTypes.string,
         className: PropTypes.string,
-        iconpath: PropTypes.string, //TODO: изменить на iconPath
+        iconPath: PropTypes.string,
         color: PropTypes.string,
         round: PropTypes.bool,
         shadow: PropTypes.bool,
         big: PropTypes.bool
     }
-    const {
-        text, name, className, iconpath, color, round, shadow, big, ...rest} = props
     let classes = "border-solid" +
         (color ? ` button-${color}` : "" +
         (shadow ? " button-shadow" : "") +
@@ -35,7 +33,7 @@ export function Button(props) {
         <>
             <button className={classes} aria-label={name} {...rest}>
                 {text ? <p>{text}</p> : null }
-                {iconpath  ? <Icon path={iconpath} size={"default"} /> : null }
+                {iconPath  ? <Icon path={iconPath} size={"default"} /> : null }
             </button>
         </>
     )
