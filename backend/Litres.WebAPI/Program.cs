@@ -1,9 +1,9 @@
 using Hangfire;
+using Litres.Application.Hubs;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Litres.Infrastructure;
 using Litres.WebAPI.Extensions;
-using Litres.WebAPI.Hubs;
 using Litres.WebAPI.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

@@ -1,6 +1,5 @@
 using System.Globalization;
 using System.Security.Claims;
-using Litres.Application.Abstractions.HubClients;
 using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Models;
 using Litres.Domain.Entities;
@@ -9,13 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Litres.WebAPI.Hubs;
+namespace Litres.Application.Hubs;
 
 [Authorize]
 public class NotificationHub(
     IMemoryCache cache, 
     INotificationRepository notificationRepository,
-    IUserRepository userRepository) : Hub<INotificationClient>
+    IUserRepository userRepository) : Hub
 {
     public override async Task OnConnectedAsync()
     {
@@ -30,7 +29,7 @@ public class NotificationHub(
         
         var user = await userRepository.GetByIdAsNoTrackingAsync(userId);
         var notifications = user.Notifications;
-        await Clients.Caller.ReceiveNotificationList(notifications);
+        await Clients.Caller.SendAsync("ReceiveNotificationList", notifications);
         await UpdateStatusOnNotificationsAsync(notifications.ToArray());
         
         await base.OnConnectedAsync();
@@ -65,7 +64,7 @@ public class NotificationHub(
         var connectionId = (string?) cache.Get(userId) ?? "";
         if (connectionId is "") return false;
         
-        await Clients.Client(connectionId).ReceiveNotification(notification);
+        await Clients.Client(connectionId).SendAsync("ReceiveNotification", notification);
         return true;
     }
 
