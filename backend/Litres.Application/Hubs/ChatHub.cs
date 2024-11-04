@@ -29,7 +29,7 @@ public class ChatHub(
                 await Groups.AddToGroupAsync(connectionId, "Agents");
         }
         
-        cache.Set(chatSessionId, connectionId);
+        cache.Set(chatSessionId, connectionId, TimeSpan.FromDays(2));
         
         await Clients.Caller.SetSessionId(chatSessionId);
 
