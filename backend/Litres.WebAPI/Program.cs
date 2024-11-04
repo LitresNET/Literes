@@ -39,6 +39,7 @@ builder.Services
     .AddConfiguredHangfire(builder.Configuration)
     .AddConfiguredAuthentication(builder.Configuration)
     .AddConfiguredAutoMapper()
+    .AddConfiguredMassTransit()
     .AddEndpointsApiExplorer()
     .AddConfiguredSwaggerGen();
 
@@ -80,8 +81,9 @@ RecurringJob.AddOrUpdate<ISubscriptionCheckerService>("checkSubscriptions", serv
 
 application.MapControllers();
 application.MapHub<NotificationHub>("api/hubs/notification");
+application.MapHub<ChatHub>("api/hubs/chat");
 
 application.Run();
 
 // с настройками по умолчанию интеграционные тесты не видят namespace нашего Progrnam.cs - делаем публичным
-public partial class Program { }
+public partial class Program;

@@ -14,6 +14,12 @@ public class Message : IEntity
     public long Id { get; set; }
     
     /// <summary>
+    /// Идентификатор сессии, к которой относится сообщение
+    /// </summary>
+    [Required]
+    public string ChatSessionId { get; set; }
+    
+    /// <summary>
     /// Текст сообщения
     /// </summary>
     [MaxLength(256)]
