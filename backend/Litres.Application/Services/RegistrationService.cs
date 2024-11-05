@@ -27,6 +27,21 @@ public class RegistrationService(
         return createResult;
     }
 
+    public async Task<IdentityResult> RegisterUserWithRoleAsync(User user, string role)
+    {
+        await using var transaction = await unitOfWork.BeginTransactionAsync();
+        var createResult = await userManager.CreateAsync(user, user.PasswordHash);
+        if (createResult.Succeeded)
+        {
+            var roleResult = await userManager.AddToRoleAsync(user, role);
+            if (roleResult.Succeeded) await transaction.CommitAsync();
+            else await transaction.RollbackAsync();
+            return roleResult;
+        }
+        await transaction.RollbackAsync();
+        return createResult;
+    }
+
     public async Task<IdentityResult> RegisterPublisherAsync(User user, string contractNumber)
     {
         var contract = await contractRepository.GetBySerialNumberAsync(contractNumber);
