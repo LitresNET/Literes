@@ -6,28 +6,28 @@ import ICONS from "../../../assets/icons.jsx";
 /// Принимает: <br/>
 /// status : ["success", "failure"] - статус действия <br/>
 /// actionDescription : string - описание действия (что произошло)
-export function Tag(props) {
-    const {status, actiondescription, className} = props;
+//TODO: тесты, рефактор
+export function Tag({status, actionDescription, className, ...rest}) {
     let se;
     switch(status) {
         case "success":
             se = {
                 className : "tag-success",
-                iconpath : ICONS.check_circle,
+                iconPath : ICONS.check_circle,
                 messagePrefix : "Success to: "
             };
             break;
         case "failure":
             se = {
                 className : "tag-failure",
-                iconpath : ICONS.circle_wavy_warning,
+                iconPath : ICONS.circle_wavy_warning,
                 messagePrefix : "Failed to: "
             };
             break;
         default:
             se = {
                 className : "<empty>",
-                iconpath : "<empty>",
+                iconPath : "<empty>",
                 messagePrefix : "<empty>"
             }
     }
@@ -36,9 +36,9 @@ export function Tag(props) {
 
     return (
         <>
-            <div className={classes} {...props}>
-                <Icon path={se.iconpath}/>
-                <p style={{marginLeft : "10px"}}>{se.messagePrefix + actiondescription}</p>
+            <div className={classes} {...rest}>
+                <Icon path={se.iconPath}/>
+                <p style={{marginLeft : "10px"}}>{se.messagePrefix + actionDescription}</p>
             </div>
         </>
     )

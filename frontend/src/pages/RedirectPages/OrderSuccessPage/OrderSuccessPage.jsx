@@ -12,7 +12,7 @@ function OrderSuccessPage() {
                 <h1>Thank you for your order!</h1>
                 <p>Check your e-mail inbox for the receipt</p>
                 <Link to={"/"}>
-                    <Button round={"true"} color={"yellow"} text={"Continue shopping"} iconpath={ICONS.shopping_cart}/>
+                    <Button round={"true"} color={"yellow"} text={"Continue shopping"} iconPath={ICONS.shopping_cart}/>
                 </Link>
             </div>
         </div>

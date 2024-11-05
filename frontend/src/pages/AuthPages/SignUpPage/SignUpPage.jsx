@@ -94,7 +94,7 @@ const SignUpPage = () => {
                               onClick={handleRegister}
                               round={"true"}
                               color={"yellow"}
-                              iconpath={ICONS.next}/>
+                              iconPath={ICONS.next}/>
                         </div>
                         {validationError &&
                             <p className="sign-up-error">{validationError}</p>

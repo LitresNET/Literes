@@ -48,7 +48,7 @@ describe('Input component', () => {
     it('renders checkbox input correctly', () => {
         const iconPath = ICONS.money;
         const {getByRole, getByTestId}
-            = render(<Input type="checkbox" id="checkbox-input" iconpath={iconPath} />);
+            = render(<Input type="checkbox" id="checkbox-input" iconPath={iconPath} />);
         const input = getByRole('checkbox');
         expect(input).toBeInTheDocument();
         expect(input).toHaveAttribute('type', 'checkbox');

@@ -5,12 +5,12 @@ import ICONS from "../../../assets/icons.jsx";
 import PropTypes from "prop-types";
 
 /// Input, с настройкой стилей зависящей от поля type
-export function Input({type, children, id, iconpath, ...rest}) {
+export function Input({type, children, id, iconPath, ...rest}) {
     Input.propsTypes = {
         type: PropTypes.oneOf(["text", "number", "checkbox", "password"]),
         children: PropTypes.node,
         id: PropTypes.number,
-        iconpath: PropTypes.string //TODO: изменить на iconPath
+        iconPath: PropTypes.string
     }
     const [amount, setAmount] = useState(1);
 
@@ -51,7 +51,7 @@ export function Input({type, children, id, iconpath, ...rest}) {
                     <label className="input-checkbox">
                         <input type="checkbox" id={id} {...rest}/>
                         <div className="custom-checkbox">
-                            {iconpath ? <Icon className="custom-checkbox-icon" path={iconpath} size={"mini"} /> : ""}
+                            {iconPath ? <Icon className="custom-checkbox-icon" path={iconPath} size={"mini"} /> : ""}
                         </div>
                         <div className="custom-checkbox-content">
                             {children}

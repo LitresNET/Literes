@@ -13,7 +13,6 @@ import IMAGES from "../../assets/images.jsx";
 /// Принимает: <br/>
 /// bookId : number - id книги для отображения, остальные данные будут доставаться с сервера
 export function AccountBookCard(props) {
-    //TODO: жесть а че пропсам можно required и даже типы указывать? надо это и с другими будет сделать
     AccountBookCard.propTypes = {
         bookId: PropTypes.number.isRequired,
         role: PropTypes.string.isRequired,
@@ -51,7 +50,7 @@ export function AccountBookCard(props) {
                 </div>
 
                 {props.role === 'user' ? (
-                    <Button text={'Read'} round={'true'} color={'yellow'} iconpath={ICONS.pencil} />
+                    <Button text={'Read'} round={'true'} color={'yellow'} iconPath={ICONS.pencil} />
                 ) : (
                     props.role ===
                     'publisher' && (
@@ -61,14 +60,14 @@ export function AccountBookCard(props) {
                                     text={'Edit'}
                                     round={'true'}
                                     color={'yellow'}
-                                    iconpath={ICONS.pencil}
+                                    iconPath={ICONS.pencil}
                                 />
                             </Link>
                             <Button
                                 text={'Delete'}
                                 round={'true'}
                                 color={'orange'}
-                                iconpath={ICONS.trash}
+                                iconPath={ICONS.trash}
                                 onClick={() => requestToDeleteBook(props.id)}
                             />
                         </div>
