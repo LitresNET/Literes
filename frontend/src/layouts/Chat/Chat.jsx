@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import './Chat.css'; // Добавьте стили для вашего чата
 import ICONS from "../../assets/icons.jsx";
-import {Icon} from "../../components/UI/Icon/Icon.jsx";
 import {Button} from "../../components/UI/Button/Button.jsx";
+import {Input} from "../../components/UI/Input/Input.jsx";
 
 const Chat = () => {
     const [connection, setConnection] = useState(null);
-    const [messages, setMessages] = useState([]);
+    const [messages, setMessages] = useState([
+        {user: 'admin', message: 'fuck'}
+    ]);
     const [message, setMessage] = useState('');
     const [isOpen, setIsOpen] = useState(false);
 
@@ -47,9 +49,10 @@ const Chat = () => {
     };
 
     return (
-        <div>
+        <div className={"chat-container" + (isOpen ? " open" : "")}>
             {isOpen ? (
-                <div className="chat-container">
+                <div>
+                    <Button onClick={toggleChat} iconPath={ICONS.caret_down} className="close-button"></Button>
                     <div className="chat-messages">
                         {messages.map((msg, index) => (
                             <div key={index}>
@@ -57,19 +60,18 @@ const Chat = () => {
                             </div>
                         ))}
                     </div>
-                    <input
-                        type="text"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        placeholder="Введите сообщение"
-                    />
-                    <button onClick={sendMessage}>Отправить</button>
-                    <button onClick={toggleChat} className="close-button">Закрыть</button>
+                    <div className="chat-input">
+                        <Input
+                            type="text"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            placeholder="Write message"
+                        />
+                        <Button onClick={sendMessage} text="Send"></Button>
+                    </div>
                 </div>
             ) : (
-                <div className="chat-icon" onClick={toggleChat}>
-                    <Icon path={ICONS.message} width={50} alt="Chat Icon" />
-                </div>
+                <Button iconPath={ICONS.message} className="open-button" onClick={toggleChat}></Button>
             )}
         </div>
     );
