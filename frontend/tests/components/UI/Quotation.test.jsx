@@ -27,8 +27,8 @@ describe('Quotation component', () => {
         expect(quotationElement).toHaveClass(customClass);
     });
 
-    it('applies shadow class when withshadow is true', () => {
-        const { container } = render(<Quotation withshadow />);
+    it('applies shadow class when shadow is true', () => {
+        const { container } = render(<Quotation shadow />);
         const quotationElement = container.firstChild;
 
         expect(quotationElement).toHaveClass('banner-shadow');

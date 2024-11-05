@@ -18,7 +18,7 @@ export function PickUpPointCard(props) {
 
     return (
         <div className="">
-            <Banner withshadow={"true"}>
+            <Banner shadow={"true"}>
                 <div className="point-container" onClick={onClick}>
                     <div className="point-stars">
                     {

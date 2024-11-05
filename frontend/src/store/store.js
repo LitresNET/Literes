@@ -1,5 +1,6 @@
 import {observable, action, makeObservable} from 'mobx';
 
+//TODO: Добавить сохранение ролей, доступ к страницам по ролям: /account для авторизированных, /moderator для модеров и тд.
 class AuthStore {
     isAuthenticated = !!localStorage.getItem('token');
     login = (token) => {
