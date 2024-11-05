@@ -2,13 +2,16 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 300px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: all 0.5s ease-out;
+}
+.chat-container.open {
+    transition: all 0.5s ease-in;
     background-color: white;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 10px;
-    z-index: 1000;
 }
 
 .chat-messages {
@@ -17,18 +20,18 @@
     margin-bottom: 10px;
 }
 
-.chat-icon {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    cursor: pointer;
+.open-button {
+    display: flex;
     z-index: 1000;
+    width: 50px;
 }
 
 
 .close-button {
+    display: flex;
+    position: absolute;
+    right: 5px;
     margin-top: 10px;
-    background-color: red;
     color: white;
     border: none;
     border-radius: 5px;

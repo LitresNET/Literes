@@ -19,6 +19,7 @@ import {useParams} from "react-router-dom";
 import {addBookToFavourites} from "../../../features/addBookToFavourites.js";
 
 //TODO: Нужен рефактор (как в принципе и другим страницам)
+//TODO: Добавить возможность добавления отзывов
 export default function BookPage() {
 
     const [value, setValue] = useState('');

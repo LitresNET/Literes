@@ -86,6 +86,15 @@ input[type="text"]:focus {
     box-shadow: var(--orange-500) 8px 12px 0;
 }
 
+input[type="password"] {
+    box-shadow: var(--yellow-500) 8px 12px 0;
+    transition: 0.2s linear;
+}
+
+input[type="password"]:focus {
+    box-shadow: var(--orange-500) 8px 12px 0;
+}
+
 input[type="checkbox"] {
     position: absolute;
 }
