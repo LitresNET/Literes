@@ -98,15 +98,15 @@ export default function BookPage() {
                         </h1>
 
                         <div className="book-favourite">
-                            <Button iconpath={ICONS.bookmark_simple} onClick={async () =>
+                            <Button iconPath={ICONS.bookmark_simple} onClick={async () =>
                                 await addBookToFavourites(id)} round={"true"}/>
                         </div>
                     </div>
 
-                    <Banner withshadow="true">
+                    <Banner shadow="true">
                     <span className="book-banner-name">Author: {bookData?.author}</span>
                     </Banner>
-                    <Banner withshadow="true">
+                    <Banner shadow="true">
                         <span className="book-banner-description">{bookData?.description}</span>
                     </Banner>
 
@@ -118,7 +118,7 @@ export default function BookPage() {
                         <Button
                             round={'true'}
                             color={'yellow'}
-                            iconpath={ICONS.shopping_cart}
+                            iconPath={ICONS.shopping_cart}
                         />
                         <Button
                             round={'true'}
@@ -140,9 +140,9 @@ export default function BookPage() {
                     freeMode={true}
                 >
                     {sameGenreBooks?.map(book => (
-                        <SwiperSlide style={{ width: 'auto', minWidth: '100px' }}>
+                        <SwiperSlide key={book.id} style={{ width: 'auto', minWidth: '100px' }}>
                             {/* Здесь задаём минимальную ширину слайда */}
-                            <BookCard bookId={book.id}/>
+                            <BookCard key={book.id} bookId={book.id}/>
                         </SwiperSlide>
                     ))}
                 </Swiper>
@@ -171,7 +171,7 @@ export default function BookPage() {
                 </div>
                 <div className="review-cards-wrapper">
                     {reviews?.map(review => (
-                        <ReviewCard
+                        <ReviewCard key={review.id}
                             content={review.content}
                             rating={review.rating}
                             createdAt={review.createdAt}

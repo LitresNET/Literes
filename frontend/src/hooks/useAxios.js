@@ -1,6 +1,9 @@
 import axios from 'axios';
 import configData from "./../../config.json";
 
+async function fetchData(url){
+    //TODO: Подумать над использованием fetchData
+}
 export const axiosToLitres = axios.create({
     baseURL: `${configData.LITRES_URL}`,
     withCredentials: true,

@@ -12,7 +12,7 @@ function UnauthorizedPage() {
                 <h1>We don't know you...</h1>
                 <p>In order to continue, please sign in</p>
                 <Link to="/signin">
-                    <Button round={"true"} color={"yellow"} text={"Sign in"} iconpath={ICONS.sign_in}/>
+                    <Button round={"true"} color={"yellow"} text={"Sign in"} iconPath={ICONS.sign_in}/>
                 </Link>
             </div>
         </div>

@@ -54,12 +54,12 @@ export default function CustomSubscriptionPage() {
                     </div>
                     <div className="page-info">
                         <div className="page-info-title">
-                            <Banner withshadow={true}>
+                            <Banner shadow={true}>
                                 <span>{currentFeature.name}</span>
                             </Banner>
                         </div>
                         <div className="page-info-description">
-                            <Banner  withshadow={true}>
+                            <Banner  shadow={true}>
                                 <p>{currentFeature.description}</p>
                             </Banner>
                         </div>
