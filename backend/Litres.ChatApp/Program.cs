@@ -1,7 +1,7 @@
 ﻿using Litres.ChatApp;
 
 ConsoleMessage.WelcomeMessage();
-ChatUtils.PerformAuthentication();
+await ChatUtils.PerformAuthentication();
 
 var connection = ChatUtils.NewConnection();
 if (connection is null) return;

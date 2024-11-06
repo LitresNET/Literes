@@ -12,7 +12,7 @@ public static class WebApplicationExtensions
         using var scope = application.Services.CreateScope();
         
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<long>>>();
-        var roles = new[] { "Admin", "Publisher", "Member" };
+        var roles = new[] { "Admin", "Publisher", "Member", "Agent" };
 
         foreach (var role in roles)
         {

@@ -9,10 +9,15 @@ public static class ChatUtils
     private static String _jwtToken = "";
     private static String _userName = "";
     private static String _userEmail = "";
+    private static String _chatSessionId = "";
     
     private static void ConfigureOnNewMessage(this HubConnection connection)
     {
-        connection.On<Message>("ReceiveMessage", ConsoleMessage.NewMessage);
+        connection.On<Message>("ReceiveMessage", message =>
+        {
+            ConsoleMessage.NewMessage(message);
+            _chatSessionId = message.ChatSessionId;
+        });
     }
 
     private static UserRegistrationDto GetRegistrationInfo()
@@ -66,9 +71,10 @@ public static class ChatUtils
     {
         var signalRUrl = "http://localhost:5225/api/hubs/chat";
         var connection = new HubConnectionBuilder()
-            .WithUrl(signalRUrl, options =>
-            {
-                options.Headers["Authorization"] = $"Bearer {_jwtToken}";
+            .WithUrl(signalRUrl + "?token=" + _jwtToken, options =>
+            { 
+                options.AccessTokenProvider = () => Task.FromResult(_jwtToken);
+                options.Headers["Authorization"] = "Bearer " + _jwtToken;
             })
             .Build();
         connection.ConfigureOnNewMessage();
@@ -90,10 +96,10 @@ public static class ChatUtils
                 From = "Agent",
                 SentDate = DateTime.Now,
                 Text = text,
-            
+                ChatSessionId = _chatSessionId
             };
             ConsoleMessage.MyMessage(message);
-            await connection.SendAsync("SendMessage", "Client", message);
+            await connection.SendAsync("SendMessageAsync", message);
         }
     }
 
