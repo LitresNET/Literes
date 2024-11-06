@@ -5,19 +5,29 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
-    transition: all 0.5s ease-out;
+    transition: all 0.7s ease-out;
 }
 .chat-container.open {
-    transition: all 0.5s ease-in;
+    transition: all 0.7s ease-in;
     background-color: white;
     border: 1px solid #ccc;
     padding: 10px;
 }
 
 .chat-messages {
-    max-height: 200px;
+    width: 250px;
+    height: 200px;
     overflow-y: auto;
     margin-bottom: 10px;
+}
+
+.chat-messages strong {
+    font-weight: bold;
+}
+
+.message p {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .open-button {
@@ -26,15 +36,23 @@
     width: 50px;
 }
 
+.chat-input Button {
+    height: 30px;
+}
+
+.chat-input Input {
+    box-shadow: var(--blue-500) 0 0 0;
+    margin-bottom: 10px;
+}
+
+.chat-input Input:focus {
+    box-shadow: var(--blue-500) 0 8px 0;
+}
 
 .close-button {
-    display: flex;
-    position: absolute;
     right: 5px;
-    margin-top: 10px;
     color: white;
     border: none;
-    border-radius: 5px;
     padding: 5px 10px;
     cursor: pointer;
 }
