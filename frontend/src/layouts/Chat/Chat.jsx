@@ -5,6 +5,7 @@ import ICONS from "../../assets/icons.jsx";
 import {Button} from "../../components/UI/Button/Button.jsx";
 import {Input} from "../../components/UI/Input/Input.jsx";
 import {toast} from "react-toastify";
+import {axiosToLitres} from "../../hooks/useAxios.js";
 
 //TODO: добавить toast уведомление при новом сообщении
 const Chat = () => {
@@ -23,6 +24,21 @@ const Chat = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
+        const fetchChatData = async () => {
+            try {
+                const sessionId = localStorage.getItem('chatSessionId')
+                const response = await axiosToLitres.get(`/chat/${sessionId}`);
+                console.log('response: ', response)
+                setMessages([...response.map(m => {user: m.from; m: m.text})])
+            } catch (error) {
+                console.log('error: ', error)
+            }
+        };
+        fetchChatData()
+        .then(result => {
+            console.log('history result: ', result)
+        })
+
         console.log('Connecting to ChatHub...');
         if (connection) {
             console.log('oops, connection already established, use this chat id: ', localStorage.getItem('chatSessionId'))
@@ -35,10 +51,9 @@ const Chat = () => {
             .withAutomaticReconnect()
             .build();
 
-<<<<<<< HEAD
         newConnection.on('ReceiveMessage', (message) => {
             console.log('new message!', message)
-            setMessages((prev) => [...prev, message]);
+            setMessages((prev) => [...prev, {message: message.text, user: message.from}]);
         });
 
         newConnection.on('SetSessionId', (sessionId) => {
@@ -57,17 +72,6 @@ const Chat = () => {
             });
         }
 
-=======
-            connection.on('ReceiveMessage', (user, message) => {
-                setMessages((prevMessages) => [...prevMessages, { user, message }])
-            });
-
-            await connection.start();
-            setConnection(connection);
-        };
-
-        connect();
->>>>>>> e07b904b57d014e2f3cba119861fea59a943e3f6
         return () => {
             if (connection) {
                 connection.stop();
@@ -87,7 +91,6 @@ const Chat = () => {
     }, [messages, isOpen]);
 
     const sendMessage = async () => {
-<<<<<<< HEAD
         if (connection && message) {
             const newMessage = {
                 ChatSessionId: localStorage.getItem('chatSessionId'),
@@ -98,18 +101,10 @@ const Chat = () => {
             await connection.invoke('SendMessageAsync', newMessage);
             console.log('successfully sent a message')
             setMessage('');
-            setMessages((prev) => [...prev, {user: 'You', message: message}]);
-=======
-        //TODO: закомментирован псевдофункционал для теста фронта
-        if (// connection &&
-             message) {
-          //  await connection.invoke('SendMessage', 'user', message);
-            setMessage('');
             setMessages((prevMessages) => [...prevMessages, { user: "me", message }])
         }
         else {
             toast.error("chat don't working")
->>>>>>> e07b904b57d014e2f3cba119861fea59a943e3f6
         }
     };
 
