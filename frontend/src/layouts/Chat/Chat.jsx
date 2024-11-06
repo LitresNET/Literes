@@ -7,6 +7,7 @@ import {Input} from "../../components/UI/Input/Input.jsx";
 
 const Chat = () => {
     const [connection, setConnection] = useState(null);
+    const [connectionEstablished, setConnectionEstablished] = useState(false);
     const [messages, setMessages] = useState([
         {user: 'admin', message: 'fuck'}
     ]);
@@ -14,21 +15,38 @@ const Chat = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
-        const connect = async () => {
-            const connection = new HubConnectionBuilder()
-                .withUrl('https://your-signalr-server/chatHub') // URL на сервер SignalR
-                .withAutomaticReconnect()
-                .build();
+        console.log('Connecting to ChatHub...');
+        if (connection) {
+            console.log('oops, connection already established, use this chat id: ', localStorage.getItem('chatSessionId'))
+        }
+        const token = localStorage.getItem('token')
+        const newConnection = new HubConnectionBuilder()
+            .withUrl('http://localhost:5225/api/hubs/chat', { 
+                accessTokenFactory: () => token
+            })
+            .withAutomaticReconnect()
+            .build();
 
-            connection.on('ReceiveMessage', (user, message) => {
-                setMessages((prevMessages) => [...prevMessages, { user, message }]);
+        newConnection.on('ReceiveMessage', (message) => {
+            console.log('new message!', message)
+            setMessages((prev) => [...prev, message]);
+        });
+
+        newConnection.on('SetSessionId', (sessionId) => {
+            localStorage.setItem('chatSessionId', sessionId);
+        });
+
+        if (!connectionEstablished) {
+            newConnection.start()
+            .then(()=>{
+                setConnection(newConnection);
+                setConnectionEstablished(true)
+                console.log('established successfully')
+            })
+            .catch(e => {
+                console.log('error while connecting: ', e)
             });
-
-            await connection.start();
-            setConnection(connection);
-        };
-
-        connect();
+        }
 
         return () => {
             if (connection) {
@@ -39,8 +57,16 @@ const Chat = () => {
 
     const sendMessage = async () => {
         if (connection && message) {
-            await connection.invoke('SendMessage', 'User  ', message);
+            const newMessage = {
+                ChatSessionId: localStorage.getItem('chatSessionId'),
+                Text: message,
+                From: 'User'
+            };
+
+            await connection.invoke('SendMessageAsync', newMessage);
+            console.log('successfully sent a message')
             setMessage('');
+            setMessages((prev) => [...prev, {user: 'You', message: message}]);
         }
     };
 

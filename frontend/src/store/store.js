@@ -4,10 +4,13 @@ import {observable, action, makeObservable} from 'mobx';
 class AuthStore {
     isAuthenticated = !!localStorage.getItem('token');
     login = (token) => {
+        console.log('token: ', token)
         this.isAuthenticated = true;
         localStorage.setItem('token', token);
+        console.log('token from cache: ', localStorage.getItem('token'))
     }
     logout = () => {
+        console.log('logout performed')
         this.isAuthenticated = false;
         localStorage.removeItem('token');
     }
