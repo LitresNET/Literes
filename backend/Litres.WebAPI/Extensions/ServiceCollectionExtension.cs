@@ -38,6 +38,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IBookService, BookService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<ILoginService, LoginService>();
+        services.AddScoped<IMessageService, MessageService>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IRegistrationService, RegistrationService>();

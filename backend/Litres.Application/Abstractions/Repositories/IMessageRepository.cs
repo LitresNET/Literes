@@ -4,4 +4,5 @@ namespace Litres.Application.Abstractions.Repositories;
 
 public interface IMessageRepository : IRepository<Message>
 {
+    public Task<IOrderedEnumerable<Message>> GetMessagesBySessionIdAsync(String sessionId);
 }
