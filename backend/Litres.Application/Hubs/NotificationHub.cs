@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Security.Claims;
+using Litres.Application.Abstractions.HubClients;
 using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Models;
 using Litres.Domain.Entities;
@@ -14,14 +15,10 @@ namespace Litres.Application.Hubs;
 public class NotificationHub(
     IMemoryCache cache, 
     INotificationRepository notificationRepository,
-    IUserRepository userRepository) : Hub
+    IUserRepository userRepository) : Hub<INotificationClient>
 {
     public override async Task OnConnectedAsync()
-    {
-        // var userId = Context.UserIdentifier;
-        // обязательно попробуйте когда будете подключать signalr
-        // мне очень интересно что там за идентификатор (Рузан)
-        
+    { 
         var userId = long.Parse(Context.User!.FindFirstValue(CustomClaimTypes.UserId)!, 
             NumberStyles.Any, CultureInfo.InvariantCulture);
         var connectionId = Context.ConnectionId;
@@ -29,7 +26,7 @@ public class NotificationHub(
         
         var user = await userRepository.GetByIdAsNoTrackingAsync(userId);
         var notifications = user.Notifications;
-        await Clients.Caller.SendAsync("ReceiveNotificationList", notifications);
+        await Clients.Caller.ReceiveNotificationList(notifications);
         await UpdateStatusOnNotificationsAsync(notifications.ToArray());
         
         await base.OnConnectedAsync();
@@ -64,7 +61,7 @@ public class NotificationHub(
         var connectionId = (string?) cache.Get(userId) ?? "";
         if (connectionId is "") return false;
         
-        await Clients.Client(connectionId).SendAsync("ReceiveNotification", notification);
+        await Clients.Client(connectionId).ReceiveNotification(notification);
         return true;
     }
 

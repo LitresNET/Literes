@@ -11,6 +11,11 @@ public class CustomClaimTypes
     public const string UserId = "User Id";
     
     /// <summary>
+    /// Идентификатор текущей сессии пользователя в чате поддержки
+    /// </summary>
+    public const string ChatSessionId = "Chat Session Id";
+    
+    /// <summary>
     /// Идентификатор текущей подписки пользователя
     /// </summary>
     public const string SubscriptionTypeId = "Subscription Type Id";

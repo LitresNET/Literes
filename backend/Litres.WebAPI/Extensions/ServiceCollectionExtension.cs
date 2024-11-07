@@ -2,17 +2,17 @@
 using AutoMapper;
 using Hangfire;
 using Litres.Application.Abstractions.Repositories;
+using Litres.Application.Consumers;
 using Litres.Application.Hubs;
 using Litres.Application.Services;
 using Litres.Application.Services.Options;
 using Litres.Domain.Abstractions.Services;
-using Litres.Infrastructure;
 using Litres.Infrastructure.Repositories;
 using Litres.WebAPI.Configuration.Mapper;
 using Litres.WebAPI.Controllers.Options;
 using Litres.WebAPI.Middlewares;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -38,6 +38,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IBookService, BookService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<ILoginService, LoginService>();
+        services.AddScoped<IMessageService, MessageService>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IRegistrationService, RegistrationService>();
@@ -55,6 +56,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IContractRepository, ContractRepository>();
+        services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IPickupPointRepository, PickupPointRepository>();
@@ -133,6 +135,20 @@ public static class ServiceCollectionExtension
         return services;
     }
 
+    public static IServiceCollection AddConfiguredMassTransit(this IServiceCollection services)
+    {
+        services.AddMassTransit(busConfigurator =>
+        {
+            busConfigurator.SetKebabCaseEndpointNameFormatter();
+
+            busConfigurator.AddConsumer<MessageConsumer>();
+            
+            busConfigurator.UsingInMemory((context, config) => config.ConfigureEndpoints(context));
+        });
+        
+        return services;
+    }
+
     public static IServiceCollection AddConfiguredAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAuthentication(options =>
@@ -143,21 +159,44 @@ public static class ServiceCollectionExtension
             })
             .AddJwtBearer(options =>
             {
+                options.IncludeErrorDetails = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(configuration["JWT_SECURITY_KEY"]!)
+                        Encoding.UTF8.GetBytes(configuration["Authentication:Jwt:SecurityKey"]!)
                     ),
                     ValidateIssuerSigningKey = true,
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        if (!string.IsNullOrEmpty(accessToken))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    },
+                    OnAuthenticationFailed = context =>
+                    {
+                        Console.WriteLine("Authentication failed: " + context.Exception.Message);
+                        return Task.CompletedTask;
+                    },
+                    OnChallenge = context =>
+                    {
+                        Console.WriteLine("Authentication challenge triggered.");
+                        return Task.CompletedTask;
+                    }
                 };
             })
             .AddGoogle(options =>
             {
-                options.ClientId = configuration["GOOGLE_CLIENT_ID"]!;
-                options.ClientSecret = configuration["GOOGLE_CLIENT_SECRET"]!;
+                options.ClientId = configuration["Authentication:Google:ClientId"]!;
+                options.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
             });
 
         return services;
