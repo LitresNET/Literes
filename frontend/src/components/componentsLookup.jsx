@@ -49,11 +49,11 @@ function ComponentsLookup() {
                     <h3>Buttons</h3>
                     <br/>
                     <div className="display-column">
-                        <Button text={"Adventure"} onClick={() => alert("Я самая обычная кнопка)")} iconpath={ICONS.binoculars} />
+                        <Button text={"Adventure"} onClick={() => alert("Я самая обычная кнопка)")} iconPath={ICONS.binoculars} />
                         <Button text={"Adventure"} onClick={() => alert("Я жёлтая кнопка!")} color={"yellow"}/>
                         <Button text={"Adventure"} onClick={() => alert("Я оранжевая кнопка!")} color={"orange"}/>
                         <Button text={"Adventure"} onClick={() => alert("Я кнопка покруче, у меня уже есть тень!")} shadow="true" big={"true"}/>
-                        <Button onClick={() => alert("Я круглая кнопка!")} iconpath={ICONS.binoculars} round={"true"}/>
+                        <Button onClick={() => alert("Я круглая кнопка!")} iconPath={ICONS.binoculars} round={"true"}/>
                         <Button text={"Adventure"} onClick={() => alert("Я круглая жёлтая кнопка!")} round={"true"} color={"yellow"}/>
                         <Button text={"Adventure"} onClick={() => alert("Я круглая жёлтая кнопка!")} round={"true"} color={"orange"}/>
                     </div>
@@ -76,7 +76,7 @@ function ComponentsLookup() {
                     <Banner>
                         <div>
                             <div>Привет!</div>
-                            <Banner withshadow='true'>
+                            <Banner shadow='true'>
                                 <IconButton href={googleLink} path={ICONS.shopping_cart} size="default"/>
                             </Banner>
                         </div>
@@ -92,9 +92,9 @@ function ComponentsLookup() {
                                 <div>Привет!</div>
                             </Description>
                         </Description>
-                        <Description withshadow="true">
+                        <Description shadow="true">
                             <div>Привет!</div>
-                            <Description size={"mini"} withshadow={"true"}>
+                            <Description size={"mini"} shadow={true}>
                                 <div>Привет!</div>
                             </Description>
                         </Description>
@@ -104,7 +104,7 @@ function ComponentsLookup() {
                     <h3>Inputs</h3>
                     <br/>
                     <div className="display-column">
-                        <Input type="checkbox" iconpath={ICONS.binoculars}>
+                        <Input type="checkbox" iconPath={ICONS.binoculars}>
                             Key feature 1
                             <p className="price">$30,00</p>
                         </Input>
@@ -140,8 +140,8 @@ function ComponentsLookup() {
                     <h3>Tags</h3>
                     <br/>
                     <div className="display-row">
-                        <Tag status="success" actiondescription="create success tag!"/>
-                        <Tag status="failure" actiondescription="create success tag!"/>
+                        <Tag status="success" actionDescription="create success tag!"/>
+                        <Tag status="failure" actionDescription="create success tag!"/>
                     </div>
                 </div>
                 <div id="to-refactor dropdown-select" className="container">

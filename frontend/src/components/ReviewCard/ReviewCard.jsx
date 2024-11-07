@@ -12,8 +12,10 @@ import {toast} from "react-toastify";
 
 /// Принимает: <br/>
 /// commentId : number - id отзыва (остальное достаёт с сервера)
+//TODO: Добавить возможность оценки комментариев
+//TODO: Добавить адекватный просмотр подкомментариев
 export function ReviewCard(props) {
-    const { reviewId, content, rating, createdAt, userId, likes, dislikes } = props;
+    const { reviewId, content, rating, createdAt, userId, likes, dislikes, ...rest } = props;
 
     const [stateDislikes, setStateDislikes] = useState(dislikes);
     const [stateLikes, setStateLikes] = useState(likes);
@@ -54,10 +56,10 @@ export function ReviewCard(props) {
 
     return (
         <>
-            <div className="review-card-wrapper">
-                <Banner withshadow={"true"}>
+            <div className="review-card-wrapper" {...rest}>
+                <Banner shadow={"true"}>
                     <div className="review-card">
-                        <Cover imgPath={authorData?.avatarUrl ?? IMAGES.avatar_none} size="mini"/>
+                        <Cover imgPath={authorData?.avatarUrl || IMAGES.avatar_none} size="mini"/>
                         <div className="review-card-info">
                             <div className="review-card-info-row">
                                 <h3 className="review-card-info-author">{authorData?.name}</h3>
@@ -79,7 +81,7 @@ export function ReviewCard(props) {
                                     {Array.from({ length: 5 - Math.round(data?.rating ?? rating)  }).map(_ =>
                                         <Icon path={ICONS.empty_star} />)}
                                 </div>
-                                <div className="review-date">{(data?.createdAt ?? createdAt).replace('T', ' ')}</div>
+                                <div className="review-date">{(data?.createdAt ?? createdAt)?.replace('T', ' ')}</div>
                             </div>
                             <div className="review-card-info-row">
                                 <p className="review-content">

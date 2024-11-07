@@ -13,7 +13,7 @@ function NotFoundPage() {
                 <h1>Opps! This page don’t exist</h1>
                 <p>Please, return to one page existent</p>
                 <Link to={"/"}><Button round={"true"} color={"yellow"} text={"Go back to home"} /></Link>
-                <Input type={"checkbox"} iconpath={ICONS.github_logo}>
+                <Input type={"checkbox"} iconPath={ICONS.github_logo}>
                     <p>You are Dev? Register an issue on github, if you want contribute to this project.</p>
                 </Input>
             </div>

@@ -46,8 +46,8 @@ describe('Description component', () => {
         expect(descriptionElement).toHaveClass('description-mini');
     });
 
-    it('applies shadow class when withshadow is true', () => {
-        const { container } = render(<Description withshadow />);
+    it('applies shadow class when shadow is true', () => {
+        const { container } = render(<Description shadow />);
         const descriptionElement = container.firstChild;
 
         expect(descriptionElement).toHaveClass('banner-shadow');

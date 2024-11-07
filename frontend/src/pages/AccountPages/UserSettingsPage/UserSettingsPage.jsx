@@ -72,7 +72,7 @@ export default function UserSettingsPage() {
                                 <span className='user-settings-form-delete-button'>Delete account</span>
                             </form>
                             <div className='user-settings-info-button'>
-                                <Button text={'change'} color={'yellow'} iconpath={ICONS.binoculars} />
+                                <Button text={'change'} color={'yellow'} iconPath={ICONS.binoculars} />
                             </div>
                         </div>
                     </div>

@@ -3,14 +3,14 @@ import {getByTestId, render} from '@testing-library/react';
 import { Banner } from '../../../src/components/UI/Banner/Banner.jsx';
 
 describe('Banner component', () => {
-    it('renders with shadow class when withshadow is true', () => {
-        const { container } = render(<Banner withshadow={true} className="additional-class"></Banner>);
+    it('renders with shadow class when shadow is true', () => {
+        const { container } = render(<Banner shadow={true} className="additional-class"></Banner>);
         const bannerDiv = container.firstChild;
         expect(bannerDiv).toHaveClass('banner banner-shadow additional-class');
     });
 
-    it('renders without shadow class when withshadow is false', () => {
-        const { container } = render(<Banner withshadow={false} className="additional-class"></Banner>);
+    it('renders without shadow class when shadow is false', () => {
+        const { container } = render(<Banner shadow={false} className="additional-class"></Banner>);
         const bannerDiv = container.firstChild;
         expect(bannerDiv).toHaveClass('banner additional-class');
         expect(bannerDiv).not.toHaveClass('banner-shadow');

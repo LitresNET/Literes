@@ -6,7 +6,7 @@ import { Icon } from '../../../src/components/UI/Icon/Icon.jsx';
 import {expect, it} from "vitest";
 
 //TODO: у меня почему-то иногда сразу интеграционные тесты, а иногда unit тесты с моками вложенных компонентов,
-// надо бы разделить
+// надо бы разделить когда-нибудь
 vi.mock('../../../src/components/UI/Icon/Icon.jsx', () => ({
     Icon: vi.fn(() => <div data-testid="icon-mock" />),
 }));
@@ -19,8 +19,8 @@ describe('Button Component', () => {
         expect(textElement).toBeInTheDocument();
     });
 
-    it('renders with icon when iconpath is provided', () => {
-        render(<Button iconpath="test-icon.png" />);
+    it('renders with icon when iconPath is provided', () => {
+        render(<Button iconPath="test-icon.png" />);
         const iconElement = screen.getByTestId('icon-mock');
         expect(iconElement).toBeInTheDocument();
         expect(Icon).toHaveBeenCalledWith(expect.objectContaining({ path: 'test-icon.png', size: 'default' }), {});
@@ -65,12 +65,12 @@ describe('Button Component', () => {
         expect(container.querySelector('p')).not.toBeInTheDocument();
     });
 
-    it('does not render icon when iconpath is empty, null or undefined', () => {
-        render(<Button iconpath="" />);
+    it('does not render icon when iconPath is empty, null or undefined', () => {
+        render(<Button iconPath="" />);
         expect(screen.queryByTestId('icon-mock')).not.toBeInTheDocument();
-        render(<Button iconpath={null} />);
+        render(<Button iconPath={null} />);
         expect(screen.queryByTestId('icon-mock')).not.toBeInTheDocument();
-        render(<Button iconpath={undefined} />);
+        render(<Button iconPath={undefined} />);
         expect(screen.queryByTestId('icon-mock')).not.toBeInTheDocument();
     });
 

@@ -74,7 +74,7 @@ const SignInPage = () => {
                                 onClick={handleLogin}
                                 round={"true"}
                                 color={"yellow"}
-                                iconpath={ICONS.sign_in}
+                                iconPath={ICONS.sign_in}
                             />
                         </div>
                         {validationError &&

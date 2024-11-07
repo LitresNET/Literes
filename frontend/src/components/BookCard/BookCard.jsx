@@ -9,12 +9,14 @@ import {toast} from "react-toastify";
 import PropTypes from "prop-types";
 import {addBookToFavourites} from "../../features/addBookToFavourites.js";
 
+//TODO: Реализовать логику добавления в корзину
 /// Принимает: <br/>
 /// bookId : number - id книги для отображения, остальные данные будут доставаться с сервера
 export function BookCard(props) {
     BookCard.propTypes = {
         bookId: PropTypes.number.isRequired
     }
+
     const [data, setData] = useState(null);
 
     useEffect(() => {
@@ -40,11 +42,11 @@ export function BookCard(props) {
                 <div className="bookcard-buttons">
                     <div className="bookcard-button-row">
                         <Button text={data?.price + '$'} name={"book-price"} onClick={() => (alert("Заглушка!"))} round={"true"}/>
-                        <Button iconpath={ICONS.bookmark_simple} name={"book-favourite"} onClick={async () =>
+                        <Button iconPath={ICONS.bookmark_simple} name={"book-favourite"} onClick={async () =>
                             await addBookToFavourites(props.bookId)} round={"true"}/>
                     </div>
                     <div className="bookcard-button-row">
-                        <Button color={"orange"} onClick={() => (alert("Заглушка!"))} iconpath={ICONS.shopping_cart}/>
+                        <Button color={"orange"} onClick={() => (alert("Заглушка!"))} iconPath={ICONS.shopping_cart}/>
                     </div>
                 </div>
             </div>
