@@ -12,6 +12,8 @@ import {toast} from "react-toastify";
 
 /// Принимает: <br/>
 /// commentId : number - id отзыва (остальное достаёт с сервера)
+//TODO: Добавить возможность оценки комментариев
+//TODO: Добавить адекватный просмотр подкомментариев
 export function ReviewCard(props) {
     const { reviewId, content, rating, createdAt, userId, likes, dislikes, ...rest } = props;
 

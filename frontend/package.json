@@ -11,6 +11,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@microsoft/signalr": "^8.0.7",
     "@pbe/react-yandex-maps": "^1.2.5",
     "axios": "^1.6.8",
     "jsx-runtime": "^1.2.0",

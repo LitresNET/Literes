@@ -5,9 +5,12 @@ import ICONS from "../../../assets/icons.jsx";
 import PropTypes from "prop-types";
 
 /// Input, с настройкой стилей зависящей от поля type
+//TODO: отсуствует возможность убрать тень
+//TODO: стоило бы сделать хук UseInput чтобы в компонентах каждый раз не прописывать вручную useState
+
 export function Input({type, children, id, iconPath, ...rest}) {
     Input.propsTypes = {
-        type: PropTypes.oneOf(["text", "number", "checkbox", "password"]),
+        type: PropTypes.oneOf(["text", "number", "checkbox", "password"]).isRequired,
         children: PropTypes.node,
         id: PropTypes.number,
         iconPath: PropTypes.string
