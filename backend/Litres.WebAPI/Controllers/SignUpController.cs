@@ -20,6 +20,16 @@ public class SignUpController(IRegistrationService registrationService, IMapper 
             : BadRequest(result.Errors.Select(e => e.Description));
     }
     
+    [HttpPost("agent")] // api/signup/agent
+    public async Task<IActionResult> SignUpAgent([FromBody] UserRegistrationDto registrationDto)
+    {
+        var user = mapper.Map<User>(registrationDto);
+        var result = await registrationService.RegisterUserWithRoleAsync(user, "Agent");
+        return result.Succeeded 
+            ? Ok() 
+            : BadRequest(result.Errors.Select(e => e.Description));
+    }
+    
     [HttpPost("publisher")] // api/signup/publisher
     public async Task<IActionResult> SignUpPublisher([FromBody] PublisherRegistrationDto registrationDto)
     {
