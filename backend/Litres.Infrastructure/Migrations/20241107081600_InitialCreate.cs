@@ -55,6 +55,22 @@ namespace Litres.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Message",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ChatSessionId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    From = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
+                    SentDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Message", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PickupPoint",
                 columns: table => new
                 {
@@ -676,13 +692,13 @@ namespace Litres.Infrastructure.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "AvatarUrl", "ConcurrencyStamp", "Email", "EmailConfirmed", "IsAdditionalRegistrationRequired", "IsModerator", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RoleName", "SecurityStamp", "SubscriptionActiveUntil", "SubscriptionId", "TwoFactorEnabled", "UserName", "Wallet" },
                 values: new object[,]
                 {
-                    { 1L, 0, "", "d3a8b4ea-cd5b-4b07-901e-d74c3602f6a8", "a@mail.com", false, false, false, false, null, "User A", null, null, "aaa", null, false, "Member", null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, false, null, 0.00m },
-                    { 2L, 0, "", "4eb1e8d8-2d0f-4fb0-b1fb-e7592e0a6bf9", "b@mail.com", false, false, false, false, null, "User B", null, null, "bbb", null, false, "Member", null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, false, null, 3.59m },
-                    { 3L, 0, "", "3bd4efd2-2b88-492b-a184-bbb9aa78144f", "c@mail.com", false, false, false, false, null, "User C", null, null, "ccc", null, false, "Member", null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3L, false, null, 10.00m },
-                    { 4L, 0, "", "90830569-6dea-4f2b-952f-72b178581a86", "d@mail.com", false, false, false, false, null, "User D", null, null, "ddd", null, false, "Member", null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4L, false, null, 5.32m },
-                    { 5L, 0, "", "272c987e-0209-4981-a22b-1fca149ab0f5", "e@mail.com", false, false, false, false, null, "User E", null, null, "eee", null, false, "Member", null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 5L, false, null, 1.99m },
-                    { 6L, 0, "", "e7b55d96-1604-4797-8221-c216d5cbfc8a", "f@mail.com", false, false, false, false, null, "User F", null, null, "fff", null, false, "Member", null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 6L, false, null, 7.25m },
-                    { 7L, 0, "", "598a2c34-9e72-489b-a828-16260027eb55", "g@mail.com", false, false, false, false, null, "User G", null, null, "ggg", null, false, "Member", null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, false, null, 0.50m }
+                    { 1L, 0, "", "b0c30b7d-be18-4508-bb36-7511d04b9815", "a@mail.com", false, false, false, false, null, "User A", null, null, "aaa", null, false, "Member", null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, false, null, 0.00m },
+                    { 2L, 0, "", "0c37c44b-309e-42e9-811b-64c90c14e91b", "b@mail.com", false, false, false, false, null, "User B", null, null, "bbb", null, false, "Member", null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, false, null, 3.59m },
+                    { 3L, 0, "", "c9725a26-9ec2-451a-9028-a2581886da87", "c@mail.com", false, false, false, false, null, "User C", null, null, "ccc", null, false, "Member", null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3L, false, null, 10.00m },
+                    { 4L, 0, "", "bf58ed1e-24ab-4f16-8600-8a793dc42dcd", "d@mail.com", false, false, false, false, null, "User D", null, null, "ddd", null, false, "Member", null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4L, false, null, 5.32m },
+                    { 5L, 0, "", "eb7e7f1e-8804-41de-9a1f-79985a081387", "e@mail.com", false, false, false, false, null, "User E", null, null, "eee", null, false, "Member", null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 5L, false, null, 1.99m },
+                    { 6L, 0, "", "e73e8ba3-076d-4db1-9ca8-b122166aecbf", "f@mail.com", false, false, false, false, null, "User F", null, null, "fff", null, false, "Member", null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 6L, false, null, 7.25m },
+                    { 7L, 0, "", "8a087830-49c9-4c82-96ca-cc65f9f8c385", "g@mail.com", false, false, false, false, null, "User G", null, null, "ggg", null, false, "Member", null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, false, null, 0.50m }
                 });
 
             migrationBuilder.InsertData(
@@ -690,9 +706,9 @@ namespace Litres.Infrastructure.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "AvatarUrl", "ConcurrencyStamp", "Email", "EmailConfirmed", "IsAdditionalRegistrationRequired", "IsModerator", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RoleName", "SecurityStamp", "SubscriptionActiveUntil", "TwoFactorEnabled", "UserName", "Wallet" },
                 values: new object[,]
                 {
-                    { 8L, 0, "", "979a7efe-c82f-43a9-b3ca-b42185f2a2b2", "h@mail.com", false, false, true, false, null, "User H", null, null, "hhh", null, false, "Member", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 0m },
-                    { 9L, 0, "aa", "313989b4-01d4-417b-8241-220a90de3aa4", "pA@mail.com", false, false, false, false, null, "Publisher A", null, null, "aaa", null, false, "Member", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 6.78m },
-                    { 10L, 0, "bb", "579a51ff-4b81-48eb-8178-e244ff9bcedc", "pB@mail.com", false, false, false, false, null, "Publisher B", null, null, "bbb", null, false, "Member", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 4.50m }
+                    { 8L, 0, "", "d1abd69a-c7c4-45d8-8183-3c9f54a0fdaf", "h@mail.com", false, false, true, false, null, "User H", null, null, "hhh", null, false, "Member", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 0m },
+                    { 9L, 0, "aa", "47e80ff1-3f10-4eba-b55a-003d1d7caf05", "pA@mail.com", false, false, false, false, null, "Publisher A", null, null, "aaa", null, false, "Member", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 6.78m },
+                    { 10L, 0, "bb", "fe5c05a1-a293-4aeb-b8f0-a33fb4be6d48", "pB@mail.com", false, false, false, false, null, "Publisher B", null, null, "bbb", null, false, "Member", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, 4.50m }
                 });
 
             migrationBuilder.InsertData(
@@ -974,6 +990,9 @@ namespace Litres.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "IdentityRole<long>User");
+
+            migrationBuilder.DropTable(
+                name: "Message");
 
             migrationBuilder.DropTable(
                 name: "Notification");

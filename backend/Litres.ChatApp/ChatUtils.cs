@@ -91,7 +91,7 @@ public static class ChatUtils
             var text = Console.ReadLine();
             if (text == "exit") break;
         
-            var message = new Message()
+            var message = new Message
             {
                 From = "Agent",
                 SentDate = DateTime.Now,

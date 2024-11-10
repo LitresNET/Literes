@@ -1,8 +1,5 @@
-﻿using System.Globalization;
-using System.Security.Claims;
-using AutoMapper;
+﻿using AutoMapper;
 using Litres.Application.Dto.Responses;
-using Litres.Application.Models;
 using Litres.Domain.Abstractions.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -37,4 +37,9 @@ public class Message : IEntity
     /// </summary>
     [Required]
     public DateTime SentDate { get; set; }
+    
+    /// <summary>
+    /// Чат, к которому относится сообщение. 
+    /// </summary>
+    public Chat Chat { get; set; }
 }
