@@ -5,5 +5,6 @@ namespace Litres.Application.Abstractions.HubClients;
 public interface IChatClient
 {
     Task ReceiveMessage(Message message);
-    Task SetSessionId(string sessionId);
+    void Unauthorized();
+    void NonExistentChat();
 }

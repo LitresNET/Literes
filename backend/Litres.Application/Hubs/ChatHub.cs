@@ -5,23 +5,22 @@ using Litres.Application.Models;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using MassTransit;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Litres.Application.Hubs;
 
-[Authorize]
 public class ChatHub(
     IBus bus,
-    IChatService chatService
+    IChatService srv
     ) : Hub<IChatClient>
 {
     private const string AgentsGroupKey = "Agents";
     private const string UsersGroupKey = "Users";
 
-    private static readonly Dictionary<string, User> Agents = [];
-    private static readonly Dictionary<string, string> Users = [];
+    private static readonly Dictionary<long, string> Agents = [];
+    private static readonly Dictionary<long, string> Users = [];
     private ushort _currentAgentIndex;
+
     
     public override async Task OnConnectedAsync()
     {
@@ -32,53 +31,27 @@ public class ChatHub(
         if (userId is not null)
         {
             var parsedId = long.Parse(userId, NumberStyles.Any, CultureInfo.InvariantCulture);
-            user = await chatService.GetUserByIdAsNoTrackingAsync(parsedId);
+            user = await srv.GetUserByIdAsNoTrackingAsync(parsedId);
         }
         
-        if (user is {RoleName: "Agent"})
+        switch (user)
         {
-            await Groups.AddToGroupAsync(connectionId, AgentsGroupKey);
-            Agents.Add(connectionId, user);
-        }
-        else
-        {
-            await Groups.AddToGroupAsync(connectionId, UsersGroupKey);
-
-            var chatSessionId = Context.User?.FindFirstValue(CustomClaimTypes.ChatSessionId);
-            if (chatSessionId is null)
-            {
-                var guid = Guid.NewGuid();
-                Users.Add(connectionId, guid.ToString());
-
-                await Clients.Caller.SetSessionId(guid.ToString());
-                var chat = new Chat
-                {
-                    AgentId = Agents.Values.ToList()[_currentAgentIndex++].Id,
-                    SessionId = guid.ToString()
-                };
-
-                await chatService.AddAsync(chat);
-            }
-            else
-            {
-                Users.Add(connectionId, chatSessionId);
-
-                var chat = await chatService.GetBySessionIdAsync(chatSessionId);
-                if (chat is null)
-                {
-                    var newChat = new Chat
-                    {
-                        AgentId = Agents.Values.ToList()[_currentAgentIndex++].Id,
-                        SessionId = chatSessionId
-                    };
-                    await chatService.AddAsync(newChat);
-                }
-            }
+            case {RoleName: "Agent" or "Admin"}:
+                await Groups.AddToGroupAsync(connectionId, AgentsGroupKey);
+                Agents.Add(user.Id, connectionId);
+                break;
+            case {RoleName: "User"}:
+                await Groups.AddToGroupAsync(connectionId, UsersGroupKey);
+                Users.Add(user.Id, connectionId);
+                break;
+            default:
+                Clients.Caller.Unauthorized();
+                return;
         }
         
         await base.OnConnectedAsync();
     }
-
+    
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         var connectionId = Context.ConnectionId;
@@ -88,40 +61,78 @@ public class ChatHub(
         if (userId is not null)
         {
             var parsedId = long.Parse(userId, NumberStyles.Any, CultureInfo.InvariantCulture);
-            user = await chatService.GetUserByIdAsNoTrackingAsync(parsedId);
+            user = await srv.GetUserByIdAsNoTrackingAsync(parsedId);
         }
         
-        if (user is {RoleName: "Agent"})
+        switch (user)
         {
-            await Groups.RemoveFromGroupAsync(connectionId, AgentsGroupKey);
-            Agents.Remove(connectionId);
-        }
-        else
-        {
-            await Groups.RemoveFromGroupAsync(connectionId, UsersGroupKey);
-            Users.Remove(connectionId);
+            case {RoleName: "Agent" or "Admin"}:
+                await Groups.AddToGroupAsync(connectionId, AgentsGroupKey);
+                Agents.Remove(user.Id);
+                break;
+            case {RoleName: "User"}:
+                await Groups.AddToGroupAsync(connectionId, UsersGroupKey);
+                Users.Remove(user.Id);
+                break;
+            default: return;
         }
         
-        await base.OnConnectedAsync();
+        await base.OnDisconnectedAsync(exception);
     }
-    
-    public async Task SendMessageAsync(Message message)
+
+    public async Task<bool> SendMessage(Message message)
     {
-        var chat = await chatService.GetBySessionIdAsync(message.ChatSessionId);
-        // если подключение с текущим агентом разорвано, перенаправляем сообщения другому агенту
-        var agentConnectionId = Agents.FirstOrDefault(a => a.Value.Id == chat?.AgentId).Key;
-        if (agentConnectionId is null)
+        var userId = Context.User?.FindFirstValue(CustomClaimTypes.UserId);
+
+        User? user = null;
+        if (userId is not null)
         {
-            agentConnectionId = Agents.Keys.ToList()[_currentAgentIndex++];
-            await chatService.UpdateAgentIdAsync(chat!.SessionId, Agents[agentConnectionId].Id);
-            await Clients.Client(agentConnectionId).ReceiveMessage(message);
+            var parsedId = long.Parse(userId, NumberStyles.Any, CultureInfo.InvariantCulture);
+            user = await srv.GetUserByIdAsNoTrackingAsync(parsedId);
         }
 
-        var userConnectionId = Users.FirstOrDefault(u => u.Value == chat!.SessionId).Key;
-        await Clients.Client(agentConnectionId).ReceiveMessage(message);
-        if (userConnectionId is not null)
-            await Clients.Client(userConnectionId).ReceiveMessage(message);
-        
-        await bus.Publish(message);
+        switch (user)
+        {
+            case {RoleName: "User"}:
+            {
+                var chat = await srv.GetByUserIdAsync(user.Id); // checks the user and the agent id's
+
+                if (chat is null)
+                {
+                    chat = new Chat
+                    {
+                        AgentId = Agents.Keys.ToList()[_currentAgentIndex++ % Agents.Count],
+                        UserId = user.Id,
+                        SessionId = Guid.NewGuid().ToString()
+                    };
+                
+                    if (_currentAgentIndex == Agents.Count - 1) // to not overflow in impossibly long future
+                        _currentAgentIndex = 0;
+                    
+                    await srv.AddAsync(chat);
+                }
+                await bus.Publish(message);
+
+                await Clients.Client(Agents[chat.AgentId]).ReceiveMessage(message);
+                break;
+            }
+            case {RoleName: "Agent" or "Admin"}:
+            {
+                var chat = await srv.GetByUserIdAsync(user.Id); // checks the user and the agent id's
+                if (chat is null)
+                {
+                    Clients.Caller.NonExistentChat();
+                    return false;
+                }
+                await bus.Publish(message);
+
+                await Clients.Client(Users[chat.UserId]).ReceiveMessage(message);
+                break;
+            }
+            default:
+                return false;
+        }
+
+        return true; // to make somewhat "delivered" state on front
     }
 }

@@ -21,7 +21,7 @@ public class ChatService(
         return c;
     }
 
-    public async Task<Chat?> GetBySessionIdAsync(string chatSessionId)
+    public async Task<Chat?> GetBySessionIdAsync(string? chatSessionId)
     {
         return await chatRepository.GetBySessionIdAsync(chatSessionId);
     }
@@ -34,5 +34,10 @@ public class ChatService(
 
         await chatRepository.SaveChangesAsync();
         return c;
+    }
+
+    public async Task<Chat?> GetByUserIdAsync(long userId)
+    {
+        return await chatRepository.GetByUserIdAsync(userId);
     }
 }

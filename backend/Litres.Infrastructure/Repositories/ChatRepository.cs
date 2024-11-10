@@ -9,10 +9,17 @@ public class ChatRepository(ApplicationDbContext appDbContext)
 {
     private readonly ApplicationDbContext _appDbContext = appDbContext;
 
-    public Task<Chat?> GetBySessionIdAsync(string chatSessionId)
+    public Task<Chat?> GetBySessionIdAsync(string? chatSessionId)
     {
         return _appDbContext.Chat
             .Include(c => c.Messages)
             .FirstOrDefaultAsync(c => c.SessionId == chatSessionId);
+    }
+
+    public Task<Chat?> GetByUserIdAsync(long userId)
+    {
+        return _appDbContext.Chat
+            .Include(c => c.Messages)
+            .FirstOrDefaultAsync(c => c.UserId == userId || c.AgentId == userId);
     }
 }

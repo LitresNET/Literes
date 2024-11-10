@@ -8,6 +8,9 @@ public class Chat : IEntity
     
     public long AgentId { get; set; }
     public User? Agent { get; set; }
+    
+    public long UserId { get; set; }
+    public User? User { get; set; }
 
     public string SessionId { get; set; } = string.Empty;
 
