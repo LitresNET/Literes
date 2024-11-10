@@ -15,4 +15,13 @@ public class MessageRepository(ApplicationDbContext appDbContext)
         
         return Task.FromResult(list);
     }
+
+    public Task<IOrderedEnumerable<Message>> GetMessagesByChatIdAsync(long chatId)
+    {
+        var list = appDbContext.Message.AsExpandable().AsEnumerable()
+            .Where(m => m.Chat.Id == chatId)
+            .OrderByDescending(m => m.SentDate);
+        
+        return Task.FromResult(list);
+    }
 }

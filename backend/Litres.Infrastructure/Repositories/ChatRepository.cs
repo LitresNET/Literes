@@ -22,4 +22,19 @@ public class ChatRepository(ApplicationDbContext appDbContext)
             .Include(c => c.Messages)
             .FirstOrDefaultAsync(c => c.UserId == userId || c.AgentId == userId);
     }
+
+    public Task<List<Chat>> GetByAgentIdAsync(long agentId)
+    {
+        return _appDbContext.Chat
+            .Where(c => c.AgentId == agentId)
+            .Select(c => new
+            {
+                Chat = c,
+                LastMessageDate = c.Messages.OrderByDescending(m => m.SentDate).FirstOrDefault().SentDate
+            })
+            .GroupBy(c => c.Chat.UserId)
+            .Select(g => g.OrderByDescending(c => c.LastMessageDate).First().Chat) 
+            .Include(c => c.Messages)
+            .ToListAsync();
+    }
 }

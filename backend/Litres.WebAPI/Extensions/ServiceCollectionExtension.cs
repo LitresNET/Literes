@@ -129,7 +129,8 @@ public static class ServiceCollectionExtension
                     new RequestMapperProfile(),
                     new ReviewMapperProfile(),
                     new SubscriptionMapperProfile(),
-                    new UserMapperProfile()
+                    new UserMapperProfile(),
+                    new ChatMapperProfile()
                 }
             );
         });

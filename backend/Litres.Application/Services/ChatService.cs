@@ -40,4 +40,9 @@ public class ChatService(
     {
         return await chatRepository.GetByUserIdAsync(userId);
     }
+
+    public async Task<List<Chat>?> GetByAgentIdAsync(long agentId)
+    {
+        return await chatRepository.GetByAgentIdAsync(agentId);
+    }
 }

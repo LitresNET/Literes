@@ -9,4 +9,5 @@ public interface IChatService
     Task<Chat?> GetBySessionIdAsync(string? chatSessionId);
     Task<Chat?> UpdateAgentIdAsync(string chatSessionId, long newAgentId);
     Task<Chat?> GetByUserIdAsync(long userId);
+    Task<List<Chat>?> GetByAgentIdAsync(long agentId);
 }
