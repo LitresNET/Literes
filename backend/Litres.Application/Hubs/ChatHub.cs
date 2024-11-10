@@ -88,6 +88,8 @@ public class ChatHub(
         if (message.From == "User")
         {
             var ind = _currentAgentIndex++;
+            var chat = await chatService.GetBySessionIdAsync(message.ChatSessionId);
+            if (chat is null)
             await Clients.Client(AgentsIds.Keys.ToList()[ind]).ReceiveMessage(message);
             
             if (ind % AgentsIds.Count == 0) 

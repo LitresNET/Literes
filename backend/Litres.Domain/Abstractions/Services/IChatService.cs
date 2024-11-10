@@ -6,4 +6,5 @@ public interface IChatService
 {
     Task<User> GetUserByIdAsNoTrackingAsync(long id);
     Task<Chat> AddAsync(Chat chat);
+    Task<Chat?> GetBySessionIdAsync(string chatSessionId);
 }
