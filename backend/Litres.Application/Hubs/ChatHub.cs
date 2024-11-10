@@ -79,7 +79,7 @@ public class ChatHub(
         await base.OnConnectedAsync();
     }
 
-    public override async Task OnDisconnectedAsync(Exception exception)
+    public override async Task OnDisconnectedAsync(Exception? exception)
     {
         var connectionId = Context.ConnectionId;
         var userId = Context.User?.FindFirstValue(CustomClaimTypes.UserId);
@@ -94,9 +94,13 @@ public class ChatHub(
         if (user is {RoleName: "Agent"})
         {
             await Groups.RemoveFromGroupAsync(connectionId, AgentsGroupKey);
-            Agents.Remove(Context.ConnectionId);
+            Agents.Remove(connectionId);
         }
-        else await Groups.RemoveFromGroupAsync(connectionId, UsersGroupKey);
+        else
+        {
+            await Groups.RemoveFromGroupAsync(connectionId, UsersGroupKey);
+            Users.Remove(connectionId);
+        }
         
         await base.OnConnectedAsync();
     }
