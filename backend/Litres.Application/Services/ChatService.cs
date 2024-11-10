@@ -25,4 +25,14 @@ public class ChatService(
     {
         return await chatRepository.GetBySessionIdAsync(chatSessionId);
     }
+
+    public async Task<Chat?> UpdateAgentIdAsync(string chatSessionId, long newAgentId)
+    {
+        var c = await chatRepository.GetBySessionIdAsync(chatSessionId);
+        
+        c!.AgentId = newAgentId;
+
+        await chatRepository.SaveChangesAsync();
+        return c;
+    }
 }

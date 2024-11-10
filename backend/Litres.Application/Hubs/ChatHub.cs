@@ -19,7 +19,7 @@ public class ChatHub(
     private const string AgentsGroupKey = "Agents";
     private const string UsersGroupKey = "Users";
 
-    private static readonly Dictionary<string, User> AgentsIds = [];
+    private static readonly Dictionary<string, User> Agents = [];
     private ushort _currentAgentIndex;
     
     public override async Task OnConnectedAsync()
@@ -37,7 +37,7 @@ public class ChatHub(
         if (user is {RoleName: "Agent"})
         {
             await Groups.AddToGroupAsync(connectionId, AgentsGroupKey);
-            AgentsIds.Add(connectionId, user);
+            Agents.Add(connectionId, user);
         }
         else
         {
@@ -50,11 +50,24 @@ public class ChatHub(
                 await Clients.Caller.SetSessionId(guid.ToString());
                 var chat = new Chat
                 {
-                    AgentId = AgentsIds.Values.ToList()[_currentAgentIndex++].Id,
+                    AgentId = Agents.Values.ToList()[_currentAgentIndex++].Id,
                     ChatSessionId = guid.ToString()
                 };
 
                 await chatService.AddAsync(chat);
+            }
+            else
+            {
+                var chat = await chatService.GetBySessionIdAsync(chatSessionId);
+                if (chat is null)
+                {
+                    var newChat = new Chat
+                    {
+                        AgentId = Agents.Values.ToList()[_currentAgentIndex++].Id,
+                        ChatSessionId = chatSessionId
+                    };
+                    await chatService.AddAsync(newChat);
+                }
             }
         }
         
@@ -76,7 +89,7 @@ public class ChatHub(
         if (user is {RoleName: "Agent"})
         {
             await Groups.RemoveFromGroupAsync(connectionId, AgentsGroupKey);
-            AgentsIds.Remove(Context.ConnectionId);
+            Agents.Remove(Context.ConnectionId);
         }
         else await Groups.RemoveFromGroupAsync(connectionId, UsersGroupKey);
         
@@ -85,15 +98,14 @@ public class ChatHub(
     
     public async Task SendMessageAsync(Message message)
     {
-        if (message.From == "User")
+        var chat = await chatService.GetBySessionIdAsync(message.ChatSessionId);
+        // если подключение с текущим агентом разорвано, перенаправляем сообщения другому агенту
+        var agentConnectionId = Agents.FirstOrDefault(a => a.Value.Id == chat?.AgentId).Key;
+        if (agentConnectionId is null)
         {
-            var ind = _currentAgentIndex++;
-            var chat = await chatService.GetBySessionIdAsync(message.ChatSessionId);
-            if (chat is null)
-            await Clients.Client(AgentsIds.Keys.ToList()[ind]).ReceiveMessage(message);
-            
-            if (ind % AgentsIds.Count == 0) 
-                _currentAgentIndex = 0;
+            var newAgentConnectionId = Agents.Keys.ToList()[_currentAgentIndex++];
+            await chatService.UpdateAgentIdAsync(chat!.ChatSessionId, Agents[newAgentConnectionId].Id);
+            await Clients.Client(newAgentConnectionId).ReceiveMessage(message);
         }
         
         await bus.Publish(message);
