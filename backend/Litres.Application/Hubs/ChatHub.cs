@@ -20,6 +20,7 @@ public class ChatHub(
     private const string UsersGroupKey = "Users";
 
     private static readonly Dictionary<string, User> Agents = [];
+    private static readonly Dictionary<string, string> Users = [];
     private ushort _currentAgentIndex;
     
     public override async Task OnConnectedAsync()
@@ -47,24 +48,28 @@ public class ChatHub(
             if (chatSessionId is null)
             {
                 var guid = Guid.NewGuid();
+                Users.Add(connectionId, guid.ToString());
+
                 await Clients.Caller.SetSessionId(guid.ToString());
                 var chat = new Chat
                 {
                     AgentId = Agents.Values.ToList()[_currentAgentIndex++].Id,
-                    ChatSessionId = guid.ToString()
+                    SessionId = guid.ToString()
                 };
 
                 await chatService.AddAsync(chat);
             }
             else
             {
+                Users.Add(connectionId, chatSessionId);
+
                 var chat = await chatService.GetBySessionIdAsync(chatSessionId);
                 if (chat is null)
                 {
                     var newChat = new Chat
                     {
                         AgentId = Agents.Values.ToList()[_currentAgentIndex++].Id,
-                        ChatSessionId = chatSessionId
+                        SessionId = chatSessionId
                     };
                     await chatService.AddAsync(newChat);
                 }
@@ -103,10 +108,15 @@ public class ChatHub(
         var agentConnectionId = Agents.FirstOrDefault(a => a.Value.Id == chat?.AgentId).Key;
         if (agentConnectionId is null)
         {
-            var newAgentConnectionId = Agents.Keys.ToList()[_currentAgentIndex++];
-            await chatService.UpdateAgentIdAsync(chat!.ChatSessionId, Agents[newAgentConnectionId].Id);
-            await Clients.Client(newAgentConnectionId).ReceiveMessage(message);
+            agentConnectionId = Agents.Keys.ToList()[_currentAgentIndex++];
+            await chatService.UpdateAgentIdAsync(chat!.SessionId, Agents[agentConnectionId].Id);
+            await Clients.Client(agentConnectionId).ReceiveMessage(message);
         }
+
+        var userConnectionId = Users.FirstOrDefault(u => u.Value == chat!.SessionId).Key;
+        await Clients.Client(agentConnectionId).ReceiveMessage(message);
+        if (userConnectionId is not null)
+            await Clients.Client(userConnectionId).ReceiveMessage(message);
         
         await bus.Publish(message);
     }

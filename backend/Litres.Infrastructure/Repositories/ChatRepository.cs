@@ -13,6 +13,6 @@ public class ChatRepository(ApplicationDbContext appDbContext)
     {
         return _appDbContext.Chat
             .Include(c => c.Messages)
-            .FirstOrDefaultAsync(c => c.ChatSessionId == chatSessionId);
+            .FirstOrDefaultAsync(c => c.SessionId == chatSessionId);
     }
 }
