@@ -1,7 +1,7 @@
 using AutoMapper;
 using Litres.Application.Dto;
-using Litres.Application.Dto.Responses;
 using Litres.Domain.Entities;
+using Litres.Application.Dto.Responses;
 
 namespace Litres.WebAPI.Configuration.Mapper;
 
@@ -17,8 +17,16 @@ public class ChatMapperProfile : Profile
                     ? chat.Messages.OrderByDescending(m => m.SentDate).First().SentDate 
                     : DateTime.MinValue));
         
-        CreateMap<List<Message>, ChatHistoryDto>()
-            .ForMember(dto => dto.IsSuccess, opt => opt.MapFrom(src => src != null && src.Any()))
-            .ForMember(dto => dto.Messages, opt => opt.MapFrom(src => src));
+        CreateMap<IEnumerable<Message>, ChatHistoryDto>()
+            .ForMember(dto => dto.IsSuccess, opt => opt.MapFrom(src => src != null && src.Any()))  
+            .ForMember(dto => dto.Messages, opt => opt.MapFrom(src => 
+                src != null ? src.Select(m => new MessageDto 
+                { 
+                    Text = m.Text, 
+                    From = m.From, 
+                    SentDate = m.SentDate 
+                }).ToList() : new List<MessageDto>()));  
+        
     }
 }
+

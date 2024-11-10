@@ -1,6 +1,7 @@
 using LinqKit.Core;
 using Litres.Application.Abstractions.Repositories;
 using Litres.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Litres.Infrastructure.Repositories;
 
@@ -16,12 +17,14 @@ public class MessageRepository(ApplicationDbContext appDbContext)
         return Task.FromResult(list);
     }
 
-    public Task<IOrderedEnumerable<Message>> GetMessagesByChatIdAsync(long chatId)
+    public async Task<IOrderedEnumerable<Message>> GetMessagesByChatIdAsync(long chatId)
     {
-        var list = appDbContext.Message.AsExpandable().AsEnumerable()
+        var list = await appDbContext.Message
             .Where(m => m.Chat.Id == chatId)
-            .OrderByDescending(m => m.SentDate);
-        
-        return Task.FromResult(list);
+            .OrderByDescending(m => m.SentDate)
+            .ToListAsync();  
+
+        return list.OrderByDescending(m => m.SentDate);  
     }
+
 }

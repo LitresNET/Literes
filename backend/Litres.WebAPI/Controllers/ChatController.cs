@@ -31,7 +31,7 @@ public class ChatController(
         return Ok(response);
     }
 
-    [HttpGet("agent-chats")]
+    [HttpGet("agent-chats")] // api/chat/agent-chats
     public async Task<IActionResult> getAllChatsData()
     {
         long.TryParse(User.FindFirstValue(CustomClaimTypes.UserId),
