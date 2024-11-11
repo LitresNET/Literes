@@ -45,7 +45,7 @@ public class ChatHub(
                 Users.Add(user.Id, connectionId);
                 break;
             default:
-                Clients.Caller.Unauthorized();
+                await Clients.Caller.Unauthorized();
                 return;
         }
         
@@ -121,7 +121,7 @@ public class ChatHub(
                 var chat = await srv.GetByUserIdAsync(user.Id); // checks the user and the agent id's
                 if (chat is null)
                 {
-                    Clients.Caller.NonExistentChat();
+                    await Clients.Caller.NonExistentChat();
                     return false;
                 }
                 await bus.Publish(message);
