@@ -17,6 +17,7 @@ import BookPage from "../pages/MainPages/BookPage/BookPage.jsx";
 import NotFoundPage from "../pages/RedirectPages/NotFoundPage/NotFoundPage.jsx";
 import OrderSuccessPage from "../pages/RedirectPages/OrderSuccessPage/OrderSuccessPage";
 import UnauthorizedPage from "../pages/RedirectPages/UnauthorizedPage/UnauthorizedPage.jsx";
+import ChatPage from "../pages/AccountPages/ChatPage/ChatPage.jsx";
 
 const routes = [
     {
@@ -32,7 +33,7 @@ const routes = [
           element: <WelcomePage />
         },
         {
-          path:'home',
+          path:'/home',
           element: <WelcomePage />
         },
         {
@@ -68,32 +69,36 @@ const routes = [
           element: <CustomSubscriptionPage />
         },
         {
-          path: 'account',
+          path: '/account',
           element: <UserAccountPage/>
         },
         {
-          path: 'account/publisher',
+          path: '/account/publisher',
           element: <PublisherPage/>
         },
         {
-          path: 'account/moderator',
+          path: '/account/moderator',
           element: <ModeratorPage/>
         },
         {
-          path: 'account/settings',
+          path: '/account/settings',
           element: <UserSettingsPage/>
         },
         {
-          path: 'account/publisher/book/:id/settings',
+          path: '/account/publisher/book/:id/settings',
           element: <BookSettingsPage/>
         },
         {
-          path: 'book/:id',
+          path: '/book/:id',
           element: <BookPage/>
         },
         {
           path: '*',
           element: <NotFoundPage />,
+        },
+        {
+          path: '/chat',
+          element: <ChatPage/>
         }
       ]
     },

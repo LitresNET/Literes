@@ -40,7 +40,7 @@ const SignUpPage = () => {
         if (response.error) {
             setError(response.error);
         } else {
-            navigate("/home")
+            navigate("/account")
         }
     };
 

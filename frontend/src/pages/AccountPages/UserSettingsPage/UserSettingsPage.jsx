@@ -4,7 +4,7 @@ import IMAGES from '../../../assets/images'
 import { Cover } from '../../../components/Cover/Cover'
 import { Input } from '../../../components/UI/Input/Input'
 import { Button } from '../../../components/UI/Button/Button'
-import {Link, useNavigate} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {useState} from "react";
 import {axiosToLitres} from "../../../hooks/useAxios.js";
 
@@ -31,7 +31,7 @@ export default function UserSettingsPage() {
             setError(false)
 
             try {
-                response = await axiosToLitres.post(`api/user/settings`, changeData);
+                await axiosToLitres.post(`user/settings`, changeData);
                 navigate('/account');
             } catch (e) {
                 return {result: null, error: e.response.data.errors[0].description};

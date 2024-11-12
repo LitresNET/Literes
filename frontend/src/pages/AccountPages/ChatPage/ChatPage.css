@@ -1,0 +1,17 @@
+.chat-page {
+    display: flex;
+    height: 100vh;
+}
+
+.chat-preview {
+    width: 300px;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.chat-window {
+    flex-grow: 1; /* Занимает оставшееся пространство */
+    padding: 10px;
+    overflow-y: auto;
+}

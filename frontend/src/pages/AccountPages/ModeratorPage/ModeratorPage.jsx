@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { DropdownSelect } from '../../../components/UI/DropDownSelect/DropdownSelect'
 import { Button } from '../../../components/UI/Button/Button'
 import {axiosToLitres} from "../../../hooks/useAxios.js";
+import {useNavigate} from "react-router-dom";
 
 
 export default function ModeratorPage() {
@@ -60,6 +61,7 @@ export default function ModeratorPage() {
 
     const [filter, setFilter] = useState('Все')
     const [filteredData, setFilteredData] = useState(requestData)
+    const navigate = useNavigate();
 
     const handleFilterChange = (selectedFilter) => {
         setFilter(selectedFilter)
@@ -81,10 +83,11 @@ export default function ModeratorPage() {
 
     return (
         <>
-             <div className="moderator-page-title-container">
+            <div className="moderator-page-title-container">
                 <div className="moderator-page-title">
                   <h1>all requests</h1>
                 </div>
+                <Button text="Chats" style={{width: '100px'}} onClick={() => navigate("/chat")}></Button>
                 <div className="moderator-page-info-container">
                     <span>You’re signed in as</span>
                     <span> super-moderator-123</span>
