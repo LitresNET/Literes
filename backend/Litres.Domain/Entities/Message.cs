@@ -40,5 +40,6 @@ public class Message : IEntity
     /// <summary>
     /// Чат, к которому относится сообщение. 
     /// </summary>
+    public long ChatId { get; set; }
     public virtual Chat Chat { get; set; }
 }

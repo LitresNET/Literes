@@ -1,9 +1,11 @@
-﻿using Litres.Domain.Abstractions.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using Litres.Domain.Abstractions.Entities;
 
 namespace Litres.Domain.Entities;
 
 public class Chat : IEntity
 {
+    [Key]
     public long Id { get; set; }
     
     public long AgentId { get; set; }

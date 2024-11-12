@@ -40,7 +40,7 @@ public class ChatHub(
                 await Groups.AddToGroupAsync(connectionId, AgentsGroupKey);
                 Agents.Add(user.Id, connectionId);
                 break;
-            case {RoleName: "User"}:
+            case {RoleName: "Member"}:
                 await Groups.AddToGroupAsync(connectionId, UsersGroupKey);
                 Users.Add(user.Id, connectionId);
                 break;
@@ -70,7 +70,7 @@ public class ChatHub(
                 await Groups.AddToGroupAsync(connectionId, AgentsGroupKey);
                 Agents.Remove(user.Id);
                 break;
-            case {RoleName: "User"}:
+            case {RoleName: "Member"}:
                 await Groups.AddToGroupAsync(connectionId, UsersGroupKey);
                 Users.Remove(user.Id);
                 break;
@@ -82,6 +82,7 @@ public class ChatHub(
 
     public async Task<bool> SendMessage(Message message)
     {
+        message.SentDate = DateTime.Now;
         var userId = Context.User?.FindFirstValue(CustomClaimTypes.UserId);
 
         User? user = null;
@@ -93,7 +94,7 @@ public class ChatHub(
 
         switch (user)
         {
-            case {RoleName: "User"}:
+            case {RoleName: "Member"}:
             {
                 var chat = await srv.GetByUserIdAsync(user.Id); // checks the user and the agent id's
 
@@ -101,18 +102,19 @@ public class ChatHub(
                 {
                     chat = new Chat
                     {
-                        AgentId = Agents.Keys.ToList()[_currentAgentIndex++ % Agents.Count],
+                        AgentId = Agents.Keys.ToList()[_currentAgentIndex % Agents.Count],
                         UserId = user.Id,
                         SessionId = Guid.NewGuid().ToString()
                     };
-                
+
+                    _currentAgentIndex++;
                     if (_currentAgentIndex == Agents.Count - 1) // to not overflow in impossibly long future
                         _currentAgentIndex = 0;
                     
-                    await srv.AddAsync(chat);
+                    chat = await srv.AddAsync(chat);
+                    message.ChatId = chat.Id;
                 }
                 await bus.Publish(message);
-
                 await Clients.Client(Agents[chat.AgentId]).ReceiveMessage(message);
                 break;
             }
@@ -125,7 +127,6 @@ public class ChatHub(
                     return false;
                 }
                 await bus.Publish(message);
-
                 await Clients.Client(Users[chat.UserId]).ReceiveMessage(message);
                 break;
             }
