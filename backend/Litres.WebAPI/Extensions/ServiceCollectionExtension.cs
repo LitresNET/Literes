@@ -36,6 +36,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<NotificationHub>();
 
         services.AddScoped<IBookService, BookService>();
+        services.AddScoped<IChatService, ChatService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<ILoginService, LoginService>();
         services.AddScoped<IMessageService, MessageService>();
@@ -55,6 +56,7 @@ public static class ServiceCollectionExtension
     {
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IBookRepository, BookRepository>();
+        services.AddScoped<IChatRepository, ChatRepository>();
         services.AddScoped<IContractRepository, ContractRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<INotificationRepository, NotificationRepository>();
@@ -127,7 +129,8 @@ public static class ServiceCollectionExtension
                     new RequestMapperProfile(),
                     new ReviewMapperProfile(),
                     new SubscriptionMapperProfile(),
-                    new UserMapperProfile()
+                    new UserMapperProfile(),
+                    new ChatMapperProfile()
                 }
             );
         });

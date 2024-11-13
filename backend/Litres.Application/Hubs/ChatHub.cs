@@ -1,75 +1,158 @@
 ﻿using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Litres.Application.Abstractions.HubClients;
-using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Models;
+using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using MassTransit;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 
 namespace Litres.Application.Hubs;
 
-[Authorize]
 public class ChatHub(
-    IMemoryCache cache,
     IBus bus,
-    IUserRepository userRepository,
-    SignInManager<User> signInManager
+    IChatService srv
     ) : Hub<IChatClient>
 {
+    private const string AgentsGroupKey = "Agents";
+    private const string UsersGroupKey = "Users";
+
+    private static readonly Dictionary<long, string> Agents = [];
+    private static readonly Dictionary<long, string> Users = [];
+    private ushort _currentAgentIndex;
+
+    
     public override async Task OnConnectedAsync()
     {
-        
         var connectionId = Context.ConnectionId;
-        var chatSessionId = Context.User?.FindFirstValue(CustomClaimTypes.ChatSessionId) ?? Guid.NewGuid().ToString();
         var userId = Context.User?.FindFirstValue(CustomClaimTypes.UserId);
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine("New Connection!");
-        Console.ResetColor();
-        Console.WriteLine($"Connection Id: {connectionId}");
-        Console.WriteLine($"Chat Session Id: {chatSessionId}");
-        Console.WriteLine($"User Id: {userId}");
+
+        User? user = null;
         if (userId is not null)
         {
             var parsedId = long.Parse(userId, NumberStyles.Any, CultureInfo.InvariantCulture);
-            var user = await userRepository.GetByIdAsNoTrackingAsync(parsedId);
-            Console.WriteLine($"User Role: {user.RoleName}");
-            if (user is {RoleName: "Agent"})
-                await Groups.AddToGroupAsync(connectionId, "Agents");
-            else
-                await Groups.AddToGroupAsync(connectionId, "Users");
+            user = await srv.GetUserByIdAsNoTrackingAsync(parsedId);
         }
         
-        cache.Set(chatSessionId, connectionId, TimeSpan.FromDays(2));
+        switch (user)
+        {
+            case {RoleName: "Agent" or "Admin"}:
+                await Groups.AddToGroupAsync(connectionId, AgentsGroupKey);
+                Agents[user.Id] = connectionId;
+                break;
+            case {RoleName: "Member"}:
+                await Groups.AddToGroupAsync(connectionId, UsersGroupKey);
+                Users[user.Id] = connectionId;
+                break;
+            default:
+                await Clients.Caller.Unauthorized();
+                return;
+        }
         
-        await Clients.Caller.SetSessionId(chatSessionId);
-
         await base.OnConnectedAsync();
     }
-
-    public async Task SendMessageAsync(Message message)
+    
+    public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        // Если сообщение отправил пользователь, мы его рассылаем всем спецам поддержки
-        if (message.From == "User")
-            await Clients.Group("Agents").ReceiveMessage(message);
-        
-        // Иначе сообщение отправил не "обычный" пользователь, а кто-то с правами и
-        // мы отправляем сообщение по подключению, сохранённому в кеше
-        else
+        var connectionId = Context.ConnectionId;
+        var userId = Context.User?.FindFirstValue(CustomClaimTypes.UserId);
+
+        User? user = null;
+        if (userId is not null)
         {
-            Console.WriteLine("new message from agent");
-            cache.TryGetValue<string>(message.ChatSessionId, out var connectionId);
-            Console.WriteLine($"ChatSessionId: {message.ChatSessionId}");
-            Console.WriteLine($"connectionId: {connectionId}");
-            if (connectionId == null) await Clients.Caller.ReceiveMessage(
-                new Message { ChatSessionId = message.ChatSessionId, Text = "Клиент вышел из чата." });
-            else await Clients.Client(connectionId).ReceiveMessage(message);
+            var parsedId = long.Parse(userId, NumberStyles.Any, CultureInfo.InvariantCulture);
+            user = await srv.GetUserByIdAsNoTrackingAsync(parsedId);
         }
-        await bus.Publish(message);
+        
+        switch (user)
+        {
+            case {RoleName: "Agent" or "Admin"}:
+                await Groups.AddToGroupAsync(connectionId, AgentsGroupKey);
+                Agents.Remove(user.Id);
+                break;
+            case {RoleName: "Member"}:
+                await Groups.AddToGroupAsync(connectionId, UsersGroupKey);
+                Users.Remove(user.Id);
+                break;
+            default: return;
+        }
+        
+        await base.OnDisconnectedAsync(exception);
+    }
+
+    public async Task<bool> SendMessage(Message message)
+    {
+        message.SentDate = DateTime.Now;
+        var userId = Context.User?.FindFirstValue(CustomClaimTypes.UserId);
+        var connectionId = Context.ConnectionId;
+
+        User? user = null;
+        if (userId is not null)
+        {
+            var parsedId = long.Parse(userId, NumberStyles.Any, CultureInfo.InvariantCulture);
+            user = await srv.GetUserByIdAsNoTrackingAsync(parsedId);
+        }
+
+        switch (user)
+        {
+            case {RoleName: "Member"}:
+            {
+                var chat = await srv.GetByUserIdAsync(user.Id); // checks the user and the agent id's
+
+                if (chat is null)
+                {
+                    chat = new Chat
+                    {
+                        AgentId = Agents.Keys.ToList()[_currentAgentIndex % Agents.Count],
+                        UserId = user.Id,
+                        SessionId = Guid.NewGuid().ToString()
+                    };
+
+                    _currentAgentIndex++;
+                    if (_currentAgentIndex == Agents.Count - 1) // to not overflow in impossibly long future
+                        _currentAgentIndex = 0;
+                    
+                    chat = await srv.AddAsync(chat);
+                }
+
+                // if agent is unavailable - drop the message. Will probably fix in future to reassign to next agent
+                if (Agents.TryGetValue(chat.AgentId, out var connection))
+                {
+                    message.ChatId = chat.Id;
+                    await bus.Publish(message);
+                    await Clients.Client(connection).ReceiveMessage(message);
+                }
+                else
+                {
+                    await Clients.Client(connectionId).ReceiveMessage(new Message {From = "System", Text = "Your message isn't delivered, your agent is unavailable"});
+                }
+                break;
+            }
+            case {RoleName: "Agent" or "Admin"}:
+            {
+                var chat = await srv.GetByUserIdAsync(user.Id); // checks the user and the agent id's
+                if (chat is null)
+                {
+                    await Clients.Caller.NonExistentChat();
+                    return false;
+                }
+
+                // if client is unavailable - drop the message
+                if (Users.TryGetValue(chat.UserId, out var connection))
+                {
+                    await bus.Publish(message);
+                    await Clients.Client(connection).ReceiveMessage(message);
+                }
+                else
+                {
+                    await Clients.Client(connectionId).ReceiveMessage(new Message{From = "System", Text = "Your message isn't delivered, client went offline"});
+                }
+                break;
+            }
+            default:
+                return false;
+        }
+
+        return true; // to make somewhat "delivered" state on front
     }
 }

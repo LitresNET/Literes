@@ -18,7 +18,8 @@ Log.Logger = new LoggerConfiguration()
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
-    .AddJsonFile("appsettings.json", true, true);
+    .AddJsonFile("appsettings.json", true, true)
+    .AddJsonFile("appsettings.Development.json", true, true);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseLazyLoadingProxies()
@@ -36,7 +37,6 @@ builder.Services
     .AddServices()
     .AddMiddlewares()
     .AddAuthorization()
-    .AddConfiguredHangfire(builder.Configuration)
     .AddConfiguredAuthentication(builder.Configuration)
     .AddConfiguredAutoMapper()
     .AddConfiguredMassTransit()
@@ -74,10 +74,9 @@ application
     .UseMiddleware<ExceptionMiddleware>()
     .UseAuthentication()
     .UseAuthorization()
-    .UseHttpsRedirection()
-    .UseHangfireDashboard();
+    .UseHttpsRedirection();
 
-RecurringJob.AddOrUpdate<ISubscriptionCheckerService>("checkSubscriptions", service => service.CheckUsersSubscriptionExpirationDate(), "0 6 * * *");
+// RecurringJob.AddOrUpdate<ISubscriptionCheckerService>("checkSubscriptions", service => service.CheckUsersSubscriptionExpirationDate(), "0 6 * * *");
 
 application.MapControllers();
 application.MapHub<NotificationHub>("api/hubs/notification");

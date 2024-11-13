@@ -16,25 +16,30 @@ public class Message : IEntity
     /// <summary>
     /// Идентификатор сессии, к которой относится сообщение
     /// </summary>
-    [Required]
-    public string ChatSessionId { get; set; }
+    public string? ChatSessionId { get; set; } = string.Empty;
     
     /// <summary>
     /// Текст сообщения
     /// </summary>
     [MaxLength(256)]
-    public string Text { get; set; }
+    public string Text { get; set; } = string.Empty;
     
     /// <summary>
     /// Тип отправителя (User, Agent)
     /// </summary>
     [Required]
     [MaxLength(8)]
-    public string From { get; set; }
+    public string From { get; set; } = string.Empty;
     
     /// <summary>
     /// Время отправления
     /// </summary>
     [Required]
     public DateTime SentDate { get; set; }
+    
+    /// <summary>
+    /// Чат, к которому относится сообщение. 
+    /// </summary>
+    public long ChatId { get; set; }
+    public virtual Chat Chat { get; set; }
 }
