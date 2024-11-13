@@ -5,29 +5,32 @@ import ICONS from "../../assets/icons.jsx";
 import {Button} from "../../components/UI/Button/Button.jsx";
 import {Input} from "../../components/UI/Input/Input.jsx";
 import {toast} from "react-toastify";
-import {ChatMessage} from "../../components/UI/ChatMessage/ChatMessage.jsx";
 import {axiosToLitres} from "./../../hooks/useAxios.js";
+import {ChatWindow} from "../../components/UI/ChatMessagesContainer/ChatWindow.jsx";
 
 //TODO: добавить toast уведомление при новом сообщении
 const Chat = () => {
     const [connection, setConnection] = useState(null);
     const [connectionEstablished, setConnectionEstablished] = useState(false);
-    const [messages, setMessages] = useState([]);
+    const [messages, setMessages] = useState([{from: 'admin', message: 'fuck', sentDate: new Date(1,2,3,4,5,6)},
+        {from: 'admin', message: 'fuck', sentDate: '1.1.1'},
+        {from: 'admin', message: 'fucksdakdsl;adksa;ldksa;dksadkakdassdaskdjasdjaskdjajkd', sentDate: '1.1.1'},
+        {from: 'admin', message: 'fuck', sentDate: '1.1.1'},
+        {from: 'me', message: 'ok', sentDate: '1.1.1'},
+        {from: 'FuckImDead', message: 'ok', sentDate: '1.1.1'}]);
     const [message, setMessage] = useState('');
     const [isOpen, setIsOpen] = useState(false);
 
     const fetchChatData = async () => {
         try {
             const response = await axiosToLitres.get('/chat/history');
-            setMessages([...response.data.messages.map(m => ({user: m.from, message: m.text, timestamp: m.sentDate}))])
+            setMessages([...response.data.messages.map(m => ({from: m.from, message: m.text, sentDate: m.sentDate}))])
         } catch (error) {
-            toast.error(`Chat component: ${error}`, {toastId: "ChatFetchError"})
+            toast.error(`Chat: ${error}`, {toastId: "ChatFetchError"})
         }
     };
 
-    useEffect(() => {
-        //TODO: уберите пожалуйста логирование в консоль или замените их toast-уведомленими там, где надо
-        //TODO: сделайте рабочий вариантик пж
+    useEffect( () => {
         fetchChatData()
 
         const token = localStorage.getItem('token')
@@ -39,7 +42,7 @@ const Chat = () => {
             .build();
 
         newConnection.on('ReceiveMessage', (message) => {
-            setMessages((prev) => [...prev, {message: message.text, user: message.from}]);
+            setMessages((prev) => [...prev, {from: message.from, message: message.text, sentDate: message.sentDate}]);
         });
 
         if (!connectionEstablished) {
@@ -49,7 +52,7 @@ const Chat = () => {
                 setConnectionEstablished(true)
             })
             .catch(e => {
-                toast.error(`Chat: error while connecting (${e})`)
+                toast.error(`Chat: Error while connecting (${e})`, {toastId: "ChatConnectionError"})
             });
         }
 
@@ -61,15 +64,10 @@ const Chat = () => {
 
     }, []);
 
-    const makeScrollDown = () =>
-    {
-        let chat = document.getElementsByClassName("chat-messages")[0];
-        chat.scrollTop = chat.scrollHeight
+    const handleKeyPress = async (event) => {
+        if (event.key === 'Enter')
+            await sendMessage();
     }
-    useEffect(() => {
-        if (isOpen)
-            makeScrollDown();
-    }, [messages, isOpen]);
 
     const sendMessage = async () => {
         if (!message) {
@@ -79,15 +77,14 @@ const Chat = () => {
         if (connection) {
             const newMessage = {
                 Text: message,
-                From: 'User'
+                From: localStorage.getItem("username")
             };
-
-            await connection.invoke('SendMessage', newMessage).finally(() => {
+            await connection.invoke('SendMessage', newMessage).then(() => {
                 setMessage('');
                 setMessages((prevMessages) => [...prevMessages, {
-                    user: localStorage.getItem("Username"), message: message, timestamp: new Date() }])
-            }).catch((e) => toast.error(`Chat: Sending message error: ${e.message}`),
-                {toastId: "ChatSendMessageError"});
+                    from: localStorage.getItem("username"), message: message, sentDate: new Date() }])
+            }).catch((e) => toast.error(`Chat: Sending message error: ${e.message}`,
+                {toastId: "ChatSendMessageError"}));
 
         }
         else {
@@ -104,13 +101,14 @@ const Chat = () => {
             {isOpen ? (
                 <div>
                     <Button onClick={toggleChat} iconPath={ICONS.caret_down} className="close-button"></Button>
-                                       //TODO: заменить на компонент ChatWindow
                     <div className="chat-messages">
                         {
-                            messages.length ?
-                            messages.map((msg, index) =>
-                                <ChatMessage key={index} text={msg.message} sender={msg.user} timestamp={msg.timestamp}></ChatMessage>)
-                                : (<p style={{textAlign: "center", fontWeight: 'bold'}}>Got a question? Write to us!</p>)}
+                                <ChatWindow
+                                    style={{maxHeight: "300px"}}
+                                    messages={messages}
+                                    textIfEmpty="Got a question? Write to us!">
+                                </ChatWindow>
+                        }
                     </div>
                     <div className="chat-input">
                         <Input
@@ -118,8 +116,9 @@ const Chat = () => {
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             placeholder="Write message"
+                            onKeyDown={handleKeyPress}
                         />
-                        <Button onClick={sendMessage} text="Send"></Button>
+                        <Button onClick={sendMessage} text="Send" disabled={!message}></Button>
                     </div>
                 </div>
             ) : (

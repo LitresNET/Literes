@@ -15,18 +15,6 @@
     padding: 10px;
 }
 
-.chat-messages {
-    display: flex;
-    flex-direction: column;
-    max-height: 300px;
-    overflow-y: auto;
-    margin-bottom: 10px;
-}
-
-.chat-messages strong {
-    font-weight: bold;
-}
-
 .open-button {
     display: flex;
     z-index: 1000;

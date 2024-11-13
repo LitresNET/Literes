@@ -1,27 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './ChatMessage.css'; // Подключаем CSS для стилей
+import './ChatMessage.css';
 
-export function ChatMessage({ text, sender, timestamp, ...rest }) {
+export function ChatMessage({ message, from, sentDate, onClick, ...rest }) {
     ChatMessage.propTypes = {
-        text: PropTypes.string.isRequired,
-        sender: PropTypes.string.isRequired,
-        timestamp: PropTypes.instanceOf(Date).isRequired     //TODO: переименовать на sentDate
+        message: PropTypes.string.isRequired,
+        from: PropTypes.string.isRequired,
+        sentDate: PropTypes.instanceOf(Date).isRequired,
+        onClick: PropTypes.func
     };
-    const messageClass = sender === localStorage.getItem("username") ? 'chat-message own' : 'chat-message other';
+    const messageClass = from === localStorage.getItem("username") ? 'chat-message own' : 'chat-message other';
 
 
 
     return (
         <>
-                <div className={messageClass} {...rest}>
-                    <div className="message-info">
-                        <span className="sender">{sender}</span>
-                        <span className="timestamp">{new Date(timestamp).toLocaleTimeString()}</span>
-                    </div>
-                    <div className="message-text">{text}</div>
+            <div className={messageClass} {...rest}>
+                <div className="message-info">
+                    <span className="sender">{from}</span>
+                    <span className="timestamp">{new Date(sentDate).toLocaleTimeString()}</span>
                 </div>
-
+                <div className="message-text">{message}</div>
+            </div>
         </>
     );
 }
