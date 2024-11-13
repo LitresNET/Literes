@@ -38,11 +38,11 @@ public class ChatHub(
         {
             case {RoleName: "Agent" or "Admin"}:
                 await Groups.AddToGroupAsync(connectionId, AgentsGroupKey);
-                Agents.Add(user.Id, connectionId);
+                Agents[user.Id] = connectionId;
                 break;
             case {RoleName: "Member"}:
                 await Groups.AddToGroupAsync(connectionId, UsersGroupKey);
-                Users.Add(user.Id, connectionId);
+                Users[user.Id] = connectionId;
                 break;
             default:
                 await Clients.Caller.Unauthorized();
@@ -84,6 +84,7 @@ public class ChatHub(
     {
         message.SentDate = DateTime.Now;
         var userId = Context.User?.FindFirstValue(CustomClaimTypes.UserId);
+        var connectionId = Context.ConnectionId;
 
         User? user = null;
         if (userId is not null)
@@ -112,10 +113,19 @@ public class ChatHub(
                         _currentAgentIndex = 0;
                     
                     chat = await srv.AddAsync(chat);
-                    message.ChatId = chat.Id;
                 }
-                await bus.Publish(message);
-                await Clients.Client(Agents[chat.AgentId]).ReceiveMessage(message);
+
+                // if agent is unavailable - drop the message. Will probably fix in future to reassign to next agent
+                if (Agents.TryGetValue(chat.AgentId, out var connection))
+                {
+                    message.ChatId = chat.Id;
+                    await bus.Publish(message);
+                    await Clients.Client(connection).ReceiveMessage(message);
+                }
+                else
+                {
+                    await Clients.Client(connectionId).ReceiveMessage(new Message {From = "System", Text = "Your message isn't delivered, your agent is unavailable"});
+                }
                 break;
             }
             case {RoleName: "Agent" or "Admin"}:
@@ -126,8 +136,17 @@ public class ChatHub(
                     await Clients.Caller.NonExistentChat();
                     return false;
                 }
-                await bus.Publish(message);
-                await Clients.Client(Users[chat.UserId]).ReceiveMessage(message);
+
+                // if client is unavailable - drop the message
+                if (Users.TryGetValue(chat.UserId, out var connection))
+                {
+                    await bus.Publish(message);
+                    await Clients.Client(connection).ReceiveMessage(message);
+                }
+                else
+                {
+                    await Clients.Client(connectionId).ReceiveMessage(new Message{From = "System", Text = "Your message isn't delivered, client went offline"});
+                }
                 break;
             }
             default:
