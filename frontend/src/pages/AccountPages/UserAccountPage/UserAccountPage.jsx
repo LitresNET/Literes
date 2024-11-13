@@ -24,6 +24,8 @@ export default function UserAccountPage() {
             try {
                 const response = await axiosToLitres.get(`/user/settings`);
                 setUserData(response.data);
+                localStorage.setItem("username", response?.data.name);
+                console.log(response.data.name)
             } catch (error) {
                 toast.error('User Information: '+error.message,
                     {toastId: "UserDataError"});

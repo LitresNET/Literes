@@ -1,0 +1,10 @@
+.chat-window {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+.chat-window strong {
+    font-weight: bold;
+}

@@ -10,24 +10,9 @@
 .chat-container.open {
     transition: all 0.7s ease-in;
     background-color: white;
+    max-width: 300px;
     border: 1px solid #ccc;
     padding: 10px;
-}
-
-.chat-messages {
-    width: 250px;
-    height: 200px;
-    overflow-y: auto;
-    margin-bottom: 10px;
-}
-
-.chat-messages strong {
-    font-weight: bold;
-}
-
-.message p {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
 }
 
 .open-button {

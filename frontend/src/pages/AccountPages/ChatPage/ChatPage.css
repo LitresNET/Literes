@@ -1,0 +1,19 @@
+.chat-page {
+    display: flex;
+    height: 100vh;
+}
+
+.chat-page-preview {
+    width: 300px;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.chat-page-container {
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+    align-items: center;
+
+}
