@@ -7,7 +7,8 @@ namespace Litres.Application.Services;
 
 public class UserService(
     IPublisherRepository publisherRepository,
-    IUserRepository userRepository) : IUserService
+    IUserRepository userRepository,
+    IBookRepository bookRepository) : IUserService
 {
     public async Task<User> ChangeUserSettingsAsync(User patchedUser)
     {
@@ -20,16 +21,31 @@ public class UserService(
         return dbUser;
     }
 
-    public async Task<Book> UnFavouriteBookAsync(long userId, long bookIdToDelete)
+    public async Task<Book> DeleteBookFromFavouritesAsync(long userId, long bookId)
     {
         var dbUser = await userRepository.GetByIdAsync(userId);
         
-        var book = dbUser.Favourites.FirstOrDefault(b => b.Id == bookIdToDelete);
+        var book = dbUser.Favourites.FirstOrDefault(b => b.Id == bookId);
         if (book is null)
-            throw new EntityNotFoundException(typeof(Book), bookIdToDelete.ToString());
+            throw new EntityNotFoundException(typeof(Book), bookId.ToString());
         
         dbUser.Favourites.RemoveAll(b => b.Id == book.Id);
         
+        await userRepository.SaveChangesAsync();
+        return book;
+    }
+
+    public async Task<Book> AddOrRemoveBookFromFavouritesAsync(long userId, long bookId)
+    {
+        var dbUser = await userRepository.GetByIdAsync(userId);
+        var book = dbUser.Favourites.FirstOrDefault(b => b.Id == bookId);
+        if (book is not null)
+            dbUser.Favourites.RemoveAll(b => b.Id == book.Id);
+        else
+        {
+            book = await bookRepository.GetByIdAsync(bookId);
+            dbUser.Favourites.Add(book);
+        }
         await userRepository.SaveChangesAsync();
         return book;
     }

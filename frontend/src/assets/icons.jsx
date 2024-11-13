@@ -24,6 +24,7 @@ const ICONS = {
     location: new URL('./icons/location.svg', import.meta.url).href,
     magnifying_glass: new URL('./icons/magnifying_glass.svg', import.meta.url).href,
     minus_circle: new URL('./icons/minus_circle.svg', import.meta.url).href,
+    message: new URL('./icons/message.svg', import.meta.url).href,
     money: new URL('./icons/money.svg', import.meta.url).href,
     next: new URL('./icons/next.svg', import.meta.url).href,
     path: new URL('./icons/path.svg', import.meta.url).href,

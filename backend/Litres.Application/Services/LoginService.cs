@@ -36,6 +36,7 @@ public class LoginService(
             claims.AddRange(await roleManager.GetClaimsAsync(identityRole!));
         }
 
+        await signInManager.SignInAsync(user, true);
         return jwtTokenService.CreateJwtToken(claims);
     }
     

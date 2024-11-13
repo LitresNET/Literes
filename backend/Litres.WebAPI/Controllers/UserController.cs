@@ -83,14 +83,22 @@ public class UserController(
         var response = mapper.Map<UserSettingsDto>(resultUser);
         return Ok(response);
     }
-
+    /* 
     [HttpDelete("favourite/{bookId:long}")] // api/user/favourite/{bookId}
-    public async Task<IActionResult> DeleteBookFromUsersFavourites(long bookId)
+    public async Task<IActionResult> DeleteBookFromUserFavourites(long bookId)
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
-
-        var result = await service.UnFavouriteBookAsync(userId, bookId);
-        return Ok(result);
+        await service.DeleteBookFromFavouritesAsync(userId, bookId);
+        return Ok();
+    }
+    */ //Сделал пока один метод, т.к. на фронте сложнее реализовать функционал удаления книги из избранного
+    [HttpPost("favourite/{bookId:long}")] // api/user/favourite/{bookId}
+    public async Task<IActionResult> AddOrDeleteBookToUserFavourites(long bookId)
+    {
+        var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
+            NumberStyles.Any, CultureInfo.InvariantCulture);
+        await service.AddOrRemoveBookFromFavouritesAsync(userId, bookId);
+        return Ok();
     }
 }   

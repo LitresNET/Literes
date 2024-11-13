@@ -1,0 +1,29 @@
+.chat-preview {
+    display: flex;
+    background-color: var(--yellow-500);
+    flex-direction: column;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 5px;
+    width: 90%;
+    overflow-wrap: break-word;
+}
+
+.chat-preview:hover {
+    background-color: #ffff64;
+}
+
+.chat-sender {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2em;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.chat-timestamp {
+    text-align: center;
+    color: #3D3C3C;
+}

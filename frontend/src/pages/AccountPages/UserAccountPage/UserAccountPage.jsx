@@ -19,15 +19,16 @@ export default function UserAccountPage() {
 
     const [userData, setUserData] = useState(null);
 
-    const [setErrorToast] = useState(null);
     useEffect(() => {
         const fetchUserData = async () => {
             try {
                 const response = await axiosToLitres.get(`/user/settings`);
                 setUserData(response.data);
+                localStorage.setItem("username", response?.data.name);
+                console.log(response.data.name)
             } catch (error) {
-                setErrorToast( () => toast.error('User Information: '+error.message,
-                    {toastId: "UserDataError"}));
+                toast.error('User Information: '+error.message,
+                    {toastId: "UserDataError"});
             }
         };
 
@@ -38,20 +39,20 @@ export default function UserAccountPage() {
             }, {toastId: "UserPageLoading"});
     }, []);
 
-    const subscriptionTag = <Tag status="failure" actiondescription="Deactivated" />;
+    const subscriptionTag = <Tag status="failure" actionDescription="Deactivated" />;
     //TODO: чет я вообще не понял че должно быть на этой страничке. Откладываю до завтра
     /*
     function renderSubscriptionTag() {
         switch(userData.subscriptionId) {
-            case '1':  <Tag status="failure" actiondescription="Deactivated" />
+            case '1':  <Tag status="failure" actionDescription="Deactivated" />
                 break;
-            case '2':  <Tag status="failure" actiondescription="Deactivated" />
+            case '2':  <Tag status="failure" actionDescription="Deactivated" />
                 break;
-            case '3':  <Tag status="failure" actiondescription="Deactivated" />
+            case '3':  <Tag status="failure" actionDescription="Deactivated" />
                 break;
-            case '4':  <Tag status="failure" actiondescription="Deactivated" />
+            case '4':  <Tag status="failure" actionDescription="Deactivated" />
                 break;
-            case '5':  <Tag status="failure" actiondescription="Deactivated" />
+            case '5':  <Tag status="failure" actionDescription="Deactivated" />
                 break;
         }
     }
@@ -61,7 +62,7 @@ export default function UserAccountPage() {
         <>
             <div className="wrapper">
                 <div className="account-container">
-                    <Cover imgPath={userData?.avatarUrl ?? IMAGES.default_cover} size="big" />
+                    <Cover imgPath={userData?.avatarUrl || IMAGES.default_cover} size="big" />
                     <div className="account-info">
                         <div className="account-info-title">
                             <h1>Selected subscription</h1>
@@ -87,7 +88,7 @@ export default function UserAccountPage() {
                                 text={'Adventure'}
                                 round={'true'}
                                 color={'yellow'}
-                                iconpath={ICONS.money}
+                                iconPath={ICONS.money}
                             />
                         </Link>
                     </div>
@@ -106,8 +107,9 @@ export default function UserAccountPage() {
                             <SwiperSlide style={{ width: 'auto', minWidth: '100px' }}>
                                 {/* Здесь задаём минимальную ширину слайда */}
                                 <AccountBookCard
+                                    key={id}
                                     role={'user'}
-                                    id={id}
+                                    bookId={id}
                                 />
                             </SwiperSlide>
                         ))}

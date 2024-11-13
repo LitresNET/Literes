@@ -21,16 +21,14 @@ const SignUpPage = () => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
-
+        //TODO: добавить больше валидации
         if (!name || !email || !password || !confirmPassword) {
           setError('Please fill in all fields');
           return;
-        }
-
-        if (password !== confirmPassword) {
+        } else if (password !== confirmPassword) {
           setError('Passwords do not match');
           return;
-        }
+        } else { setError('') }
 
         const userData = {
             name: name,
@@ -42,7 +40,7 @@ const SignUpPage = () => {
         if (response.error) {
             setError(response.error);
         } else {
-            navigate("/signin")
+            navigate("/account")
         }
     };
 
@@ -96,7 +94,7 @@ const SignUpPage = () => {
                               onClick={handleRegister}
                               round={"true"}
                               color={"yellow"}
-                              iconpath={ICONS.next}/>
+                              iconPath={ICONS.next}/>
                         </div>
                         {validationError &&
                             <p className="sign-up-error">{validationError}</p>

@@ -20,16 +20,15 @@ function mainPage() {
     const [romanceBooks, setRomanceBooks] = useState([]);
     const [adventuresBooks, setAdventuresBooks] = useState([]);
 
-    const [setErrorToast] = useState(null);
     useEffect(() => {
         const fetchPopularBooksData = async () => {
             try {
                 const response = await useGetBookByCategory(0, 10, {New: `true`});
+                if (!response.result) throw new Error(response.error);
                 setPopularBooks(response.result);
-
             } catch (error) {
-                setErrorToast( () => toast.error('Popular Books: '+error.message,
-                    {toastId: "PopularBooksError"}));
+                toast.error('Popular Books: '+error.message,
+                    {toastId: "PopularBooksError"});
             }
         };
 
@@ -38,8 +37,8 @@ function mainPage() {
                 const response = await useGetBookByCategory(0, 10, {Category: `RomanceNovel`});
                 setRomanceBooks(response.result);
             } catch (error) {
-                setErrorToast( () => toast.error('Romance Books: '+error.message,
-                    {toastId: "RomanceBooksError"}));
+                toast.error('Romance Books: '+error.message,
+                    {toastId: "RomanceBooksError"});
             }
         };
         const fetchAdventureBooksData = async () => {
@@ -47,8 +46,8 @@ function mainPage() {
                 const response = await useGetBookByCategory(0, 10, {Category: `Adventure`});
                 setAdventuresBooks(response.result);
             } catch (error) {
-                setErrorToast( () => toast.error('Adventure Books: '+error.message,
-                    {toastId: "AdventureBooksError"}));
+                toast.error('Adventure Books: '+error.message,
+                    {toastId: "AdventureBooksError"});
             }
         };
 
@@ -75,7 +74,7 @@ function mainPage() {
                         <DropDownInputSearch onChange={e => setSearchField(e.target.value)}/>
                         <div className="head-button">
                             <Link to={`/search?name=${searchField}`}>
-                                <Button id="cool-button" text={"Explore"} iconpath={ICONS.binoculars} color={"yellow"}/>
+                                <Button id="cool-button" text={"Explore"} iconPath={ICONS.binoculars} color={"yellow"}/>
                             </Link>
                             <div className={"separator"} />
                         </div>
@@ -95,9 +94,8 @@ function mainPage() {
                     <div className="trending-books">
                         <Banner>
                             {
-                                popularBooks?.map(book => <Cover imgPath={book.coverUrl === null ||
-                                    book.coverUrl === undefined || book.coverUrl === "" ? IMAGES.default_cover :
-                                    book.coverUrl} link={`book/${book.id}`}/>)
+                                popularBooks?.map(book => <Cover imgPath={book.coverUrl || IMAGES.default_cover}
+                                                                 link={`book/${book.id}`} key={book.id}/>)
                             }
                         </Banner>
                     </div>
@@ -124,7 +122,7 @@ function mainPage() {
                     </div>
                     <div className="category-content">
                         {
-                            romanceBooks?.map(book =>   <BookCard bookId={book.id}/>)
+                            romanceBooks?.map(book =>   <BookCard bookId={book.id} key={book.id}/>)
                         }
                     </div>
                 </div>
@@ -135,7 +133,7 @@ function mainPage() {
                     </div>
                     <div className="category-content">
                         {
-                            adventuresBooks?.map(book =>   <BookCard bookId={book.id}/>)
+                            adventuresBooks?.map(book =>   <BookCard bookId={book.id} key={book.id}/>)
                         }
                     </div>
                 </div>

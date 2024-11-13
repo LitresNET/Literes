@@ -3,8 +3,15 @@ import React, { useRef, useState } from "react";
 import { useClickOutside } from "../../../hooks/useClickOutside";
 import { Icon } from "../Icon/Icon";
 import ICONS from "../../../assets/icons";
+import PropTypes from "prop-types";
 
+
+//TODO: Сделать тесты, отрефакторить, пока не особо представляю, что это за компонент
 export function DropdownSelect({ selectgroupname, onChange, value, children }) {
+    DropdownSelect.propTypes = {
+        children: PropTypes.node,
+
+    }
     const [isOpen, setOpen] = useState(false);
     const menuRef = useRef(null);
 

@@ -1,0 +1,43 @@
+.chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: all 0.7s ease-out;
+}
+.chat-container.open {
+    transition: all 0.7s ease-in;
+    background-color: white;
+    max-width: 300px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.open-button {
+    display: flex;
+    z-index: 1000;
+    width: 50px;
+}
+
+.chat-input Button {
+    height: 30px;
+}
+
+.chat-input Input {
+    box-shadow: var(--blue-500) 0 0 0;
+    margin-bottom: 10px;
+}
+
+.chat-input Input:focus {
+    box-shadow: var(--blue-500) 0 8px 0;
+}
+
+.close-button {
+    right: 5px;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}

@@ -27,6 +27,8 @@ public class ApplicationDbContext(
     public DbSet<Series> Series { get; set; }
     public DbSet<Subscription> Subscription { get; set; }
     public DbSet<User> User { get; set; }
+    public DbSet<Message> Message { get; set; }
+    public DbSet<Chat> Chat { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

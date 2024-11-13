@@ -2,6 +2,7 @@
 using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Services;
 using Litres.Domain.Entities;
+using Litres.Infrastructure.Repositories;
 using Moq;
 using Tests.Config;
 
@@ -11,8 +12,12 @@ public class GetPublisherInfo
 {
     private readonly Mock<IPublisherRepository> _publisherRepositoryMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
+    private readonly Mock<IBookRepository> _bookRepositoryMock = new();
 
-    private UserService UserService => new(_publisherRepositoryMock.Object, _userRepositoryMock.Object);
+    private UserService UserService => new(
+        _publisherRepositoryMock.Object, 
+        _userRepositoryMock.Object,
+        _bookRepositoryMock.Object);
 
     [Fact]
     public async Task DefaultPublisher_ReturnsUser()

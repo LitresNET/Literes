@@ -20,19 +20,24 @@ const SignInPage = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        //TODO: Добавить больше валидации
+        if (!email || !password) {
+            setError('Please fill in all fields');
+            return;
+        } else { setError('') }
 
         const userData = {
             email: email,
             password: password,
         };
 
-        const response = await login(userData);
-        if (response.error) {
-            setError(response.error);
-        } else {
-            localStorage.setItem("token", response.result);
-            navigate("/home")
-        }
+        await login(userData).then((result) => {
+            if (result.error) {
+                setError(result.error);
+            } else {
+                navigate("/account")
+            }
+        });
     };
 
     return (
@@ -69,7 +74,7 @@ const SignInPage = () => {
                                 onClick={handleLogin}
                                 round={"true"}
                                 color={"yellow"}
-                                iconpath={ICONS.sign_in}
+                                iconPath={ICONS.sign_in}
                             />
                         </div>
                         {validationError &&

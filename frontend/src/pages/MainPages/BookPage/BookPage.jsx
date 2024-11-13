@@ -16,7 +16,10 @@ import {useGetBookByCategory} from "../../../hooks/useGetBookByCategory.js";
 import {toast} from "react-toastify";
 import {axiosToLitres} from "../../../hooks/useAxios.js";
 import {useParams} from "react-router-dom";
+import {addBookToFavourites} from "../../../features/addBookToFavourites.js";
 
+//TODO: Нужен рефактор (как в принципе и другим страницам)
+//TODO: Добавить возможность добавления отзывов
 export default function BookPage() {
 
     const [value, setValue] = useState('');
@@ -82,7 +85,7 @@ export default function BookPage() {
     return (
         <div className="book-page">
             <div className="book-container">
-                <Cover imgPath={bookData?.coverUrl === undefined || bookData?.coverUrl === null || bookData?.coverUrl === "" ?
+                <Cover imgPath={!bookData?.coverUrl ?
                     IMAGES.default_cover : bookData.coverUrl} size="big" />
                 <div className="book-info">
                     <div className="book-info-title">
@@ -95,16 +98,16 @@ export default function BookPage() {
                             </div>
                         </h1>
 
-                        <div className="book-favorite">
-                            <Button iconpath={ICONS.bookmark_simple} onClick={() => (alert("Заглушка!"))}
-                                    round={"true"}/>
+                        <div className="book-favourite">
+                            <Button iconPath={ICONS.bookmark_simple} onClick={async () =>
+                                await addBookToFavourites(id)} round={"true"}/>
                         </div>
                     </div>
 
-                    <Banner withshadow="true">
+                    <Banner shadow="true">
                     <span className="book-banner-name">Author: {bookData?.author}</span>
                     </Banner>
-                    <Banner withshadow="true">
+                    <Banner shadow="true">
                         <span className="book-banner-description">{bookData?.description}</span>
                     </Banner>
 
@@ -116,7 +119,7 @@ export default function BookPage() {
                         <Button
                             round={'true'}
                             color={'yellow'}
-                            iconpath={ICONS.shopping_cart}
+                            iconPath={ICONS.shopping_cart}
                         />
                         <Button
                             round={'true'}
@@ -136,12 +139,11 @@ export default function BookPage() {
                     spaceBetween={20}
                     slidesPerView={'auto'}
                     freeMode={true}
-
                 >
                     {sameGenreBooks?.map(book => (
-                        <SwiperSlide style={{ width: 'auto', minWidth: '100px' }}>
+                        <SwiperSlide key={book.id} style={{ width: 'auto', minWidth: '100px' }}>
                             {/* Здесь задаём минимальную ширину слайда */}
-                            <BookCard bookId={book.id}/>
+                            <BookCard key={book.id} bookId={book.id}/>
                         </SwiperSlide>
                     ))}
                 </Swiper>
@@ -170,7 +172,7 @@ export default function BookPage() {
                 </div>
                 <div className="review-cards-wrapper">
                     {reviews?.map(review => (
-                        <ReviewCard
+                        <ReviewCard key={review.id}
                             content={review.content}
                             rating={review.rating}
                             createdAt={review.createdAt}
