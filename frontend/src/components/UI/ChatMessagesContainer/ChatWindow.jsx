@@ -9,7 +9,7 @@ export function ChatWindow({messages, textIfEmpty, ...rest}) {
             PropTypes.shape({
                 from: PropTypes.string.isRequired,
                 message: PropTypes.string.isRequired,
-                sentDate: PropTypes.instanceOf(Date).isRequired
+                sentDate: PropTypes.string.isRequired
             })),
         textIfEmpty: PropTypes.string
     }

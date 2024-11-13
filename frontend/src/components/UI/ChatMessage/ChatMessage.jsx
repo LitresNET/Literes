@@ -6,7 +6,7 @@ export function ChatMessage({ message, from, sentDate, onClick, ...rest }) {
     ChatMessage.propTypes = {
         message: PropTypes.string.isRequired,
         from: PropTypes.string.isRequired,
-        sentDate: PropTypes.instanceOf(Date).isRequired,
+        sentDate: PropTypes.string.isRequired,
         onClick: PropTypes.func
     };
     const messageClass = from === localStorage.getItem("username") ? 'chat-message own' : 'chat-message other';
