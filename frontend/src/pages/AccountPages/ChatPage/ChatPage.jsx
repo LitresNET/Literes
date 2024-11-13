@@ -13,23 +13,8 @@ import {ChatPreview} from "../../../components/UI/ChatPreview/ChatPreview.jsx";
 export default function ChatPage() {
     const [connection, setConnection] = useState(null);
     const [connectionEstablished, setConnectionEstablished] = useState(false);
-    const [chats, setChats] = useState([
-        { userId: "124", username: "gitler", lastMessageDate: new Date() }
-    ]);
-    const [messages, setMessages] = useState([
-        {from: 'admin', message: 'fuck', sentDate: new Date(1,2,3,4,5,6)},
-        {from: 'admin', message: 'fuck', sentDate: '1.1.1'},
-        {from: 'admin', message: 'fucksdakdsl;adksa;ldksa;dksadkakdassdaskdjasdjaskdjajkd', sentDate: '1.1.1'},
-        {from: 'admin', message: 'fuck', sentDate: '1.1.1'},
-        {from: 'me', message: 'ok', sentDate: '1.1.1'},
-        {from: 'FuckImDead', message: 'ok', sentDate: '1.1.1'},
-        {from: 'admin', message: 'fuck', sentDate: new Date(1,2,3,4,5,6)},
-        {from: 'admin', message: 'fuck', sentDate: '1.1.1'},
-        {from: 'admin', message: 'fucksdakdsl;adksa;ldksa;dksadkakdassdaskdjasdjaskdjajkdвыфлвоыфдлывовыфолдвфолдыврдфвдлоыфовлфыолврлоыфврлофрвлофырврыфлвофрлворфыловролвырфолврфлврфыл', sentDate: '1.1.1'},
-        {from: 'admin', message: 'fuck', sentDate: '1.1.1'},
-        {from: 'me', message: 'ok', sentDate: '1.1.1'},
-        {from: 'FuckImDead', message: 'ok', sentDate: '1.1.1'}
-    ]);
+    const [chats, setChats] = useState([]);
+    const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState('');
 
     const fetchAllChats = async () => {
@@ -63,7 +48,11 @@ export default function ChatPage() {
             .build();
 
         newConnection.on('ReceiveMessage', (message) => {
+            console.log('new mes', message)
             toast.success('Chat Page: New Message', {toastId: 'ChatPageNewMessage', autoClose: false})
+            if (chats.find(c => c.userId === message.chat.userId) === -1) {
+                setChats((prev) => [...prev, { userId: message.chat.userId, lastMessageDate: message.sentDate }]);
+            }
             setMessages((prev) => [...prev, { message: message.text, user: message.from }]);
         });
 
@@ -83,8 +72,7 @@ export default function ChatPage() {
                 connection.stop();
             }
         };
-
-    }, [connectionEstablished, connection]);
+    }, []);
 
     function handleChatClick(userId) {
         fetchUserChatMessages(userId);
@@ -125,8 +113,8 @@ export default function ChatPage() {
 
                 {chats.length ?
                     chats.map((chat, index) => (
-                        <a onClick={() => handleChatClick(chat.userId)}>
-                    <ChatPreview key={index}  lastMessageDate={chat.lastMessageDate} userId={chat.userId} username={chat.username}>
+                        <a key={index} onClick={() => handleChatClick(chat.userId)}>
+                    <ChatPreview  lastMessageDate={chat.lastMessageDate} userId={chat.userId} username={chat.username}>
                     </ChatPreview> </a> )):
                     <p style={{textAlign: "center", fontWeight: 'bold'}}> No chats</p>
                     }

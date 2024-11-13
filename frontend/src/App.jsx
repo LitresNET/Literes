@@ -5,11 +5,12 @@ import Chat from "./layouts/Chat/Chat.jsx";
 import authStore from "./store/store.js";
 
 function App() {
+    const shouldHideChat = window.location.pathname.endsWith('/chat');
     return (
         <>
             <RouterProvider router={router}></RouterProvider>
             <ToastContainer />
-            {authStore.isAuthenticated ? <Chat /> : null}
+            {authStore.isAuthenticated && !shouldHideChat ? <Chat /> : null}
         </>
     );
 }
