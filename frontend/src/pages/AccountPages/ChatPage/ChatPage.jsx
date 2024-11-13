@@ -72,7 +72,6 @@ export default function ChatPage() {
                 connection.stop();
             }
         };
-
     }, []);
 
     function handleChatClick(userId) {

@@ -7,7 +7,7 @@ export function ChatPreview({userId, username, lastMessageDate, ...rest }){
     ChatPreview.propTypes = {
         userId: PropTypes.number.isRequired,
         username: PropTypes.string,
-        lastMessageDate: PropTypes.string.isRequired,
+        lastMessageDate: PropTypes.string.isRequired
     }
     return(
         <>
