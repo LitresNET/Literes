@@ -19,7 +19,7 @@ const Chat = () => {
     const fetchChatData = async () => {
         try {
             const response = await axiosToLitres.get('/chat/history');
-            setMessages([...response.data.messages.map(m => {user: m.from; message: m.text; timestamp: m.sentDate})])
+            setMessages([...response.data.messages.map(m => ({user: m.from, message: m.text, timestamp: m.sentDate}))])
         } catch (error) {
             toast.error(`Chat component: ${error}`, {toastId: "ChatFetchError"})
         }
