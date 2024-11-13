@@ -5,48 +5,31 @@ import ICONS from "../../assets/icons.jsx";
 import {Button} from "../../components/UI/Button/Button.jsx";
 import {Input} from "../../components/UI/Input/Input.jsx";
 import {toast} from "react-toastify";
-import {axiosToLitres} from "../../hooks/useAxios.js";
 import {ChatMessage} from "../../components/UI/ChatMessage/ChatMessage.jsx";
+import {axiosToLitres} from "./../../hooks/useAxios.js";
 
 //TODO: добавить toast уведомление при новом сообщении
 const Chat = () => {
     const [connection, setConnection] = useState(null);
     const [connectionEstablished, setConnectionEstablished] = useState(false);
-    const [messages, setMessages] = useState([
-        // test messages
-        {user: 'admin', message: 'fuck', timestamp: '1:1:1'},
-        {user: 'admin', message: 'fuck', timestamp: '1.1.1'},
-        {user: 'admin', message: 'fucksdakdsl;adksa;ldksa;dksadkakdassdaskdjasdjaskdjajkd', timestamp: '1.1.1'},
-        {user: 'admin', message: 'fuck', timestamp: '1.1.1'},
-        {user: 'me', message: 'ok', timestamp: '1.1.1'},
-        {user: 'FuckImDead', message: 'ok', timestamp: '1.1.1'}
-    ]);
+    const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+
+    const fetchChatData = async () => {
+        try {
+            const response = await axiosToLitres.get('/chat/history');
+            setMessages([...response.data.messages.map(m => {user: m.from; message: m.text; timestamp: m.sentDate})])
+        } catch (error) {
+            toast.error(`Chat component: ${error}`, {toastId: "ChatFetchError"})
+        }
+    };
 
     useEffect(() => {
         //TODO: уберите пожалуйста логирование в консоль или замените их toast-уведомленими там, где надо
         //TODO: сделайте рабочий вариантик пж
-        const fetchChatData = async () => {
-            try {
-                const sessionId = localStorage.getItem('chatSessionId')
-                const response = await axiosToLitres.get(`/chat/${sessionId}`);
-                console.log('response: ', response)
-                setMessages([...response.map(m => {user: m.from; message: m.text; timestamp: m.sentDate})])
-            } catch (error) {
-                toast.error(`Chat: ${error}`, {toastId: "ChatFetchError"})
-            }
-        };
-
         fetchChatData()
-        .then(result => {
-            console.log('history result: ', result)
-        })
 
-        console.log('Connecting to ChatHub...');
-        if (connection) {
-            console.log('oops, connection already established, use this chat id: ', localStorage.getItem('chatSessionId'))
-        }
         const token = localStorage.getItem('token')
         const newConnection = new HubConnectionBuilder()
             .withUrl('http://localhost:5225/api/hubs/chat', { 
@@ -56,12 +39,7 @@ const Chat = () => {
             .build();
 
         newConnection.on('ReceiveMessage', (message) => {
-            console.log('new message!', message)
             setMessages((prev) => [...prev, {message: message.text, user: message.from}]);
-        });
-
-        newConnection.on('SetSessionId', (sessionId) => {
-            localStorage.setItem('chatSessionId', sessionId);
         });
 
         if (!connectionEstablished) {
@@ -69,7 +47,6 @@ const Chat = () => {
             .then(()=>{
                 setConnection(newConnection);
                 setConnectionEstablished(true)
-                console.log('established successfully')
             })
             .catch(e => {
                 toast.error(`Chat: error while connecting (${e})`)
@@ -101,12 +78,11 @@ const Chat = () => {
         }
         if (connection) {
             const newMessage = {
-                ChatSessionId: localStorage.getItem('chatSessionId'),
                 Text: message,
                 From: 'User'
             };
 
-            await connection.invoke('SendMessageAsync', newMessage).finally(() => {
+            await connection.invoke('SendMessage', newMessage).finally(() => {
                 setMessage('');
                 setMessages((prevMessages) => [...prevMessages, {
                     user: localStorage.getItem("Username"), message: message, timestamp: new Date() }])
