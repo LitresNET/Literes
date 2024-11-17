@@ -2,7 +2,6 @@
 using AutoMapper;
 using Hangfire;
 using Litres.Application.Abstractions.Repositories;
-using Litres.Application.Consumers;
 using Litres.Application.Hubs;
 using Litres.Application.Services;
 using Litres.Application.Services.Options;
@@ -143,10 +142,17 @@ public static class ServiceCollectionExtension
         services.AddMassTransit(busConfigurator =>
         {
             busConfigurator.SetKebabCaseEndpointNameFormatter();
-
-            busConfigurator.AddConsumer<MessageConsumer>();
             
-            busConfigurator.UsingInMemory((context, config) => config.ConfigureEndpoints(context));
+            busConfigurator.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host("localhost", "/", hc =>
+                {
+                    hc.Username("guest");
+                    hc.Password("guest");
+                });
+                
+                cfg.ConfigureEndpoints(context);
+            });
         });
         
         return services;

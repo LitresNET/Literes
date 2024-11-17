@@ -1,8 +1,8 @@
-﻿using Litres.Application.Abstractions.Repositories;
-using Litres.Domain.Entities;
+﻿using Litres.Domain.Entities;
+using Litres.SupportChatHelperAPI.Abstractions.Repositories;
 using MassTransit;
 
-namespace Litres.Application.Consumers;
+namespace Litres.SupportChatHelperAPI.Consumers;
 
 public class MessageConsumer(
     IMessageRepository repo
