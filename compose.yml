@@ -85,6 +85,18 @@ services:
       - migrate
     restart: "no"
 
+  supportchathelper:
+    container_name: litres_support_chat_helper
+    build:
+      context: ./backend/Litres.SupportChatHelperAPI
+      dockerfile: Dockerfile
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    depends_on:
+      - server
+    restart: "no"
+
   frontend:
     container_name: litres_frontend
     build:
