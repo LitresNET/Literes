@@ -145,7 +145,7 @@ public static class ServiceCollectionExtension
             
             busConfigurator.UsingRabbitMq((context, cfg) =>
             {
-                cfg.Host("localhost", "/", hc =>
+                cfg.Host("rabbitmq", "/", hc =>
                 {
                     hc.Username("guest");
                     hc.Password("guest");
