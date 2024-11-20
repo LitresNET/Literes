@@ -237,6 +237,7 @@ public static class ServiceCollectionExtension
         services.Configure<SubscriptionControllerOptions>(configuration.GetSection("ExternalServices"));
         services.Configure<JwtAuthenticationOptions>(configuration.GetSection("Authentication:Jwt"));
         services.Configure<GoogleAuthenticationOptions>(configuration.GetSection("Authentication:Google"));
+        services.AddOptions<RabbitMqTransportOptions>().Configure(options => { options.Port = 5673; });
 
         return services;
     }

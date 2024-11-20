@@ -2,6 +2,7 @@
 using Litres.SupportChatHelperAPI.Consumers;
 using Litres.SupportChatHelperAPI.Services.Repositories;
 using MassTransit;
+using MassTransit.DependencyInjection.Registration;
 using Serilog;
 using Serilog.Events;
 
@@ -35,7 +36,8 @@ public static class ServiceCollectionExtension
                 cfg.ConfigureEndpoints(context);
             });
         });
-        
+        services.AddOptions<RabbitMqTransportOptions>().Configure(options => { options.Port = 5673; });
+
         return services;
     }
     
