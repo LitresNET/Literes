@@ -23,7 +23,7 @@ builder.Configuration
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseLazyLoadingProxies()
-        .UseSqlServer(builder.Configuration["DB_CONNECTION_STRING"]));
+        .UseSqlServer(builder.Configuration["Database:ConnectionString"]));
 
 builder.Services.AddIdentity<User, IdentityRole<long>>(options =>
     options.User.RequireUniqueEmail = true)
@@ -35,6 +35,8 @@ builder.Services
     .AddRouting(opt => opt.LowercaseUrls = true)
     .AddRepositories()
     .AddServices()
+    .ConfigureCommands()
+    .ConfigureQueries()
     .AddMiddlewares()
     .AddAuthorization()
     .AddConfiguredAuthentication(builder.Configuration)
