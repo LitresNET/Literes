@@ -5,7 +5,7 @@ using Litres.Domain.Enums;
 
 namespace Litres.Application.Queries.Books;
 
-public class GetBookCatalog(
+public record GetBookCatalog(
     Dictionary<SearchParameterType, string>? SearchParameters = null,
     int ExtraLoadNumber = 0,
     int BooksAmount = 30
