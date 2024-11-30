@@ -5,9 +5,8 @@ using Litres.Domain.Enums;
 
 namespace Litres.Application.Queries.Books;
 
-public class GetBookCatalog : IQuery<List<BookResponseDto>>
-{
-    public Dictionary<SearchParameterType, string>? SearchParameters { get; set; } = null;
-    public int ExtraLoadNumber { get; set; } = 0;
-    public int BooksAmount { get; set; } = 30;
-}
+public class GetBookCatalog(
+    Dictionary<SearchParameterType, string>? SearchParameters = null,
+    int ExtraLoadNumber = 0,
+    int BooksAmount = 30
+) : IQuery<List<BookResponseDto>>;
