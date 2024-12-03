@@ -6,5 +6,4 @@ public interface IChatRepository : IRepository<Chat>
 {
     Task<Chat?> GetBySessionIdAsync(string? chatSessionId);
     Task<Chat?> GetByUserIdAsync(long userId);
-    Task<List<Chat>> GetByAgentIdAsync(long agentId);
 }
