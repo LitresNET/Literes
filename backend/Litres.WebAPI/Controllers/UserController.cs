@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using System.Security.Claims;
-using AutoMapper;
+using Litres.Application.Commands.Users;
 using Litres.Application.Dto;
 using Litres.Application.Dto.Requests;
 using Litres.Application.Dto.Responses;
@@ -8,8 +8,6 @@ using Litres.Application.Models;
 using Litres.Application.Queries.Users;
 using Litres.Domain.Abstractions.Commands;
 using Litres.Domain.Abstractions.Queries;
-using Litres.Domain.Abstractions.Services;
-using Litres.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,9 +18,7 @@ namespace Litres.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class UserController(
     IQueryDispatcher queryDispatcher,
-    ICommandDispatcher commandDispatcher,
-    IUserService service,
-    IMapper mapper) 
+    ICommandDispatcher commandDispatcher) 
     : ControllerBase
 {
     [AllowAnonymous]
@@ -64,24 +60,23 @@ public class UserController(
     [HttpPost("deposit")] // api/user/deposit?amount={amount}
     public async Task<IActionResult> DepositToUser([FromQuery] decimal amount)
     {
+        //TODO:
         // var securityToken = HttpContext.Request.Headers["X-Payment-Security-Token"].ToString();
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
         
-        await service.DepositToUserByIdAsync(userId, amount);
+        await commandDispatcher.DispatchAsync(new DepositToUserCommand(userId, amount));
         return Ok();
     }
 
     [HttpPatch("settings")] // api/user/settings
-    public async Task<IActionResult> ChangeUserData([FromBody] UserSettingsDto dto)
+    public async Task<IActionResult> ChangeUserData([FromBody] ChangeUserDataCommand command)
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
-
-        var user = mapper.Map<User>(dto);
-        user.Id = userId;
-        var resultUser = await service.ChangeUserSettingsAsync(user);
-        var response = mapper.Map<UserSettingsDto>(resultUser);
+        command.UserId = userId;
+        
+        var response = await commandDispatcher.DispatchReturnAsync<ChangeUserDataCommand, UserSettingsDto>(command);
         return Ok(response);
     }
     /* 
@@ -94,12 +89,14 @@ public class UserController(
         return Ok();
     }
     */ //Сделал пока один метод, т.к. на фронте сложнее реализовать функционал удаления книги из избранного
-    [HttpPost("favourite/{bookId:long}")] // api/user/favourite/{bookId}
-    public async Task<IActionResult> AddOrDeleteBookToUserFavourites(long bookId)
+    [HttpPost("favourite/{BookId:long}")] // api/user/favourite/{bookId}
+    public async Task<IActionResult> AddOrDeleteBookToUserFavourites([FromRoute] AddOrDeleteBookToUserFavouritesCommand command)
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
-        await service.AddOrRemoveBookFromFavouritesAsync(userId, bookId);
+        command.UserId = userId;
+        
+        await commandDispatcher.DispatchAsync(command);
         return Ok();
     }
 }   

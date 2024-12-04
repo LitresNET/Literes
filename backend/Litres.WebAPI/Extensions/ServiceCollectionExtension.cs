@@ -4,8 +4,11 @@ using Hangfire;
 using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Commands.Books;
 using Litres.Application.Commands.Books.Handlers;
+using Litres.Application.Commands.Users;
+using Litres.Application.Commands.Users.Handlers;
 using Litres.Application.Consumers;
 using Litres.Application.Dto;
+using Litres.Application.Dto.Requests;
 using Litres.Application.Dto.Responses;
 using Litres.Application.Extensions;
 using Litres.Application.Hubs;
@@ -256,6 +259,9 @@ public static class ServiceCollectionExtension
         services.AddScoped<ICommandHandler<CreateBookCommand, RequestResponseDto>, CreateBookCommandHandler>();
         services.AddScoped<ICommandHandler<UpdateBookCommand, RequestResponseDto>, UpdateBookCommandHandler>();
         services.AddScoped<ICommandHandler<DeleteBookCommand, RequestResponseDto>, DeleteBookCommandHandler>();
+        services.AddScoped<ICommandHandler<ChangeUserDataCommand, UserSettingsDto>, ChangeUserDataCommandHandler>();
+        services.AddScoped<ICommandHandler<DepositToUserCommand>, DepositToUserCommandHandler>();
+        services.AddScoped<ICommandHandler<AddOrDeleteBookToUserFavouritesCommand>, AddOrDeleteBookToUserFavouritesCommandHandler>();
         
         return services;
     }

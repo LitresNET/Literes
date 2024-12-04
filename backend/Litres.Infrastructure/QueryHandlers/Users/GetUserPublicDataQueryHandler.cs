@@ -17,7 +17,7 @@ public class GetUserPublicDataQueryHandler(ApplicationDbContext context, IMapper
             .Where(u => u.Id == q.UserId)
             .Select(u => new User
                 {
-                    UserName = u.UserName,
+                    Name = u.Name,
                     Email = u.Email,
                     AvatarUrl = u.AvatarUrl, 
                     Favourites = u.Favourites, 
