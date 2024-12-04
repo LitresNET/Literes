@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Litres.Application.Commands.SignUp;
 using Litres.Application.Dto.Requests;
 using Litres.Application.Dto.Responses;
 using Litres.Domain.Entities;
@@ -10,6 +11,9 @@ public class UserMapperProfile : Profile
     public UserMapperProfile()
     {
         CreateMap<UserRegistrationDto, User>()
+            .ForMember("UserName", opt => opt.MapFrom(dto => dto.Email))
+            .ForMember("PasswordHash", opt => opt.MapFrom(dto => dto.Password));
+        CreateMap<SignUpUserCommand, User>()
             .ForMember("UserName", opt => opt.MapFrom(dto => dto.Email))
             .ForMember("PasswordHash", opt => opt.MapFrom(dto => dto.Password));
 

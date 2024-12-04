@@ -8,7 +8,7 @@ namespace Litres.Application.Services;
 public class UserService(
     IUserRepository userRepository) : IUserService
 {
-
+    [Obsolete("Пока не используется")]
     public async Task<Book> DeleteBookFromFavouritesAsync(long userId, long bookId)
     {
         var dbUser = await userRepository.GetByIdAsync(userId);
