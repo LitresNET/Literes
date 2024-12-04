@@ -260,6 +260,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<ICommandHandler<UpdateBookCommand, RequestResponseDto>, UpdateBookCommandHandler>();
         services.AddScoped<ICommandHandler<DeleteBookCommand, RequestResponseDto>, DeleteBookCommandHandler>();
         services.AddScoped<ICommandHandler<ChangeUserDataCommand, UserSettingsDto>, ChangeUserDataCommandHandler>();
+        services.AddScoped<ICommandHandler<SignInUserCommand, string>, SignInUserCommandHandler>();
         services.AddScoped<ICommandHandler<DepositToUserCommand>, DepositToUserCommandHandler>();
         services.AddScoped<ICommandHandler<AddOrDeleteBookToUserFavouritesCommand>, AddOrDeleteBookToUserFavouritesCommandHandler>();
         
