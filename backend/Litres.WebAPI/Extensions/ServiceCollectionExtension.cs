@@ -44,7 +44,6 @@ public static class ServiceCollectionExtension
         services.AddSingleton<IMemoryCache, MemoryCache>();
         services.AddScoped<NotificationHub>();
         
-        services.AddScoped<IChatService, ChatService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<ILoginService, LoginService>();
         services.AddScoped<IMessageService, MessageService>();
@@ -52,7 +51,6 @@ public static class ServiceCollectionExtension
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IRegistrationService, RegistrationService>();
         services.AddScoped<IRequestService, RequestService>();
-        services.AddScoped<IReviewService, ReviewService>();
         services.AddScoped<ISubscriptionCheckerService, SubscriptionCheckerService>();
         services.AddScoped<ISubscriptionService, SubscriptionService>();
         services.AddScoped<IUserService, UserService>();

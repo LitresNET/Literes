@@ -13,7 +13,7 @@ public class GetReviewQueryHandler(
     IMapper mapper
     ) : IQueryHandler<GetReview, ReviewDto>
 {
-    public async Task<ReviewDto> HandleAsync(GetReview q)
+    public async Task<ReviewDto?> HandleAsync(GetReview q)
     {
         var result = await context.Review.FirstOrDefaultAsync(e => e.Id == q.ReviewId);
         if (result is null)

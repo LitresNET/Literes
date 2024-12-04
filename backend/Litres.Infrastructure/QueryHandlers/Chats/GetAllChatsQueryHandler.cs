@@ -8,7 +8,7 @@ namespace Litres.Infrastructure.QueryHandlers.Chats;
 
 public class GetAllChatsQueryHandler(ApplicationDbContext context, IMapper mapper) : IQueryHandler<GetAllChats, List<ChatPreviewDto>>
 {
-    public async Task<List<ChatPreviewDto>> HandleAsync(GetAllChats q)
+    public async Task<List<ChatPreviewDto>?> HandleAsync(GetAllChats q)
     {
         var chats = await context.Chat
             .Include(c => c.Messages)  

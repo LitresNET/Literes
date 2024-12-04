@@ -9,7 +9,7 @@ namespace Litres.Infrastructure.QueryHandlers.Chats;
 public class GetHistoryQueryHandler(ApplicationDbContext context, IMapper mapper) 
     : IQueryHandler<GetHistory, ChatHistoryDto>
 {
-    public async Task<ChatHistoryDto> HandleAsync(GetHistory q)
+    public async Task<ChatHistoryDto?> HandleAsync(GetHistory q)
     {
         var chat = await context.Chat.Include(c => c.Messages)
             .FirstOrDefaultAsync(c => c.UserId == q.UserId || c.AgentId == q.UserId);
