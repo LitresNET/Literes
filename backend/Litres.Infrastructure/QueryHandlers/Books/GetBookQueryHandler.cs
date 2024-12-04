@@ -12,9 +12,9 @@ public class GetBookQueryHandler(ApplicationDbContext context, IMapper mapper) :
 {
     public async Task<BookResponseDto?> HandleAsync(GetBook q)
     {
-        var result = await context.Book.AsNoTracking().FirstOrDefaultAsync(e => e.Id == q.Id);
+        var result = await context.Book.AsNoTracking().FirstOrDefaultAsync(e => e.Id == q.BookId);
         if (result is null)
-            throw new EntityNotFoundException(typeof(Book), q.Id.ToString());
+            throw new EntityNotFoundException(typeof(Book), q.BookId.ToString());
         
         result.ContentUrl = "";
         return mapper.Map<BookResponseDto>(result);
