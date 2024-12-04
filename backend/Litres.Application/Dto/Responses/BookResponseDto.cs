@@ -18,6 +18,7 @@ public class BookResponseDto
     public int Count { get; set; }
     public int Price { get; set; }
     public virtual List<GenreType> BookGenres { get; set; }
+    public long AuthorId { get; set; }
     public string Author { get; set; }
     public string? Series { get; set; }
     public string? Publisher { get; set; }

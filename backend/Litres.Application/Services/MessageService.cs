@@ -7,7 +7,7 @@ namespace Litres.Application.Services;
 
 public class MessageService(IMessageRepository messageRepository) : IMessageService
 {
-    public async Task<IOrderedEnumerable<Message>> GetAllMessagesAsync(String sessionId)
+    public async Task<IOrderedEnumerable<Message>> GetAllMessagesAsync(string sessionId)
     {
         return await messageRepository.GetMessagesBySessionIdAsync(sessionId);
     }

@@ -1,7 +1,12 @@
 ﻿using System.Globalization;
 using System.Security.Claims;
 using Litres.Application.Abstractions.HubClients;
+using Litres.Application.Commands.Chats;
 using Litres.Application.Models;
+using Litres.Application.Queries.Chats;
+using Litres.Application.Queries.Users;
+using Litres.Domain.Abstractions.Commands;
+using Litres.Domain.Abstractions.Queries;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using MassTransit;
@@ -10,8 +15,9 @@ using Microsoft.AspNetCore.SignalR;
 namespace Litres.Application.Hubs;
 
 public class ChatHub(
-    IBus bus,
-    IChatService srv
+    IQueryDispatcher queryDispatcher,
+    ICommandDispatcher commandDispatcher,
+    IBus bus
     ) : Hub<IChatClient>
 {
     private const string AgentsGroupKey = "Agents";
@@ -31,7 +37,8 @@ public class ChatHub(
         if (userId is not null)
         {
             var parsedId = long.Parse(userId, NumberStyles.Any, CultureInfo.InvariantCulture);
-            user = await srv.GetUserByIdAsNoTrackingAsync(parsedId);
+            var query = new GetUserById(parsedId);
+            user = await queryDispatcher.QueryAsync<GetUserById, User>(query);
         }
         
         switch (user)
@@ -61,7 +68,8 @@ public class ChatHub(
         if (userId is not null)
         {
             var parsedId = long.Parse(userId, NumberStyles.Any, CultureInfo.InvariantCulture);
-            user = await srv.GetUserByIdAsNoTrackingAsync(parsedId);
+            var query = new GetUserById(parsedId);
+            user = await queryDispatcher.QueryAsync<GetUserById, User>(query);
         }
         
         switch (user)
@@ -90,14 +98,16 @@ public class ChatHub(
         if (userId is not null)
         {
             var parsedId = long.Parse(userId, NumberStyles.Any, CultureInfo.InvariantCulture);
-            user = await srv.GetUserByIdAsNoTrackingAsync(parsedId);
+            var query = new GetUserById(parsedId);
+            user = await queryDispatcher.QueryAsync<GetUserById, User>(query);
         }
 
         switch (user)
         {
             case {RoleName: "Member"}:
             {
-                var chat = await srv.GetByUserIdAsync(user.Id); // checks the user and the agent id's
+                var query = new GetChatByUserId(user.Id);
+                var chat = await queryDispatcher.QueryAsync<GetChatByUserId, Chat?>(query); // checks the user and the agent id's
 
                 if (chat is null)
                 {
@@ -111,8 +121,9 @@ public class ChatHub(
                     _currentAgentIndex++;
                     if (_currentAgentIndex == Agents.Count - 1) // to not overflow in impossibly long future
                         _currentAgentIndex = 0;
-                    
-                    chat = await srv.AddAsync(chat);
+
+                    var command = new CreateChatCommand(chat);
+                    chat = await commandDispatcher.DispatchReturnAsync<CreateChatCommand, Chat>(command);
                 }
 
                 // if agent is unavailable - drop the message. Will probably fix in future to reassign to next agent
@@ -124,13 +135,16 @@ public class ChatHub(
                 }
                 else
                 {
-                    await Clients.Client(connectionId).ReceiveMessage(new Message {From = "System", Text = "Your message isn't delivered, your agent is unavailable"});
+                    await Clients.Client(connectionId).ReceiveMessage(new Message 
+                        {From = "System", Text = "Your message isn't delivered, your agent is unavailable"});
                 }
                 break;
             }
             case {RoleName: "Agent" or "Admin"}:
             {
-                var chat = await srv.GetByUserIdAsync(user.Id); // checks the user and the agent id's
+                var query = new GetChatByUserId(user.Id);
+                var chat = await queryDispatcher.QueryAsync<GetChatByUserId, Chat?>(query); // checks the user and the agent id's
+                
                 if (chat is null)
                 {
                     await Clients.Caller.NonExistentChat();
