@@ -49,7 +49,6 @@ public static class ServiceCollectionExtension
     {
         services.AddSingleton<IMemoryCache, MemoryCache>();
         services.AddScoped<NotificationHub>();
-        
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<ILoginService, LoginService>();
         services.AddScoped<IMessageService, MessageService>();
