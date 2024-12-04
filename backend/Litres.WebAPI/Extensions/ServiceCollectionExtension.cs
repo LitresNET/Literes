@@ -5,10 +5,12 @@ using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Commands.Books;
 using Litres.Application.Commands.Books.Handlers;
 using Litres.Application.Consumers;
+using Litres.Application.Dto;
 using Litres.Application.Dto.Responses;
 using Litres.Application.Extensions;
 using Litres.Application.Hubs;
 using Litres.Application.Queries.Books;
+using Litres.Application.Queries.Users;
 using Litres.Application.Services;
 using Litres.Application.Services.Options;
 using Litres.Domain.Abstractions.Commands;
@@ -16,6 +18,7 @@ using Litres.Domain.Abstractions.Queries;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Litres.Infrastructure.QueryHandlers.Books;
+using Litres.Infrastructure.QueryHandlers.Users;
 using Litres.Infrastructure.Repositories;
 using Litres.WebAPI.Configuration.Mapper;
 using Litres.WebAPI.Controllers.Options;
@@ -242,7 +245,7 @@ public static class ServiceCollectionExtension
 
         return services;
     }
-
+    //TODO:Сделать автоматическую регистрацию
     public static IServiceCollection ConfigureCommands(this IServiceCollection services)
     {
         //можно зарегистрировать диспетчеры как Singleton, и так даже правильнее
@@ -262,6 +265,11 @@ public static class ServiceCollectionExtension
         services.AddScoped<IQueryDispatcher, QueryDispatcher>();
         services.AddScoped<IQueryHandler<GetBook, BookResponseDto>, GetBookQueryHandler>();
         services.AddScoped<IQueryHandler<GetBookCatalog, List<BookResponseDto>>, GetBookCatalogQueryHandler>();
+        services.AddScoped<IQueryHandler<GetUserPublicData, UserPublicDataDto>, GetUserPublicDataQueryHandler>();
+        services.AddScoped<IQueryHandler<GetOrderList, IEnumerable<OrderDto>>, GetOrderListQueryHandler>();
+        services.AddScoped<IQueryHandler<GetUserPrivateData, UserPrivateDataDto>, GetUserPrivateDataQueryHandler>();
+        services.AddScoped<IQueryHandler<GetPublisherData, PublisherStatisticsDto>, GetPublisherDataQueryHandler>();
+
         
         return services;
     }

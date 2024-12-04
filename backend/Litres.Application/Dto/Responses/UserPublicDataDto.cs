@@ -1,6 +1,6 @@
 namespace Litres.Application.Dto.Responses;
 
-public class UserSafeDataDto
+public class UserPublicDataDto
 {
     public string Name { get; set; }
     public string AvatarUrl { get; set; }

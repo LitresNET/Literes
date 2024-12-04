@@ -5,6 +5,9 @@ using Litres.Application.Dto;
 using Litres.Application.Dto.Requests;
 using Litres.Application.Dto.Responses;
 using Litres.Application.Models;
+using Litres.Application.Queries.Users;
+using Litres.Domain.Abstractions.Commands;
+using Litres.Domain.Abstractions.Queries;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -16,47 +19,46 @@ namespace Litres.WebAPI.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 public class UserController(
+    IQueryDispatcher queryDispatcher,
+    ICommandDispatcher commandDispatcher,
     IUserService service,
     IMapper mapper) 
     : ControllerBase
 {
     [AllowAnonymous]
     [HttpGet("{userId:long}")] // api/user/{userId}
-    public async Task<IActionResult> GetPublicUserData(long userId)
+    public async Task<IActionResult> GetUserPublicData([FromRoute] GetUserPublicData query)
     {
-        var user = await service.GetPublicUserInfoAsync(userId);
-        var result = mapper.Map<UserSafeDataDto>(user);
+        var result = await queryDispatcher.QueryAsync<GetUserPublicData, UserPublicDataDto>(query);
         return Ok(result);
     }
     
     [HttpGet("order/list")] // api/user/order/list
     public async Task<IActionResult> GetOrderList()
     {
+        //TODO: чет придумать с userId 
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
-
-        var result = await service.GetOrderListAsync(userId);
-        var response = result.Select(mapper.Map<OrderDto>);
-        return Ok(response);
+        var result = await queryDispatcher.QueryAsync<GetOrderList, IEnumerable<OrderDto>>(new GetOrderList(userId));
+        return Ok(result);
     }
 
     [HttpGet("settings")] // api/user/settings
-    public async Task<IActionResult> GetPrivateUserData()
+    public async Task<IActionResult> GetUserPrivateData()
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
-
-        var user = await service.GetUserByIdAsync(userId);
-        var result = mapper.Map<UserDataDto>(user);
+        var result = await queryDispatcher.QueryAsync<GetUserPrivateData, UserPrivateDataDto>(
+            new GetUserPrivateData(userId));
         return Ok(result);
     }
 
     [AllowAnonymous]
     [HttpGet("publisher/{publisherId:long}")] // api/user/publisher/{publisherId}
-    public async Task<IActionResult> GetPublisherData(long publisherId)
+    //TODO: починить, 404 до входа в метод
+    public async Task<IActionResult> GetPublisherData([FromRoute] GetPublisherData query)
     {
-        var publisher = await service.GetPublisherByLinkedUserIdAsync(publisherId);
-        var result = mapper.Map<PublisherStatisticsDto>(publisher);
+        var result = await queryDispatcher.QueryAsync<GetPublisherData, PublisherStatisticsDto>(query);
         return Ok(result);
     }
 
