@@ -12,36 +12,7 @@ public class RegistrationService(
     UserManager<User> userManager)
     : IRegistrationService
 {
-    public async Task<IdentityResult> RegisterUserAsync(User user)
-    {
-        await using var transaction = await unitOfWork.BeginTransactionAsync();
-        var createResult = await userManager.CreateAsync(user, user.PasswordHash);
-        if (createResult.Succeeded)
-        {
-            var roleResult = await userManager.AddToRoleAsync(user, "Member");
-            if (roleResult.Succeeded) await transaction.CommitAsync();
-            else await transaction.RollbackAsync();
-            return roleResult;
-        }
-        await transaction.RollbackAsync();
-        return createResult;
-    }
-
-    public async Task<IdentityResult> RegisterUserWithRoleAsync(User user, string role)
-    {
-        await using var transaction = await unitOfWork.BeginTransactionAsync();
-        var createResult = await userManager.CreateAsync(user, user.PasswordHash);
-        if (createResult.Succeeded)
-        {
-            var roleResult = await userManager.AddToRoleAsync(user, role);
-            if (roleResult.Succeeded) await transaction.CommitAsync();
-            else await transaction.RollbackAsync();
-            return roleResult;
-        }
-        await transaction.RollbackAsync();
-        return createResult;
-    }
-
+    //TODO: rewrite to CQRS
     public async Task<IdentityResult> RegisterPublisherAsync(User user, string contractNumber)
     {
         var contract = await contractRepository.GetBySerialNumberAsync(contractNumber);
@@ -75,13 +46,5 @@ public class RegistrationService(
         await unitOfWork.SaveChangesAsync();
         await transaction.CommitAsync();
         return createResult;
-    }
-
-    public async Task<IdentityResult> FinalizeUserAsync(User user)
-    {
-        var dbUser = await userManager.FindByEmailAsync(user.Email);
-        if (dbUser is null) return IdentityResult.Failed(new IdentityError {Description = "No such user found"});
-        var result = await userManager.AddPasswordAsync(dbUser, user.PasswordHash);
-        return result;
     }
 }

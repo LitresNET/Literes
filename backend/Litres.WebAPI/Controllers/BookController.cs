@@ -1,13 +1,12 @@
 using System.Globalization;
 using System.Security.Claims;
-using AutoMapper;
 using Litres.Application.Commands.Books;
 using Litres.Application.Dto.Responses;
 using Litres.Application.Models;
 using Litres.Application.Queries.Books;
 using Litres.Domain.Abstractions.Commands;
 using Litres.Domain.Abstractions.Queries;
-using Litres.Domain.Entities;
+using Litres.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +20,7 @@ public class BookController(
     : ControllerBase
 {
     [AllowAnonymous]
-    [HttpGet("{bookId:long}")] // api/book/{bookId}
+    [HttpGet("{BookId:long}")] // api/book/{bookId}
     public async Task<IActionResult> GetBook([FromRoute] GetBook query)
     {
         var result = await queryDispatcher.QueryAsync<GetBook, BookResponseDto>(query);
@@ -30,9 +29,13 @@ public class BookController(
 
     [AllowAnonymous]
     [HttpGet("catalog/{pageNumber:int}/{amount:int}")] // api/book/catalog/{pageNumber}/{amount}
-    public async Task<IActionResult> GetBookCatalog([FromRoute][FromQuery] GetBookCatalog query)
+    public async Task<IActionResult> GetBookCatalog(
+        [FromRoute] int pageNumber,     
+        [FromRoute] int amount,
+        [FromQuery] Dictionary<SearchParameterType, string> searchParameters)
     {
-        var result = await queryDispatcher.QueryAsync<GetBookCatalog, List<BookResponseDto>>(query);
+        var result = await queryDispatcher.QueryAsync<GetBookCatalog, List<BookResponseDto>>(new GetBookCatalog(
+            searchParameters, pageNumber, amount));
         return Ok(result);
     }
 
@@ -48,6 +51,7 @@ public class BookController(
         return Ok(request);
     }
     
+    //TODO: Переписать, не должно быть query и command в одном запросе и логики в контроллере
     [Authorize(Roles = "Publisher")]
     [HttpPatch("{bookId:long}")]
     public async Task<IActionResult> UpdateBook(
@@ -65,6 +69,7 @@ public class BookController(
         return Ok(request);
     }
 
+    //TODO: Переписать, не должно быть query и command в одном запросе и логики в контроллере
     [Authorize(Roles = "Publisher")]
     [HttpDelete("{bookId:long}")] // api/book/{bookId}
     public async Task<IActionResult> DeleteBook([FromRoute] GetBook query, [FromRoute][FromQuery] DeleteBookCommand command)

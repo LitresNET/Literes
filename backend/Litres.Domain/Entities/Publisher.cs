@@ -7,6 +7,7 @@ namespace Litres.Domain.Entities;
 [Table("Publisher")]
 public class Publisher : IEntity
 {
+    //TODO: зачем Id?
     public long Id { get; set; }
     
     /// <summary>

@@ -1,6 +1,6 @@
 ﻿namespace Litres.Application.Dto.Responses;
 
-public class UserDataDto
+public class UserPrivateDataDto
 {
     public long Id { get; set; }
     public string Name { get; set; }
