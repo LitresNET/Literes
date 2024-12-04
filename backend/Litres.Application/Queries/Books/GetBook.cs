@@ -4,4 +4,4 @@ using Litres.Domain.Entities;
 
 namespace Litres.Application.Queries.Books;
 
-public record GetBook(long Id) : IQuery<BookResponseDto>;
+public record GetBook(long BookId) : IQuery<BookResponseDto>;

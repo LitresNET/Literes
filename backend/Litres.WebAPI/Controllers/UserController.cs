@@ -26,7 +26,7 @@ public class UserController(
     : ControllerBase
 {
     [AllowAnonymous]
-    [HttpGet("{userId:long}")] // api/user/{userId}
+    [HttpGet("{UserId:long}")] // api/user/{userId}
     public async Task<IActionResult> GetUserPublicData([FromRoute] GetUserPublicData query)
     {
         var result = await queryDispatcher.QueryAsync<GetUserPublicData, UserPublicDataDto>(query);
@@ -54,8 +54,7 @@ public class UserController(
     }
 
     [AllowAnonymous]
-    [HttpGet("publisher/{publisherId:long}")] // api/user/publisher/{publisherId}
-    //TODO: починить, 404 до входа в метод
+    [HttpGet("publisher/{PublisherId:long}")] // api/user/publisher/{publisherId}
     public async Task<IActionResult> GetPublisherData([FromRoute] GetPublisherData query)
     {
         var result = await queryDispatcher.QueryAsync<GetPublisherData, PublisherStatisticsDto>(query);

@@ -55,11 +55,6 @@ public class UserService(
         return await publisherRepository.GetByLinkedUserIdAsync(publisherId);
     }
 
-    public async Task<List<Order>> GetOrderListAsync(long userId)
-    {
-        var dbUser = await userRepository.GetByIdAsync(userId);
-        return dbUser.Orders;
-    }
 
     public async Task DepositToUserByIdAsync(long userId, decimal amount)
     {
