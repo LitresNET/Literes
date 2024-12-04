@@ -8,9 +8,10 @@ using Litres.Domain.Enums;
 
 namespace Litres.Infrastructure.QueryHandlers.Books;
 
-public class GetBookCatalogQueryHandler(ApplicationDbContext context, IMapper mapper) : IQueryHandler<GetBookCatalog, List<BookResponseDto>>
-{
-    public async Task<List<BookResponseDto>> HandleAsync(GetBookCatalog q)
+public class GetBookCatalogQueryHandler(ApplicationDbContext context, IMapper mapper) 
+    : IQueryHandler<GetBookCatalog, List<BookResponseDto>>
+{   
+    public async Task<List<BookResponseDto>?> HandleAsync(GetBookCatalog q)
     {
         // Сборка предиката
         var builder = PredicateBuilder.New<Book>(true);

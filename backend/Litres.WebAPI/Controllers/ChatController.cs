@@ -4,7 +4,8 @@ using AutoMapper;
 using Litres.Application.Dto;
 using Litres.Application.Dto.Responses;
 using Litres.Application.Models;
-using Litres.Domain.Abstractions.Services;
+using Litres.Application.Queries.Chats;
+using Litres.Domain.Abstractions.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,9 +14,7 @@ namespace Litres.WebAPI.Controllers;
 [ApiController]
 [Route("api/[controller]")] // api/chat
 public class ChatController(
-    IMessageService messageService,
-    IChatService chatService,
-    IMapper mapper)
+    IQueryDispatcher queryDispatcher)
     : ControllerBase
 {
     [AllowAnonymous]
@@ -25,21 +24,19 @@ public class ChatController(
         long.TryParse(User.FindFirstValue(CustomClaimTypes.UserId),
             NumberStyles.Any, CultureInfo.InvariantCulture, out var userId);
 
-        var chat = await chatService.GetByUserIdAsync(userId);
-        var result = await messageService.GetMessagesByChatAsync(chat);
-        var response = mapper.Map<ChatHistoryDto>(result);
-        return Ok(response);
+        var query = new GetHistory(userId);
+        var result = await queryDispatcher.QueryAsync<GetHistory, ChatHistoryDto>(query);
+        return Ok(result);
     }
 
     [HttpGet("agent-chats")] // api/chat/agent-chats
-    public async Task<IActionResult> getAllChatsData()
+    public async Task<IActionResult> GetAllChatsData()
     {
         long.TryParse(User.FindFirstValue(CustomClaimTypes.UserId),
             NumberStyles.Any, CultureInfo.InvariantCulture, out var userId);
 
-        var result = await chatService.GetByAgentIdAsync(userId);
-        var response = mapper.Map<List<ChatPreviewDto>>(result);
-
-        return Ok(response);
+        var query = new GetAllChats(userId);
+        var result = await queryDispatcher.QueryAsync<GetAllChats, List<ChatPreviewDto>>(query);
+        return Ok(result);
     }
 }
