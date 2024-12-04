@@ -1,12 +1,13 @@
 ﻿using System.Globalization;
 using System.Security.Claims;
-using AutoMapper;
+using Litres.Application.Commands.Users;
 using Litres.Application.Dto;
 using Litres.Application.Dto.Requests;
 using Litres.Application.Dto.Responses;
 using Litres.Application.Models;
-using Litres.Domain.Abstractions.Services;
-using Litres.Domain.Entities;
+using Litres.Application.Queries.Users;
+using Litres.Domain.Abstractions.Commands;
+using Litres.Domain.Abstractions.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,71 +17,66 @@ namespace Litres.WebAPI.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 public class UserController(
-    IUserService service,
-    IMapper mapper) 
+    IQueryDispatcher queryDispatcher,
+    ICommandDispatcher commandDispatcher) 
     : ControllerBase
 {
     [AllowAnonymous]
-    [HttpGet("{userId:long}")] // api/user/{userId}
-    public async Task<IActionResult> GetPublicUserData(long userId)
+    [HttpGet("{UserId:long}")] // api/user/{userId}
+    public async Task<IActionResult> GetUserPublicData([FromRoute] GetUserPublicData query)
     {
-        var user = await service.GetPublicUserInfoAsync(userId);
-        var result = mapper.Map<UserSafeDataDto>(user);
+        var result = await queryDispatcher.QueryAsync<GetUserPublicData, UserPublicDataDto>(query);
         return Ok(result);
     }
     
     [HttpGet("order/list")] // api/user/order/list
     public async Task<IActionResult> GetOrderList()
     {
+        //TODO: чет придумать с userId 
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
-
-        var result = await service.GetOrderListAsync(userId);
-        var response = result.Select(mapper.Map<OrderDto>);
-        return Ok(response);
+        var result = await queryDispatcher.QueryAsync<GetOrderList, IEnumerable<OrderDto>>(new GetOrderList(userId));
+        return Ok(result);
     }
 
     [HttpGet("settings")] // api/user/settings
-    public async Task<IActionResult> GetPrivateUserData()
+    public async Task<IActionResult> GetUserPrivateData()
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
-
-        var user = await service.GetUserByIdAsync(userId);
-        var result = mapper.Map<UserDataDto>(user);
+        var result = await queryDispatcher.QueryAsync<GetUserPrivateData, UserPrivateDataDto>(
+            new GetUserPrivateData(userId));
         return Ok(result);
     }
 
     [AllowAnonymous]
-    [HttpGet("publisher/{publisherId:long}")] // api/user/publisher/{publisherId}
-    public async Task<IActionResult> GetPublisherData(long publisherId)
+    [HttpGet("publisher/{PublisherId:long}")] // api/user/publisher/{publisherId}
+    public async Task<IActionResult> GetPublisherData([FromRoute] GetPublisherData query)
     {
-        var publisher = await service.GetPublisherByLinkedUserIdAsync(publisherId);
-        var result = mapper.Map<PublisherStatisticsDto>(publisher);
+        var result = await queryDispatcher.QueryAsync<GetPublisherData, PublisherStatisticsDto>(query);
         return Ok(result);
     }
 
     [HttpPost("deposit")] // api/user/deposit?amount={amount}
     public async Task<IActionResult> DepositToUser([FromQuery] decimal amount)
     {
+        //TODO:
         // var securityToken = HttpContext.Request.Headers["X-Payment-Security-Token"].ToString();
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
         
-        await service.DepositToUserByIdAsync(userId, amount);
+        await commandDispatcher.DispatchAsync(new DepositToUserCommand(userId, amount));
         return Ok();
     }
 
     [HttpPatch("settings")] // api/user/settings
-    public async Task<IActionResult> ChangeUserData([FromBody] UserSettingsDto dto)
+    public async Task<IActionResult> ChangeUserData([FromBody] ChangeUserDataCommand command)
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
-
-        var user = mapper.Map<User>(dto);
-        user.Id = userId;
-        var resultUser = await service.ChangeUserSettingsAsync(user);
-        var response = mapper.Map<UserSettingsDto>(resultUser);
+        command.UserId = userId;
+        
+        var response = await commandDispatcher.DispatchReturnAsync<ChangeUserDataCommand, UserSettingsDto>(command);
         return Ok(response);
     }
     /* 
@@ -93,12 +89,14 @@ public class UserController(
         return Ok();
     }
     */ //Сделал пока один метод, т.к. на фронте сложнее реализовать функционал удаления книги из избранного
-    [HttpPost("favourite/{bookId:long}")] // api/user/favourite/{bookId}
-    public async Task<IActionResult> AddOrDeleteBookToUserFavourites(long bookId)
+    [HttpPost("favourite/{BookId:long}")] // api/user/favourite/{bookId}
+    public async Task<IActionResult> AddOrDeleteBookToUserFavourites([FromRoute] AddOrDeleteBookToUserFavouritesCommand command)
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
-        await service.AddOrRemoveBookFromFavouritesAsync(userId, bookId);
+        command.UserId = userId;
+        
+        await commandDispatcher.DispatchAsync(command);
         return Ok();
     }
 }   

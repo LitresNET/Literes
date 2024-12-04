@@ -1,8 +1,10 @@
 ﻿using System.Security.Claims;
+using Litres.Domain.Entities;
 
 namespace Litres.Domain.Abstractions.Services;
 
 public interface IJwtTokenService
 {
-    public string CreateJwtToken(IEnumerable<Claim> claims);
+    string CreateJwtToken(IEnumerable<Claim> claims);
+    List<Claim> CreateClaimsByUser(User user);
 }
