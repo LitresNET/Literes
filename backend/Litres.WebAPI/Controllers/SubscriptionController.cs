@@ -1,9 +1,13 @@
 using System.Globalization;
 using System.Security.Claims;
 using AutoMapper;
+using Litres.Application.Commands.Subscriptions;
 using Litres.Application.Dto.Requests;
 using Litres.Application.Dto.Responses;
 using Litres.Application.Models;
+using Litres.Application.Queries.Subscriptions;
+using Litres.Domain.Abstractions.Commands;
+using Litres.Domain.Abstractions.Queries;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Litres.WebAPI.Controllers.Options;
@@ -18,15 +22,15 @@ namespace Litres.WebAPI.Controllers;
 public class SubscriptionController(
         IOptions<SubscriptionControllerOptions> options,
         IMapper mapper,
-        ISubscriptionService subscriptionService)
+        IQueryDispatcher queryDispatcher,
+        ICommandDispatcher commandDispatcher)
     : ControllerBase
 {
-    [HttpGet("{subscriptionId:long}")] // api/subscription/{subscriptionId}
-    public async Task<IActionResult> GetSubscription(long subscriptionId)
+    [HttpGet("{SubscriptionId:long}")] // api/subscription/{subscriptionId}
+    public async Task<IActionResult> GetSubscription([FromRoute] GetSubscription query)
     {
-        var subscription = await subscriptionService.GetAsync(subscriptionId);
-        var response = mapper.Map<SubscriptionResponseDto>(subscription);
-        return Ok(response);
+        var result = await queryDispatcher.QueryAsync<GetSubscription, SubscriptionResponseDto>(query);
+        return Ok(result);
     }
 
     [Authorize]
@@ -41,7 +45,8 @@ public class SubscriptionController(
         var subscription = mapper.Map<Subscription>(customSubscription);
         subscription.Name = subscriptionName;
 
-        var lacking = await subscriptionService.TryUpdateAsync(userId, subscription);
+        var command = new SubscriptionUpdateCommand(userId, subscription);
+        var lacking = await commandDispatcher.DispatchReturnAsync<SubscriptionUpdateCommand, Decimal>(command);
         return lacking > 0M
             ? Redirect($"{options.Value.PaymentServiceUrl}/pay?userId={userId}&amount={lacking}")
             : Ok();
@@ -54,7 +59,8 @@ public class SubscriptionController(
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
 
-        await subscriptionService.ResetAsync(userId);
+        var command = new SubscriptionResetCommand(userId);
+        await commandDispatcher.DispatchAsync(command);
         return Ok();
     }
 }
