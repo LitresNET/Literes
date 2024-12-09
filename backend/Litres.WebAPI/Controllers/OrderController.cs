@@ -7,7 +7,6 @@ using Litres.Application.Models;
 using Litres.Application.Queries.Orders;
 using Litres.Domain.Abstractions.Commands;
 using Litres.Domain.Abstractions.Queries;
-using Litres.Domain.Entities;
 using Litres.Domain.Enums;
 using Litres.WebAPI.Controllers.Options;
 using Microsoft.AspNetCore.Authorization;
@@ -41,7 +40,7 @@ public class OrderController(
         command.Order.UserId = userId;
         command.Order.ExpectedDeliveryTime = DateTime.Now.AddDays(14); // заказ доставят через 2 недели
         
-        var request = await commandDispatcher.DispatchReturnAsync<CreateOrderCommand,Order>(command);
+        var request = await commandDispatcher.DispatchReturnAsync<CreateOrderCommand,OrderDto>(command);
         return Ok(request);
     }
 
@@ -54,7 +53,7 @@ public class OrderController(
         command.Order.Id = orderId;
         command.Order.UserId = userId;
         
-        var request = await commandDispatcher.DispatchReturnAsync<UpdateOrderCommand, Order>(command);
+        var request = await commandDispatcher.DispatchReturnAsync<UpdateOrderCommand, OrderDto>(command);
         return Ok(request);
     }
     
@@ -63,7 +62,7 @@ public class OrderController(
     public async Task<IActionResult> UpdateOrderStatus([FromRoute] long orderId, [FromQuery] OrderStatus status)
     {
         var command = new UpdateOrderStatusCommand(orderId, status);
-        var result = await commandDispatcher.DispatchReturnAsync<UpdateOrderStatusCommand, Order>(command);
+        var result = await commandDispatcher.DispatchReturnAsync<UpdateOrderStatusCommand, OrderDto>(command);
         return Ok(result);
     }
 
@@ -74,7 +73,7 @@ public class OrderController(
             NumberStyles.Any, CultureInfo.InvariantCulture);
 
         var command = new DeleteOrderCommand(orderId);
-        var result = await commandDispatcher.DispatchReturnAsync<DeleteOrderCommand, Order>(command);
+        var result = await commandDispatcher.DispatchReturnAsync<DeleteOrderCommand, OrderDto>(command);
         return Ok(result);
     }
 
