@@ -10,11 +10,11 @@ namespace Litres.Infrastructure.QueryHandlers.Books;
 
 public class GetBookQueryHandler(ApplicationDbContext context, IMapper mapper) : IQueryHandler<GetBook, BookResponseDto>
 {
-    public async Task<BookResponseDto> HandleAsync(GetBook query)
+    public async Task<BookResponseDto?> HandleAsync(GetBook q)
     {
-        var result = await context.Book.AsNoTracking().FirstOrDefaultAsync(e => e.Id == query.Id);
+        var result = await context.Book.AsNoTracking().FirstOrDefaultAsync(e => e.Id == q.BookId);
         if (result is null)
-            throw new EntityNotFoundException(typeof(Book), query.Id.ToString());
+            throw new EntityNotFoundException(typeof(Book), q.BookId.ToString());
         
         result.ContentUrl = "";
         return mapper.Map<BookResponseDto>(result);
