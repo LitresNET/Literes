@@ -41,7 +41,7 @@ public class SubscriptionController(
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
-        
+        //TODO: Перенести всю логику в CommandHandler
         var subscription = mapper.Map<Subscription>(customSubscription);
         subscription.Name = subscriptionName;
 

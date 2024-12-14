@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Litres.WebAPI.Controllers;
 
+//TODO: почему только для обычных юзеров?
 [Authorize(Roles = "Member")]
 [ApiController]
 [Route("api/[controller]")]

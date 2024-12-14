@@ -16,13 +16,14 @@ public class UpdateOrderCommandHandler(
 {
     public async Task<OrderDto> HandleAsync(UpdateOrderCommand command)
     {
-        var dbOrder = await orderRepository.GetByIdAsync(command.Order.Id);
+        var order = mapper.Map<Order>(command.OrderDto);
+        var dbOrder = await orderRepository.GetByIdAsync(order.Id);
 
         if (dbOrder.Status >= OrderStatus.Assembly)
             throw new InvalidOperationException("Order already in immutable state!");
 
-        dbOrder.OrderedBooks = command.Order.OrderedBooks;
-        dbOrder.PickupPointId = command.Order.PickupPointId;
+        dbOrder.OrderedBooks = order.OrderedBooks;
+        dbOrder.PickupPointId = order.PickupPointId;
 
         var updatedOrder = orderRepository.Update(dbOrder);
         await notificationService.NotifyOrderStatusChange(updatedOrder);

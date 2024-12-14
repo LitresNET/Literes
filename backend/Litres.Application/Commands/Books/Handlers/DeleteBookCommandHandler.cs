@@ -17,7 +17,7 @@ public class DeleteBookCommandHandler(
     public async Task<RequestResponseDto> HandleAsync(DeleteBookCommand command)
     {
         var book = await bookRepository.GetByIdAsync(command.BookId);
-        if (book.PublisherId != command.PublisherId)
+        if (book.PublisherId != command.UserId)
             throw new PermissionDeniedException($"Delete book {book.Id}");
 
         book.IsApproved = false;
@@ -27,7 +27,7 @@ public class DeleteBookCommandHandler(
         var request = new Request
         {
             RequestType = RequestType.Delete,
-            PublisherId = command.PublisherId,
+            PublisherId = command.UserId,
             Book = book
         };
 

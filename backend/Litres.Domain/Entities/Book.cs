@@ -18,13 +18,14 @@ public class Book : IEntity
     /// Название книги
     /// </summary>
     [MaxLength(128)]
-    public string Name { get; set; }
+    [Required]
+    public required string Name { get; set; }
     
     /// <summary>
     /// Описание книги
     /// </summary>
     [MaxLength(4096)]
-    public string Description { get; set; }
+    public string? Description { get; set; }
     
     /// <summary>
     /// Дата публикации книги
@@ -35,14 +36,13 @@ public class Book : IEntity
     /// <summary>
     /// Рейтинг книги, расчитывается из отзывов пользователей
     /// </summary>
-    [Required]
     public double Rating { get; set; }
     
     /// <summary>
     /// Ссылка на обложку книги
     /// </summary>
     [MaxLength(256)]
-    public string CoverUrl { get; set; }
+    public string? CoverUrl { get; set; }
     
     /// <summary>
     /// Ссылка на текст книги
@@ -55,7 +55,7 @@ public class Book : IEntity
     /// Уникальный международный номер ISBN книжного издания 
     /// </summary>
     [MaxLength(17)]
-    public string Isbn { get; set; }
+    public string? Isbn { get; set; }
     
     /// <summary>
     /// Доступна ли книга для покупки
@@ -125,6 +125,6 @@ public class Book : IEntity
     /// <summary>
     /// Промежуточная таблица для хранения сведений о заказах по книге, для логики расчета сервиса оплаты 
     /// </summary>
-    public virtual List<BookOrder> BookOrders { get; set; }
-    public virtual List<Order> Orders { get; set; }
+    public virtual List<BookOrder>? BookOrders { get; set; }
+    public virtual List<Order>? Orders { get; set; }
 }

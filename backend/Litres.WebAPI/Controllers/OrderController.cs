@@ -1,6 +1,5 @@
 using System.Globalization;
 using System.Security.Claims;
-using AutoMapper;
 using Litres.Application.Commands.Orders;
 using Litres.Application.Dto;
 using Litres.Application.Models;
@@ -15,11 +14,11 @@ using Microsoft.Extensions.Options;
 
 namespace Litres.WebAPI.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class OrderController(
     IOptions<OrderControllerOptions> options,
-    IMapper mapper,
     IQueryDispatcher queryDispatcher,
     ICommandDispatcher commandDispatcher) 
     : ControllerBase
@@ -37,26 +36,26 @@ public class OrderController(
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
 
-        command.Order.UserId = userId;
-        command.Order.ExpectedDeliveryTime = DateTime.Now.AddDays(14); // заказ доставят через 2 недели
-        
+        command.OrderDto.UserId = userId;
         var request = await commandDispatcher.DispatchReturnAsync<CreateOrderCommand,OrderDto>(command);
         return Ok(request);
     }
 
+    //TODO: По-хорошему, orderId не должно передаваться отдельно от команды
     [HttpPatch("{orderId:long}")] // api/order/{orderId}
     public async Task<IActionResult> UpdateOrder([FromRoute] long orderId, [FromBody] UpdateOrderCommand command)
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
 
-        command.Order.Id = orderId;
-        command.Order.UserId = userId;
+        command.OrderDto.Id = orderId;
+        command.OrderDto.UserId = userId;
         
         var request = await commandDispatcher.DispatchReturnAsync<UpdateOrderCommand, OrderDto>(command);
         return Ok(request);
     }
     
+    //TODO: По-хорошему, orderId не должно передаваться отдельно от команды
     [Authorize(Roles = "Admin")]
     [HttpPatch("{orderId:long}/status")] // api/order/{orderId}/status?s={status}
     public async Task<IActionResult> UpdateOrderStatus([FromRoute] long orderId, [FromQuery] OrderStatus status)
@@ -65,14 +64,15 @@ public class OrderController(
         var result = await commandDispatcher.DispatchReturnAsync<UpdateOrderStatusCommand, OrderDto>(command);
         return Ok(result);
     }
-
-    [HttpDelete("{orderId:long}")] // api/order/{orderId}
-    public async Task<IActionResult> DeleteOrder([FromRoute] long orderId)
+    
+    //TODO: Не вижу проверки доступа. Удалить заказ может кто угодно
+    [HttpDelete("{OrderId:long}")] // api/order/{orderId}
+    public async Task<IActionResult> DeleteOrder([FromRoute] DeleteOrderCommand command)
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
-
-        var command = new DeleteOrderCommand(orderId);
+        command.UserId = userId;
+        
         var result = await commandDispatcher.DispatchReturnAsync<DeleteOrderCommand, OrderDto>(command);
         return Ok(result);
     }

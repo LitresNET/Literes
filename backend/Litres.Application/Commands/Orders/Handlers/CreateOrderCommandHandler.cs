@@ -21,7 +21,8 @@ public class CreateOrderCommandHandler(
 {
     public async Task<OrderDto> HandleAsync(CreateOrderCommand command)
     {
-        var order = command.Order;
+        command.OrderDto.ExpectedDeliveryTime = DateTime.Now.AddDays(14); // заказ доставят через 2 недели
+        var order = mapper.Map<Order>(command.OrderDto);
 
         await pickupPointRepository.GetByIdAsNoTrackingAsync(order.PickupPointId);
 

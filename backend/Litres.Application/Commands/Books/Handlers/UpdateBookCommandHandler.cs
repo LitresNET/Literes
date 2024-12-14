@@ -17,16 +17,17 @@ public class UpdateBookCommandHandler(
 {
     public async Task<RequestResponseDto> HandleAsync(UpdateBookCommand command)
     {
-        var context = new ValidationContext(command.Book);
+        //TODO: Нужна ли доп. валидация тут, если она есть на уровне dto?
+        var context = new ValidationContext(command);
         var results = new List<ValidationResult>();
 
-        if (!Validator.TryValidateObject(command.Book, context, results))
+        if (!Validator.TryValidateObject(command, context, results))
             throw new EntityValidationFailedException(typeof(Book), results);
         
-        var book = await bookRepository.GetByIdAsync(command.Book.Id);
-        if (book.PublisherId != command.PublisherId)
+        var book = await bookRepository.GetByIdAsync(command.Id);
+        if (book.PublisherId != command.UserId)
             throw new PermissionDeniedException($"Update book {book.Id}");
-
+        //TODO: Это вообще работает? По-моему никакого обновления здесь нет.
         book.IsApproved = false;
         book.IsAvailable = false;
         book.Id = 0;
@@ -38,7 +39,7 @@ public class UpdateBookCommandHandler(
         var request = new Request
         {
             RequestType = RequestType.Update,
-            PublisherId = command.PublisherId,
+            PublisherId = command.UserId,
             Book = book
         };
 

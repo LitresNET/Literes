@@ -39,47 +39,38 @@ public class BookController(
         return Ok(result);
     }
 
-    [Authorize]
+    [Authorize(Roles = "Publisher")]
     [HttpPost] // api/book
     public async Task<IActionResult> CreateBook([FromBody] CreateBookCommand command)
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
+        command.AuthorId = userId;
         
-        command.Book.AuthorId = userId;
         var request = await commandDispatcher.DispatchReturnAsync<CreateBookCommand, RequestResponseDto>(command);
         return Ok(request);
     }
     
-    //TODO: Переписать, не должно быть query и command в одном запросе и логики в контроллере
     [Authorize(Roles = "Publisher")]
-    [HttpPatch("{bookId:long}")]
-    public async Task<IActionResult> UpdateBook(
-        [FromRoute] GetBook query,
-        [FromRoute][FromQuery][FromBody] UpdateBookCommand command)
+    [HttpPatch("{BookId:long}")]
+    public async Task<IActionResult> UpdateBook([FromBody] UpdateBookCommand command)
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
-        
-        var dbBook = await queryDispatcher.QueryAsync<GetBook, BookResponseDto>(query);
-        if (dbBook.AuthorId != userId)
-            return Forbid();
+        command.UserId = userId;
         
         var request = await commandDispatcher.DispatchReturnAsync<UpdateBookCommand, RequestResponseDto>(command);
         return Ok(request);
     }
-
-    //TODO: Переписать, не должно быть query и command в одном запросе и логики в контроллере
+    
+    //TODO: Добавить методы для админа для абсолютного удаления/изменения/создания и тд. для любых объектов без возни с реквестами и прочим.
     [Authorize(Roles = "Publisher")]
-    [HttpDelete("{bookId:long}")] // api/book/{bookId}
-    public async Task<IActionResult> DeleteBook([FromRoute] GetBook query, [FromRoute][FromQuery] DeleteBookCommand command)
+    [HttpDelete("{BookId:long}")] // api/book/{BookId}
+    public async Task<IActionResult> DeleteBook([FromRoute] DeleteBookCommand command)
     {
         var userId = long.Parse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture);
-        
-        var book = await queryDispatcher.QueryAsync<GetBook, BookResponseDto>(query);
-        if (book.AuthorId != userId)
-            return Forbid();
+        command.UserId = userId;
         
         await commandDispatcher.DispatchAsync(command);
         return Ok();
