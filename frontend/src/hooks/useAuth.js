@@ -13,7 +13,6 @@ const useAuth = () => {
     return await axiosToLitres.post(`/signup/user`, userData)
         .then((response) => {
         if (response.status === 200) {
-          authStore.login(response.data);
           return {error: null };
         } else {
           return {error: response.data };

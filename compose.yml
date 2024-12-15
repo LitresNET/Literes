@@ -19,7 +19,7 @@ services:
       - ./database/init-db.sh:/usr/src/app/init-db.sh
       - ./database/create-databases.sql:/usr/src/app/create-databases.sql
     healthcheck:
-      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "${SA_USER}", "-P", "${SA_PASSWORD}", "-d", "${DB_NAME}", "-Q", "SELECT 1"]
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "${DB_SERVER}", "-U", "${SA_USER}", "-P", "${SA_PASSWORD}", "-d", "${DB_NAME}", "-Q", "SELECT 1"]
       interval: 10s
       timeout: 5s
       retries: 10

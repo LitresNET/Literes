@@ -1,10 +1,5 @@
-using AutoMapper;
-using Litres.Application.Commands.SignIn;
 using Litres.Application.Commands.SignUp;
-using Litres.Application.Dto.Requests;
 using Litres.Domain.Abstractions.Commands;
-using Litres.Domain.Abstractions.Services;
-using Litres.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,9 +7,8 @@ namespace Litres.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class SignUpController(ICommandDispatcher commandDispatcher, IMapper mapper) : ControllerBase
+public class SignUpController(ICommandDispatcher commandDispatcher) : ControllerBase
 {
-    //TODO: Объединить с методом ниже
     [HttpPost("user")] // api/signup/user
     public async Task<IActionResult> SignUpUser([FromBody] SignUpUserCommand command)
     {
@@ -28,6 +22,16 @@ public class SignUpController(ICommandDispatcher commandDispatcher, IMapper mapp
     public async Task<IActionResult> SignUpAgent([FromBody] SignUpUserCommand command)
     {
         command.Role = "Agent";
+        var result = await commandDispatcher.DispatchReturnAsync<SignUpUserCommand, IdentityResult>(command);
+        return result.Succeeded 
+            ? Ok() 
+            : BadRequest(result.Errors.Select(e => e.Description));
+    }
+    
+    [HttpPost("admin")] // api/signup/admin
+    public async Task<IActionResult> SignUpAdmin([FromBody] SignUpUserCommand command)
+    {
+        command.Role = "Admin";
         var result = await commandDispatcher.DispatchReturnAsync<SignUpUserCommand, IdentityResult>(command);
         return result.Succeeded 
             ? Ok() 

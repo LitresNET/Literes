@@ -19,7 +19,7 @@ public class CreateBookCommandHandler(
 {
     public async Task<RequestResponseDto> HandleAsync(CreateBookCommand command)
     {
-        var book = mapper.Map<Book>(command.Book);
+        var book = mapper.Map<Book>(command);
         var context = new ValidationContext(book);
         var results = new List<ValidationResult>();
 

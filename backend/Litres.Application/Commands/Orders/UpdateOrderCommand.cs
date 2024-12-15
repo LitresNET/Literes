@@ -4,4 +4,5 @@ using Litres.Domain.Entities;
 
 namespace Litres.Application.Commands.Orders;
 
-public record UpdateOrderCommand(Order Order) : ICommand<OrderDto>;
+//TODO: "Распаковать" Dto на поля
+public record UpdateOrderCommand(OrderDto OrderDto) : ICommand<OrderDto>;

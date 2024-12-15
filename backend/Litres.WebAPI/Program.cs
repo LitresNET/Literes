@@ -1,6 +1,5 @@
 using Hangfire;
 using Litres.Application.Hubs;
-using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Litres.Infrastructure;
 using Litres.WebAPI.Extensions;
@@ -34,9 +33,9 @@ builder.Services
     .AddConfiguredSerilog(builder.Configuration)
     .AddRouting(opt => opt.LowercaseUrls = true)
     .AddRepositories()
-    .AddServices()
-    .ConfigureCommands()
-    .ConfigureQueries()
+    .AddServices() //TODO: надо бы избавиться от сервисов (кроме тех, логика которых ещё не адаптирована под CQRS)
+    .ConfigureCommandHandlers()
+    .ConfigureQueryHandlers()
     .AddMiddlewares()
     .AddAuthorization()
     .AddConfiguredAuthentication(builder.Configuration)

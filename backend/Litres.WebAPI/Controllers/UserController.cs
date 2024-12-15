@@ -29,6 +29,7 @@ public class UserController(
         return Ok(result);
     }
     
+    //TODO: Возможно это должно быть в userController?
     [HttpGet("order/list")] // api/user/order/list
     public async Task<IActionResult> GetOrderList()
     {
