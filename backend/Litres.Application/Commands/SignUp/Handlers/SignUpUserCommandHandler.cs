@@ -19,6 +19,7 @@ public class SignUpUserCommandHandler(
         var user = mapper.Map<User>(command);
         await using var transaction = await unitOfWork.BeginTransactionAsync();
         var createResult = await userManager.CreateAsync(user, user.PasswordHash!);
+        user.RoleName = command.Role;
         if (createResult.Succeeded)
         {
             var roleResult = await userManager.AddToRoleAsync(user, command.Role);

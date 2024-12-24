@@ -18,7 +18,7 @@ export function ChatMessage({ message, from, sentDate, onClick, ...rest }) {
             <div className={messageClass} {...rest}>
                 <div className="message-info">
                     <span className="sender">{from}</span>
-                    <span className="timestamp">{new Date(sentDate).toLocaleTimeString()}</span>
+                    <span className="timestamp">{sentDate}</span>
                 </div>
                 <div className="message-text">{message}</div>
             </div>

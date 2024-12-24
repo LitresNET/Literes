@@ -15,11 +15,12 @@ public class User : IdentityUser<long>, IEntity
     [Key] 
     public override long Id { get; set; }
 
+    //TODO: лишнее поле, правильнее проверять роль через HttpContext
     /// <summary>
     /// Роль пользователя в системе
     /// </summary>
     [DefaultValue(0)]
-    public string? RoleName { get; set; } = "Member";
+    public string? RoleName { get; set; }
     
     /// <summary>
     /// Имя пользователя

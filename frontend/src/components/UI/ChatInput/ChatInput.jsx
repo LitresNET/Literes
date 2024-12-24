@@ -1,12 +1,19 @@
 import {Input} from "../Input/Input.jsx";
 import {Button} from "../Button/Button.jsx";
 import React, {useState} from "react";
-import "ChatInput.css";
+import "./ChatInput.css";
 import {toast} from "react-toastify";
+import PropTypes from "prop-types";
+import {HubConnection} from "@microsoft/signalr";
 
 //TODO: интегрировать в Chat и ChatPage
-export function ChatInput() {
+export function ChatInput({connection, setMessages, ...rest}) {
+    ChatInput.propTypes = {
+        connection: PropTypes.shape(HubConnection),
+        setMessages: PropTypes.func
+    }
     const [message, setMessage] = useState('');
+    const username = localStorage.getItem("username");
     const handleKeyPress = async (event) => {
         if (event.key === 'Enter')
             await sendMessage();
@@ -19,12 +26,12 @@ export function ChatInput() {
         if (connection) {
             const newMessage = {
                 Text: message,
-                From: localStorage.getItem("username")
+                From: username
             };
             await connection.invoke('SendMessage', newMessage).then(() => {
                 setMessage('');
                 setMessages((prevMessages) => [...prevMessages, {
-                    from: localStorage.getItem("username"), message: message, sentDate: new Date() }])
+                    from: username, message: message, sentDate: new Date().toLocaleTimeString() }])
             }).catch((e) => toast.error(`Chat: Sending message error: ${e.message}`,
                 {toastId: "ChatSendMessageError"}));
 
@@ -34,7 +41,7 @@ export function ChatInput() {
         }
     };
     return (
-        <div className="chat-input">
+        <div className="chat-input" {...rest}>
             <Input
                 type="text"
                 value={message}
