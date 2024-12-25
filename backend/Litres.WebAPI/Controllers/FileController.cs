@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Litres.WebAPI.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")] // api/file
 public class FileController(
