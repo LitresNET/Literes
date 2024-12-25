@@ -14,7 +14,8 @@ export default function ChatPage() {
     const fetchAllChats = async () => {
         try {
             const response = await axiosToLitres.get('/chat/agent-chats');
-            setChats([...response.data.map(m => ({ userId: m.userId, username: m.username, lastMessageDate: m.lastMessageDate }))])
+            setChats([...response.data.map(m => ({ userId: m.userId, username: m.username,
+                lastMessageDate: new Date(m.lastMessageDate).toLocaleTimeString()}))]);
         } catch (error) {
             toast.error(`Chat Page: ${error}`, { toastId: "ChatPageFetchError" })
         }

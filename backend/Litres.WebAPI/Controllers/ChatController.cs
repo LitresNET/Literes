@@ -28,6 +28,7 @@ public class ChatController(
         return Ok(result);
     }
 
+    [Authorize(Roles = "Agent")]
     [HttpGet("agent-chats")] // api/chat/agent-chats
     public async Task<IActionResult> GetAllChatsData()
     {

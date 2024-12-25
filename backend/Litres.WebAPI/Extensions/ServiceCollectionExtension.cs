@@ -233,7 +233,7 @@ public static class ServiceCollectionExtension
 
         return services;
     }
-    //TODO:Сделать автоматическую регистрацию
+    
     public static IServiceCollection ConfigureCommandHandlers(this IServiceCollection services)
     {
         //можно зарегистрировать диспетчеры как Singleton, и так даже правильнее
