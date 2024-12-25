@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Litres.Domain.Abstractions.Entities;
 
 namespace Litres.Domain.Entities;
@@ -42,4 +43,25 @@ public class Message : IEntity
     /// </summary>
     public long ChatId { get; set; }
     public virtual Chat Chat { get; set; }
+
+    [NotMapped]
+    public virtual FileModel? FileModel { get; set; }
+
+}
+
+[NotMapped]
+public class FileModel
+{
+    /*
+    public FileModel()
+    {
+        FileName ??= FileId!.Split(':')[1];
+        UserId ??= UserId!.Split(':')[0];
+    } */
+    public string FileId { get; set; }
+    
+    public string FileName { get; set; }
+    public long FileSize {set; get;}
+    public string CreatedDate { get; set; }
+    
 }

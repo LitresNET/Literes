@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.Security.Claims;
-using AutoMapper;
 using Litres.Application.Dto;
 using Litres.Application.Dto.Responses;
 using Litres.Application.Models;
@@ -14,8 +13,8 @@ namespace Litres.WebAPI.Controllers;
 [ApiController]
 [Route("api/[controller]")] // api/chat
 public class ChatController(
-    IQueryDispatcher queryDispatcher)
-    : ControllerBase
+    IQueryDispatcher queryDispatcher
+    ) : ControllerBase
 {
     [AllowAnonymous]
     [HttpGet("history")] // api/chat/history
@@ -29,6 +28,7 @@ public class ChatController(
         return Ok(result);
     }
 
+    [Authorize(Roles = "Agent")]
     [HttpGet("agent-chats")] // api/chat/agent-chats
     public async Task<IActionResult> GetAllChatsData()
     {

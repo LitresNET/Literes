@@ -11,7 +11,7 @@ public class ChatMapperProfile : Profile
     {
         CreateMap<Chat, ChatPreviewDto>()
             .ForMember(dto => dto.UserId, opt => opt.MapFrom(chat => chat.UserId))
-            .ForMember(dto => dto.UserName, opt => opt.MapFrom(chat => chat.User.Name))
+            .ForMember(dto => dto.Username, opt => opt.MapFrom(chat => chat.User.Name))
             .ForMember(dto => dto.LastMessageDate, opt => opt.MapFrom(chat => 
                 chat.Messages.OrderByDescending(m => m.SentDate).FirstOrDefault() != null 
                     ? chat.Messages.OrderByDescending(m => m.SentDate).First().SentDate 

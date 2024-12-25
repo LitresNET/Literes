@@ -17,7 +17,7 @@ export function ChatPreview({userId, username, lastMessageDate, ...rest }){
                     <span className="userid">id: {userId}</span>
                 </div>
                 <div className="chat-timestamp">
-                <span className="chat-timestamp">{new Date(lastMessageDate).toLocaleTimeString()}</span>
+                <span className="chat-timestamp">{!lastMessageDate || lastMessageDate === "00:00:00" ? null : lastMessageDate }</span>
                 </div>
             </div>
         </>

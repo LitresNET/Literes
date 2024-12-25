@@ -1,10 +1,13 @@
+using Amazon.S3;
 using Hangfire;
 using Litres.Application.Hubs;
 using Litres.Domain.Entities;
 using Litres.Infrastructure;
 using Litres.WebAPI.Extensions;
 using Litres.WebAPI.Middlewares;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -18,7 +21,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
     .AddJsonFile("appsettings.json", true, true)
-    .AddJsonFile("appsettings.Development.json", true, true);
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseLazyLoadingProxies()
@@ -43,6 +46,19 @@ builder.Services
     .AddConfiguredMassTransit()
     .AddEndpointsApiExplorer()
     .AddConfiguredSwaggerGen();
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 4L * 1024 * 1024 * 1024;
+});
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MaxRequestBodySize = 4L * 1024 * 1024 * 1024;
+});
+
+
+builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
+builder.Services.AddAWSService<IAmazonS3>();
 
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
