@@ -42,16 +42,4 @@ public class ChatController(
         var result = await queryDispatcher.QueryAsync<GetAllChats, List<ChatPreviewDto>>(query);
         return Ok(result);
     }
-
-    [HttpPost("file/upload")]
-    public async Task<IActionResult> UploadFile(IFormFile file, [FromQuery] long chatId)
-    {
-        long.TryParse(User.FindFirstValue(CustomClaimTypes.UserId),
-            NumberStyles.Any, CultureInfo.InvariantCulture, out var userId);
-
-        var query = new UploadFileCommand(file, chatId, userId);
-        var result = await commandDispatcher.DispatchReturnAsync<UploadFileCommand, string>(query);
-
-        return result == string.Empty ? BadRequest() : Ok(result);
-    }
 }

@@ -42,4 +42,6 @@ public class Message : IEntity
     /// </summary>
     public long ChatId { get; set; }
     public virtual Chat Chat { get; set; }
+
+    public List<string> Files { get; set; }
 }

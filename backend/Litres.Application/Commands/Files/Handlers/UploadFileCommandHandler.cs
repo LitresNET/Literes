@@ -15,10 +15,11 @@ public class UploadFileCommandHandler(
     public async Task HandleAsync(UploadFileCommand command)
     {
         var file = command.File;
+        var fileName = command.UserId + ':' + file.FileName + ':' + Guid.NewGuid();
         var initiateRequest = new InitiateMultipartUploadRequest
         {
             BucketName = _bucketName,
-            Key = file.FileName,
+            Key = fileName,
             ContentType = file.ContentType
         };
 
@@ -40,7 +41,7 @@ public class UploadFileCommandHandler(
                 var uploadPartRequest = new UploadPartRequest
                 {
                     BucketName = _bucketName,
-                    Key = file.FileName,
+                    Key = fileName,
                     UploadId = uploadId,
                     PartNumber = i + 1,
                     PartSize = bytesRead,
@@ -55,7 +56,7 @@ public class UploadFileCommandHandler(
         var completeRequest = new CompleteMultipartUploadRequest
         {
             BucketName = _bucketName,
-            Key = file.FileName,
+            Key = fileName,
             UploadId = uploadId,
             PartETags = partResponses
         };

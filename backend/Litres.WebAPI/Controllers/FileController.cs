@@ -1,18 +1,48 @@
-﻿using Litres.Application.Commands.Files;
+﻿using System.Globalization;
+using System.Security.Claims;
+using Litres.Application.Commands.Files;
+using Litres.Application.Models;
+using Litres.Application.Queries.Files;
 using Litres.Domain.Abstractions.Commands;
+using Litres.Domain.Abstractions.Queries;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Litres.WebAPI.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")] // api/file
-public class FileController(ICommandDispatcher commandDispatcher) : ControllerBase
+public class FileController(
+    IQueryDispatcher queryDispatcher,
+    ICommandDispatcher commandDispatcher
+    ) : ControllerBase
 {
+    [HttpGet("list")]
+    public async Task<IActionResult> GetFiles()
+    {
+        long.TryParse(User.FindFirstValue(CustomClaimTypes.UserId)!,
+            NumberStyles.Any, CultureInfo.InvariantCulture, out var userId);
+        var query = new GetFiles(userId);
+        var result = await queryDispatcher.QueryAsync<GetFiles, List<IFormFile>?>(query);
+        return result is null ? Ok() : Ok(result);
+    }
+
+    [HttpGet("{fileName}")]
+    public async Task<IActionResult> GetFile(string fileName)
+    {
+        long.TryParse(User.FindFirstValue(CustomClaimTypes.UserId)!,
+            NumberStyles.Any, CultureInfo.InvariantCulture, out var userId);
+        var query = new GetFile(userId, fileName);
+        var result = await queryDispatcher.QueryAsync<GetFile, IFormFile?>(query);
+        return result is null ? Ok() : Ok(result);
+    }
+
+    
     [HttpPost("upload")] // api/file/upload
     public async Task<IActionResult> UploadFile([FromForm] UploadFileCommand command)
     {
         await commandDispatcher.DispatchAsync(command);
         return Ok();
     }
-    
 }
