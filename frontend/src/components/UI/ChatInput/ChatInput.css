@@ -1,5 +1,16 @@
+
+.chat-input-buttons {
+    display: flex;
+    align-items: center
+}
+
+.chat-input-buttons .attach-button {
+    margin: 0 0 0 5px;
+    width: 20%;
+}
+
 .chat-input Button {
-    height: 30px;
+    height: 35px;
 }
 
 .chat-input Input {

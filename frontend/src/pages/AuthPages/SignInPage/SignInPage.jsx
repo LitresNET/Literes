@@ -36,7 +36,6 @@ const SignInPage = () => {
                 setError(result.error);
             } else {
                 navigate("/account")
-                location.reload();
             }
         });
     };
