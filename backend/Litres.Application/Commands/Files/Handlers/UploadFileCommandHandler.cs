@@ -6,13 +6,13 @@ using Microsoft.Extensions.Configuration;
 namespace Litres.Application.Commands.Files.Handlers;
 
 public class UploadFileCommandHandler(
-    IAmazonS3 s3Client, 
+    IAmazonS3 s3Client,
     IConfiguration configuration
-    ) : ICommandHandler<UploadFileCommand>
+    ) : ICommandHandler<UploadFileCommand, string>
 {
     private readonly string _bucketName = configuration["AWS:BucketName"]!;
     
-    public async Task HandleAsync(UploadFileCommand command)
+    public async Task<string> HandleAsync(UploadFileCommand command)
     {
         var file = command.File;
         var fileName = command.UserId + ':' + file.FileName + ':' + Guid.NewGuid();
@@ -61,5 +61,7 @@ public class UploadFileCommandHandler(
             PartETags = partResponses
         };
         await s3Client.CompleteMultipartUploadAsync(completeRequest);
+
+        return fileName;
     }
 }

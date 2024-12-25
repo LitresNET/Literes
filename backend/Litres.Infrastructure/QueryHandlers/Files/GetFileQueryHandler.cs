@@ -18,27 +18,17 @@ public class GetFileQueryHandler(
         var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null) return null;
 
+        if (!int.TryParse(q.FileName.Split(':')[0], out var fileUserId))
+            return null;
+
+        if (userId != fileUserId)
+            return null;
+
         var bucketName = config["AWS:BucketName"];
         if (bucketName == null)
             throw new NullReferenceException("BucketName cannot be null. Configuration was incorrect.");
-
-        var request = new ListObjectsV2Request
-        {
-            BucketName = bucketName,
-            Prefix = q.FileName
-        };
-
-        var response = await s3Client.ListObjectsV2Async(request);
-        var files = new List<S3Object>(response.S3Objects);
-
-        while (response.IsTruncated)
-        {
-            request.ContinuationToken = response.NextContinuationToken;
-            response = await s3Client.ListObjectsV2Async(request);
-            files.AddRange(response.S3Objects);
-        }
         
-        var s3Object = await s3Client.GetObjectAsync(bucketName, request.BucketName, q.FileName);
+        var s3Object = await s3Client.GetObjectAsync(bucketName, q.FileName);
 
         return new FormFile(s3Object.ResponseStream, 0, s3Object.ResponseStream.Length, 
             q.FileName, q.FileName);
