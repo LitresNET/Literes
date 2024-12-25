@@ -29,7 +29,7 @@ public class FileController(
         return result is null ? Ok() : Ok(result);
     }
 
-    [HttpGet("{FileName}")]
+    [HttpGet("{FileName}")] //
     public async Task<IActionResult> GetFile([FromRoute] GetFile query)
     {
         var stream = await queryDispatcher.QueryAsync<GetFile, Stream>(query);

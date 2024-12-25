@@ -1,5 +1,7 @@
 import './FileCard.css'
 import PropTypes from "prop-types";
+import {axiosToLitres} from "../../hooks/useAxios.js";
+import configData from "./../../../config.json";
 
 export function FileCard({ fileId, fileName, fileSize, createdDate, ...rest}) {
     FileCard.propTypes = {
@@ -8,6 +10,9 @@ export function FileCard({ fileId, fileName, fileSize, createdDate, ...rest}) {
         fileSize: PropTypes.string.isRequired,
         createdDate: PropTypes.string.isRequired
     }
+    // const getFile = async () => {
+    //     return await axiosToLitres.get()
+    // }
     const formatSize = (size) => {
         if (size === 0) return '0 Bytes';
         const k = 1024; // 1 КБ = 1024 Б
@@ -18,7 +23,7 @@ export function FileCard({ fileId, fileName, fileSize, createdDate, ...rest}) {
 
     return (
         <div className="file-card" {...rest}>
-            <div className="file-name">{fileName}</div>
+            <div className="file-name">{<a href={`${configData.LITRES_URL}` + `/file/${fileId}`}>{fileName}</a>}</div>
             <div className="file-info">{`${formatSize(fileSize)} | ${createdDate}`}</div>
         </div>
     )
