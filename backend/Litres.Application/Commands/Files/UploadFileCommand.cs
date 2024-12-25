@@ -1,11 +1,12 @@
-﻿using Litres.Domain.Abstractions.Commands;
+﻿using System.Text.Json.Serialization;
+using Litres.Domain.Abstractions.Commands;
 using Microsoft.AspNetCore.Http;
 
 namespace Litres.Application.Commands.Files;
 
-public record UploadFileCommand(IFormFile File, long ChatId, long UserId) : ICommand<string>
+public record UploadFileCommand(IFormFile File) : ICommand<string>
 {
     public IFormFile File { get; } = File;
-    public long ChatId { get; } = ChatId;
-    public long UserId { get; } = UserId;
+    [JsonIgnore]
+    public long UserId { get; set; }
 }   

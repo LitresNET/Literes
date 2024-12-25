@@ -15,7 +15,7 @@ public class UploadFileCommandHandler(
     public async Task<string> HandleAsync(UploadFileCommand command)
     {
         var file = command.File;
-        var fileName = command.UserId + ':' + file.FileName + ':' + Guid.NewGuid();
+        var fileName = command.UserId.ToString() + ':' + file.FileName + ':' + Guid.NewGuid();
         var initiateRequest = new InitiateMultipartUploadRequest
         {
             BucketName = _bucketName,

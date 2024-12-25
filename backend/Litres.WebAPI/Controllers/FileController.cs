@@ -28,21 +28,22 @@ public class FileController(
         return result is null ? Ok() : Ok(result);
     }
 
-    [HttpGet("{fileName}")]
-    public async Task<IActionResult> GetFile(string fileName)
+    [HttpGet("{FileName}")]
+    public async Task<IActionResult> GetFile([FromRoute] GetFile query)
     {
-        long.TryParse(User.FindFirstValue(CustomClaimTypes.UserId)!,
-            NumberStyles.Any, CultureInfo.InvariantCulture, out var userId);
-        var query = new GetFile(userId, fileName);
-        var result = await queryDispatcher.QueryAsync<GetFile, IFormFile?>(query);
-        return result is null ? Ok() : Ok(result);
+        var stream = await queryDispatcher.QueryAsync<GetFile, Stream>(query);
+        return File(stream, "application/octet-stream", query.FileName);
     }
 
     
     [HttpPost("upload")] // api/file/upload
     public async Task<IActionResult> UploadFile([FromForm] UploadFileCommand command)
     {
-        await commandDispatcher.DispatchAsync(command);
-        return Ok();
+        long.TryParse(User.FindFirstValue(CustomClaimTypes.UserId)!,
+            NumberStyles.Any, CultureInfo.InvariantCulture, out var userId);
+        command.UserId = userId;
+        
+        var result = await commandDispatcher.DispatchReturnAsync<UploadFileCommand, string>(command);
+        return Ok(result);
     }
 }

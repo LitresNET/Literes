@@ -1,11 +1,9 @@
 ﻿using System.Globalization;
 using System.Security.Claims;
-using Litres.Application.Commands.Files;
 using Litres.Application.Dto;
 using Litres.Application.Dto.Responses;
 using Litres.Application.Models;
 using Litres.Application.Queries.Chats;
-using Litres.Domain.Abstractions.Commands;
 using Litres.Domain.Abstractions.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,8 +13,7 @@ namespace Litres.WebAPI.Controllers;
 [ApiController]
 [Route("api/[controller]")] // api/chat
 public class ChatController(
-    IQueryDispatcher queryDispatcher,
-    ICommandDispatcher commandDispatcher
+    IQueryDispatcher queryDispatcher
     ) : ControllerBase
 {
     [AllowAnonymous]

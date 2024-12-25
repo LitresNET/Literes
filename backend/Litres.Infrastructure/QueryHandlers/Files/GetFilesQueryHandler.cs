@@ -53,7 +53,7 @@ public class GetFilesQueryHandler(
         var response = await s3Client.ListObjectsV2Async(request);
         var files = new List<S3Object>(response.S3Objects);
 
-        while (response.IsTruncated)
+        while ((bool)response.IsTruncated!)
         {
             request.ContinuationToken = response.NextContinuationToken;
             response = await s3Client.ListObjectsV2Async(request);
