@@ -5,7 +5,10 @@ using Microsoft.Extensions.Configuration;
 
 namespace Litres.Application.Commands.Files.Handlers;
 
-public class UploadFileCommandHandler(IAmazonS3 s3Client, IConfiguration configuration) : ICommandHandler<UploadFileCommand>
+public class UploadFileCommandHandler(
+    IAmazonS3 s3Client, 
+    IConfiguration configuration
+    ) : ICommandHandler<UploadFileCommand>
 {
     private readonly string _bucketName = configuration["AWS:BucketName"]!;
     
@@ -24,13 +27,13 @@ public class UploadFileCommandHandler(IAmazonS3 s3Client, IConfiguration configu
 
         var partResponses = new List<PartETag>();
         
-        var partSize = 5 * 1024 * 1024; // 5 MB
+        const int partSize = 5 * 1024 * 1024; // 5 MB
         await using (var fileStream = file.OpenReadStream())
         {
-            for (int i = 0; fileStream.Position < fileStream.Length; i++)
+            for (var i = 0; fileStream.Position < fileStream.Length; i++)
             {
                 var buffer = new byte[partSize];
-                var bytesRead = await fileStream.ReadAsync(buffer, 0, buffer.Length);
+                var bytesRead = await fileStream.ReadAsync(buffer);
                 if (bytesRead == 0) break;
 
                 using var stream = new MemoryStream(buffer, 0, bytesRead);
