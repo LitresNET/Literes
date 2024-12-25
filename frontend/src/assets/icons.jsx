@@ -1,5 +1,6 @@
 const ICONS = {
     account: new URL('./icons/account.svg', import.meta.url).href,
+    attachment: new URL('./icons/attachment.svg', import.meta.url).href,
     binoculars: new URL('./icons/binoculars.svg', import.meta.url).href,
     book_open: new URL('./icons/book_open.svg', import.meta.url).href,
     bookmark_simple: new URL('./icons/bookmark_simple.svg', import.meta.url).href,
