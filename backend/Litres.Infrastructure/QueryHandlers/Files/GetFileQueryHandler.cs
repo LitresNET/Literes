@@ -17,7 +17,7 @@ public class GetFileQueryHandler(
         if (bucketName == null)
             throw new NullReferenceException("BucketName cannot be null. Configuration was incorrect.");
         
-        var s3Object = await s3Client.GetObjectAsync(bucketName, q.FileName);
+        var s3Object = await s3Client.GetObjectAsync(bucketName, q.FileName.Split('.')[1]);
         return s3Object.ResponseStream;
     }
 }

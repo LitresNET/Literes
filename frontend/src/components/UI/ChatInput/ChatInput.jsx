@@ -17,8 +17,10 @@ export function ChatInput({connection, setMessages, ...rest}) {
     const [message, setMessage] = useState('');
     const username = localStorage.getItem("username");
     const [file, setFile] = useState(null);
+    let fileId;
     const ref = useRef();
 
+    //TODO: Отрабатывает только один раз почему-то
     const attachFile = (e) => {
         let f = e.target.files[0]
         console.log(f);
@@ -30,17 +32,17 @@ export function ChatInput({connection, setMessages, ...rest}) {
         const formData = new FormData();
         formData.append("file", file);
         try {
-            await axiosToLitres.post('file/upload', formData, {
+            let response = await axiosToLitres.post('file/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
+            fileId = response.data;
             toast.success(`File is successfully uploaded`, {toastId: "FileUploadSuccess"})
         } catch (e) {
             toast.error(`File is not uploaded: ${e.message}`, {toastId: "FileUploadError"})
         } finally {
-            toast.dismiss(loading)
-            setFile(null);
+            toast.dismiss(loading);
         }
     }
     const handleKeyPress = async (event) => {
@@ -53,17 +55,28 @@ export function ChatInput({connection, setMessages, ...rest}) {
             return
         }
         if (connection) {
+            let fileModel = null;
+            if (file) {
+
+                fileModel = {
+                    fileId: fileId,
+                    fileName: file?.name,
+                    fileSize: file?.size,
+                    createdDate: new Date().toLocaleTimeString()
+                }
+            }
             const newMessage = {
                 Text: message,
-                From: username
+                From: username,
+                FileModel: fileModel
             };
+            console.log(newMessage)
             await connection.invoke('SendMessage', newMessage).then(() => {
                 setMessage('');
                 setMessages((prevMessages) => [...prevMessages, {
-                    from: username, message: message, sentDate: new Date().toLocaleTimeString() }])
+                    from: username, message: message, sentDate: new Date().toLocaleTimeString(), fileModel: fileModel }])
             }).catch((e) => toast.error(`Chat: Sending message error: ${e.message}`,
                 {toastId: "ChatSendMessageError"}));
-
         }
         else {
             toast.error("Chat: No connection", {toastId: "ChatSendMessageError"});
@@ -95,7 +108,11 @@ export function ChatInput({connection, setMessages, ...rest}) {
                 onKeyDown={handleKeyPress}
             />
             <div className="chat-input-buttons">
-                <Button onClick={file ? sendFile  : sendMessage} text="Send" disabled={!message && !file}/>
+                <Button onClick={file ? async () => {
+                    await sendFile();
+                    await sendMessage();
+                    setFile(null);
+                } : sendMessage} text="Send" disabled={!message}/>
                 <input
                     type="file"
                     onChange={attachFile}

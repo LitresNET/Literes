@@ -20,7 +20,8 @@ export function Chat({chatWindowStyle, chatInputStyle, textIfEmpty, ...rest}) {
         try {
             const response = await axiosToLitres.get('/chat/history');
 
-            setMessages([...response.data.messages?.map(m => ({from: m.from, message: m.text, sentDate: m.sentDate}))])
+            setMessages([...response.data.messages?.map(m => ({from: m.from, message: m.text, sentDate: m.sentDate,
+                fileModel: m.fileModel}))])
         } catch (error) {
             toast.error(`Chat: ${error}`, {toastId: "ChatFetchError"})
         }
@@ -43,7 +44,7 @@ export function Chat({chatWindowStyle, chatInputStyle, textIfEmpty, ...rest}) {
                 setChats((prev) => [...prev, { userId: message.chat.userId, lastMessageDate: message.sentDate }]);
             } */
             setMessages((prev) => [...prev, {from: message.from, message: message.text,
-                sentDate:new Date(message.sentDate).toLocaleTimeString()}]);
+                sentDate:new Date(message.sentDate).toLocaleTimeString(), fileModel: message.fileModel}]);
         });
 
         if (!connectionEstablished) {

@@ -18,6 +18,7 @@ public class FileController(
     ICommandDispatcher commandDispatcher
     ) : ControllerBase
 {
+    //TODO: Не работает
     [HttpGet("list")]
     public async Task<IActionResult> GetFiles()
     {
