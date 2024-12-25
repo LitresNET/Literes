@@ -78,7 +78,7 @@ public static class ServiceCollectionExtension
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()
-            .UseSqlServerStorage(configuration["Database:Hangfire"]));
+            .UseSqlServerStorage(configuration["Database:HangfireConnectionString"]));
         services.AddHangfireServer();
 
         return services;

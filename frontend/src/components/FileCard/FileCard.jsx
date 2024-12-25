@@ -23,7 +23,7 @@ export function FileCard({ fileId, fileName, fileSize, createdDate, ...rest}) {
 
     return (
         <div className="file-card" {...rest}>
-            <div className="file-name">{<a href={`${configData.LITRES_URL}` + `/file/${fileId}`}>{fileName}</a>}</div>
+            <div className="file-name">{<a target="_blank" href={`${configData.LITRES_URL}` + `/file/${fileId}`}>{fileName}</a>}</div>
             <div className="file-info">{`${formatSize(fileSize)} | ${createdDate}`}</div>
         </div>
     )
