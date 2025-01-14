@@ -23,8 +23,11 @@ export function ChatInput({connection, setMessages, ...rest}) {
     //TODO: Отрабатывает только один раз почему-то
     const attachFile = (e) => {
         let f = e.target.files[0]
-        console.log(f);
-        setFile(f);
+        if (f) {
+            console.log('Файл прикреплен:', file);
+            e.target.value = null;
+            setFile(f);
+        }
     };
 
     const sendFile = async () => {
