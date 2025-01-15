@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using StackExchange.Redis;
 
 // Логирование на уровне приложения
 Log.Logger = new LoggerConfiguration()
@@ -25,7 +26,7 @@ builder.Configuration
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseLazyLoadingProxies()
-        .UseSqlServer(builder.Configuration["DB_CONNECTION_STRING"]));
+        .UseSqlServer(builder.Configuration["Database:ConnectionString"]));
 
 builder.Services.AddIdentity<User, IdentityRole<long>>(options =>
     options.User.RequireUniqueEmail = true)
@@ -45,7 +46,8 @@ builder.Services
     .AddConfiguredAutoMapper()
     .AddConfiguredMassTransit()
     .AddEndpointsApiExplorer()
-    .AddConfiguredSwaggerGen();
+    .AddConfiguredSwaggerGen()
+    .AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration["Redis:ConnectionString"]!));;
 
 builder.Services.Configure<FormOptions>(options =>
     options.MultipartBodyLengthLimit = 4L * 1024 * 1024 * 1024);

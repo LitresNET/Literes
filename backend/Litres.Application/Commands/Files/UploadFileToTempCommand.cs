@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Litres.Application.Commands.Files;
 
-public record UploadFileCommand(IFormFile File) : ICommand<string>
+public record UploadFileToTempCommand(IFormFile File) : ICommand<string>
 {
     public IFormFile File { get; } = File;
     [JsonIgnore]

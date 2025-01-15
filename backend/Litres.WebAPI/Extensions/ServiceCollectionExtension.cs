@@ -37,6 +37,7 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddSingleton<IMemoryCache, MemoryCache>();
+        services.AddScoped<IFileService, FileService>();
         services.AddScoped<NotificationHub>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<ILoginService, LoginService>();
@@ -68,6 +69,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IRedisRepository, RedisRepository>();
 
         return services;
     }

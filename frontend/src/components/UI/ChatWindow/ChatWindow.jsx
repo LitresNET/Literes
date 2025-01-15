@@ -13,7 +13,7 @@ export function ChatWindow({messages, textIfEmpty, ...rest}) {
                 fileModel: PropTypes.shape({
                     fileId: PropTypes.string.isRequired,
                     fileName: PropTypes.string.isRequired,
-                    fileSize: PropTypes.string.isRequired,
+                    fileSize: PropTypes.number.isRequired,
                     createdDate: PropTypes.string.isRequired
             })})),
         textIfEmpty: PropTypes.string

@@ -24,7 +24,7 @@ export function ChatInput({connection, setMessages, ...rest}) {
     const attachFile = (e) => {
         let f = e.target.files[0]
         if (f) {
-            console.log('Файл прикреплен:', file);
+            console.log('Файл прикреплен:', f);
             e.target.value = null;
             setFile(f);
         }
@@ -125,12 +125,17 @@ export function ChatInput({connection, setMessages, ...rest}) {
                     style={{display: 'none'}}
                     ref={ref}
                 />
-                <Button onClick={() => ref.current.click()} className="attach-button" iconPath={ICONS.attachment}/>
+                <Button onClick={() => ref.current.click()} className="small-button" iconPath={ICONS.attachment}
+                        title="Attach file"/>
             </div>
             {file ? <>
                     <p style={{maxWidth:"217px",textAlign:"center",color:"gray"}}>
                         {`File ${formatName(file.name)} ${formatSize(file.size)} attached`}</p>
-                    <Button iconPath={ICONS.trash} onClick={() => setFile(null)}></Button></>
+                    <div className="chat-input-buttons">
+                        <Button iconPath={ICONS.trash} onClick={() => setFile(null)} title={"Remove file"}/>
+                        <Button iconPath={ICONS.pencil} className="small-button" title={"Add metadata"}/>
+                    </div>
+                    </>
                 : null}
 
 
