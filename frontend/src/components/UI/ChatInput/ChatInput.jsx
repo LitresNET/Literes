@@ -74,12 +74,17 @@ export function ChatInput({connection, setMessages, ...rest}) {
                 FileModel: fileModel
             };
             console.log(newMessage)
-            await connection.invoke('SendMessage', newMessage).then(() => {
-                setMessage('');
-                setMessages((prevMessages) => [...prevMessages, {
-                    from: username, message: message, sentDate: new Date().toLocaleTimeString(), fileModel: fileModel }])
-            }).catch((e) => toast.error(`Chat: Sending message error: ${e.message}`,
-                {toastId: "ChatSendMessageError"}));
+            await connection
+                .invoke('SendMessage', newMessage).then(() => {
+                    setMessage('');
+                    setMessages((prevMessages) => [...prevMessages, {
+                        from: username, 
+                        message: message, 
+                        sentDate: new Date().toLocaleTimeString(), 
+                        fileModel: fileModel 
+                    }])
+                }).catch((e) => toast.error(`Chat: Sending message error: ${e.message}`,
+                    {toastId: "ChatSendMessageError"}));
         }
         else {
             toast.error("Chat: No connection", {toastId: "ChatSendMessageError"});
@@ -98,8 +103,6 @@ export function ChatInput({connection, setMessages, ...rest}) {
         const i = Math.floor(Math.log(size) / Math.log(k)); // Находим индекс
         return parseFloat((size / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; // Возвращаем отформатированный размер
     };
-
-
 
     return (
         <div className="chat-input" {...rest}>

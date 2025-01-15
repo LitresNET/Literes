@@ -25,7 +25,7 @@ builder.Configuration
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseLazyLoadingProxies()
-        .UseSqlServer(builder.Configuration["Database:ConnectionString"]));
+        .UseSqlServer(builder.Configuration["DB_CONNECTION_STRING"]));
 
 builder.Services.AddIdentity<User, IdentityRole<long>>(options =>
     options.User.RequireUniqueEmail = true)
@@ -48,13 +48,9 @@ builder.Services
     .AddConfiguredSwaggerGen();
 
 builder.Services.Configure<FormOptions>(options =>
-{
-    options.MultipartBodyLengthLimit = 4L * 1024 * 1024 * 1024;
-});
+    options.MultipartBodyLengthLimit = 4L * 1024 * 1024 * 1024);
 builder.Services.Configure<KestrelServerOptions>(options =>
-{
-    options.Limits.MaxRequestBodySize = 4L * 1024 * 1024 * 1024;
-});
+    options.Limits.MaxRequestBodySize = 4L * 1024 * 1024 * 1024);
 
 
 builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
@@ -65,12 +61,12 @@ builder.Services.AddSignalR();
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder =>
 {
-        var origins = builder.Configuration.GetSection("CorsPolicy:Origins").Get<string[]>()!;
-        policyBuilder
-                .WithOrigins(origins)
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials();
+    var origins = builder.Configuration.GetSection("CorsPolicy:Origins").Get<string[]>()!;
+    policyBuilder
+        .WithOrigins(origins)
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials();
 }));
 
 builder.Services.ConfigureServices(builder.Environment, builder.Configuration);

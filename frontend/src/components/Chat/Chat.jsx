@@ -15,13 +15,19 @@ export function Chat({chatWindowStyle, chatInputStyle, textIfEmpty, ...rest}) {
     const [connection, setConnection] = useState(null);
     const [connectionEstablished, setConnectionEstablished] = useState(false);
     const [messages, setMessages] = useState([]);
+    const [chatId, setChatId] = useState(null);
 
     const fetchChatData = async () => {
         try {
             const response = await axiosToLitres.get('/chat/history');
 
-            setMessages([...response.data.messages?.map(m => ({from: m.from, message: m.text, sentDate: m.sentDate,
-                fileModel: m.fileModel}))])
+            setMessages([...response.data.messages?.map(m => ({
+                chatId: m.chatId,
+                from: m.from, 
+                message: m.text, 
+                sentDate: m.sentDate,
+                fileModel: m.fileModel})
+            )])
         } catch (error) {
             toast.error(`Chat: ${error}`, {toastId: "ChatFetchError"})
         }
@@ -43,8 +49,14 @@ export function Chat({chatWindowStyle, chatInputStyle, textIfEmpty, ...rest}) {
             if (chats.find(c => c.userId === message.chat.userId) === -1) {
                 setChats((prev) => [...prev, { userId: message.chat.userId, lastMessageDate: message.sentDate }]);
             } */
-            setMessages((prev) => [...prev, {from: message.from, message: message.text,
-                sentDate:new Date(message.sentDate).toLocaleTimeString(), fileModel: message.fileModel}]);
+            setMessages((prev) => [...prev, {
+                chatId: message.chatId,
+                from: message.from, 
+                message: message.text,
+                sentDate:new Date(message.sentDate).toLocaleTimeString(), 
+                fileModel: message.fileModel
+            }]);
+            setChatId(message.ChatId)
         });
 
         if (!connectionEstablished) {

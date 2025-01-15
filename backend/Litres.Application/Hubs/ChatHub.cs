@@ -108,9 +108,16 @@ public class ChatHub(
             {
                 var query = new GetChatByUserId(user.Id);
                 var chat = await queryDispatcher.QueryAsync<GetChatByUserId, Chat?>(query); // checks the user and the agent id's
-
+                
                 if (chat is null)
                 {
+                    if (Agents.Count == 0)
+                    {
+                        await Clients.Caller.ReceiveMessage(new Message
+                            {From = "System", Text = "Your message isn't delivered, no agents online(", SentDate = DateTime.Now});
+                        break;
+                    }
+                    
                     chat = new Chat
                     {
                         AgentId = Agents.Keys.ToList()[_currentAgentIndex % Agents.Count],
@@ -126,6 +133,7 @@ public class ChatHub(
                     chat = await commandDispatcher.DispatchReturnAsync<CreateChatCommand, Chat>(command);
                 }
 
+                message.ChatId = chat.Id;
                 // if agent is unavailable - drop the message. Will probably fix in future to reassign to next agent
                 if (Agents.TryGetValue(chat.AgentId, out var connection))
                 {
@@ -136,7 +144,7 @@ public class ChatHub(
                 else
                 {
                     await Clients.Client(connectionId).ReceiveMessage(new Message 
-                        {From = "System", Text = "Your message isn't delivered, your agent is unavailable"});
+                        {From = "System", Text = "Your message isn't delivered, your agent is unavailable", SentDate = DateTime.Now});
                 }
                 break;
             }
@@ -150,6 +158,8 @@ public class ChatHub(
                     await Clients.Caller.NonExistentChat();
                     return false;
                 }
+
+                message.ChatId = chat.Id;
 
                 // if client is unavailable - drop the message
                 if (Users.TryGetValue(chat.UserId, out var connection))
