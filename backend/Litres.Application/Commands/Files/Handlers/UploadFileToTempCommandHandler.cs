@@ -11,7 +11,7 @@ public class UploadFileToTempCommandHandler(
     
     public async Task<string> HandleAsync(UploadFileToTempCommand toTempCommand)
     {
-        return await service.UploadFileToTemp(toTempCommand.File, toTempCommand.UserId);
+        return await service.UploadFileToTempAsync(toTempCommand.File, toTempCommand.UserId);
     }
 }
 

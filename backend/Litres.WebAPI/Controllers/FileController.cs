@@ -31,10 +31,8 @@ public class FileController(
     [HttpGet("{FileName}")] // /api/file
     public async Task<IActionResult> GetFile([FromRoute] GetFile query)
     {
-        //TODO: query должно возвращать dto со stream и корректным (без id) названием файла, чтобы в контроллере не было
-        // преобразования имени через Split(':')
-        var stream = await queryDispatcher.QueryAsync<GetFile, Stream>(query);
-        return File(stream, "application/octet-stream", query.FileName.Split(':')[1]);
+        var (stream, contentType, fileName) = await queryDispatcher.QueryAsync<GetFile, (Stream stream, string contentType, string fileName)>(query);
+        return File(stream, contentType, fileName);
     }
 
     

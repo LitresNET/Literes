@@ -1,8 +1,10 @@
-﻿using Amazon.S3;
+﻿using System.Net;
+using Amazon.S3;
 using Amazon.S3.Model;
 using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Models;
 using Litres.Domain.Abstractions.Services;
+using Litres.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -22,7 +24,7 @@ public class FileService(
     private readonly string _tempBucketName = configuration["AWS:TempBucketName"] ??
                                               throw new NullReferenceException("BucketName cannot be null. Configuration was incorrect.");
 
-    public async Task<string> UploadFileToTemp(IFormFile file, long userId)
+    public async Task<string> UploadFileToTempAsync(IFormFile file, long userId)
     {
         var fileName = userId.ToString() + ':' + file.FileName + ':' + Guid.NewGuid();
         var initiateRequest = new InitiateMultipartUploadRequest
@@ -69,14 +71,13 @@ public class FileService(
             PartETags = partResponses
         };
         await s3Client.CompleteMultipartUploadAsync(completeRequest);
-
-        var metadata = GetMetadata(file);
-        await SaveMetadata(fileName, metadata);
+        var metadata = GetMetadataJson(file);
+        await SaveMetadataAsync(fileName, metadata);
 
         return fileName;
     }
 
-    public async Task<string> UploadFileToPerm(string fileName)
+    public async Task<string?> UploadFileToPermAsync(string fileName)
     {
         var copyRequest = new CopyObjectRequest
         {
@@ -88,15 +89,21 @@ public class FileService(
         };
 
         var metadataJson = await redisRepository.GetValue<string>(fileName);
-        var metadata = JsonSerializer.Deserialize<Dictionary<string, string>>(metadataJson!);
-        if (metadata != null)
+        if (metadataJson is null)
         {
-            foreach (var kvp in metadata)
+            return null;
+        }
+        if (metadataJson != string.Empty)
+        {
+            var metadata = JsonSerializer.Deserialize<Dictionary<string, string>>(metadataJson);
+            if (metadata != null)
             {
-                copyRequest.Metadata.Add(kvp.Key, kvp.Value);
+                foreach (var kvp in metadata)
+                {
+                    copyRequest.Metadata.Add(kvp.Key, kvp.Value);
+                }
             }
         }
-        
         await s3Client.CopyObjectAsync(copyRequest);
         
         var deleteRequest = new DeleteObjectRequest
@@ -109,7 +116,7 @@ public class FileService(
         return fileName;
     }
 
-    public async Task UploadAllFilesToPerm()
+    public async Task UploadAllFilesToPermAsync()
     {
         var request = new ListObjectsV2Request
         {
@@ -124,7 +131,7 @@ public class FileService(
                 
             foreach (var obj in response.S3Objects)
             {
-                await UploadFileToPerm(obj.Key);
+                await UploadFileToPermAsync(obj.Key);
             }
                 
             request.ContinuationToken = response.NextContinuationToken;
@@ -133,20 +140,27 @@ public class FileService(
         
     }
 
-    public async Task SaveMetadata(string fileName, string metadata)
+    public async Task SaveMetadataAsync(string fileName, string metadata)
     {
         await redisRepository.SetValue(fileName, metadata);
-        if (redisRepository.GetSize() >= 2)
+        if (await redisRepository.GetSize() >= 2)
         {
-            await UploadAllFilesToPerm();
+            await UploadAllFilesToPermAsync();
+            await redisRepository.ClearDatabase();
         }
     }
 
-    public string GetMetadata(IFormFile file)
+    /// <summary>
+    /// Возвращает набор метаданных в формате Json.
+    /// Возвращает пустую строку если тип файла не поддерживается (=файл без метаданных).
+    /// Выбрасывает исключение MetadataUploadError, если произошла ошибка при получении метаданных.
+    /// </summary>
+    public string GetMetadataJson(IFormFile file)
     {
         var tags = new Dictionary<string, string>();
-        using (var tagFile = File.Create(new StreamFileAbstraction(file)))
+        try
         {
+            using var tagFile = File.Create(new StreamFileAbstraction(file));
             var tag = tagFile.Tag;
             foreach (var property in tag.GetType().GetProperties())
             {
@@ -170,14 +184,31 @@ public class FileService(
                 }
             }
         }
+        catch (TagLib.UnsupportedFormatException)
+        {
+            return string.Empty;
+        }
+        catch(Exception ex)
+        {
+            throw new MetadataUploadError(file.FileName, ex.Message);
+        }
+
 
         return JsonConvert.SerializeObject(tags, Formatting.Indented);;
     }
 
-    public async Task<Stream> GetFile(string fileName)
+    public async Task<(Stream stream, string contentType, string fileName)> GetFileAsync(string fileName)
     {
-        var s3Object = await s3Client.GetObjectAsync(_permBucketName, fileName) 
-                       ?? await s3Client.GetObjectAsync(_tempBucketName, fileName);
-        return s3Object.ResponseStream;
+        try
+        {
+            var s3Object = await s3Client.GetObjectAsync(_permBucketName, fileName);
+            return (s3Object.ResponseStream, s3Object.Headers.ContentType, fileName.Split(':')[1]);
+        }
+        catch (AmazonS3Exception ex)
+        {
+            if (ex.StatusCode != HttpStatusCode.NotFound) throw;
+            var s3Object = await s3Client.GetObjectAsync(_tempBucketName, fileName);
+            return (s3Object.ResponseStream, s3Object.Headers.ContentType, fileName.Split(':')[1]);
+        }
     }
 }

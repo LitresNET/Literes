@@ -11,6 +11,9 @@ public class RedisRepository(
     private readonly IDatabase _database
         = connectionMultiplexer.GetDatabase();
 
+    private readonly IServer _server = connectionMultiplexer.GetServer(connectionMultiplexer.GetEndPoints().First());
+        //connectionMultiplexer.GetServer("localhost", 6379);
+
     public async Task SetValue<T>(string key, T value)
         => await _database.StringSetAsync(
             key, JsonSerializer.Serialize(value));
@@ -67,6 +70,16 @@ public class RedisRepository(
     public async Task RemoveHashSetValue(string hashSetKey, string field)
         => await _database.HashDeleteAsync(hashSetKey, field);
 
-    //TODO: Rewrite method
-    public long GetSize() => connectionMultiplexer.GetServer("localhost", 6379).DatabaseSize();
+    public async Task ClearDatabase() // => await _server.FlushDatabaseAsync(); - нужен admin mode в redis.
+                                      // Это эффективнее, чем удалять по-отдельности, но у нас все равно удаление после 2 элементов вызывается так что пох
+    {
+        var keys = _server.Keys(_database.Database).ToArray();
+
+        foreach (var key in keys)
+        {
+            _database.KeyDelete(key);
+        }
+    }  
+
+    public async Task<long> GetSize() => await _server.DatabaseSizeAsync();
 }

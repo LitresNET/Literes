@@ -5,10 +5,10 @@ namespace Litres.Domain.Abstractions.Services;
 
 public interface IFileService
 {
-    Task<string> UploadFileToTemp(IFormFile file, long userId);
-    Task<string> UploadFileToPerm(string fileName);
-    Task UploadAllFilesToPerm();
-    Task SaveMetadata(string fileName, string metadata);
-    string GetMetadata(IFormFile file);
-    Task<Stream> GetFile(string fileName);
+    Task<string> UploadFileToTempAsync(IFormFile file, long userId);
+    Task<string?> UploadFileToPermAsync(string fileName);
+    Task UploadAllFilesToPermAsync();
+    Task SaveMetadataAsync(string fileName, string metadata);
+    string GetMetadataJson(IFormFile file);
+    Task<(Stream stream, string contentType, string fileName)> GetFileAsync(string fileName);
 }

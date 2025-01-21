@@ -9,5 +9,6 @@ public interface IRedisRepository
     public Task<T?> GetHashSetValue<T>(string hashSetKey, string field);
     public Task<T?> GetHashSetAll<T>(string hashSetKey) where T : class, new();
     public Task RemoveHashSetValue(string hashSetKey, string field);
-    long GetSize();
+    public Task ClearDatabase();
+    public Task<long> GetSize();
 }

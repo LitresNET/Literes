@@ -16,6 +16,6 @@ public class UploadFileToPermCommandHandler(
 
     public async Task<string> HandleAsync(UploadFileToPermCommand command)
     {
-        return await fileService.UploadFileToPerm(command.FileName);
+        return await fileService.UploadFileToPermAsync(command.FileName);
     }
 }
