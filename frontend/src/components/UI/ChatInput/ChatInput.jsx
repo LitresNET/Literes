@@ -8,7 +8,6 @@ import {HubConnection} from "@microsoft/signalr";
 import ICONS from "../../../assets/icons.jsx";
 import {axiosToLitres} from "../../../hooks/useAxios.js";
 
-//TODO: интегрировать в Chat и ChatPage
 export function ChatInput({connection, setMessages, ...rest}) {
     ChatInput.propTypes = {
         connection: PropTypes.shape(HubConnection),
@@ -20,7 +19,6 @@ export function ChatInput({connection, setMessages, ...rest}) {
     let fileId;
     const ref = useRef();
 
-    //TODO: Отрабатывает только один раз почему-то
     const attachFile = (e) => {
         let f = e.target.files[0]
         if (f) {
@@ -31,22 +29,23 @@ export function ChatInput({connection, setMessages, ...rest}) {
     };
 
     const sendFile = async () => {
+        let isSuccess = false;
         let loading = toast.loading("File is uploading...", {toastId: "FileUploadLoading"})
         const formData = new FormData();
         formData.append("file", file);
-        try {
-            let response = await axiosToLitres.post('file/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
+        await axiosToLitres.post('file/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then((response) => {
             fileId = response.data;
-            toast.success(`File is successfully uploaded`, {toastId: "FileUploadSuccess"})
-        } catch (e) {
-            toast.error(`File is not uploaded: ${e.message}`, {toastId: "FileUploadError"})
-        } finally {
-            toast.dismiss(loading);
-        }
+            toast.success(`File is successfully uploaded`, {toastId: "FileUploadSuccess"});
+            isSuccess = true;
+        }).catch((e) => {
+            console.log(e)
+            toast.error(`File is not uploaded: ${e.message}`, {toastId: "FileUploadError"});
+        }).finally(() => toast.dismiss(loading));
+        return isSuccess
     }
     const handleKeyPress = async (event) => {
         if (event.key === 'Enter')
@@ -73,7 +72,6 @@ export function ChatInput({connection, setMessages, ...rest}) {
                 From: username,
                 FileModel: fileModel
             };
-            console.log(newMessage)
             await connection
                 .invoke('SendMessage', newMessage).then(() => {
                     setMessage('');
@@ -82,7 +80,7 @@ export function ChatInput({connection, setMessages, ...rest}) {
                         message: message, 
                         sentDate: new Date().toLocaleTimeString(), 
                         fileModel: fileModel 
-                    }])
+                    }]) // TODO: Если серверу не удаётся загрузить файл, он все равно отправляет сообщение, но без него, а файл визуально все равно отображается.
                 }).catch((e) => toast.error(`Chat: Sending message error: ${e.message}`,
                     {toastId: "ChatSendMessageError"}));
         }
@@ -115,9 +113,11 @@ export function ChatInput({connection, setMessages, ...rest}) {
             />
             <div className="chat-input-buttons">
                 <Button onClick={file ? async () => {
-                    await sendFile();
-                    await sendMessage();
-                    setFile(null);
+                    if (await sendFile()) {
+                        await sendMessage();
+                        setFile(null);
+                    }
+
                 } : sendMessage} text="Send" disabled={!message}/>
                 <input
                     type="file"
