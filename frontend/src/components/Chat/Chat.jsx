@@ -25,7 +25,7 @@ export function Chat({chatWindowStyle, chatInputStyle, textIfEmpty, ...rest}) {
                 chatId: m.chatId,
                 from: m.from, 
                 message: m.text, 
-                sentDate: m.sentDate,
+                sentDate: new Date(m.sentDate).toLocaleTimeString(),
                 fileModel: m.fileModel})
             )])
         } catch (error) {
