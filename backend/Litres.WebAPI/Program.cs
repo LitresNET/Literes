@@ -37,7 +37,7 @@ builder.Services
     .AddConfiguredSerilog(builder.Configuration)
     .AddRouting(opt => opt.LowercaseUrls = true)
     .AddRepositories()
-    .AddServices() //TODO: надо бы избавиться от сервисов (кроме тех, логика которых ещё не адаптирована под CQRS)
+    .AddServices()
     .ConfigureCommandHandlers()
     .ConfigureQueryHandlers()
     .AddMiddlewares()
