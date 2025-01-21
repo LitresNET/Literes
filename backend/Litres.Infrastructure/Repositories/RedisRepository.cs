@@ -70,14 +70,14 @@ public class RedisRepository(
     public async Task RemoveHashSetValue(string hashSetKey, string field)
         => await _database.HashDeleteAsync(hashSetKey, field);
 
-    public async Task ClearDatabase() // => await _server.FlushDatabaseAsync(); - нужен admin mode в redis.
+    public async Task ClearDatabaseAsync() // => await _server.FlushDatabaseAsync(); - нужен admin mode в redis.
                                       // Это эффективнее, чем удалять по-отдельности, но у нас все равно удаление после 2 элементов вызывается так что пох
     {
-        var keys = _server.Keys(_database.Database).ToArray();
+        var keys = _server.Keys(_database.Database);
 
         foreach (var key in keys)
         {
-            _database.KeyDelete(key);
+            await _database.KeyDeleteAsync(key);
         }
     }  
 

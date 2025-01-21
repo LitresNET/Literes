@@ -146,7 +146,7 @@ public class FileService(
         if (await redisRepository.GetSize() >= 2)
         {
             await UploadAllFilesToPermAsync();
-            await redisRepository.ClearDatabase();
+            await redisRepository.ClearDatabaseAsync();
         }
     }
 
