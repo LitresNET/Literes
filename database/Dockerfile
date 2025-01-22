@@ -1,5 +1,6 @@
 # Указываем базовый образ SQL Server
 FROM mcr.microsoft.com/mssql/server
+EXPOSE 1433
 
 # Меняем текущего пользователя на пользователя с корневыми правами доступа
 USER root

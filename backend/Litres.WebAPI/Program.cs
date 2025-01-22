@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using StackExchange.Redis;
 
 // Логирование на уровне приложения
 Log.Logger = new LoggerConfiguration()
@@ -36,7 +37,7 @@ builder.Services
     .AddConfiguredSerilog(builder.Configuration)
     .AddRouting(opt => opt.LowercaseUrls = true)
     .AddRepositories()
-    .AddServices() //TODO: надо бы избавиться от сервисов (кроме тех, логика которых ещё не адаптирована под CQRS)
+    .AddServices()
     .ConfigureCommandHandlers()
     .ConfigureQueryHandlers()
     .AddMiddlewares()
@@ -45,16 +46,13 @@ builder.Services
     .AddConfiguredAutoMapper()
     .AddConfiguredMassTransit()
     .AddEndpointsApiExplorer()
-    .AddConfiguredSwaggerGen();
+    .AddConfiguredSwaggerGen()
+    .AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration["Redis:ConnectionString"]!));;
 
 builder.Services.Configure<FormOptions>(options =>
-{
-    options.MultipartBodyLengthLimit = 4L * 1024 * 1024 * 1024;
-});
+    options.MultipartBodyLengthLimit = 4L * 1024 * 1024 * 1024);
 builder.Services.Configure<KestrelServerOptions>(options =>
-{
-    options.Limits.MaxRequestBodySize = 4L * 1024 * 1024 * 1024;
-});
+    options.Limits.MaxRequestBodySize = 4L * 1024 * 1024 * 1024);
 
 
 builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
@@ -65,19 +63,19 @@ builder.Services.AddSignalR();
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder =>
 {
-        var origins = builder.Configuration.GetSection("CorsPolicy:Origins").Get<string[]>()!;
-        policyBuilder
-                .WithOrigins(origins)
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials();
+    var origins = builder.Configuration.GetSection("CorsPolicy:Origins").Get<string[]>()!;
+    policyBuilder
+        .WithOrigins(origins)
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials();
 }));
 
 builder.Services.ConfigureServices(builder.Environment, builder.Configuration);
 
 var application = builder.Build();
 
-await application.AddIdentityRoles();
+await application.AddIdentityRolesAsync();
 
 if (application.Environment.IsDevelopment())
 {
@@ -86,16 +84,17 @@ if (application.Environment.IsDevelopment())
         .UseSwaggerUI();
 }
 
+application.UseHangfireDashboard();
 application
+    .AddHangfireJobs()
     .UseCors()
     .UseMiddleware<ExceptionMiddleware>()
     .UseAuthentication()
     .UseAuthorization()
     .UseHttpsRedirection();
 
-// RecurringJob.AddOrUpdate<ISubscriptionCheckerService>("checkSubscriptions", service => service.CheckUsersSubscriptionExpirationDate(), "0 6 * * *");
-
 application.MapControllers();
+
 application.MapHub<NotificationHub>("api/hubs/notification");
 application.MapHub<ChatHub>("api/hubs/chat");
 

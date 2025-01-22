@@ -2,22 +2,18 @@
 using Amazon.S3.Model;
 using Litres.Application.Queries.Files;
 using Litres.Domain.Abstractions.Queries;
+using Litres.Domain.Abstractions.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Litres.Infrastructure.QueryHandlers.Files;
 
 public class GetFileQueryHandler(
-    IConfiguration config,
-    IAmazonS3 s3Client
-    ) : IQueryHandler<GetFile, Stream>
+    IFileService fileService
+    ) : IQueryHandler<GetFile, (Stream stream, string contentType, string fileName)>
 {
-    public async Task<Stream> HandleAsync(GetFile q)
+
+    public async Task<(Stream stream, string contentType, string fileName)> HandleAsync(GetFile q)
     {
-        var bucketName = config["AWS:BucketName"];
-        if (bucketName == null)
-            throw new NullReferenceException("BucketName cannot be null. Configuration was incorrect.");
-        
-        var s3Object = await s3Client.GetObjectAsync(bucketName, q.FileName);
-        return s3Object.ResponseStream;
+        return await fileService.GetFileAsync(q.FileName);
     }
 }

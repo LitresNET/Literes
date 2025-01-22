@@ -7,7 +7,7 @@ export function FileCard({ fileId, fileName, fileSize, createdDate, ...rest}) {
     FileCard.propTypes = {
         fileId: PropTypes.string.isRequired,
         fileName: PropTypes.string.isRequired,
-        fileSize: PropTypes.string.isRequired,
+        fileSize: PropTypes.number.isRequired,
         createdDate: PropTypes.string.isRequired
     }
     // const getFile = async () => {

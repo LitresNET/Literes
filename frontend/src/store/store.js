@@ -7,15 +7,15 @@ import {axiosToLitres} from "../hooks/useAxios.js";
 class AuthStore {
     isAuthenticated = !!localStorage.getItem('token');
     login = async (token) => {
-        //TODO: было бы здорово после входа получать от бэка не только токен, но и имя пользователя.
-        // Сейчас оно сохраняется в localstorage при автопереходе на /account, поэтому сразу после входа недоступно
         toast.info("You have successfully logged in, " /* + localStorage.getItem("Username") */,
             {toastId: "LogInInfo"})
         this.isAuthenticated = true;
         localStorage.setItem('token', token);
-        const response = await axiosToLitres.get(`/user/settings`);
-        localStorage.setItem("username", response?.data.name);
-        localStorage.setItem("roleName", response?.data.roleName)
+        const userData = await axiosToLitres.get(`/user/settings`);
+        localStorage.setItem("user", userData.data);
+        localStorage.setItem("userId", userData.data.id);
+        localStorage.setItem("username", userData?.data.name);
+        localStorage.setItem("roleName", userData?.data.roleName)
         location.reload();
     }
     logout = () => {
@@ -23,6 +23,8 @@ class AuthStore {
         this.isAuthenticated = false;
         //TODO: вторая TODO сверху именно для исправления этой ситуации
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('userId')
         localStorage.removeItem('username');
         localStorage.removeItem('roleName')
         location.reload();

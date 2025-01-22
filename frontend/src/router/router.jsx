@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import {createBrowserRouter} from "react-router-dom";
 import ComponentsLookup from "../components/componentsLookup";
 import CheckoutPage from "../pages/CheckoutPages/CheckoutPage/CheckoutPage";
 import SubscriptionPage from "../pages/SubscriptionPages/SubscriptionPage/SubscriptionPage";
@@ -18,6 +18,8 @@ import NotFoundPage from "../pages/RedirectPages/NotFoundPage/NotFoundPage.jsx";
 import OrderSuccessPage from "../pages/RedirectPages/OrderSuccessPage/OrderSuccessPage";
 import UnauthorizedPage from "../pages/RedirectPages/UnauthorizedPage/UnauthorizedPage.jsx";
 import ChatPage from "../pages/AccountPages/ChatPage/ChatPage.jsx";
+import ChatWidget from "../layouts/ChatWidget/ChatWidget.jsx";
+import authStore from "../store/store.js";
 
 const routes = [
     {
@@ -26,7 +28,12 @@ const routes = [
     },
     {
       path: '/',
-      element: <MainLayout />,
+      element: <>
+        <MainLayout />
+        {authStore.isAuthenticated ?
+            <ChatWidget/> : null
+        }
+      </>,
       children: [
         {
           path:'',

@@ -1,4 +1,7 @@
 using System.Security.Claims;
+using Hangfire;
+using Litres.Application.Services;
+using Litres.Domain.Abstractions.Services;
 using Litres.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +10,7 @@ namespace Litres.WebAPI.Extensions;
 
 public static class WebApplicationExtensions
 {
-    public static async Task AddIdentityRoles(this WebApplication application)
+    public static async Task AddIdentityRolesAsync(this WebApplication application)
     {
         using var scope = application.Services.CreateScope();
         
@@ -51,5 +54,15 @@ public static class WebApplicationExtensions
             logger.LogError(ex, "An error occurred while applying migrations.");
             throw;
         }
+    }
+
+    public static WebApplication AddHangfireJobs(this WebApplication application)
+    {
+        RecurringJob.AddOrUpdate<ISubscriptionCheckerService>("checkSubscriptions", 
+            service => service.CheckUsersSubscriptionExpirationDate(), "0 6 * * *");
+        RecurringJob.AddOrUpdate<RedisCleaner>("redisCleaning", 
+            service => service.ClearRedis(), "0 4 * * *");
+        
+        return application;
     }
 }
