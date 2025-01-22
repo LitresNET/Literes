@@ -7,7 +7,7 @@ import {axiosToLitres} from "../../hooks/useAxios.js";
 import './Chat.css'
 import PropTypes from "prop-types";
 
-export function Chat({chatWindowStyle, chatInputStyle, textIfEmpty, ...rest}) {
+export function Chat({chatWindowStyle, chatInputStyle, textIfEmpty, isOpen, ...rest}) {
     Chat.propTypes ={
         textIfEmpty: PropTypes.string
     }
@@ -84,8 +84,9 @@ export function Chat({chatWindowStyle, chatInputStyle, textIfEmpty, ...rest}) {
             <ChatWindow
                 messages={messages}
                 textIfEmpty={textIfEmpty}
-                style={chatWindowStyle}>
-            </ChatWindow>
+                isOpen={isOpen}
+                style={chatWindowStyle}
+            />
             <ChatInput connection={connection} setMessages={setMessages} style={chatInputStyle}></ChatInput>
         </div>
     );

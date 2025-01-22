@@ -3,7 +3,7 @@ import "./ChatWindow.css";
 import React, {useEffect, useRef} from "react";
 import {ChatMessage} from "../ChatMessage/ChatMessage.jsx";
 
-export function ChatWindow({messages, textIfEmpty, ...rest}) {
+export function ChatWindow({messages, textIfEmpty, isOpen, ...rest}) {
     ChatWindow.propTypes = {
         messages: PropTypes.arrayOf(
             PropTypes.shape({
@@ -16,7 +16,8 @@ export function ChatWindow({messages, textIfEmpty, ...rest}) {
                     fileSize: PropTypes.number.isRequired,
                     createdDate: PropTypes.string.isRequired
             })})),
-        textIfEmpty: PropTypes.string
+        textIfEmpty: PropTypes.string,
+        isOpen: PropTypes.bool
     }
     const chatWindowRef = useRef(null);
     const makeScrollDown = () =>
@@ -26,7 +27,7 @@ export function ChatWindow({messages, textIfEmpty, ...rest}) {
     }
     useEffect(() => {
             makeScrollDown();
-    }, [messages]);
+    }, [messages, isOpen]);
 
     return (
         <div ref={chatWindowRef} className="chat-window" {...rest}>

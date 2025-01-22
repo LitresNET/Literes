@@ -23,12 +23,13 @@ const ChatWidget = () => {
                         onClick={localStorage.getItem("roleName") === "Agent" ? () => navigate('/chat') : toggleChat}
                     />
                 </div>
+                {localStorage.getItem("roleName") === "Agent" ? null :
                 <div style={{ display: isOpen ? 'block' : 'none' }}>
                     <Button   iconPath={ICONS.caret_down}
                               className={"close-button"}
                               onClick={toggleChat}/>
-                    <Chat chatWindowStyle={{ maxHeight: "300px" }} textIfEmpty="Got a question? Write to us!" />
-                </div>
+                    <Chat chatWindowStyle={{ maxHeight: "300px" }} isOpen={isOpen} textIfEmpty="Got a question? Write to us!" />
+                </div> }
             </div>
     );
 };
