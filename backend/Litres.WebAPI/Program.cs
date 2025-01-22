@@ -75,7 +75,7 @@ builder.Services.ConfigureServices(builder.Environment, builder.Configuration);
 
 var application = builder.Build();
 
-await application.AddIdentityRoles();
+await application.AddIdentityRolesAsync();
 
 if (application.Environment.IsDevelopment())
 {
@@ -84,16 +84,17 @@ if (application.Environment.IsDevelopment())
         .UseSwaggerUI();
 }
 
+application.UseHangfireDashboard();
 application
+    .AddHangfireJobs()
     .UseCors()
     .UseMiddleware<ExceptionMiddleware>()
     .UseAuthentication()
     .UseAuthorization()
     .UseHttpsRedirection();
 
-// RecurringJob.AddOrUpdate<ISubscriptionCheckerService>("checkSubscriptions", service => service.CheckUsersSubscriptionExpirationDate(), "0 6 * * *");
-
 application.MapControllers();
+
 application.MapHub<NotificationHub>("api/hubs/notification");
 application.MapHub<ChatHub>("api/hubs/chat");
 
