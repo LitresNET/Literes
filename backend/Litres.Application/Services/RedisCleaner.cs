@@ -1,28 +1,16 @@
-﻿using StackExchange.Redis;
+﻿using Litres.Application.Abstractions.Repositories;
+
 
 namespace Litres.Application.Services;
 
 //TODO: добавить в Hangfire
-public class RedisCleaner
+public class RedisCleaner(IRedisRepository redisRepository)
 {
-    private readonly ConnectionMultiplexer _redis;
-
-    //TODO: заменить на репозиторий
-    public RedisCleaner(string redisConnectionString)
-    {
-        _redis = ConnectionMultiplexer.Connect(redisConnectionString);
-    }
-
     public void ClearRedis()
     {
         try
         {
-            var endpoints = _redis.GetEndPoints();
-            foreach (var endpoint in endpoints)
-            {
-                var server = _redis.GetServer(endpoint);
-                server.FlushAllDatabases();
-            }
+            redisRepository.ClearDatabaseAsync();
             Console.WriteLine("Redis очистился успешно: " + DateTime.Now);
         }
         catch(Exception ex)
