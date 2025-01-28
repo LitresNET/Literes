@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate
+  namespace: litres
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-db
+        image: busybox
+        command: ['sh', '-c', 'until nslookup database; do echo waiting for database; sleep 2; done']
+      containers:
+      - name: migrate
+        image: mcr.microsoft.com/dotnet/sdk:8.0
+        env:
+        - name: DB_SERVER
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_SERVER
+        - name: SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: SA_PASSWORD
+      restartPolicy: Never
+  backoffLimit: 4

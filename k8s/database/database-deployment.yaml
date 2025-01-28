@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database
+  namespace: litres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database
+  template:
+    metadata:
+      labels:
+        app: database
+    spec:
+      containers:
+      - name: mssql
+        image: mcr.microsoft.com/mssql/server
+        resources:
+          limits:
+            memory: "2Gi"
+            cpu: "500m"
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: SA_PASSWORD
+        ports:
+        - containerPort: 1433
+        # livenessProbe:
+        #   exec:
+        #     command: ["sh", "-с", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$SA_PASSWORD\" -C -Q \"SELECT 1;\""]
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - /opt/mssql-tools18/bin/sqlcmd 
+            - -S "database" 
+            - -U "sa" 
+            - -P "$(SA_PASSWORD)" 
+            - -C 
+            - -Q "SELECT 1;"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - mountPath: /usr/src/app
+          name: db-scripts
+      volumes:
+      - name: db-scripts
+        configMap:
+          name: db-scripts
+          defaultMode: 0777

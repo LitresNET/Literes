@@ -8,7 +8,7 @@ COPY ["./Litres.WebAPI/Litres.WebAPI.csproj", "./Litres.WebAPI/"]
 COPY ["./Litres.Application/Litres.Application.csproj", "./Litres.Application/"]
 COPY ["./Litres.Domain/Litres.Domain.csproj", "./Litres.Domain/"]
 
-RUN dotnet restore "./Litres.WebAPI/Litres.WebAPI.csproj"
+RUN dotnet restore "./Litres.WebAPI/Litres.WebAPI.csproj" -v normal
 
 COPY . .
 

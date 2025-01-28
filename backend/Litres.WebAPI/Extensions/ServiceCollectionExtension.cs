@@ -49,7 +49,6 @@ public static class ServiceCollectionExtension
         services.AddScoped<ISubscriptionCheckerService, SubscriptionCheckerService>();
         services.AddScoped<ISubscriptionService, SubscriptionService>();
         services.AddScoped<IUserService, UserService>();
-        services.AddScoped<RedisCleaner>();
 
         return services;
     }
