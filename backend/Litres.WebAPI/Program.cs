@@ -26,7 +26,7 @@ builder.Configuration
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseLazyLoadingProxies()
-        .UseSqlServer(builder.Configuration["Database:ConnectionString"]));
+        .UseSqlServer(builder.Configuration["DB_CONNECTION_STRING"]));
 
 builder.Services.AddIdentity<User, IdentityRole<long>>(options =>
     options.User.RequireUniqueEmail = true)

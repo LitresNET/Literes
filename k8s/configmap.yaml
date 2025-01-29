@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  DB_SERVER: "database"
+  DB_NAME: "litres"
+  PAYMENT_SERVICE_URL: "http://payment:3000"
