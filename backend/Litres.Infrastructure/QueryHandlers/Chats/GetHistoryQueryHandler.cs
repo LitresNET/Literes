@@ -12,7 +12,8 @@ public class GetHistoryQueryHandler(ApplicationDbContext context, IMapper mapper
 {
     public async Task<ChatHistoryDto> HandleAsync(GetHistory q)
     {
-        var chat = await context.Chat.Include(c => c.Messages)
+        var chat = await context.Chat
+            .Include(c => c.Messages)
             .FirstOrDefaultAsync(c => c.UserId == q.UserId || c.AgentId == q.UserId);
         
         return chat == null 

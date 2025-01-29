@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Litres.Infrastructure.QueryHandlers.Files;
 
+//Todo: не используется, не работает. Переписать
 public class GetFilesQueryHandler(
     IAmazonS3 s3Client,
     ApplicationDbContext dbContext,

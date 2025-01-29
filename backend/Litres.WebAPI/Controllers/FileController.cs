@@ -31,19 +31,19 @@ public class FileController(
     [HttpGet("{FileName}")] // /api/file
     public async Task<IActionResult> GetFile([FromRoute] GetFile query)
     {
-        var stream = await queryDispatcher.QueryAsync<GetFile, Stream>(query);
-        return File(stream, "application/octet-stream", query.FileName);
+        var (stream, contentType, fileName) = await queryDispatcher.QueryAsync<GetFile, (Stream stream, string contentType, string fileName)>(query);
+        return File(stream, contentType, fileName);
     }
 
     
     [HttpPost("upload")] // api/file/upload
-    public async Task<IActionResult> UploadFile([FromForm] UploadFileCommand command)
+    public async Task<IActionResult> UploadFile([FromForm] UploadFileToTempCommand command)
     {
         long.TryParse(User.FindFirstValue(CustomClaimTypes.UserId)!,
             NumberStyles.Any, CultureInfo.InvariantCulture, out var userId);
         command.UserId = userId;
         
-        var result = await commandDispatcher.DispatchReturnAsync<UploadFileCommand, string>(command);
+        var result = await commandDispatcher.DispatchReturnAsync<UploadFileToTempCommand, string>(command);
         return Ok(result);
     }
 }
