@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   database:
+    image: coldezzt/net-litres-database
     container_name: litres_database
     build:
       context: ./database
@@ -45,6 +46,7 @@ services:
       - minio-data:/data
 
   migrate:
+    image: coldezzt/net-litres-migrate
     container_name: litres_migrate
     build:
       context: ./backend
@@ -64,6 +66,7 @@ services:
         condition: service_healthy    
 
   payment:
+    image: coldezzt/net-litres-payment
     container_name: litres_payment
     build:
       context: ./backend/Litres.Payment
@@ -74,6 +77,7 @@ services:
       - database
 
   server:
+    image: coldezzt/net-litres-server
     container_name: litres_server
     build:
       context: ./backend
@@ -97,6 +101,7 @@ services:
     restart: "no"
 
   frontend:
+    image: coldezzt/net-litres-frontend
     container_name: litres_frontend
     build:
       context: ./frontend
