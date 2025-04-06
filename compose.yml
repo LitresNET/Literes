@@ -24,6 +24,25 @@ services:
       timeout: 5s
       retries: 10
       start_period: 30s
+      
+  postgres:
+    container_name: litres_payment_db
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=${PAYMENT_DB_USER}
+      - POSTGRES_PASSWORD=${PAYMENT_DB_PASSWORD}
+      - POSTGRES_DB=${PAYMENT_DB}   
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${PAYMENT_DB_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   migrate:
     container_name: litres_migrate
@@ -52,7 +71,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - database
+      - postgres
 
   server:
     container_name: litres_server
@@ -84,3 +103,6 @@ services:
       - "5173:8081"
     depends_on:
       - server
+        
+volumes:
+  postgres_data:
