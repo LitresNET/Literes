@@ -42,6 +42,7 @@ builder.Services
     .ConfigureQueryHandlers()
     .AddMiddlewares()
     .AddAuthorization()
+    .AddConfiguredHangfire(builder.Configuration)
     .AddConfiguredAuthentication(builder.Configuration)
     .AddConfiguredAutoMapper()
     .AddConfiguredMassTransit()
