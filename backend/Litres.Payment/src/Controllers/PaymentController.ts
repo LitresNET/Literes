@@ -28,7 +28,7 @@ export class PaymentController {
     const amount = body.amount;
     if (await this.paymentService.tryPay()) {
       return res.redirect(
-        `http://localhost:5032//api/user/deposit?amount=${amount}`,
+        `http://localhost:5225/api/user/deposit?amount=${amount}`,
       );
     }
 

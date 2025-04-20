@@ -6,6 +6,8 @@ import { Payment } from './Models/Payment';
 import { Transaction } from './Models/Transaction';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { OutboxModule } from './Outbox/OutboxModule';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -14,7 +16,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       imports: [ConfigModule],
       useFactory: () => ({
         type: 'postgres',
-        host: 'litres_payment_db', // configService.get<string>('PAYMENT_DB_HOST'),
+        host: 'localhost', // configService.get<string>('PAYMENT_DB_HOST'),
         port: 5432, // configService.get<number>('PAYMENT_DB_PORT'),
         username: 'postgres', // configService.get<string>('PAYMENT_DB_USER'),
         password: 'password', // configService.get<string>('PAYMENT_DB_PASSWORD'),
@@ -30,10 +32,11 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         transport: Transport.GRPC,
         options: {
           package: 'payment',
-          protoPath: join(__dirname, "./Protos/payment.proto"),
+          protoPath: join(__dirname, "../src/Protos/payment.proto"),
         },
       },
     ]),
+    OutboxModule,
   ],
   controllers: [PaymentController],
   providers: [PaymentService],
