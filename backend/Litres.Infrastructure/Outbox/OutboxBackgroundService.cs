@@ -1,10 +1,10 @@
-﻿namespace Orders.Api.Outbox;
+﻿namespace Litres.Infrastructure.Outbox;
 
 public class OutboxBackgroundService(
     IServiceScopeFactory serviceScopeFactory,
     ILogger<OutboxBackgroundService> logger) : BackgroundService
 {
-    private const int OutboxProcessorFrequency = 7;
+    private const int OutboxProcessorFrequency = 15;
 
     protected override async Task ExecuteAsync(CancellationToken ctx)
     {

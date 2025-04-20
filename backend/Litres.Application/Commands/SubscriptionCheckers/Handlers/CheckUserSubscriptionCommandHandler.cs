@@ -1,7 +1,6 @@
 using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Commands.Subscriptions;
 using Litres.Domain.Abstractions.Commands;
-using Litres.Domain.Abstractions.Services;
 
 namespace Litres.Application.Commands.SubscriptionCheckers.Handlers;
 

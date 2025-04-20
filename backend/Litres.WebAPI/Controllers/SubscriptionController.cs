@@ -8,7 +8,6 @@ using Litres.Application.Models;
 using Litres.Application.Queries.Subscriptions;
 using Litres.Domain.Abstractions.Commands;
 using Litres.Domain.Abstractions.Queries;
-using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Litres.WebAPI.Controllers.Options;
 using Microsoft.AspNetCore.Authorization;

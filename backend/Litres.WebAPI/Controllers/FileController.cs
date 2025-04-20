@@ -5,7 +5,6 @@ using Litres.Application.Models;
 using Litres.Application.Queries.Files;
 using Litres.Domain.Abstractions.Commands;
 using Litres.Domain.Abstractions.Queries;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Litres.WebAPI.Controllers;

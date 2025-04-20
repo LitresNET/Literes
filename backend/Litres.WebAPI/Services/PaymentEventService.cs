@@ -10,15 +10,15 @@ public class PaymentEventService(ICommandDispatcher commandDispatcher) : Payment
 {
     public override async Task<PaymentResponse> ProcessPaymentCompletion(PaymentCompletedEvent request, ServerCallContext context)
     {
-        var updateOrderCommandDto = new OrderDto() {Id = int.Parse(request.OrderId), Status = "Completed"};
+        var updateOrderCommandDto = new OrderDto {Id = int.Parse(request.OrderId), Status = "Completed"};
         var updateOrderCommand = new UpdateOrderCommand(updateOrderCommandDto);
         await commandDispatcher.DispatchReturnAsync<UpdateOrderCommand, OrderDto>(updateOrderCommand);
-        return new PaymentResponse { Success = true};
+        return new PaymentResponse { Success = true };
     }
 
     public override async Task<PaymentResponse> ProcessPaymentFailure(PaymentFailedEvent request, ServerCallContext context)
     {
-        var updateOrderCommandDto = new OrderDto() {Id = int.Parse(request.OrderId), Status = "Failed"};
+        var updateOrderCommandDto = new OrderDto {Id = int.Parse(request.OrderId), Status = "Failed"};
         var updateOrderCommand = new UpdateOrderCommand(updateOrderCommandDto);
         await commandDispatcher.DispatchReturnAsync<UpdateOrderCommand, OrderDto>(updateOrderCommand);
         return new PaymentResponse { Success = false, Message = "Failed" };

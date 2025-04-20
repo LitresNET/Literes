@@ -1,6 +1,4 @@
-﻿using Litres.Domain.Entities;
-
-namespace Litres.Application.Dto.Responses;
+﻿namespace Litres.Application.Dto.Responses;
 
 public class ChatHistoryDto
 {

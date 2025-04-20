@@ -1,31 +1,23 @@
-﻿using System.Data;
-using System.Text.Json;
-using Dapper;
+﻿using System.Text.Json;
+using Litres.Domain.Entities;
 
-namespace Orders.Api.Outbox;
+namespace Litres.Infrastructure.Outbox;
 
-internal static class OutboxExtensions
+public static class OutboxExtensions
 {
     internal static async Task InsertOutboxMessage<T>(
-        this IDbConnection connection,
-        T message,
-        IDbTransaction? transaction = default)
+        this ApplicationDbContext dbContext,
+        T message)
         where T : notnull
     {
         var outboxMessage = new OutboxMessage
         {
-            Id = Guid.NewGuid(),
+            Guid = Guid.NewGuid().ToString(),
             Type = message.GetType().FullName!,
             Content = JsonSerializer.Serialize(message),
-            OccuredOnUtc = DateTime.UtcNow
+            OccuredOn = DateTime.UtcNow
         };
-
-        const string sql =
-            """
-            INSERT INTO outbox_messages (id, type, content, occured_on_utc)
-            values (@Id, @Type, @Content::jsonb, @OccuredOnUtc)
-            """;
-
-        await connection.ExecuteAsync(sql, outboxMessage, transaction: transaction);
+        
+        await dbContext.OutboxMessages.AddAsync(outboxMessage);
     }
 }

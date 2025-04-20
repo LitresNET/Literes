@@ -1,9 +1,6 @@
-﻿using Amazon.S3;
-using Amazon.S3.Model;
-using Litres.Application.Queries.Files;
+﻿using Litres.Application.Queries.Files;
 using Litres.Domain.Abstractions.Queries;
 using Litres.Domain.Abstractions.Services;
-using Microsoft.EntityFrameworkCore;
 
 namespace Litres.Infrastructure.QueryHandlers.Files;
 

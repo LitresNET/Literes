@@ -11,7 +11,13 @@ export const axiosToLitres = axios.create({
 });
 
 axiosToLitres.interceptors.request.use((config) => {
-    config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
+    let token = localStorage.getItem('token')
+    if (token === null) {
+        config.headers.Authorization = null
+        return config;
+    }
+
+    config.headers.Authorization = `Bearer ${token}`;
     return config;
 })
 

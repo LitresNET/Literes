@@ -5,9 +5,13 @@ import {Banner} from "../../../components/UI/Banner/Banner.jsx";
 import {Input} from "../../../components/UI/Input/Input.jsx";
 import PickUpPointModal from './../PickUpPointModal/PickUpPointModal.jsx';
 import { Link } from "react-router-dom";
+import configData from "./../../../../config.json";
+
 
 const CheckoutPage = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [address, setAddress] = useState();
+    const paymentUrl = configData.PAYMENT_URL
 
     let totalPrice = 0;
     const goods = [
@@ -22,6 +26,7 @@ const CheckoutPage = () => {
 
     const openModal = () => setIsOpen(true);
     const closeModal = () => setIsOpen(false);
+    const onChoose = (point) => setAddress(point.address);
 
     return (
         <>
@@ -32,7 +37,7 @@ const CheckoutPage = () => {
                 <Banner>
                     <div className={'label-input-checkout'} onClick={openModal}>
                         <label className={'label-checkout'} htmlFor={'address'}>Enter your email</label>
-                        <Input className="input-checkout" id="address" placeholder="Type the address" type="text"/>
+                        <Input className="input-checkout" id="address" placeholder="Type the address" type="text" value={address}/>
                     </div>
                     <div className={'goods-list-checkout-container'}>
                         {goods.map((item, index) => (
@@ -46,13 +51,13 @@ const CheckoutPage = () => {
                         </div>
                     </div>
                     <div className={'pay-button-checkout'}>
-                        <Link to="/success" style={{textDecoration: 'none'}}>
+                        <Link to={paymentUrl + 'pay'} style={{textDecoration: 'none'}}>
                             <Button color="orange" round={"true"} text={"Pay with stripe"}></Button>
                         </Link>
                     </div>
                 </Banner>
             </div>
-            <PickUpPointModal isOpen={isOpen} onClose={closeModal}></PickUpPointModal>
+            <PickUpPointModal isOpen={isOpen} onClose={closeModal} onChoose={onChoose}></PickUpPointModal>
         </>
     );
 }

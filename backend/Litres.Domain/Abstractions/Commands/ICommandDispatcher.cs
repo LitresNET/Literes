@@ -1,6 +1,4 @@
-﻿using Litres.Domain.Abstractions.Entities;
-
-namespace Litres.Domain.Abstractions.Commands;
+﻿namespace Litres.Domain.Abstractions.Commands;
 
 public interface ICommandDispatcher
 {

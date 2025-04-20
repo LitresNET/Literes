@@ -3,6 +3,7 @@ using Hangfire;
 using Litres.Application.Hubs;
 using Litres.Domain.Entities;
 using Litres.Infrastructure;
+using Litres.Infrastructure.Outbox;
 using Litres.WebAPI.Extensions;
 using Litres.WebAPI.Middlewares;
 using Microsoft.AspNetCore.Http.Features;
@@ -73,6 +74,7 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder =>
 }));
 
 builder.Services.ConfigureServices(builder.Environment, builder.Configuration);
+builder.Services.AddHostedService<OutboxBackgroundService>();
 
 var application = builder.Build();
 
@@ -101,5 +103,5 @@ application.MapHub<ChatHub>("api/hubs/chat");
 
 application.Run();
 
-// с настройками по умолчанию интеграционные тесты не видят namespace нашего Progrnam.cs - делаем публичным
+// с настройками по умолчанию интеграционные тесты не видят namespace нашего Program.cs - делаем публичным
 public partial class Program;

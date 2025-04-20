@@ -1,62 +1,44 @@
 ﻿using System.Text.Json;
-using Dapper;
+using Litres.Application.Protos;
 using MassTransit;
-using Npgsql;
+using Microsoft.EntityFrameworkCore;
 
-namespace Orders.Api.Outbox;
+namespace Litres.Infrastructure.Outbox;
 
-internal sealed class OutboxProcessor(NpgsqlDataSource dataSource, IPublishEndpoint publishEndpoint)
+public sealed class OutboxProcessor(ApplicationDbContext dbContext, IPublishEndpoint publishEndpoint)
 {
     private const int BatchSize = 10;
 
     public async Task<int> Execute(CancellationToken ctx = default)
     {
-        await using var connection = await dataSource.OpenConnectionAsync(ctx);
-        await using var transaction = await connection.BeginTransactionAsync(ctx);
-
-        var outboxMessages = (await connection.QueryAsync<OutboxMessage>(
-            """
-            select *
-            from outbox_messages
-            where processed_on_utc is null
-            order by occured_on_utc limit @BatchSize
-            """,
-            new {BatchSize},
-            transaction: transaction)).AsList();
-
+        var outboxMessages = await dbContext.OutboxMessages
+            .Where(m => m.ProcessedOn == null)
+            .OrderBy(m => m.OccuredOn)
+            .Take(BatchSize)
+            .ToListAsync(ctx);
+        
         foreach (var outboxMessage in outboxMessages)
         {
             try
             {
-                var messageType = Messaging.Contracts.AssemblyReference.Assembly.GetType(outboxMessage.Type)!;
+                // todo: probably problem here with types mismatch
+                var messageType = typeof(OutboxMessage).Assembly.GetType(outboxMessage.Type)!;
                 var deserializedMessage = JsonSerializer.Deserialize(outboxMessage.Content, messageType)!;
 
                 await publishEndpoint.Publish(deserializedMessage, messageType, ctx);
 
-                await connection.ExecuteAsync(
-                    """
-                    update outbox_messages
-                    set processed_on_utc = @ProcessedOnUtc
-                    where id = @Id
-                    """,
-                    new {ProcessedOnUtc = DateTime.UtcNow, outboxMessage.Id},
-                    transaction: transaction);
+                outboxMessage.ProcessedOn = DateTime.UtcNow;
+                dbContext.OutboxMessages.Update(outboxMessage);
             }
             catch (Exception ex)
             {
-                await connection.ExecuteAsync(
-                    """
-                    update outbox_messages
-                    set processed_on_utc = @ProcessedOnUtc, error = @Error
-                    where id = @Id
-                    """,
-                    new {ProcessedOnUtc = DateTime.UtcNow, Error = ex.ToString(), outboxMessage.Id},
-                    transaction: transaction);
+                outboxMessage.ProcessedOn = DateTime.UtcNow;
+                outboxMessage.Error = ex.ToString();
+                dbContext.OutboxMessages.Update(outboxMessage);
             }
         }
-
-        await transaction.CommitAsync(ctx);
-
+        
+        await dbContext.SaveChangesAsync(ctx);
         return outboxMessages.Count;
     }
 }
