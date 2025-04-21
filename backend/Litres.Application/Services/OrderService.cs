@@ -1,4 +1,6 @@
+using System.Text.Json;
 using Litres.Application.Abstractions.Repositories;
+using Litres.Application.Events;
 using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using Litres.Domain.Enums;
@@ -10,7 +12,8 @@ public class OrderService(
     INotificationService notificationService,
     IPickupPointRepository pickupPointRepository,
     IBookRepository bookRepository,
-    IOrderRepository orderRepository) : IOrderService
+    IOrderRepository orderRepository,
+    IOutboxMessageRepository outboxMessageRepository) : IOrderService
 {
     public async Task<Order> GetOrderByIdAsNoTrackingAsync(long orderId)
     {
@@ -21,7 +24,7 @@ public class OrderService(
     {
         await pickupPointRepository.GetByIdAsNoTrackingAsync(order.PickupPointId);
         
-        order.Books = new List<Book>();
+        order.Books = [];
         foreach (var orderBook in order.OrderedBooks)
         {
             var book = await bookRepository.GetByIdAsync(orderBook.BookId);
@@ -32,6 +35,15 @@ public class OrderService(
         }
 
         var dbOrder = await orderRepository.AddAsync(order);
+        var orderCreatedEvent = new OrderCreatedEvent { OrderId = dbOrder.Id };
+        await outboxMessageRepository.AddAsync(new OutboxMessage
+        {
+            Guid = Guid.NewGuid().ToString(),
+            Type = typeof(OrderCreatedEvent).ToString(),
+            Content = JsonSerializer.Serialize(orderCreatedEvent),
+            OccuredOn = DateTime.UtcNow
+        });
+        
         await orderRepository.SaveChangesAsync();
         
         await notificationService.NotifyOrderStatusChange(dbOrder);
@@ -48,7 +60,14 @@ public class OrderService(
         dbOrder.OrderedBooks = order.OrderedBooks;
         dbOrder.PickupPointId = order.PickupPointId;
         var updatedOrder = orderRepository.Update(dbOrder);
-
+        var orderCreatedEvent = new OrderUpdatedEvent { OrderId = dbOrder.Id };
+        await outboxMessageRepository.AddAsync(new OutboxMessage
+        {
+            Guid = Guid.NewGuid().ToString(),
+            Type = typeof(OrderCreatedEvent).ToString(),
+            Content = JsonSerializer.Serialize(orderCreatedEvent),
+            OccuredOn = DateTime.UtcNow
+        });
         await notificationService.NotifyOrderStatusChange(updatedOrder);
         
         await orderRepository.SaveChangesAsync();

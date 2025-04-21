@@ -6,7 +6,7 @@ async function fetchData(url){
 }
 export const axiosToLitres = axios.create({
     baseURL: `${configData.LITRES_URL}`,
-    withCredentials: true,
+    //withCredentials: true,
     timeout: 30000
 });
 

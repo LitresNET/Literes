@@ -21,7 +21,6 @@ public sealed class OutboxProcessor(ApplicationDbContext dbContext, IPublishEndp
         {
             try
             {
-                // todo: probably problem here with types mismatch
                 var messageType = typeof(OutboxMessage).Assembly.GetType(outboxMessage.Type)!;
                 var deserializedMessage = JsonSerializer.Deserialize(outboxMessage.Content, messageType)!;
 

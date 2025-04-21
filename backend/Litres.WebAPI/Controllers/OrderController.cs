@@ -22,7 +22,8 @@ namespace Litres.WebAPI.Controllers;
 public class OrderController(
     IOptions<OrderControllerOptions> options,
     IQueryDispatcher queryDispatcher,
-    ICommandDispatcher commandDispatcher, IPaymentClient paymentClient) 
+    ICommandDispatcher commandDispatcher, 
+    IPaymentClient paymentClient) 
     : ControllerBase
 {
     [HttpGet("{OrderId:long}")] // api/order/{orderId}
@@ -40,7 +41,7 @@ public class OrderController(
             NumberStyles.Any, CultureInfo.InvariantCulture);
 
         command.OrderDto.UserId = userId;
-        var request = await commandDispatcher.DispatchReturnAsync<CreateOrderCommand, OrderDto>(command); // TODO: получать сумму оплаты
+        var request = await commandDispatcher.DispatchReturnAsync<CreateOrderCommand, OrderDto>(command);
         var dto = new CreateOrderDto { OrderId = request.Id, Amount = 1000};
 
         var paymentResponse = paymentClient.RegisterPaymentAsync(dto);

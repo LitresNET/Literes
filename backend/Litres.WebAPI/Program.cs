@@ -67,10 +67,11 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder =>
 {
     var origins = builder.Configuration.GetSection("CorsPolicy:Origins").Get<string[]>()!;
     policyBuilder
-        .WithOrigins(origins)
+        //.WithOrigins(origins)
+        .AllowAnyOrigin()
         .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials();
+        .AllowAnyHeader();
+    //.AllowCredentials();
 }));
 
 builder.Services.ConfigureServices(builder.Environment, builder.Configuration);
@@ -104,4 +105,7 @@ application.MapHub<ChatHub>("api/hubs/chat");
 application.Run();
 
 // с настройками по умолчанию интеграционные тесты не видят namespace нашего Program.cs - делаем публичным
-public partial class Program;
+namespace Litres.WebAPI
+{
+    public partial class Program;
+}
