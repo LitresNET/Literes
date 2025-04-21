@@ -3,7 +3,6 @@ using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Dto;
 using Litres.Domain.Abstractions.Commands;
 using Litres.Domain.Abstractions.Services;
-using Litres.Domain.Entities;
 
 namespace Litres.Application.Commands.Orders.Handlers;
 

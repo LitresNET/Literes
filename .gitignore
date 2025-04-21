@@ -360,3 +360,6 @@ MigrationBackup/
 # node.js
 npm-debug.log
 yarn-error.log
+
+# VS code-based IDEs
+**/.vscode

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Litres.Application.Dto;
 using Litres.Application.Dto.Responses;
 using Litres.Application.Queries.Users;
 using Litres.Domain.Abstractions.Queries;

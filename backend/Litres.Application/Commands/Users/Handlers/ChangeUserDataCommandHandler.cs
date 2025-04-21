@@ -2,7 +2,6 @@
 using Litres.Application.Abstractions.Repositories;
 using Litres.Application.Dto.Requests;
 using Litres.Domain.Abstractions.Commands;
-using Litres.Domain.Entities;
 
 namespace Litres.Application.Commands.Users.Handlers;
 

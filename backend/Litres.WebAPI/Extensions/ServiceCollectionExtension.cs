@@ -11,6 +11,7 @@ using Litres.Application.Services.Options;
 using Litres.Domain.Abstractions.Commands;
 using Litres.Domain.Abstractions.Queries;
 using Litres.Domain.Abstractions.Services;
+using Litres.Infrastructure.Outbox;
 using Litres.Infrastructure.Repositories;
 using Litres.WebAPI.Configuration.Mapper;
 using Litres.WebAPI.Controllers.Options;
@@ -33,11 +34,12 @@ public static class ServiceCollectionExtension
 
         return services;
     }
-    //TODO: Убрать регистрацию сервисов
+    
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddSingleton<IMemoryCache, MemoryCache>();
         
+        services.AddScoped<OutboxProcessor>();
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<NotificationHub>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
@@ -82,7 +84,7 @@ public static class ServiceCollectionExtension
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()
-            .UseSqlServerStorage(configuration["Database:HangfireConnectionString"]));
+            .UseSqlServerStorage(configuration["HANGFIRE_CONNECTION_STRING"]));
         services.AddHangfireServer();
 
         return services;
@@ -185,6 +187,7 @@ public static class ServiceCollectionExtension
                         {
                             context.Token = accessToken;
                         }
+
                         return Task.CompletedTask;
                     },
                     OnAuthenticationFailed = context =>
@@ -198,12 +201,12 @@ public static class ServiceCollectionExtension
                         return Task.CompletedTask;
                     }
                 };
-            })
-            .AddGoogle(options =>
-            {
-                options.ClientId = configuration["Authentication:Google:ClientId"]!;
-                options.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
             });
+            // .AddGoogle(options =>
+            // {
+            //     options.ClientId = configuration["Authentication:Google:ClientId"]!;
+            //     options.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
+            // });
 
         return services;
     }
@@ -240,7 +243,7 @@ public static class ServiceCollectionExtension
     
     public static IServiceCollection ConfigureCommandHandlers(this IServiceCollection services)
     {
-        //можно зарегистрировать диспетчеры как Singleton, и так даже правильнее
+        //можно зарегистрировать диспетчеры как Singleton, и так даже правильнее,
         //но мы не можем из singleton-объекта обращаться к scoped-объекту
         //так что мы либо регистрируем диспетчеры как scoped, либо внутри диспетчера создаем внутренний scope
         //пример создания внутреннего scope оставила в классе CommandDispatcher

@@ -6,12 +6,18 @@ async function fetchData(url){
 }
 export const axiosToLitres = axios.create({
     baseURL: `${configData.LITRES_URL}`,
-    withCredentials: true,
+    //withCredentials: true,
     timeout: 30000
 });
 
 axiosToLitres.interceptors.request.use((config) => {
-    config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
+    let token = localStorage.getItem('token')
+    if (token === null) {
+        config.headers.Authorization = null
+        return config;
+    }
+
+    config.headers.Authorization = `Bearer ${token}`;
     return config;
 })
 

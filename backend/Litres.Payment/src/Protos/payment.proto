@@ -1,0 +1,43 @@
+﻿syntax = "proto3";
+
+package payment;
+
+service PaymentEventService {
+  rpc ProcessPaymentCompletion(PaymentCompletedEvent) returns (PaymentResponse);
+  rpc ProcessPaymentFailure(PaymentFailedEvent) returns (PaymentResponse);
+}
+
+service PaymentRegistrationService {
+  rpc RegisterPayment(PaymentRegistrationRequest) returns (PaymentRegistrationResponse);
+}
+
+message PaymentCompletedEvent {
+  string payment_id = 1;
+  string timestamp = 2;
+  double amount = 3;
+}
+
+message PaymentFailedEvent {
+  string payment_id = 1;
+  string error_reason = 2;
+  string timestamp = 3;
+}
+
+message PaymentResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message PaymentRegistrationRequest {
+  string order_id = 1;
+  string payment_id = 2;
+  double amount = 3;
+  string currency = 4;
+  string return_url = 5;
+  string cancel_url = 6;
+}
+
+message PaymentRegistrationResponse {
+  bool success = 1;
+  string payment_url = 2;
+}

@@ -1,7 +1,9 @@
 using System.Globalization;
 using System.Security.Claims;
+using Litres.Application.Abstractions.GrpcClients;
 using Litres.Application.Commands.Orders;
 using Litres.Application.Dto;
+using Litres.Application.Dto.Requests;
 using Litres.Application.Models;
 using Litres.Application.Queries.Orders;
 using Litres.Domain.Abstractions.Commands;
@@ -20,7 +22,8 @@ namespace Litres.WebAPI.Controllers;
 public class OrderController(
     IOptions<OrderControllerOptions> options,
     IQueryDispatcher queryDispatcher,
-    ICommandDispatcher commandDispatcher) 
+    ICommandDispatcher commandDispatcher, 
+    IPaymentClient paymentClient) 
     : ControllerBase
 {
     [HttpGet("{OrderId:long}")] // api/order/{orderId}
@@ -30,6 +33,7 @@ public class OrderController(
         return Ok(result);
     }
     
+    // TODO: вероятно логику оплаты нужно вынести в commandHandler
     [HttpPost] // api/order
     public async Task<IActionResult> CreateOrder([FromBody] CreateOrderCommand command)
     {
@@ -37,8 +41,16 @@ public class OrderController(
             NumberStyles.Any, CultureInfo.InvariantCulture);
 
         command.OrderDto.UserId = userId;
-        var request = await commandDispatcher.DispatchReturnAsync<CreateOrderCommand,OrderDto>(command);
-        return Ok(request);
+        var request = await commandDispatcher.DispatchReturnAsync<CreateOrderCommand, OrderDto>(command);
+        var dto = new CreateOrderDto { OrderId = request.Id, Amount = 1000};
+
+        var paymentResponse = paymentClient.RegisterPaymentAsync(dto);
+        if (paymentResponse is { IsCompletedSuccessfully: true, Result.Success: true })
+        {
+            return Redirect(paymentResponse.Result.PaymentRedirectUrl);
+        }
+
+        return BadRequest(request);
     }
 
     //TODO: По-хорошему, orderId не должно передаваться отдельно от команды

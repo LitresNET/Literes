@@ -5,7 +5,7 @@ import {
   Post,
   Query,
   Render,
-  Res,
+  Res
 } from '@nestjs/common';
 import { PaymentService } from '../Services/PaymentService';
 import { Response } from 'express';
@@ -17,18 +17,17 @@ export class PaymentController {
   @Get()
   @Render('paymentPage')
   async getPaymentPage(@Query() query) {
-    const userId = query.userId;
-    const lacking = query.lacking;
+    const orderId = query.orderId;
 
-    return { userId, lacking };
+    return { orderId };
   }
 
   @Post()
   async pay(@Body() body: any, @Res() res: Response) {
-    const amount = body.amount;
+    const amount = body.totalPrice;
     if (await this.paymentService.tryPay()) {
       return res.redirect(
-        `http://localhost:5032//api/user/deposit?amount=${amount}`,
+        `http://localhost:5225/api/user/deposit?amount=${amount}`,
       );
     }
 

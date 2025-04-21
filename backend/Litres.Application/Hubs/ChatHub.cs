@@ -7,7 +7,6 @@ using Litres.Application.Queries.Chats;
 using Litres.Application.Queries.Users;
 using Litres.Domain.Abstractions.Commands;
 using Litres.Domain.Abstractions.Queries;
-using Litres.Domain.Abstractions.Services;
 using Litres.Domain.Entities;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;

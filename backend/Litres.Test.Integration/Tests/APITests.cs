@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.Xml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Assert = Xunit.Assert;
 
 namespace IntegrationTests.Tests;

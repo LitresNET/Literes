@@ -11,13 +11,19 @@
         <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.0-preview.4" />
         <PackageReference Include="AWSSDK.S3" Version="4.0.0-preview.4" />
+        <PackageReference Include="Google.Protobuf" Version="3.30.2" />
+        <PackageReference Include="Grpc.AspNetCore" Version="2.70.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.71.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Hangfire" Version="1.8.17" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.12" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.12" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.12">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Serilog" Version="4.2.0" />
         <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
@@ -26,14 +32,18 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Litres.Application\Litres.Application.csproj" />
-      <ProjectReference Include="..\Litres.Infrastructure\Litres.Infrastructure.csproj" />
+        <ProjectReference Include="..\Litres.Application\Litres.Application.csproj" />
+        <ProjectReference Include="..\Litres.Infrastructure\Litres.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Protobuf Include="Protos\payment.proto" GrpcServices="Server" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
 </Project>

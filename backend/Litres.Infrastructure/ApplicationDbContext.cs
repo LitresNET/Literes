@@ -5,6 +5,7 @@ using Litres.Infrastructure.Configurations.EntityConfigurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using OutboxMessage = Litres.Domain.Entities.OutboxMessage;
 
 namespace Litres.Infrastructure;
 
@@ -19,6 +20,7 @@ public class ApplicationDbContext(
     public DbSet<ExternalService> ExternalService { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Order> Order { get; set; }
+    public DbSet<OutboxMessage> OutboxMessages { get; set; }
     public DbSet<PickupPoint> PickupPoint { get; set; }
     public DbSet<Publisher> Publisher { get; set; }
     public DbSet<Request> Request { get; set; }
@@ -34,12 +36,14 @@ public class ApplicationDbContext(
     {
         modelBuilder.ApplyConfiguration(new BookEntityConfiguration());
         modelBuilder.ApplyConfiguration(new OrderEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new OutboxMessageEntityConfiguration());
         modelBuilder.ApplyConfiguration(new PublisherEntityConfiguration());
         modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
         
         ConfigureMicrosoftIdentityRelations(modelBuilder);
         
         SeedData(modelBuilder);
+        base.OnModelCreating(modelBuilder);
     }
 
     private void SeedData(ModelBuilder modelBuilder)

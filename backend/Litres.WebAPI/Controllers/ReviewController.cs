@@ -1,14 +1,11 @@
 ﻿using System.Globalization;
 using System.Security.Claims;
-using AutoMapper;
 using Litres.Application.Commands.Reviews;
 using Litres.Application.Dto;
 using Litres.Application.Models;
 using Litres.Application.Queries.Reviews;
 using Litres.Domain.Abstractions.Commands;
 using Litres.Domain.Abstractions.Queries;
-using Litres.Domain.Abstractions.Services;
-using Litres.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -8,7 +8,7 @@ async function bootstrap() {
 
   app.enableCors();
   app.useStaticAssets(join(__dirname, '..', 'public'));
-  app.setBaseViewsDir(join(__dirname, '..', 'public\\Views'));
+  app.setBaseViewsDir(join(__dirname, '..', 'public/Views'));
   app.setViewEngine('hbs');
 
   await app.listen(3000);

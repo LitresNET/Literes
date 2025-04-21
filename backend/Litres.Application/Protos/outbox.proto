@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package outbox;
+
+option csharp_namespace = "Litres.Application.Protos";
+
+import "google/protobuf/timestamp.proto";
+
+message OutboxMessage {
+  string Id = 1;
+  string Type = 2;
+  string Content = 3;
+  google.protobuf.Timestamp OccuredOnUtc = 4;
+  google.protobuf.Timestamp ProcessedOnUtc = 5;
+  string Error = 6;
+}

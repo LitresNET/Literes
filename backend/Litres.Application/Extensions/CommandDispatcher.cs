@@ -1,6 +1,4 @@
 ﻿using Litres.Domain.Abstractions.Commands;
-using Litres.Domain.Abstractions.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Litres.Application.Extensions;

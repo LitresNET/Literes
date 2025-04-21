@@ -4,10 +4,14 @@ import {Button} from "../../../components/UI/Button/Button.jsx";
 import {Banner} from "../../../components/UI/Banner/Banner.jsx";
 import {Input} from "../../../components/UI/Input/Input.jsx";
 import PickUpPointModal from './../PickUpPointModal/PickUpPointModal.jsx';
-import { Link } from "react-router-dom";
+import configData from "./../../../../config.json";
+import axiosToLitres from "./../../../hooks/useAxios.js"
+
 
 const CheckoutPage = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [address, setAddress] = useState();
+    const paymentUrl = configData.PAYMENT_URL
 
     let totalPrice = 0;
     const goods = [
@@ -16,12 +20,36 @@ const CheckoutPage = () => {
         {name: 'Товар 3', amount: 3, price: 1},
         {name: 'Товар 4', amount: 4, price: 1},
     ]
-    goods.forEach(function (item){
+    goods.forEach(function (item){  
         totalPrice += item.amount * item.price;
     })
 
     const openModal = () => setIsOpen(true);
     const closeModal = () => setIsOpen(false);
+    const onChoose = (point) => setAddress(point.address);
+
+    const redirectToPayment = async () => {
+        try {
+            const response = await axiosToLitres.post('/order/create', {
+                pickUpPointId: 1,
+                books: goods,
+                totalPrice: totalPrice
+            });
+
+            if (response.status === 200) {
+                const paymentData = response.data;
+                const queryParams = new URLSearchParams({
+                    orderId: paymentData.orderId
+                }).toString();
+
+                window.location.href = `${paymentUrl}?${queryParams}`;
+            } else {
+                console.error('Ошибка при инициализации платежа:', response.data);
+            }
+        } catch (error) {
+            console.error('Ошибка при отправке запроса:', error);
+        }
+    };
 
     return (
         <>
@@ -32,7 +60,7 @@ const CheckoutPage = () => {
                 <Banner>
                     <div className={'label-input-checkout'} onClick={openModal}>
                         <label className={'label-checkout'} htmlFor={'address'}>Enter your email</label>
-                        <Input className="input-checkout" id="address" placeholder="Type the address" type="text"/>
+                        <Input className="input-checkout" id="address" placeholder="Type the address" type="text" value={address}/>
                     </div>
                     <div className={'goods-list-checkout-container'}>
                         {goods.map((item, index) => (
@@ -46,13 +74,11 @@ const CheckoutPage = () => {
                         </div>
                     </div>
                     <div className={'pay-button-checkout'}>
-                        <Link to="/success" style={{textDecoration: 'none'}}>
-                            <Button color="orange" round={"true"} text={"Pay with stripe"}></Button>
-                        </Link>
+                        <Button color="orange" round={"true"} text={"Pay with stripe"} onClick={redirectToPayment}></Button>
                     </div>
                 </Banner>
             </div>
-            <PickUpPointModal isOpen={isOpen} onClose={closeModal}></PickUpPointModal>
+            <PickUpPointModal isOpen={isOpen} onClose={closeModal} onChoose={onChoose}></PickUpPointModal>
         </>
     );
 }

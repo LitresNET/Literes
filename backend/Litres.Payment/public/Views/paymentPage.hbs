@@ -9,7 +9,7 @@
 <body>
 <div class="container">
     <form method="post" action="/pay">
-        <input type="hidden" name="userId" value={{ userId }}>
+        <input type="hidden" name="orderId" value={{ orderId }}>
         <label for="cardholder-name">Имя держателя:</label>
         <input type="text" id="cardholder-name" name="cardholder-name" placeholder="name" minlength="1" maxlength="20" required>
         <label for="card-number">Номер карты:</label>
@@ -32,18 +32,10 @@
             </div>
         </div>
         <label for="amount">Сумма</label>
-        <input type="tel" id="amount" name="amount" placeholder="amount" pattern="[0-9]+" minlength="1" required>
+        <input type="tel" id="amount" name="amount" value={{totalPrice}} disabled>
         <button type="submit" class="yellow-button">Оплатить</button>
-        <p id="lacking">Не хватает для оплаты на сайте: {{lacking}}</p>
+        <!--<p id="lacking">Не хватает для оплаты на сайте: {{lacking}}</p> -->
     </form>
 </div>
-
-<script>
-    const lacking = document.getElementById("lacking");
-
-    if ({{lacking}} == 0) {
-        lacking.style.display = "none";
-    }
-</script>
 </body>
 </html>

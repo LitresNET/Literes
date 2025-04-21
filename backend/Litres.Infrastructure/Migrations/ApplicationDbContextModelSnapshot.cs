@@ -17,7 +17,7 @@ namespace Litres.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.12")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -680,6 +680,33 @@ namespace Litres.Infrastructure.Migrations
                             Status = 0,
                             UserId = 2L
                         });
+                });
+
+            modelBuilder.Entity("Litres.Domain.Entities.OutboxMessage", b =>
+                {
+                    b.Property<string>("Guid")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Error")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OccuredOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ProcessedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Guid");
+
+                    b.ToTable("OutboxMessages");
                 });
 
             modelBuilder.Entity("Litres.Domain.Entities.PickupPoint", b =>
@@ -1435,6 +1462,7 @@ namespace Litres.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -1463,10 +1491,12 @@ namespace Litres.Infrastructure.Migrations
                         .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -1495,7 +1525,8 @@ namespace Litres.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<decimal>("Wallet")
                         .HasPrecision(18, 4)
@@ -1503,9 +1534,17 @@ namespace Litres.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("User");
+                    b.ToTable("AspNetUsers", (string)null);
 
                     b.HasData(
                         new
@@ -1513,7 +1552,7 @@ namespace Litres.Infrastructure.Migrations
                             Id = 1L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "6df20f78-8c8e-4099-940d-a8b938340537",
+                            ConcurrencyStamp = "cad7e671-6f47-4699-9898-286d3a71a91e",
                             Email = "a@mail.com",
                             EmailConfirmed = false,
                             IsAdditionalRegistrationRequired = false,
@@ -1532,7 +1571,7 @@ namespace Litres.Infrastructure.Migrations
                             Id = 2L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "6bdf4608-c929-454d-a6c7-9441453eccc2",
+                            ConcurrencyStamp = "ddba5504-d0a3-4e0a-94a2-a6696c9bf506",
                             Email = "b@mail.com",
                             EmailConfirmed = false,
                             IsAdditionalRegistrationRequired = false,
@@ -1551,7 +1590,7 @@ namespace Litres.Infrastructure.Migrations
                             Id = 3L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "c8192b56-bb2e-415c-a7ce-435671bb2be3",
+                            ConcurrencyStamp = "e4130689-f19e-4361-9920-aad7a06659a1",
                             Email = "c@mail.com",
                             EmailConfirmed = false,
                             IsAdditionalRegistrationRequired = false,
@@ -1570,7 +1609,7 @@ namespace Litres.Infrastructure.Migrations
                             Id = 4L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "9a97a0d8-2a9a-4d2f-9eb1-782b6c42e306",
+                            ConcurrencyStamp = "8d6d16cb-ead7-4fb0-baad-dd7decea17bb",
                             Email = "d@mail.com",
                             EmailConfirmed = false,
                             IsAdditionalRegistrationRequired = false,
@@ -1589,7 +1628,7 @@ namespace Litres.Infrastructure.Migrations
                             Id = 5L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "2b01012f-5727-41bb-a35d-230ee644f03f",
+                            ConcurrencyStamp = "22b986ea-9e2e-4446-8405-b9ca5a1ff326",
                             Email = "e@mail.com",
                             EmailConfirmed = false,
                             IsAdditionalRegistrationRequired = false,
@@ -1608,7 +1647,7 @@ namespace Litres.Infrastructure.Migrations
                             Id = 6L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "d1276372-82b7-4daf-93b4-7a9be530391b",
+                            ConcurrencyStamp = "05d8b7f1-0b5a-4b7b-aa92-2b425e644cfd",
                             Email = "f@mail.com",
                             EmailConfirmed = false,
                             IsAdditionalRegistrationRequired = false,
@@ -1627,7 +1666,7 @@ namespace Litres.Infrastructure.Migrations
                             Id = 7L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "81071af6-60c2-4885-a1d3-f4ac6364294f",
+                            ConcurrencyStamp = "2b75d0d7-d94e-4452-909f-3f3d335bf5f0",
                             Email = "g@mail.com",
                             EmailConfirmed = false,
                             IsAdditionalRegistrationRequired = false,
@@ -1646,7 +1685,7 @@ namespace Litres.Infrastructure.Migrations
                             Id = 8L,
                             AccessFailedCount = 0,
                             AvatarUrl = "",
-                            ConcurrencyStamp = "599eb4ac-eb33-4386-af1b-0d761b4fa151",
+                            ConcurrencyStamp = "53a8b5e8-a2b3-4403-a6f2-ca00dbe41333",
                             Email = "h@mail.com",
                             EmailConfirmed = false,
                             IsAdditionalRegistrationRequired = false,
@@ -1665,7 +1704,7 @@ namespace Litres.Infrastructure.Migrations
                             Id = 9L,
                             AccessFailedCount = 0,
                             AvatarUrl = "aa",
-                            ConcurrencyStamp = "a3906e77-e79d-4430-8f54-4d23fbc282d9",
+                            ConcurrencyStamp = "3c85e8c8-d002-4754-8d7f-4ac14e7e76ec",
                             Email = "pA@mail.com",
                             EmailConfirmed = false,
                             IsAdditionalRegistrationRequired = false,
@@ -1684,7 +1723,7 @@ namespace Litres.Infrastructure.Migrations
                             Id = 10L,
                             AccessFailedCount = 0,
                             AvatarUrl = "bb",
-                            ConcurrencyStamp = "3b90d026-11e0-4387-88b1-8ec3fec2ecc4",
+                            ConcurrencyStamp = "d9abc6f1-5dcb-4cbe-aa2d-982730516d72",
                             Email = "pB@mail.com",
                             EmailConfirmed = false,
                             IsAdditionalRegistrationRequired = false,
@@ -1709,17 +1748,25 @@ namespace Litres.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
@@ -1743,7 +1790,7 @@ namespace Litres.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RoleClaims");
+                    b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
@@ -1763,11 +1810,16 @@ namespace Litres.Infrastructure.Migrations
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("UserId1")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserClaims");
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
@@ -1784,11 +1836,16 @@ namespace Litres.Infrastructure.Migrations
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("UserId1")
+                        .HasColumnType("bigint");
+
                     b.HasKey("LoginProvider", "ProviderKey");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLogins");
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
@@ -1803,7 +1860,7 @@ namespace Litres.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("AspNetUserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
@@ -1817,12 +1874,17 @@ namespace Litres.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<long?>("UserId1")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("UserTokens");
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("Purchased", b =>
@@ -2112,19 +2174,27 @@ namespace Litres.Infrastructure.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
                 {
                     b.HasOne("Litres.Domain.Entities.User", null)
-                        .WithMany("Claims")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("Litres.Domain.Entities.User", null)
+                        .WithMany("Claims")
+                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
                 {
                     b.HasOne("Litres.Domain.Entities.User", null)
-                        .WithMany("Logins")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("Litres.Domain.Entities.User", null)
+                        .WithMany("Logins")
+                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
@@ -2134,15 +2204,25 @@ namespace Litres.Infrastructure.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Litres.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
                 {
                     b.HasOne("Litres.Domain.Entities.User", null)
-                        .WithMany("Tokens")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("Litres.Domain.Entities.User", null)
+                        .WithMany("Tokens")
+                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("Purchased", b =>
