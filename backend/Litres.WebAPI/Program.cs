@@ -37,6 +37,7 @@ builder.Services.AddIdentity<User, IdentityRole<long>>(options =>
 builder.Services
     .AddConfiguredSerilog(builder.Configuration)
     .AddRouting(opt => opt.LowercaseUrls = true)
+    .AddConfiguredGraphQL(builder.Configuration)
     .AddRepositories()
     .AddServices()
     .ConfigureCommandHandlers()
@@ -101,6 +102,8 @@ application.MapControllers();
 
 application.MapHub<NotificationHub>("api/hubs/notification");
 application.MapHub<ChatHub>("api/hubs/chat");
+
+application.MapGraphQL("/api/graphql");
 
 application.Run();
 
