@@ -4,14 +4,13 @@ import React, {useRef, useState} from "react";
 import "./ChatInput.css";
 import {toast} from "react-toastify";
 import PropTypes from "prop-types";
-import {HubConnection} from "@microsoft/signalr";
 import ICONS from "../../../assets/icons.jsx";
 import {axiosToLitres} from "../../../hooks/useAxios.js";
 
-export function ChatInput({connection, setMessages, ...rest}) {
+export function ChatInput({sendMessage, setMessages, ...rest}) {
     ChatInput.propTypes = {
-        connection: PropTypes.shape(HubConnection),
-        setMessages: PropTypes.func
+        sendMessage: PropTypes.func,
+        setMessages: PropTypes.func,
     }
     const [message, setMessage] = useState('');
     const username = localStorage.getItem("username");
@@ -51,42 +50,30 @@ export function ChatInput({connection, setMessages, ...rest}) {
         if (event.key === 'Enter')
             await sendMessage();
     }
-    const sendMessage = async () => {
+
+    const handleMessageSend = async () => {
         if (!message) {
             toast.error("Chat: Message cannot be empty", {toastId: "ChatEmptyMessage"})
             return
         }
-        if (connection) {
-            let fileModel = null;
-            if (file) {
-
-                fileModel = {
-                    fileId: fileId,
-                    fileName: file?.name,
-                    fileSize: file?.size,
-                    createdDate: new Date().toLocaleTimeString()
-                }
-            }
-            const newMessage = {
-                Text: message,
-                From: username,
-                FileModel: fileModel
+        let fileModel = null;
+        const msg = {
+              from: username,
+              text:  message,
+              sentUnix: Date.now(),
             };
-            await connection
-                .invoke('SendMessage', newMessage).then(() => {
-                    setMessage('');
-                    setMessages((prevMessages) => [...prevMessages, {
-                        from: username, 
-                        message: message, 
-                        sentDate: new Date().toLocaleTimeString(), 
-                        fileModel: fileModel 
-                    }]) // TODO: Если серверу не удаётся загрузить файл, он все равно отправляет сообщение, но без него, а файл визуально все равно отображается.
-                }).catch((e) => toast.error(`Chat: Sending message error: ${e.message}`,
-                    {toastId: "ChatSendMessageError"}));
-        }
-        else {
-            toast.error("Chat: No connection", {toastId: "ChatSendMessageError"});
-        }
+        if (file) msg.file = file;
+        console.log(msg)
+        await sendMessage({ newMsg: msg }).then(() => {
+                setMessage('');
+                setMessages((prevMessages) => [...prevMessages, {
+                    from: username, 
+                    message: message, 
+                    sentDate: new Date().toLocaleTimeString(), 
+                    fileModel: fileModel 
+                }]) // TODO: Если серверу не удаётся загрузить файл, он все равно отправляет сообщение, но без него, а файл визуально все равно отображается.
+            }).catch((e) => toast.error(`Chat: Sending message error: ${e.message}`,
+                {toastId: "ChatSendMessageError"}));
     };
     const formatName = (name) => {
         if (name.length > 10) {
@@ -114,11 +101,11 @@ export function ChatInput({connection, setMessages, ...rest}) {
             <div className="chat-input-buttons">
                 <Button onClick={file ? async () => {
                     if (await sendFile()) {
-                        await sendMessage();
+                        await handleMessageSend();
                         setFile(null);
                     }
 
-                } : sendMessage} text="Send" disabled={!message}/>
+                } : handleMessageSend} text="Send" disabled={!message}/>
                 <input
                     type="file"
                     onChange={attachFile}

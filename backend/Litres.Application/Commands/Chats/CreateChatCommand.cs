@@ -3,7 +3,7 @@ using Litres.Domain.Entities;
 
 namespace Litres.Application.Commands.Chats;
 
-public class CreateChatCommand(Chat chat) : ICommand<Chat>
+public class CreateChatCommand(Domain.Entities.Chat chat) : ICommand<Domain.Entities.Chat>
 {
-    public Chat Chat { get; set; } = chat;
+    public Domain.Entities.Chat Chat { get; set; } = chat;
 }

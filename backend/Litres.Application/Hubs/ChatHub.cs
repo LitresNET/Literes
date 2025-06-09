@@ -106,7 +106,7 @@ public class ChatHub(
             case {RoleName: "Member"}:
             {
                 var query = new GetChatByUserId(user.Id);
-                var chat = await queryDispatcher.QueryAsync<GetChatByUserId, Chat?>(query); // checks the user and the agent id's
+                var chat = await queryDispatcher.QueryAsync<GetChatByUserId, Domain.Entities.Chat?>(query); // checks the user and the agent id's
                 
                 if (chat is null)
                 {
@@ -117,7 +117,7 @@ public class ChatHub(
                         break;
                     }
                     
-                    chat = new Chat
+                    chat = new Domain.Entities.Chat
                     {
                         AgentId = Agents.Keys.ToList()[_currentAgentIndex % Agents.Count],
                         UserId = user.Id,
@@ -129,7 +129,7 @@ public class ChatHub(
                         _currentAgentIndex = 0;
 
                     var command = new CreateChatCommand(chat);
-                    chat = await commandDispatcher.DispatchReturnAsync<CreateChatCommand, Chat>(command);
+                    chat = await commandDispatcher.DispatchReturnAsync<CreateChatCommand, Domain.Entities.Chat>(command);
                 }
 
                 message.ChatId = chat.Id;
@@ -150,7 +150,7 @@ public class ChatHub(
             case {RoleName: "Agent" or "Admin"}:
             {
                 var query = new GetChatByUserId(user.Id);
-                var chat = await queryDispatcher.QueryAsync<GetChatByUserId, Chat?>(query); // checks the user and the agent id's
+                var chat = await queryDispatcher.QueryAsync<GetChatByUserId, Domain.Entities.Chat?>(query); // checks the user and the agent id's
                 
                 if (chat is null)
                 {

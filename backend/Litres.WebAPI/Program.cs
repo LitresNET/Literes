@@ -1,6 +1,8 @@
 using Amazon.S3;
 using Hangfire;
+using LinqKit;
 using Litres.Application.Hubs;
+using Litres.Application.Services;
 using Litres.Domain.Entities;
 using Litres.Infrastructure;
 using Litres.Infrastructure.Outbox;
@@ -20,6 +22,16 @@ Log.Logger = new LoggerConfiguration()
     .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenLocalhost(5225, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+        // путь к pfx и пароль
+        listenOptions.UseHttps("localhost.pfx", "MyPfxPassword");
+    });
+});
 
 builder.Configuration
     .AddJsonFile("appsettings.json", true, true)
@@ -66,17 +78,26 @@ builder.Services.AddSignalR();
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder =>
 {
-    var origins = builder.Configuration.GetSection("CorsPolicy:Origins").Get<string[]>()!;
+    var origins = builder.Configuration
+        .GetSection("CorsPolicy")
+        .GetSection("Origins")
+        .AsEnumerable()
+        .Where(kvp => !string.IsNullOrWhiteSpace(kvp.Value))
+        .OrderBy(kvp => kvp.Key)      // чтобы индексы шли по порядку 0,1,2,3
+        .Select(kvp => kvp.Value!)
+        .ToArray();
+    
     policyBuilder
-        //.WithOrigins(origins)
-        .AllowAnyOrigin()
+        .WithOrigins(origins)
         .AllowAnyMethod()
-        .AllowAnyHeader();
-    //.AllowCredentials();
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
 }));
 
 builder.Services.ConfigureServices(builder.Environment, builder.Configuration);
 builder.Services.AddHostedService<OutboxBackgroundService>();
+builder.Services.AddGrpc();
 
 var application = builder.Build();
 
@@ -92,16 +113,19 @@ if (application.Environment.IsDevelopment())
 application.UseHangfireDashboard();
 application
     .AddHangfireJobs()
+    .UseRouting()
     .UseCors()
     .UseMiddleware<ExceptionMiddleware>()
     .UseAuthentication()
     .UseAuthorization()
-    .UseHttpsRedirection();
+    .UseHttpsRedirection().
+    UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });;
 
 application.MapControllers();
 
 application.MapHub<NotificationHub>("api/hubs/notification");
 application.MapHub<ChatHub>("api/hubs/chat");
+application.MapGrpcService<ChatService>().EnableGrpcWeb();
 
 application.MapGraphQL("/api/graphql");
 

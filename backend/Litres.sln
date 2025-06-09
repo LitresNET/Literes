@@ -1,9 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Litres.Test.Unit", "Litres.Test.Unit\Litres.Test.Unit.csproj", "{FA99BDB3-E497-435B-AD7D-EB573F012D74}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Litres.Test.Integration", "Litres.Test.Integration\Litres.Test.Integration.csproj", "{8DF38D2A-8109-4859-AF8A-6F6A2E3DA652}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Litres.Domain", "Litres.Domain\Litres.Domain.csproj", "{8D45A739-A2D9-45D9-A683-3299FA2815F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Litres.Infrastructure", "Litres.Infrastructure\Litres.Infrastructure.csproj", "{D4120BB4-C199-495F-89B7-0E1DA809EA97}"
@@ -20,14 +16,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FA99BDB3-E497-435B-AD7D-EB573F012D74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA99BDB3-E497-435B-AD7D-EB573F012D74}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA99BDB3-E497-435B-AD7D-EB573F012D74}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA99BDB3-E497-435B-AD7D-EB573F012D74}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8DF38D2A-8109-4859-AF8A-6F6A2E3DA652}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8DF38D2A-8109-4859-AF8A-6F6A2E3DA652}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8DF38D2A-8109-4859-AF8A-6F6A2E3DA652}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8DF38D2A-8109-4859-AF8A-6F6A2E3DA652}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8D45A739-A2D9-45D9-A683-3299FA2815F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8D45A739-A2D9-45D9-A683-3299FA2815F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D45A739-A2D9-45D9-A683-3299FA2815F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
