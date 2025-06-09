@@ -5,7 +5,7 @@ import {Banner} from "../../../components/UI/Banner/Banner.jsx";
 import {Input} from "../../../components/UI/Input/Input.jsx";
 import PickUpPointModal from './../PickUpPointModal/PickUpPointModal.jsx';
 import configData from "./../../../../config.json";
-import axiosToLitres from "./../../../hooks/useAxios.js"
+import {axiosToLitres} from "./../../../hooks/useAxios.js"
 
 
 const CheckoutPage = () => {

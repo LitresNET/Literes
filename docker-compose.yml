@@ -61,9 +61,7 @@ services:
       - HANGFIRE_CONNECTION_STRING=${HANGFIRE_CONNECTION_STRING}
       - TEST_DB_CONNECTION_STRING=${TEST_DB_CONNECTION_STRING}
       - PAYMENT_SERVICE_URL=${PAYMENT_SERVICE_URL}
-    depends_on:
-      database:
-        condition: service_healthy    
+     
 
   payment:
     image: coldezzt/net-litres-payment
@@ -108,8 +106,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5173:8081"
-    depends_on:
-      - server
 
 volumes:
   minio-data:

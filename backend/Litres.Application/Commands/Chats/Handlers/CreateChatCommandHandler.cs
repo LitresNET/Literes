@@ -6,9 +6,9 @@ namespace Litres.Application.Commands.Chats.Handlers;
 
 public class CreateChatCommandHandler(
     IChatRepository chatRepository
-    ) : ICommandHandler<CreateChatCommand, Chat>
+    ) : ICommandHandler<CreateChatCommand, Domain.Entities.Chat>
 {
-    public async Task<Chat> HandleAsync(CreateChatCommand command)
+    public async Task<Domain.Entities.Chat> HandleAsync(CreateChatCommand command)
     {
         var c = await chatRepository.AddAsync(command.Chat);
         await chatRepository.SaveChangesAsync();

@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Identity;
 namespace Litres.Application.Commands.SignUp.Handlers;
 
 public class SignUpUserCommandHandler(
-    IContractRepository contractRepository,
-    IPublisherRepository publisherRepository,
     IUnitOfWork unitOfWork,
     UserManager<User> userManager,
     IMapper mapper) : ICommandHandler<SignUpUserCommand, IdentityResult>

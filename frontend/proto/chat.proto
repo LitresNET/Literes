@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package chat;
+import "google/protobuf/empty.proto";
+
+service ChatService {
+  rpc Chat(stream ChatMessage) returns (stream ChatMessage);
+  rpc Subscribe(google.protobuf.Empty) returns (stream ChatMessage);
+  rpc SendMessage(ChatMessage) returns (google.protobuf.Empty);
+}
+
+message ChatMessage {
+  int64 chat_id   = 1; 
+  string from      = 2;
+  string text      = 3;
+  int64  sent_unix = 4;
+  File   file      = 5;
+}
+
+message File {
+  string name        = 1;
+  bytes  content     = 2;
+  string contentType = 3;
+}

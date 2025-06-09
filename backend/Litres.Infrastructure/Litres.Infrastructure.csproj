@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <OutputType>Library</OutputType>
+        <Protobuf_UseDistroTool>true</Protobuf_UseDistroTool>
     </PropertyGroup>
 
     <ItemGroup>

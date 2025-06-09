@@ -15,6 +15,7 @@ using Litres.Infrastructure.Outbox;
 using Litres.Infrastructure.Repositories;
 using Litres.WebAPI.Configuration.Mapper;
 using Litres.WebAPI.Controllers.Options;
+using Litres.WebAPI.GraphQL;
 using Litres.WebAPI.Middlewares;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -65,6 +66,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IOutboxMessageRepository, OutboxMessageRepository>();
         services.AddScoped<IPickupPointRepository, PickupPointRepository>();
         services.AddScoped<IPublisherRepository, PublisherRepository>();
         services.AddScoped<IRequestRepository, RequestRepository>();
@@ -281,6 +283,19 @@ public static class ServiceCollectionExtension
         { 
             services.AddScoped(handler.InterfaceType, handler.HandlerType);
         }
+        return services;
+    }
+
+    public static IServiceCollection AddConfiguredGraphQL(this IServiceCollection services, IConfiguration configuration)
+    {
+        services
+            .AddGraphQLServer()
+            .AddSorting()
+            .AddFiltering()
+            .AddProjections()
+            .AddQueryType<Query>()
+            .AddMutationType<Mutation>();
+
         return services;
     }
 }

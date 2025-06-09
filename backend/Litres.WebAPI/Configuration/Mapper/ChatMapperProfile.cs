@@ -9,7 +9,7 @@ public class ChatMapperProfile : Profile
 {
     public ChatMapperProfile()
     {
-        CreateMap<Chat, ChatPreviewDto>()
+        CreateMap<Domain.Entities.Chat, ChatPreviewDto>()
             .ForMember(dto => dto.UserId, opt => opt.MapFrom(chat => chat.UserId))
             .ForMember(dto => dto.Username, opt => opt.MapFrom(chat => chat.User.Name))
             .ForMember(dto => dto.LastMessageDate, opt => opt.MapFrom(chat => 

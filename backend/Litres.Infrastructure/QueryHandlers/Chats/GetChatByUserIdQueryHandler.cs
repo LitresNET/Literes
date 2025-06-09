@@ -7,9 +7,9 @@ namespace Litres.Infrastructure.QueryHandlers.Chats;
 
 public class GetChatByUserIdQueryHandler(
     ApplicationDbContext context
-    ) : IQueryHandler<GetChatByUserId, Chat>
+    ) : IQueryHandler<GetChatByUserId, Domain.Entities.Chat>
 {
-    public async Task<Chat?> HandleAsync(GetChatByUserId q)
+    public async Task<Domain.Entities.Chat?> HandleAsync(GetChatByUserId q)
     {
         return await context.Chat
             .Include(c => c.Messages)
